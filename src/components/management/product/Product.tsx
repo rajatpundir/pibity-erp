@@ -3,7 +3,6 @@ import { Draft } from 'immer';
 import { useImmerReducer } from "use-immer";
 import { State, Action } from './types'
 import { isoProduct } from '../../../main/types'
-import { H1 } from './styles'
 import tw from 'twin.macro'
 import { Switch } from "@chakra-ui/react"
 
@@ -48,39 +47,67 @@ export default function Product() {
     }
 
     return (
-        <>
+        <div className="font-nunito">
+            {/* <G1>
+                <G1I1>
+                    <Title>Create Product</Title>
+                </G1I1>
+                <Button>Submit</Button>
+            </G1> */}
             <GridContainer>
-                <GridItem>
+                <InnerGridContainer>
                     <Label>Product Name</Label>
-                    <Input type='text' />
-                </GridItem>
-                <GridItem>
+                    <InnerGridContent>
+                        <Input type='text' />
+                    </InnerGridContent>
+                </InnerGridContainer>
+                <InnerGridContainer>
                     <Label>SKU</Label>
-                    <Input type='text' />
-                </GridItem>
-                <GridItem>
+                    <InnerGridContent>
+                        <Input type='text' />
+                    </InnerGridContent>
+                </InnerGridContainer>
+                <InnerGridContainer>
                     <Label>Orderable</Label>
-                    <Switch />
-                </GridItem>
-                <GridItem>
+                    <InnerGridContent>
+                        <Switch size="lg" colorScheme="teal" className="focus:border-0" />
+                    </InnerGridContent>
+                </InnerGridContainer>
+                <InnerGridContainer>
                     <Label>Consumable</Label>
-                    <Input type='' />
-                </GridItem>
-                <GridItem>
+                    <InnerGridContent>
+                        <Switch size="lg" />
+                    </InnerGridContent>
+                </InnerGridContainer>
+                <InnerGridContainer>
                     <Label>Producable</Label>
-                    <Input type='radio' />
-                </GridItem>
+                    <InnerGridContent>
+                        <Switch size="lg" />
+                    </InnerGridContent>
+                </InnerGridContainer>
             </GridContainer>
-        </>
+        </div>
     )
 }
 
-const GridContainer = tw.div`grid grid-cols-3`
+const Title = tw.div`py-8 text-4xl text-gray-900 font-bold`
 
-const GridItem = tw.div``
+const G1 = tw.div`grid grid-cols-8 grid-rows-1 max-h-12
+grid-template-areas[]`
 
-const Input = tw.input``
+const G1I1 = tw.div`col-span-4`
 
-const Label = tw.label`block`
+const GridContainer = tw.div`grid grid-cols-1 
+md:grid-cols-2 xl:grid-cols-3 
+gap-x-6 gap-y-4
+text-gray-900 text-xl`
 
-const Toggle = tw.input`sr-only`
+const InnerGridContainer = tw.div`grid grid-cols-3`
+
+const InnerGridContent = tw.div`col-span-2`
+
+const Input = tw.input`p-1.5 rounded-none h-auto text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600`
+
+const Label = tw.label``
+
+const Button = tw.button`background-color[black] text-white text-center font-bold p-2 uppercase`
