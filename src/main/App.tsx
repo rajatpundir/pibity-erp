@@ -1,5 +1,4 @@
-import './App.css';
-import Product from './components/admin/product/Product';
+import Product from '../components/management/product/Product';
 
 function App() {
   return (

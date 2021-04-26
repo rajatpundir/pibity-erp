@@ -3,8 +3,10 @@ import { Draft } from 'immer';
 import { useImmerReducer } from "use-immer";
 import { State, Action } from './types'
 import { isoProduct } from '../../../types'
-import * as FormInput from '../../../constants/formInputs'
 import { H1 } from './styles'
+import tw from 'twin.macro'
+
+const Input = tw.input`border hover:border-black`
 
 const initialState: State = {
     variable: {
@@ -50,7 +52,7 @@ export default function Product() {
         <>
             <H1 fontSize={12} color="orange">Product Name: {state.variable.variableName}</H1>
             <form onSubmit={onSubmit}>
-                <input type='number' onChange={onChange}></input>
+                <Input type='number' onChange={onChange}></Input>
                 <button></button>
             </form>
         </>
