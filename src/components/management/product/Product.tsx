@@ -5,8 +5,7 @@ import { State, Action } from './types'
 import { isoProduct } from '../../../main/types'
 import { H1 } from './styles'
 import tw from 'twin.macro'
-
-const Input = tw.input`border hover:border-black`
+import { Switch } from "@chakra-ui/react"
 
 const initialState: State = {
     variable: {
@@ -50,11 +49,38 @@ export default function Product() {
 
     return (
         <>
-            <H1 fontSize={12} color="orange">Product Name: {state.variable.variableName}</H1>
-            <form onSubmit={onSubmit}>
-                <Input type='number' onChange={onChange}></Input>
-                <button></button>
-            </form>
+            <GridContainer>
+                <GridItem>
+                    <Label>Product Name</Label>
+                    <Input type='text' />
+                </GridItem>
+                <GridItem>
+                    <Label>SKU</Label>
+                    <Input type='text' />
+                </GridItem>
+                <GridItem>
+                    <Label>Orderable</Label>
+                    <Switch />
+                </GridItem>
+                <GridItem>
+                    <Label>Consumable</Label>
+                    <Input type='' />
+                </GridItem>
+                <GridItem>
+                    <Label>Producable</Label>
+                    <Input type='radio' />
+                </GridItem>
+            </GridContainer>
         </>
     )
 }
+
+const GridContainer = tw.div`grid grid-cols-3`
+
+const GridItem = tw.div``
+
+const Input = tw.input``
+
+const Label = tw.label`block`
+
+const Toggle = tw.input`sr-only`
