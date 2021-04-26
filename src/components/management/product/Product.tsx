@@ -2,7 +2,7 @@ import React from 'react';
 import { Draft } from 'immer';
 import { useImmerReducer } from "use-immer";
 import { State, Action } from './types'
-import { isoProduct } from '../../../types'
+import { isoProduct } from '../../../main/types'
 import { H1 } from './styles'
 import tw from 'twin.macro'
 

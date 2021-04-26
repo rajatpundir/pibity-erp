@@ -1,5 +1,5 @@
 import { Immutable, Draft } from 'immer';
-import { ProductVariable } from '../../../types'
+import { ProductVariable } from '../../../main/types'
 
 export type State = Immutable<{
     variable: ProductVariable
