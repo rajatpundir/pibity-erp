@@ -1,0 +1,391 @@
+import { Newtype, iso } from 'newtype-ts'
+
+// Primitive Types
+export type Text = string
+export type Number = bigint
+export type Decimal = number
+export type Boolean = boolean
+export type Date = bigint
+export type Timestamp = bigint
+export type Time = bigint
+export type Formula = string
+
+
+export type Subspace = string
+
+export interface Product extends Newtype<{ readonly Product: unique symbol }, string> {}
+export const isoProduct = iso<Product>()
+export type ProductVariable = {
+    typeName: 'Product'
+    variableName: Product
+    values: {
+        // UNQ(SKU)
+        // SKU: Text
+        orderable: Boolean
+        consumable: Boolean
+        producable: Boolean
+    }
+}
+
+export interface UOM extends Newtype<{ readonly UOM: unique symbol }, string> {}
+export const isoUOM = iso<UOM>()
+export type UOMVariable = {
+    typeName: 'UOM'
+    variableName: UOM
+    values: {
+        // UNQ(product, name)
+        product: Product
+        name: Text
+        conversionRate: Decimal
+    }
+}
+
+export interface Indent extends Newtype<{ readonly Indent: unique symbol }, string> {}
+export const isoIndent = iso<Indent>()
+export type IndentVariable = {
+    typeName: 'Indent'
+    variableName: Indent
+    values: {
+        timestamp: Timestamp // redundant field
+        subspace: Subspace
+        approver: Subspace
+        approved: Boolean
+    }
+}
+
+export interface IndentItem extends Newtype<{ readonly IndentItem: unique symbol }, string> {}
+export const isoIndentItem = iso<IndentItem>()
+export type IndentItemVariable = {
+    typeName: 'IndentItem'
+    variableName: IndentItem
+    values: {
+        // UNQ(indent, product)
+        indent: Indent
+        product: Product
+        quantity: Number
+        // assertion(uom.product == product && product.orderable == true && quantity > 0)
+        uom: UOM
+        // assertion((ordered - rejected) <= quantity && (ordered - rejected) >= 0)
+        // assertion(ordered >= 0 && received >=0 && approved >= 0 && rejected >= 0 && returned >= 0 && requisted >= 0 && consumed >= 0)
+        ordered: Number
+        // assertion(received <= ordered)
+        received: Number
+        // assertion((approved + rejected) <= received)
+        approved: Number
+        rejected: Number
+        // assertion(returned <= rejected)
+        returned: Number
+        // assertion(requisted <= approved)
+        requisted: Number
+        // assertion(consumed <= requisted)
+        consumed: Number
+    }
+}
+
+export interface Supplier extends Newtype<{ readonly Supplier: unique symbol }, string> {}
+export const isoSupplier = iso<Supplier>()
+export type SupplierVariable = {
+    typeName: 'Supplier'
+    variableName: Supplier
+    values: {
+
+    }
+}
+
+export interface SupplierProduct extends Newtype<{ readonly SupplierProduct: unique symbol }, string> {}
+export const isoSupplierProduct = iso<SupplierProduct>()
+export type SupplierProductVariable = {
+    typeName: 'SupplierProduct'
+    variableName: SupplierProduct
+    values: {
+        // UNQ(supplier, product)
+        supplier: Supplier
+        product: Product
+    }
+}
+
+export interface Quotation extends Newtype<{ readonly Quotation: unique symbol }, string> {}
+export const isoQuotation = iso<Quotation>()
+export type QuotationVariable = {
+    typeName: 'Quotation'
+    variableName: Quotation
+    values: {
+        indent: Indent
+        supplier: Supplier
+    }
+}
+
+export interface QuotationItem extends Newtype<{ readonly QuotationItem: unique symbol }, string> {}
+export const isoQuotationItem = iso<QuotationItem>()
+export type QuotationItemVariable = {
+    typeName: 'QuotationItem'
+    variableName: QuotationItem
+    values: {
+        // UNQ(quotation, indentItem)
+        quotation: Quotation
+        // assertion(quotation.indent == indentItem.indent)
+        indentItem: IndentItem
+        // assertion(quantity <= (indentItem.quantity - (ordered - rejected)) && quantity > 0)
+        quantity: Number
+    }
+}
+
+export interface PurchaseOrder extends Newtype<{ readonly PurchaseOrder: unique symbol }, string> {}
+export const isoPurchaseOrder = iso<PurchaseOrder>()
+export type PurchaseOrderVariable = {
+    typeName: 'PurchaseOrder'
+    variableName: PurchaseOrder
+    values: {
+        quotation: Quotation
+    }
+}
+
+export interface PurchaseOrderItem extends Newtype<{ readonly PurchaseOrderItem: unique symbol }, string> {}
+export const isoPurchaseOrderItem = iso<PurchaseOrderItem>()
+export type PurchaseOrderItemVariable = {
+    typeName: 'PurchaseOrderItem'
+    variableName: PurchaseOrderItem
+    values: {
+        // UNQ(purchaseOrder, quotationItem)
+        purchaseOrder: PurchaseOrder
+        // assertion(purchaseOrder.quotation == quotationItem.quotation)
+        quotationItem: QuotationItem
+        // assertion(quantity <= quotationItem.quantity && quantity > 0)
+        quantity: Number // { quotationItem.indentItem.ordered += quantity }
+        price: Decimal
+        // assertion(received >= 0 && received <= quantity)
+        received: Number
+    }
+}
+
+export interface PurchaseInvoice extends Newtype<{ readonly PurchaseInvoice: unique symbol }, string> {}
+export const isoPurchaseInvoice = iso<PurchaseInvoice>()
+export type PurchaseInvoiceVariable = {
+    typeName: 'PurchaseInvoice'
+    variableName: PurchaseInvoice
+    values: {
+        purchaseOrder: PurchaseOrder
+    }
+}
+
+export interface PurchaseInvoiceItem extends Newtype<{ readonly PurchaseInvoiceItem: unique symbol }, string> {}
+export const isoPurchaseInvoiceItem = iso<PurchaseInvoiceItem>()
+export type PurchaseInvoiceItemVariable = {
+    typeName: 'PurchaseInvoiceItem'
+    variableName: PurchaseInvoiceItem
+    values: {
+        // UNQ(purchaseInvoice, purchaseOrderItem)
+        purchaseInvoice: PurchaseInvoice
+        // assertion(purchaseInvoice.purchaseOrder == purchaseOrderItem.purchaseOrder)
+        purchaseOrderItem: PurchaseOrderItem
+        // assertion(quantity <= purchaseOrderItem.quantity && quantity > 0)
+        quantity: Number // { purchaseOrderItem.received += quantity && purchaseOrderItem.quotationOrderItem.indentOrderItem.received += quantity }
+        // assertion((approved + rejected) <= quantity && approved >= 0 && rejeted >= 0)
+        approved: Number
+        rejected: Number
+    }
+}
+
+export interface MaterialApprovalSlip extends Newtype<{ readonly MaterialApprovalSlip: unique symbol }, string> {}
+export const isoMaterialApprovalSlip = iso<MaterialApprovalSlip>()
+export type MaterialApprovalSlipVariable = {
+    typeName: 'MaterialApprovalSlip'
+    variableName: MaterialApprovalSlip
+    values: {
+        purchaseInvoice: PurchaseInvoice
+    }
+}
+
+export interface MaterialApprovalSlipItem extends Newtype<{ readonly MaterialApprovalSlipItem: unique symbol }, string> {}
+export const isoMaterialApprovalSlipItem = iso<MaterialApprovalSlipItem>()
+export type MaterialApprovalSlipItemVariable = {
+    typeName: 'MaterialApprovalSlipItem'
+    variableName: MaterialApprovalSlipItem
+    values: {
+        // UNQ(materialApprovalSlip, purchaseInvoiceItem)
+        materialApprovalSlip: MaterialApprovalSlip
+        // assertion(materialApprovalSlip.purchaseInvoice == purchaseInvoiceItem.purchaseInvoice)
+        purchaseInvoiceItem: PurchaseInvoiceItem
+        // assertion(quantity <= purchaseInvoiceItem.quantity && quantity > 0)
+        quantity: Number // { purchaseInvoiceItem.approved += quantity && purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.approved += quantity }
+        // assertion(requisted <= quantity && requisted >= 0)
+        requisted: Number
+    }
+}
+
+export interface MaterialRejectionSlip extends Newtype<{ readonly MaterialRejectionSlip: unique symbol }, string> {}
+export const isoMaterialRejectionSlip = iso<MaterialRejectionSlip>()
+export type MaterialRejectionSlipVariable = {
+    typeName: 'MaterialRejectionSlip'
+    variableName: MaterialRejectionSlip
+    values: {
+        purchaseInvoice: PurchaseInvoice
+    }
+}
+
+export interface MaterialRejectionSlipItem extends Newtype<{ readonly MaterialRejectionSlipItem: unique symbol }, string> {}
+export const isoMaterialRejectionSlipItem = iso<MaterialRejectionSlipItem>()
+export type MaterialRejectionSlipItemVariable = {
+    typeName: 'MaterialRejectionSlipItem'
+    variableName: MaterialRejectionSlipItem
+    values: {
+        // UNQ(materialRejectionSlip, purchaseInvoiceItem)
+        materialRejectionSlip: MaterialRejectionSlip
+        // assertion(materialRejectionSlip.purchaseInvoice == purchaseInvoiceItem.purchaseInvoice)
+        purchaseInvoiceItem: PurchaseInvoiceItem
+        // assertion(quantity <= purchaseInvoiceItem.quantity && quantity > 0)
+        quantity: Number // { purchaseInvoiceItem.rejected += quantity && purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.rejected += quantity  }
+        // assertion(returned <= quantity && returned >= 0)
+        returned: Number
+    }
+}
+
+export interface MaterialReturnSlip extends Newtype<{ readonly MaterialReturnSlip: unique symbol }, string> {}
+export const isoMaterialReturnSlip = iso<MaterialReturnSlip>()
+export type MaterialReturnSlipVariable = {
+    typeName: 'MaterialReturnSlip'
+    variableName: MaterialReturnSlip
+    values: {
+        materialRejectionSlip: MaterialRejectionSlip
+    }
+}
+
+export interface MaterialReturnSlipItem extends Newtype<{ readonly MaterialReturnSlipItem: unique symbol }, string> {}
+export const isoMaterialReturnSlipItem = iso<MaterialReturnSlipItem>()
+export type MaterialReturnSlipItemVariable = {
+    typeName: 'MaterialReturnSlipItem'
+    variableName: MaterialReturnSlipItem
+    values: {
+        // UNQ(materialReturnSlip, materialRejectionSlipItem)
+        materialReturnSlip: MaterialReturnSlip
+        // assertion(materialReturnSlip.materialRejectionSlip == materialRejectionSlipItem.materialRejectionSlip)
+        materialRejectionSlipItem: MaterialReturnSlipItem
+        // assertion(quantity <= materialRejectionSlipItem.quantity && quantity > 0)
+        quantity: Number // { materialRejectionSlipItem.returned += quantity && materialRejectionSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.returned += quantity }
+    }
+}
+
+export interface MaterialRequistionSlip extends Newtype<{ readonly MaterialRequistionSlip: unique symbol }, string> {}
+export const isoMaterialRequistionSlip = iso<MaterialRequistionSlip>()
+export type MaterialRequistionSlipVariable = {
+    typeName: 'MaterialRequistionSlip'
+    variableName: MaterialRequistionSlip
+    values: {
+        materialApprovalSlip: MaterialApprovalSlip
+    }
+}
+
+export interface MaterialRequistionSlipItem extends Newtype<{ readonly MaterialRequistionSlipItem: unique symbol }, string> {}
+export const isoMaterialRequistionSlipItem = iso<MaterialRequistionSlipItem>()
+export type MaterialRequistionSlipItemVariable = {
+    typeName: 'MaterialRequistionSlipItem'
+    variableName: MaterialRequistionSlipItem
+    values: {
+        // UNQ(materialRequistionSlip, materialApprovalSlipItem)
+        materialRequistionSlip: MaterialRequistionSlip
+        // assertion(materialRequistionSlip.materialApprovalSlip == materialApprovalSlipItem.materialApprovalSlip)
+        materialApprovalSlipItem: MaterialApprovalSlipItem
+        // assertion(quantity <= materialApprovalSlipItem.quantity && quantity > 0)
+        quantity: Number // { materialApprovalSlipItem.requisted += quantity && materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.requisted += quantity }
+        // assertion(consumed <= quantity && consumed >= 0)
+        consumed: Number
+    }
+}
+
+export interface BOM extends Newtype<{ readonly BOM: unique symbol }, string> {}
+export const isoBOM = iso<BOM>()
+export type BOMVariable = {
+    typeName: 'BOM'
+    variableName: BOM
+    values: {
+        // assertion(product.producable == true)
+        product: Product
+        quantity: Number
+        // assertion(uom.product == product)
+        uom: UOM
+    }
+}
+
+export interface BOMItem extends Newtype<{ readonly BOMItem: unique symbol }, string> {}
+export const isoBOMItem = iso<BOMItem>()
+export type BOMItemVariable = {
+    typeName: 'BOMItem'
+    variableName: BOMItem
+    values: {
+        // UNQ(bom, product)
+        bom: BOM
+        // assertion(product.consumable == true)
+        product: Product
+        // assertion(quantity > 0 && uom.product == product)
+        quantity: Number
+        uom: UOM
+    }
+}
+
+export interface ProductionPreparationSlip extends Newtype<{ readonly ProductionPreparationSlip: unique symbol }, string> {}
+export const isoProductionPreparationSlip = iso<ProductionPreparationSlip>()
+export type ProductionPreparationSlipVariable = {
+    typeName: 'ProductionPreparationSlip'
+    variableName: ProductionPreparationSlip
+    values: {
+        bom: BOM
+        // assertion((approved + scrapped) <= quantity && approved >= 0 && scrapped >= 0)
+        approved: Number
+        scrapped: Number
+    }
+}
+
+export interface ProductionPreparationSlipItem extends Newtype<{ readonly ProductionPreparationSlipItem: unique symbol }, string> {}
+export const isoProductionPreparationSlipItem = iso<ProductionPreparationSlipItem>()
+export type ProductionPreparationSlipItemVariable = {
+    typeName: 'ProductionPreparationSlipItem'
+    variable: ProductionPreparationSlipItem
+    values: {
+        // UNQ(productionPreparationSlip, bomItem)
+        productionPreparationSlip: ProductionPreparationSlip
+        bomItem: string
+        // assertion(bomItem.product == materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.product)
+        materialRequistionSlipItem: MaterialRequistionSlipItem
+        // { materialRequistionSlipItem.consumed += bomItem.quantity * materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.uom.conversionRate / bomItem.product.uom.conversionRate }
+        // { materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.consumed += bomItem.quantity * materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.uom.conversionRate / bomItem.product.uom.conversionRate }
+    }
+}
+
+export interface ScrapMaterialSlip extends Newtype<{ readonly ScrapMaterialSlip: unique symbol }, string> {}
+export const isoScrapMaterialSlip = iso<ScrapMaterialSlip>()
+export type ScrapMaterialSlipVariable = {
+    typeName: 'ScrapMaterialSlip'
+    variable: ScrapMaterialSlip
+    values: {
+        productionPreparationSlip: ProductionPreparationSlip
+        // assertion(quantity <= productionPreparationSlip.bom.quantity && quantity > 0)
+        quantity: Number // { productionPreparationSlip.scrapped += quantity }
+    }
+}
+
+export interface TransferMaterialSlip extends Newtype<{ readonly TransferMaterialSlip: unique symbol }, string> {}
+export const isoTransferMaterialSlip = iso<TransferMaterialSlip>()
+export type TransferMaterialSlipVariable = {
+    typeName: 'TransferMaterialSlip'
+    variable: TransferMaterialSlip
+    values: {
+        productionPreparationSlip: ProductionPreparationSlip
+        // assertion(quantity <= productionPreparationSlip.bom.quantity && quantity > 0)
+        quantity: Number // { productionPreparationSlip.approved += quantity }
+        // assertion(transfered <= quantity && transfered >= 0)
+        transfered: Number
+    }
+}
+
+export interface WarehouseAcceptanceSlip extends Newtype<{ readonly WarehouseAcceptanceSlip: unique symbol }, string> {}
+export const isoWarehouseAcceptanceSlip = iso<WarehouseAcceptanceSlip>()
+export type WarehouseAcceptanceSlipVariable = {
+    typeName: 'WarehouseAcceptanceSlip'
+    variableName: WarehouseAcceptanceSlip
+    values: {
+        transferMaterialSlip: TransferMaterialSlip
+        // assertion(quantity <= transferMaterialSlip.quantity && quantity > 0)
+        quantity: Number // { transferMaterialSlip.transfered += quantity }
+    }
+}
+
