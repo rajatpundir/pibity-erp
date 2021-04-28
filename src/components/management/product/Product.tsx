@@ -84,7 +84,7 @@ export default function Product() {
     }
 
     return (
-        <GridContainer area={none} layout={Grid1.layout} className="bg-gray-100">
+        <GridContainer area={none} layout={Grid1.layout} className="bg-gray-100 rounded-lg">
             <GridItem area={Grid1.header}>
                 <Title className="mx-3">Create Product</Title>
             </GridItem>
@@ -123,6 +123,6 @@ const Label = tw.label`w-1/2`
 
 const InlineLabel = tw.label`inline-block w-1/2`
 
-const Input = tw.input`p-1.5 rounded-none text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full h-auto`
+const Input = tw.input`p-1.5 rounded-none text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full h-auto rounded-sm`
 
-const Button = tw.button`bg-gray-900 text-white text-center font-bold p-2 uppercase w-40 h-full max-w-sm`
+const Button = tw.button`bg-gray-900 text-white text-center font-bold p-2 uppercase w-40 h-full max-w-sm rounded-lg`
