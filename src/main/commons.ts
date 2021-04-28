@@ -94,3 +94,8 @@ export const GridContainer = styled.div<GridProps>`
         grid-template-areas: ${props => getTemplateAreas(props.layout.layout_xl)};
     }
 `
+
+export const GridItem = styled.div<GridArea>`
+    grid-area: ${props => isoArea.unwrap(props.area)};
+    place-self: stretch/stretch;
+`

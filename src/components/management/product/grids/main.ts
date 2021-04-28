@@ -1,6 +1,5 @@
 import { Vector } from 'prelude-ts'
-import styled from '@emotion/styled';
-import { GridLayout, GridArea, Area, isoArea, none, validateLayout } from '../../../../main/commons'
+import { GridLayout, Area, isoArea, none, validateLayout } from '../../../../main/commons'
 
 export const header: Area = isoArea.wrap('header')
 export const button: Area = isoArea.wrap('button')
@@ -9,7 +8,7 @@ export const uom: Area = isoArea.wrap('uom')
 
 export const layout: GridLayout = validateLayout({
     rowGap: '1rem',
-    columnGap: '2rem',
+    columnGap: '1rem',
     layout_mobile: {
         rows: Vector.of('auto'),
         columns: Vector.of('1fr'),
@@ -57,9 +56,3 @@ export const layout: GridLayout = validateLayout({
         )
     }
 })
-
-export const GridItem = styled.div<GridArea>`
-    grid-area: ${props => isoArea.unwrap(props.area)};
-    place-self: stretch/stretch;
-    /* border: 2px solid black; */
-`
