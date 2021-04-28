@@ -74,25 +74,25 @@ export const GridContainer = styled.div<GridProps>`
     grid-template-columns: ${props => getTemplateColumns(props.layout.layout_mobile)};
     grid-template-areas: ${props => getTemplateAreas(props.layout.layout_mobile)};
     @media (min-width: ${breakpoints.sm}px) {
-        background-color: aquamarine;
+        /* background-color: aquamarine; */
         grid-template-rows: ${props => getTemplateRows(props.layout.layout_sm)};
         grid-template-columns: ${props => getTemplateColumns(props.layout.layout_sm)};
         grid-template-areas: ${props => getTemplateAreas(props.layout.layout_sm)};
     }
     @media (min-width: ${breakpoints.md}px) {
-        background-color: red;
+        /* background-color: red; */
         grid-template-rows: ${props => getTemplateRows(props.layout.layout_md)};
         grid-template-columns: ${props => getTemplateColumns(props.layout.layout_md)};
         grid-template-areas: ${props => getTemplateAreas(props.layout.layout_md)};
     }
     @media (min-width: ${breakpoints.lg}px) {
-        background-color: green;
+        /* background-color: green; */
         grid-template-rows: ${props => getTemplateRows(props.layout.layout_lg)};
         grid-template-columns: ${props => getTemplateColumns(props.layout.layout_lg)};
         grid-template-areas: ${props => getTemplateAreas(props.layout.layout_lg)};
     }
     @media (min-width: ${breakpoints.xl}px) {
-        background-color: yellow;
+        /* background-color: yellow; */
         grid-template-rows: ${props => getTemplateRows(props.layout.layout_xl)};
         grid-template-columns: ${props => getTemplateColumns(props.layout.layout_xl)};
         grid-template-areas: ${props => getTemplateAreas(props.layout.layout_xl)};
