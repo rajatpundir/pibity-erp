@@ -5,13 +5,8 @@ export type State = Immutable<{
     variable: ProductVariable
 }>
 
-export type ResetAction = {
-    type: 'reset'
-}
-
-export type NameAction = {
-    type: 'variableName'
-    payload: string
-}
-
-export type Action = ResetAction | NameAction
+export type Action =
+    | {
+        type: string
+        payload?: string | boolean
+    }

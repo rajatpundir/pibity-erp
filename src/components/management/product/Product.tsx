@@ -4,16 +4,17 @@ import { useImmerReducer } from "use-immer";
 import { State, Action } from './types'
 import { isoProduct } from '../../../main/types'
 import tw from 'twin.macro'
-import { Switch } from "@chakra-ui/react"
-import styled from '@emotion/styled';
+import Switch from '@material-ui/core/Switch';
 import { GridContainer, none } from '../../../main/commons'
-import * as Grid1 from './grid'
+import * as Grid1 from './grids/main'
+import * as Grid2 from './grids/details'
 
 const initialState: State = {
     variable: {
         typeName: 'Product',
         variableName: isoProduct.wrap(''),
         values: {
+            sku: '',
             orderable: true,
             consumable: true,
             producable: false
@@ -22,11 +23,38 @@ const initialState: State = {
 }
 
 function reducer(state: Draft<State>, action: Action) {
+    console.log(action)
     switch (action.type) {
         case 'reset':
             return initialState;
         case 'variableName': {
-            state.variable.variableName = isoProduct.wrap(action.payload)
+            if(action.payload != null) {
+                state.variable.variableName = isoProduct.wrap(String(action.payload))
+            }
+            return;
+        }
+        case 'sku': {
+            if(action.payload != null) {
+                state.variable.values.sku = String(action.payload)
+            }
+            return;
+        }
+        case 'orderable': {
+            if(action.payload != null) {
+                state.variable.values.orderable = Boolean(action.payload)
+            }
+            return;
+        }
+        case 'consumable': {
+            if(action.payload != null) {
+                state.variable.values.consumable = !!action.payload
+            }
+            return;
+        }
+        case 'producable': {
+            if(action.payload != null) {
+                state.variable.values.producable = !!action.payload
+            }
             return;
         }
     }
@@ -34,13 +62,18 @@ function reducer(state: Draft<State>, action: Action) {
 
 export default function Product() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const onChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         dispatch({
-            type: 'variableName',
-            payload: event.target.value
+            type: event.target.name,
+            payload: String(event.target.value)
         })
     }
-
+    const onSwitchChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        dispatch({
+            type: event.target.name,
+            payload: event.target.checked
+        })
+    }
     const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         dispatch({
@@ -51,60 +84,42 @@ export default function Product() {
         <div className="font-nunito">
             <GridContainer area={none} layout={Grid1.layout}>
                 <Grid1.GridItem area={Grid1.header}>
-                    <Button>ABC</Button>
+                    <Title>Create Product</Title>
                 </Grid1.GridItem>
                 <Grid1.GridItem area={Grid1.button}>
-                    <Button>DEF</Button>
+                    <Button>Save</Button>
                 </Grid1.GridItem>
-                <Grid1.GridItem area={Grid1.details}>
-                    <input type='number' defaultValue='234' />
-                </Grid1.GridItem>
-                <GridContainer area={Grid1.uom} layout={Grid1.layout}>
-                    <Something>ZXC</Something>
-                    <Grid1.GridItem area={Grid1.header}>
-                        <Button>ABC</Button>
-                    </Grid1.GridItem>
-                    <Grid1.GridItem area={Grid1.button}>
-                        <Button>DEF</Button>
-                    </Grid1.GridItem>
-                    <GridContainer area={Grid1.uom} layout={Grid1.layout}>
-                        <Something>ZXC</Something>
-                        <Grid1.GridItem area={Grid1.header}>
-                            <Button>ABC</Button>
-                        </Grid1.GridItem>
-                        <Grid1.GridItem area={Grid1.button}>
-                            <Button>DEF</Button>
-                        </Grid1.GridItem>
-                        <GridContainer area={Grid1.uom} layout={Grid1.layout}>
-                            <Something>ZXC</Something>
-                            <Grid1.GridItem area={Grid1.header}>
-                                <Button>ABC</Button>
-                            </Grid1.GridItem>
-                            <Grid1.GridItem area={Grid1.button}>
-                                <Button>DEF</Button>
-                            </Grid1.GridItem>
-                        </GridContainer>
-                    </GridContainer>
+                <GridContainer area={Grid1.details} layout={Grid1.layout}>
+                    <Grid2.GridItem area={none}>
+                        <Label>Product Name</Label>
+                        <Input type='text' onChange={onInputChange} value={isoProduct.unwrap(state.variable.variableName)} name='variableName'/>
+                    </Grid2.GridItem>
+                    <Grid2.GridItem area={none}>
+                        <Label>SKU</Label>
+                        <Input type='text' onChange={onInputChange} value={state.variable.values.sku} name='sku'/>
+                    </Grid2.GridItem>
+                    <Grid2.GridItem area={none}>
+                        <Label>Orderable</Label>
+                        <Switch color="primary" onChange={onSwitchChange} checked={state.variable.values.orderable} name='orderable'/>
+                    </Grid2.GridItem>
+                    <Grid2.GridItem area={none}>
+                        <Label>Consumable</Label>
+                        <Switch color="primary" onChange={onSwitchChange} checked={state.variable.values.consumable} name='consumable'/>
+                    </Grid2.GridItem>
+                    <Grid2.GridItem area={none}>
+                        <Label>Producable</Label>
+                        <Switch color="primary" onChange={onSwitchChange} checked={state.variable.values.producable} name='producable'/>
+                    </Grid2.GridItem>
                 </GridContainer>
             </GridContainer>
         </div>
     )
 }
 
-const Something = styled.div`
-    height: 5rem;
-    background-color: hotpink;
-`
+const Title = tw.div`py-8 text-4xl text-gray-900 font-bold`
 
-const Button = styled.button`
-  height: 100%;
-  width: 100%;
-  background-color: hotpink;
-  font-size: 24px;
-  border-radius: 4px;
-  color: black;
-  font-weight: bold;
-  &:hover {
-    color: white;
-  }
-`
+const Label = tw.label``
+
+const Input = tw.input`p-1.5 rounded-none text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full h-full`
+
+const Button = tw.button`background-color[black] text-white text-center font-bold p-2 uppercase w-full h-full`

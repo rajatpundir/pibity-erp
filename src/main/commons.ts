@@ -14,16 +14,6 @@ const breakpoints: { [index: string]: number } = {
     xl: 1280
 }
 
-export type GridArea = {
-    area: Area
-}
-
-type Layout = {
-    rows: Vector<string>
-    columns: Vector<string>
-    areas: Vector<Vector<Area>>
-}
-
 function getTemplateRows(layout: Layout): string {
     return layout.rows.fold('', (acc, x) => `${acc} ${x}`)
 }
@@ -36,7 +26,29 @@ function getTemplateAreas(layout: Layout): string {
     return isoArea.unwrap(layout.areas.map(row => row.fold(isoArea.wrap(''), (acc, x) => isoArea.wrap(`${isoArea.unwrap(acc)} ${isoArea.unwrap(x)}`))).fold(isoArea.wrap(''), (acc, x) => isoArea.wrap(`${isoArea.unwrap(acc)}"${isoArea.unwrap(x)}" `)))
 }
 
+export function validateLayout(layout: GridLayout): GridLayout {
+    console.assert(layout.layout_mobile.areas.foldLeft(true, (acc, x) => acc && x.length() === layout.layout_mobile.columns.length())
+        && layout.layout_sm.areas.foldLeft(true, (acc, x) => acc && x.length() === layout.layout_sm.columns.length())
+        && layout.layout_md.areas.foldLeft(true, (acc, x) => acc && x.length() === layout.layout_md.columns.length())
+        && layout.layout_lg.areas.foldLeft(true, (acc, x) => acc && x.length() === layout.layout_lg.columns.length())
+        && layout.layout_xl.areas.foldLeft(true, (acc, x) => acc && x.length() === layout.layout_xl.columns.length())
+        , 'Error in defining Grid Layout')
+    return layout
+}
+
+export type GridArea = {
+    area: Area
+}
+
+type Layout = {
+    rows: Vector<string>
+    columns: Vector<string>
+    areas: Vector<Vector<Area>>
+}
+
 export type GridLayout = {
+    rowGap: string
+    columnGap: string
     layout_mobile: Layout,
     layout_sm: Layout,
     layout_md: Layout,
@@ -49,21 +61,11 @@ type GridProps = {
     layout: GridLayout
 }
 
-export function validateLayout(layout: GridLayout): GridLayout {
-    console.assert(layout.layout_mobile.areas.foldLeft(true, (acc, x) => acc && x.length() === layout.layout_mobile.columns.length())
-        && layout.layout_sm.areas.foldLeft(true, (acc, x) => acc && x.length() === layout.layout_sm.columns.length())
-        && layout.layout_md.areas.foldLeft(true, (acc, x) => acc && x.length() === layout.layout_md.columns.length())
-        && layout.layout_lg.areas.foldLeft(true, (acc, x) => acc && x.length() === layout.layout_lg.columns.length())
-        && layout.layout_xl.areas.foldLeft(true, (acc, x) => acc && x.length() === layout.layout_xl.columns.length())
-        , 'Error in defining Grid Layout')
-    return layout
-}
-
 export const GridContainer = styled.div<GridProps>`
     grid-area: ${props => isoArea.unwrap(props.area)};
     display: grid;
     place-items: stretch / stretch;
-    gap: 1rem 1rem;
+    gap: ${props => props.layout.columnGap} ${props => props.layout.rowGap};
     grid-template-rows: ${props => getTemplateRows(props.layout.layout_mobile)};
     grid-template-columns: ${props => getTemplateColumns(props.layout.layout_mobile)};
     grid-template-areas: ${props => getTemplateAreas(props.layout.layout_mobile)};

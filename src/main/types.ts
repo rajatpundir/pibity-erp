@@ -20,7 +20,7 @@ export type ProductVariable = {
     variableName: Product
     values: {
         // UNQ(SKU)
-        // SKU: Text
+        sku: Text
         orderable: Boolean
         consumable: Boolean
         producable: Boolean
