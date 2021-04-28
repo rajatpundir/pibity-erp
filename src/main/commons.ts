@@ -49,6 +49,8 @@ type Layout = {
 export type GridLayout = {
     rowGap: string
     columnGap: string
+    // justifyItems: 'start' | 'end' | 'center' | 'stretch'
+    // alignItems: 'start' | 'end' | 'center' | 'stretch'
     layout_mobile: Layout,
     layout_sm: Layout,
     layout_md: Layout,
@@ -63,8 +65,10 @@ type GridProps = {
 
 export const GridContainer = styled.div<GridProps>`
     grid-area: ${props => isoArea.unwrap(props.area)};
+    margin: 1rem;
     display: grid;
-    place-items: stretch / stretch;
+    justify-items: stretch;
+    align-items: center;
     gap: ${props => props.layout.columnGap} ${props => props.layout.rowGap};
     grid-template-rows: ${props => getTemplateRows(props.layout.layout_mobile)};
     grid-template-columns: ${props => getTemplateColumns(props.layout.layout_mobile)};
@@ -97,5 +101,6 @@ export const GridContainer = styled.div<GridProps>`
 
 export const GridItem = styled.div<GridArea>`
     grid-area: ${props => isoArea.unwrap(props.area)};
-    place-self: stretch/stretch;
+    /* justify-self: start; */
+    /* align-self: center; */
 `
