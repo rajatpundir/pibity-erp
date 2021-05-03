@@ -13,13 +13,25 @@ export function add(expression: LispExpression): number | string {
             const evaluatedArgs: Array<number> = args.map((arg: NumericArg, index) => {
                 const type: NumericType = types[index]
                 if (typeof arg === 'object') {
-                    if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
-                        return Number(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }))
-                    else
-                        return 0
+                    switch (type) {
+                        case 'Number': {
+                            if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
+                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else
+                                return 0
+                        }
+                        case 'Decimal': {
+                            if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
+                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else
+                                return 0
+                        }
+                        default: return 0
+                    }
                 } else {
                     switch (type) {
                         case 'Number': return parseInt(String(arg))
+                        case 'Decimal': return parseFloat(String(arg))
                         default: return arg
                     }
                 }
@@ -49,13 +61,25 @@ export function multiply(expression: LispExpression): number | string {
             const evaluatedArgs: Array<number> = args.map((arg: NumericArg, index) => {
                 const type: NumericType = types[index]
                 if (typeof arg === 'object') {
-                    if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
-                        return Number(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }))
-                    else
-                        return 0
+                    switch (type) {
+                        case 'Number': {
+                            if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
+                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else
+                                return 0
+                        }
+                        case 'Decimal': {
+                            if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
+                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else
+                                return 0
+                        }
+                        default: return 0
+                    }
                 } else {
                     switch (type) {
                         case 'Number': return parseInt(String(arg))
+                        case 'Decimal': return parseFloat(String(arg))
                         default: return arg
                     }
                 }
@@ -85,13 +109,25 @@ export function subtract(expression: LispExpression): number | string {
             const evaluatedArgs: Array<number> = args.map((arg: NumericArg, index) => {
                 const type: NumericType = types[index]
                 if (typeof arg === 'object') {
-                    if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
-                        return Number(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }))
-                    else
-                        return 0
+                    switch (type) {
+                        case 'Number': {
+                            if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
+                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else
+                                return 0
+                        }
+                        case 'Decimal': {
+                            if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
+                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else
+                                return 0
+                        }
+                        default: return 0
+                    }
                 } else {
                     switch (type) {
                         case 'Number': return parseInt(String(arg))
+                        case 'Decimal': return parseFloat(String(arg))
                         default: return arg
                     }
                 }
@@ -122,13 +158,25 @@ export function divide(expression: LispExpression): number | string {
             const evaluatedArgs: Array<number> = args.map((arg: NumericArg, index) => {
                 const type: NumericType = types[index]
                 if (typeof arg === 'object') {
-                    if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
-                        return Number(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }))
-                    else
-                        return 0
+                    switch (type) {
+                        case 'Number': {
+                            if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
+                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else
+                                return 0
+                        }
+                        case 'Decimal': {
+                            if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
+                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else
+                                return 0
+                        }
+                        default: return 0
+                    }
                 } else {
                     switch (type) {
                         case 'Number': return parseInt(String(arg))
+                        case 'Decimal': return parseFloat(String(arg))
                         default: return arg
                     }
                 }
@@ -159,13 +207,25 @@ export function power(expression: LispExpression): number | string {
             const evaluatedArgs: Array<number> = args.map((arg: NumericArg, index) => {
                 const type: NumericType = types[index]
                 if (typeof arg === 'object') {
-                    if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
-                        return Number(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }))
-                    else
-                        return 0
+                    switch (type) {
+                        case 'Number': {
+                            if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
+                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else
+                                return 0
+                        }
+                        case 'Decimal': {
+                            if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
+                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else
+                                return 0
+                        }
+                        default: return 0
+                    }
                 } else {
                     switch (type) {
                         case 'Number': return parseInt(String(arg))
+                        case 'Decimal': return parseFloat(String(arg))
                         default: return arg
                     }
                 }
@@ -197,13 +257,25 @@ export function modulus(expression: LispExpression): number | string {
             const evaluatedArgs: Array<number> = args.map((arg: NumericArg, index) => {
                 const type: NumericType = types[index]
                 if (typeof arg === 'object') {
-                    if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
-                        return Number(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }))
-                    else
-                        return 0
+                    switch (type) {
+                        case 'Number': {
+                            if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
+                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else
+                                return 0
+                        }
+                        case 'Decimal': {
+                            if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
+                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else
+                                return 0
+                        }
+                        default: return 0
+                    }
                 } else {
                     switch (type) {
                         case 'Number': return parseInt(String(arg))
+                        case 'Decimal': return parseFloat(String(arg))
                         default: return arg
                     }
                 }

@@ -1,4 +1,5 @@
 import { add, multiply, subtract, divide, power, modulus } from './ArithmeticOps'
+import { compare } from './ComparisonOps'
 
 export type NumericType = 'Number' | 'Decimal'
 
@@ -27,7 +28,7 @@ export type LispExpression = {
 //     args: Array<NumericArg>
 // }
 
-export function validateOrEvaluateExpression(expression: LispExpression): string | number {
+export function validateOrEvaluateExpression(expression: LispExpression): string | number | boolean {
     switch (expression.op) {
         case '+': return add(expression)
         case '*': return multiply(expression)
@@ -35,6 +36,11 @@ export function validateOrEvaluateExpression(expression: LispExpression): string
         case '/': return divide(expression)
         case '^': return power(expression)
         case '%': return modulus(expression)
-        default: return ""
+        case '==': return compare(expression)
+        case '>': return compare(expression)
+        case '<': return compare(expression)
+        case '>=': return compare(expression)
+        case '<=': return compare(expression)
+        default: return "Operator not defined"
     }
 }
