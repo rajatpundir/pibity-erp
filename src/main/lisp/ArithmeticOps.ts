@@ -6,8 +6,9 @@ export function add(expression: LispExpression): number | string {
         const { expectedReturnType, types, args } = expression
         if (types.length !== 0 && args.length !== 0 && expectedReturnType !== undefined) {
             if (args.length > types.length) {
-                for (let i = 0; i <= args.length - types.length; i++) {
-                    types.push(types[types.length - 1])
+                const typeCount = types.length
+                for (let i = 0; i < args.length - typeCount; i++) {
+                    types.push(types[typeCount - 1])
                 }
             }
             const evaluatedArgs: Array<number> = args.map((arg: NumericArg, index) => {
@@ -54,8 +55,9 @@ export function multiply(expression: LispExpression): number | string {
         const { expectedReturnType, types, args } = expression
         if (types.length !== 0 && args.length !== 0 && expectedReturnType !== undefined) {
             if (args.length > types.length) {
-                for (let i = 0; i <= args.length - types.length; i++) {
-                    types.push(types[types.length - 1])
+                const typeCount = types.length
+                for (let i = 0; i < args.length - typeCount; i++) {
+                    types.push(types[typeCount - 1])
                 }
             }
             const evaluatedArgs: Array<number> = args.map((arg: NumericArg, index) => {
@@ -102,8 +104,9 @@ export function subtract(expression: LispExpression): number | string {
         const { expectedReturnType, types, args } = expression
         if (types.length !== 0 && args.length !== 0 && expectedReturnType !== undefined) {
             if (args.length > types.length) {
-                for (let i = 0; i <= args.length - types.length; i++) {
-                    types.push(types[types.length - 1])
+                const typeCount = types.length
+                for (let i = 0; i < args.length - typeCount; i++) {
+                    types.push(types[typeCount - 1])
                 }
             }
             const evaluatedArgs: Array<number> = args.map((arg: NumericArg, index) => {
@@ -151,8 +154,9 @@ export function divide(expression: LispExpression): number | string {
         const { expectedReturnType, types, args } = expression
         if (types.length !== 0 && args.length !== 0 && expectedReturnType !== undefined) {
             if (args.length > types.length) {
-                for (let i = 0; i <= args.length - types.length; i++) {
-                    types.push(types[types.length - 1])
+                const typeCount = types.length
+                for (let i = 0; i < args.length - typeCount; i++) {
+                    types.push(types[typeCount - 1])
                 }
             }
             const evaluatedArgs: Array<number> = args.map((arg: NumericArg, index) => {
@@ -200,8 +204,9 @@ export function power(expression: LispExpression): number | string {
         const { expectedReturnType, types, args } = expression
         if (types.length !== 0 && args.length !== 0 && expectedReturnType !== undefined) {
             if (args.length > types.length) {
-                for (let i = 0; i <= args.length - types.length; i++) {
-                    types.push(types[types.length - 1])
+                const typeCount = types.length
+                for (let i = 0; i < args.length - typeCount; i++) {
+                    types.push(types[typeCount - 1])
                 }
             }
             const evaluatedArgs: Array<number> = args.map((arg: NumericArg, index) => {
@@ -250,8 +255,9 @@ export function modulus(expression: LispExpression): number | string {
         const { expectedReturnType, types, args } = expression
         if (types.length !== 0 && args.length !== 0 && expectedReturnType !== undefined) {
             if (args.length > types.length) {
-                for (let i = 0; i <= args.length - types.length; i++) {
-                    types.push(types[types.length - 1])
+                const typeCount = types.length
+                for (let i = 0; i < args.length - typeCount; i++) {
+                    types.push(types[typeCount - 1])
                 }
             }
             const evaluatedArgs: Array<number> = args.map((arg: NumericArg, index) => {

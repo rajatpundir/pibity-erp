@@ -3,12 +3,12 @@ import { validateOrEvaluateExpression, LispExpression } from './lisp/LispUtils'
 
 const expression: LispExpression = {
   expectedReturnType: 'Boolean',
-  op: 'or',
-  types: ['Boolean'],
-  args: [false, false, false, {
-      op: '==',
-      types: ['Decimal'],
-      args: [3, 3]
+  op: '<=',
+  types: ['Decimal'],
+  args: [2, 3, 3, {
+    op: '+',
+    types: ['Number'],
+    args: [3, 3]
   }]
 }
 
