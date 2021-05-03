@@ -1,6 +1,7 @@
 import { add, multiply, subtract, divide, power, modulus } from './ArithmeticOps'
 import { compare } from './ComparisonOps'
 import { and, or, not } from './LogicalOps'
+import { ifThenElse } from './ControlFlowOps'
 
 export type NumericType = 'Number' | 'Decimal'
 
@@ -12,21 +13,28 @@ export type ComparatorArg = string | NumericArg
 
 export type LogicalArg = boolean | LispExpression
 
+export type ControlFlowType = 'Number' | 'Decimal' | 'Boolean' | 'Text'
+
 export type LispExpression = {
     expectedReturnType?: 'Number' | 'Decimal' | 'Text'
     op: '+' | '*' | '-' | '/' | '^' | '%'
     types: Array<NumericType>
-    args: Array<NumericArg>
+    args: ReadonlyArray<NumericArg>
 } | {
     expectedReturnType?: 'Boolean' | 'Text'
     op: '==' | '>' | '<' | '>=' | '<='
     types: Array<ComparatorType>
-    args: Array<ComparatorArg>
+    args: ReadonlyArray<ComparatorArg>
 } | {
     expectedReturnType?: 'Boolean' | 'Text'
     op: 'and' | 'or' | 'not'
     types: ['Boolean']
-    args: Array<LogicalArg>
+    args: ReadonlyArray<LogicalArg>
+} | {
+    expectedReturnType?: 'Boolean' | 'Text'
+    op: 'if'
+    types: Array<ControlFlowType>
+    args: [boolean | LispExpression, LispExpression, LispExpression]
 }
 
 // | {
@@ -51,6 +59,7 @@ export function validateOrEvaluateExpression(expression: LispExpression): string
         case 'and': return and(expression)
         case 'or': return or(expression)
         case 'not': return not(expression)
+        case 'if': return ifThenElse(expression)
         default: return "Operator not defined"
     }
 }

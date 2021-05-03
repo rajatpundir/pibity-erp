@@ -3,9 +3,17 @@ import { validateOrEvaluateExpression, LispExpression } from './lisp/LispUtils'
 
 const expression: LispExpression = {
   expectedReturnType: 'Boolean',
-  op: '<=',
+  op: 'if',
   types: ['Decimal'],
-  args: [2, 3, 3, {
+  args: [{
+    op: '==',
+    types: ['Number'],
+    args: [5, 7]
+  }, {
+    op: '+',
+    types: ['Number'],
+    args: [2, 3]
+  }, {
     op: '+',
     types: ['Number'],
     args: [3, 3]
