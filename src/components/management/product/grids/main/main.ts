@@ -1,5 +1,5 @@
 import { Vector } from 'prelude-ts'
-import { GridLayout, Area, isoArea, none, validateLayout } from '../../../../main/commons'
+import { GridLayout, Area, isoArea, none, validateLayout } from '../../../../../main/commons'
 
 export const header: Area = isoArea.wrap('header')
 export const button: Area = isoArea.wrap('button')

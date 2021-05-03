@@ -36,10 +36,6 @@ export function validateLayout(layout: GridLayout): GridLayout {
     return layout
 }
 
-export type GridArea = {
-    area: Area
-}
-
 type Layout = {
     rows: Vector<string>
     columns: Vector<string>
@@ -49,8 +45,8 @@ type Layout = {
 export type GridLayout = {
     rowGap: string
     columnGap: string
-    // justifyItems: 'start' | 'end' | 'center' | 'stretch'
-    // alignItems: 'start' | 'end' | 'center' | 'stretch'
+    justify?: 'start' | 'center' | 'end' | 'stretch'
+    align?: 'start' | 'center' | 'end' | 'stretch'
     layout_mobile: Layout,
     layout_sm: Layout,
     layout_md: Layout,
@@ -58,21 +54,21 @@ export type GridLayout = {
     layout_xl: Layout
 }
 
-type GridProps = {
+type GridContainer = {
     area: Area
     layout: GridLayout
 }
 
-export const GridContainer = styled.div<GridProps>`
+export const Container = styled.div<GridContainer>`
     grid-area: ${props => isoArea.unwrap(props.area)};
     margin: 1rem;
     display: grid;
-    justify-items: stretch;
-    align-items: center;
-    gap: ${props => props.layout.columnGap} ${props => props.layout.rowGap};
     grid-template-rows: ${props => getTemplateRows(props.layout.layout_mobile)};
     grid-template-columns: ${props => getTemplateColumns(props.layout.layout_mobile)};
     grid-template-areas: ${props => getTemplateAreas(props.layout.layout_mobile)};
+    gap: ${props => props.layout.columnGap} ${props => props.layout.rowGap};
+    justify-items: ${props => props.layout.justify ? props.layout.justify : 'stretch'};
+    align-items: ${props => props.layout.align ? props.layout.align : 'stretch'};
     @media (min-width: ${breakpoints.sm}px) {
         /* background-color: aquamarine; */
         grid-template-rows: ${props => getTemplateRows(props.layout.layout_sm)};
@@ -99,8 +95,14 @@ export const GridContainer = styled.div<GridProps>`
     }
 `
 
-export const GridItem = styled.div<GridArea>`
-    grid-area: ${props => isoArea.unwrap(props.area)};
-    /* justify-self: start; */
-    /* align-self: center; */
+type GridItem = {
+    area?: Area
+    justify?: 'start' | 'center' | 'end' | 'stretch'
+    align?: 'start' | 'center' | 'end' | 'stretch'
+}
+
+export const Item = styled.div<GridItem>`
+    grid-area: ${props => props.area ? isoArea.unwrap(props.area) : '.'};
+    justify-self: ${props => props.justify ? props.justify : 'stretch'};
+    align-self: ${props => props.align ? props.align : 'stretch'};
 `

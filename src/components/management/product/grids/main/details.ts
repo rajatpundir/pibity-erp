@@ -1,5 +1,5 @@
 import { Vector } from 'prelude-ts'
-import { GridLayout, validateLayout } from '../../../../main/commons'
+import { GridLayout, validateLayout } from '../../../../../main/commons'
 
 export const layout: GridLayout = validateLayout({
     rowGap: '1rem',
