@@ -20,11 +20,15 @@ export function compare(expression: LispExpression): boolean | string {
                             case 'Decimal': {
                                 if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
                                     return String(Number(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                                else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
+                                    return String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }))
                                 else return "0"
                             }
                             case 'Number': {
                                 if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
                                     return String(parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }))))
+                                else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
+                                    return String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }))
                                 else return "0"
                             }
                             default: return ""
@@ -62,10 +66,14 @@ export function compare(expression: LispExpression): boolean | string {
                             case 'Decimal': {
                                 if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
                                     return Number(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }))
+                                else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
+                                    return Number(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }))
                                 else return 0
                             }
                             case 'Number': {
                                 if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
+                                    return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                                else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
                                     return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
                                 else return 0
                             }
@@ -109,10 +117,14 @@ export function compare(expression: LispExpression): boolean | string {
                             case 'Decimal': {
                                 if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
                                     return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                                else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
+                                    return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
                                 else return 0
                             }
                             case 'Number': {
                                 if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
+                                    return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                                else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
                                     return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
                                 else return 0
                             }

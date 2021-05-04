@@ -8,6 +8,8 @@ export function and(expression: LispExpression): boolean | string {
             if (typeof arg === 'object') {
                 if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not')
                     return Boolean(validateOrEvaluateExpression({ ...arg, expectedReturnType: 'Boolean' })).valueOf()
+                else if (arg.op === 'if' && arg.types[0] === 'Boolean')
+                    return Boolean(validateOrEvaluateExpression({ ...arg, expectedReturnType: 'Boolean' }))
                 else
                     return false
             } else {
@@ -34,6 +36,8 @@ export function or(expression: LispExpression): boolean | string {
             if (typeof arg === 'object') {
                 if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not')
                     return Boolean(validateOrEvaluateExpression({ ...arg, expectedReturnType: 'Boolean' })).valueOf()
+                else if (arg.op === 'if' && arg.types[0] === 'Boolean')
+                    return Boolean(validateOrEvaluateExpression({ ...arg, expectedReturnType: 'Boolean' }))
                 else
                     return false
             } else {
@@ -60,6 +64,8 @@ export function not(expression: LispExpression): boolean | string {
             if (typeof arg === 'object') {
                 if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not')
                     return Boolean(validateOrEvaluateExpression({ ...arg, expectedReturnType: 'Boolean' })).valueOf()
+                else if (arg.op === 'if' && arg.types[0] === 'Boolean')
+                    return Boolean(validateOrEvaluateExpression({ ...arg, expectedReturnType: 'Boolean' }))
                 else
                     return false
             } else {

@@ -31,7 +31,7 @@ export type LispExpression = {
     types: ['Boolean']
     args: ReadonlyArray<LogicalArg>
 } | {
-    expectedReturnType?: 'Boolean' | 'Text'
+    expectedReturnType?: 'Number' | 'Decimal' | 'Boolean' | 'Text'
     op: 'if'
     types: Array<ControlFlowType>
     args: [boolean | LispExpression, LispExpression, LispExpression]

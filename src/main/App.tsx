@@ -2,21 +2,25 @@ import Product from '../components/management/product/Product'
 import { validateOrEvaluateExpression, LispExpression } from './lisp/LispUtils'
 
 const expression: LispExpression = {
-  expectedReturnType: 'Boolean',
-  op: 'if',
+  expectedReturnType: 'Decimal',
+  op: '+',
   types: ['Decimal'],
-  args: [{
-    op: '==',
-    types: ['Number'],
-    args: [5, 7]
-  }, {
-    op: '+',
-    types: ['Number'],
-    args: [2, 3]
-  }, {
-    op: '+',
-    types: ['Number'],
-    args: [3, 3]
+  args: [2, {
+    op: 'if',
+    types: ['Decimal'],
+    args: [{
+      op: '==',
+      types: ['Number'],
+      args: [5, 7]
+    }, {
+      op: '+',
+      types: ['Number'],
+      args: [2, 3]
+    }, {
+      op: '+',
+      types: ['Number'],
+      args: [3, 3]
+    }]
   }]
 }
 

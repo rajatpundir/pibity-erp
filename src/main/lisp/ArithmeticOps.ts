@@ -18,11 +18,15 @@ export function add(expression: LispExpression): number | string {
                         case 'Number': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
                                 return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
+                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
                             else
                                 return 0
                         }
                         case 'Decimal': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
+                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
                                 return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
                             else
                                 return 0
@@ -67,11 +71,15 @@ export function multiply(expression: LispExpression): number | string {
                         case 'Number': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
                                 return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
+                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
                             else
                                 return 0
                         }
                         case 'Decimal': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
+                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
                                 return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
                             else
                                 return 0
@@ -116,11 +124,15 @@ export function subtract(expression: LispExpression): number | string {
                         case 'Number': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
                                 return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
+                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
                             else
                                 return 0
                         }
                         case 'Decimal': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
+                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
                                 return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
                             else
                                 return 0
@@ -166,11 +178,15 @@ export function divide(expression: LispExpression): number | string {
                         case 'Number': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
                                 return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
+                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
                             else
                                 return 0
                         }
                         case 'Decimal': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
+                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
                                 return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
                             else
                                 return 0
@@ -216,11 +232,15 @@ export function power(expression: LispExpression): number | string {
                         case 'Number': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
                                 return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
+                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
                             else
                                 return 0
                         }
                         case 'Decimal': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
+                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
                                 return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
                             else
                                 return 0
@@ -267,11 +287,15 @@ export function modulus(expression: LispExpression): number | string {
                         case 'Number': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
                                 return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
+                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
                             else
                                 return 0
                         }
                         case 'Decimal': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%')
+                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
+                            else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
                                 return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type })))
                             else
                                 return 0
