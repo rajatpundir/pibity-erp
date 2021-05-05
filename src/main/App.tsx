@@ -1,41 +1,10 @@
 import Product from '../components/management/product/Product'
-import create from 'zustand'
+import { store } from './store'
+import { Diff } from './layers'
 import { Vector } from 'prelude-ts'
-import { Layer, Diff, applyDiff, applyAllDiff } from './layers'
+import { stat } from 'node:fs'
 
-
-const base: Layer = {
-  Product: Vector.of(),
-  Supplier: Vector.of(
-    {
-      variableName: "ABC",
-      values: {
-        z: 2
-      }
-    }
-  )
-}
-
-const diff1: Diff = {
-  active: true,
-  Product: {
-    replace: Vector.of(
-      {
-        variableName: "PC",
-        values: {
-          x: 2
-        }
-      }
-    ),
-    remove: Vector.of("Books")
-  },
-  Supplier: {
-    replace: Vector.of(),
-    remove: Vector.of()
-  }
-}
-
-const diff2: Diff = {
+const diff3: Diff = {
   active: true,
   Product: {
     replace: Vector.of(),
@@ -44,7 +13,7 @@ const diff2: Diff = {
   Supplier: {
     replace: Vector.of(
       {
-        variableName: "XYZ",
+        variableName: "QWE",
         values: {
           product: "Laptop"
         }
@@ -53,10 +22,11 @@ const diff2: Diff = {
   }
 }
 
-const diffs: Vector<Diff> = Vector.of(diff1, diff2)
-
 function App() {
-  console.log(applyAllDiff(base, diffs))
+  const [variables, addDiff] = store(state => [state.variables(), state.addDiff])
+  console.log(variables)
+  // addDiff(diff3)
+  // console.log(variables)
   return (
     <div className="App font-nunito">
       <Product />
