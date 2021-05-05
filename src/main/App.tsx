@@ -2,9 +2,9 @@ import Product from '../components/management/product/Product'
 import { store } from './store'
 import { Diff } from './layers'
 import { Vector } from 'prelude-ts'
-import { stat } from 'node:fs'
 
 const diff3: Diff = {
+  id: 3,
   active: true,
   Product: {
     replace: Vector.of(),
@@ -23,10 +23,15 @@ const diff3: Diff = {
 }
 
 function App() {
-  const [variables, addDiff] = store(state => [state.variables(), state.addDiff])
-  console.log(variables)
-  // addDiff(diff3)
-  // console.log(variables)
+  const [variables, diffs, addDiff] = store(state => [state.variables, state.diffs, state.addDiff])
+  console.log(variables())
+  const q = Vector.of<Diff>().appendAll(diffs)
+  console.log(diffs)
+  if(!q.anyMatch(x => x.id === diff3.id))
+    addDiff(diff3)
+    // diffs.push(diff3)
+  console.log(diffs)
+  console.log(variables())
   return (
     <div className="App font-nunito">
       <Product />

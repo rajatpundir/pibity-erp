@@ -15,6 +15,7 @@ const base: Layer = {
 }
 
 const diff1: Diff = {
+    id: 1,
     active: true,
     Product: {
         replace: Vector.of(
@@ -34,6 +35,7 @@ const diff1: Diff = {
 }
 
 const diff2: Diff = {
+    id: 2,
     active: true,
     Product: {
         replace: Vector.of(),
@@ -51,11 +53,11 @@ const diff2: Diff = {
     }
 }
 
-const diffs: Vector<Diff> = Vector.of(diff1, diff2)
+const diffs: Array<Diff> = [diff1, diff2]
 
 type State = {
     base: Layer,
-    diffs: Vector<Diff>
+    diffs: Array<Diff>
     variables: () => Layer
     addDiff: (diff: Diff) => void
 }
@@ -64,5 +66,9 @@ export const store = create<State>((set, get) => ({
     base: base,
     diffs: diffs,
     variables: () => applyAllDiff(get().base, get().diffs),
-    addDiff: (diff) => set({diffs: get().diffs.append(diff)})
+    addDiff: (diff) => {
+        const diffs = get().diffs
+        diffs.push(diff)
+        set({diffs: diffs})
+    }
 }))

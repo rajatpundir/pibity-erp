@@ -11,6 +11,7 @@ export type Layer = {
 }
 
 export type Diff = {
+    id: number
     active: boolean
     Product: {
         replace: Vector<Variable>
@@ -41,7 +42,7 @@ export function applyDiff(layer: Layer, diff: Diff): Layer {
     }
 }
 
-export function applyAllDiff(base: Layer, diffs: Vector<Diff>) {
+export function applyAllDiff(base: Layer, diffs: Array<Diff>) {
     var result: Layer = base
     diffs.forEach(diff => {
         result = applyDiff(result, diff)
