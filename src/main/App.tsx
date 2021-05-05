@@ -1,7 +1,7 @@
 import Product from '../components/management/product/Product'
 import create from 'zustand'
 import { Vector } from 'prelude-ts'
-import { Layer, Diff, applyDiff } from './layers'
+import { Layer, Diff, applyDiff, applyAllDiff } from './layers'
 
 
 const base: Layer = {
@@ -53,8 +53,10 @@ const diff2: Diff = {
   }
 }
 
+const diffs: Vector<Diff> = Vector.of(diff1, diff2)
+
 function App() {
-  console.log(applyDiff(applyDiff(base, diff1), diff2))
+  console.log(applyAllDiff(base, diffs))
   return (
     <div className="App font-nunito">
       <Product />
