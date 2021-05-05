@@ -1,4 +1,3 @@
-
 type NumericType = 'Number' | 'Decimal'
 
 type NumericArg = number | LispExpression
@@ -64,7 +63,7 @@ type SymbolValue = {
 
 export type Symbols = { [index: string]: SymbolValue }
 
-export function validateOrEvaluateExpression(expression: LispExpression, symbols: Symbols): string | number | boolean {
+export function evaluateExpression(expression: LispExpression, symbols: Symbols): string | number | boolean {
     switch (expression.op) {
         case '+': return add(expression, symbols)
         case '*': return multiply(expression, symbols)
@@ -104,17 +103,17 @@ function add(expression: LispExpression, symbols: Symbols): number | string {
                     switch (type) {
                         case 'Number': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else
                                 return 0
                         }
                         case 'Decimal': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else
                                 return 0
                         }
@@ -157,17 +156,17 @@ function multiply(expression: LispExpression, symbols: Symbols): number | string
                     switch (type) {
                         case 'Number': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else
                                 return 0
                         }
                         case 'Decimal': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else
                                 return 0
                         }
@@ -210,17 +209,17 @@ function subtract(expression: LispExpression, symbols: Symbols): number | string
                     switch (type) {
                         case 'Number': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else
                                 return 0
                         }
                         case 'Decimal': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else
                                 return 0
                         }
@@ -264,17 +263,17 @@ function divide(expression: LispExpression, symbols: Symbols): number | string {
                     switch (type) {
                         case 'Number': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else
                                 return 0
                         }
                         case 'Decimal': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else
                                 return 0
                         }
@@ -318,17 +317,17 @@ function power(expression: LispExpression, symbols: Symbols): number | string {
                     switch (type) {
                         case 'Number': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else
                                 return 0
                         }
                         case 'Decimal': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else
                                 return 0
                         }
@@ -373,17 +372,17 @@ function modulus(expression: LispExpression, symbols: Symbols): number | string 
                     switch (type) {
                         case 'Number': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else
                                 return 0
                         }
                         case 'Decimal': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             else
                                 return 0
                         }
@@ -428,19 +427,19 @@ function compare(expression: LispExpression, symbols: Symbols): boolean | string
                     const type: ComparatorType = types[index]
                     if (typeof arg === 'object') {
                         switch (type) {
-                            case 'Text': return String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols))
+                            case 'Text': return String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols))
                             case 'Decimal': {
                                 if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                    return String(Number(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                    return String(Number(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                                 else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                    return String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols))
+                                    return String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols))
                                 else return "0"
                             }
                             case 'Number': {
                                 if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                    return String(parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols))))
+                                    return String(parseInt(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols))))
                                 else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                    return String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols))
+                                    return String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols))
                                 else return "0"
                             }
                             default: return ""
@@ -474,19 +473,19 @@ function compare(expression: LispExpression, symbols: Symbols): boolean | string
                     const type: ComparatorType = types[index]
                     if (typeof arg === 'object') {
                         switch (type) {
-                            case 'Text': return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                            case 'Text': return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             case 'Decimal': {
                                 if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                    return Number(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols))
+                                    return Number(evaluateExpression({ ...arg, expectedReturnType: type }, symbols))
                                 else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                    return Number(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols))
+                                    return Number(evaluateExpression({ ...arg, expectedReturnType: type }, symbols))
                                 else return 0
                             }
                             case 'Number': {
                                 if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                    return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                    return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                                 else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                    return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                    return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                                 else return 0
                             }
                             default: return 0
@@ -525,19 +524,19 @@ function compare(expression: LispExpression, symbols: Symbols): boolean | string
                     const type: ComparatorType = types[index]
                     if (typeof arg === 'object') {
                         switch (type) {
-                            case 'Text': return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                            case 'Text': return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                             case 'Decimal': {
                                 if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                    return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                    return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                                 else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                    return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                    return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                                 else return 0
                             }
                             case 'Number': {
                                 if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                    return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                    return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                                 else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                    return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
+                                    return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: type }, symbols)))
                                 else return 0
                             }
                             default: return 0
@@ -585,9 +584,9 @@ function and(expression: LispExpression, symbols: Symbols): boolean | string {
         const evaluatedArgs: Array<boolean> = args.map(arg => {
             if (typeof arg === 'object') {
                 if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not'  || arg.op === 'id' || arg.op === '.')
-                    return Boolean(validateOrEvaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols)).valueOf()
+                    return Boolean(evaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols)).valueOf()
                 else if (arg.op === 'if' && arg.types[0] === 'Boolean')
-                    return Boolean(validateOrEvaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols))
+                    return Boolean(evaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols))
                 else
                     return false
             } else {
@@ -613,9 +612,9 @@ function or(expression: LispExpression, symbols: Symbols): boolean | string {
         const evaluatedArgs: Array<boolean> = args.map(arg => {
             if (typeof arg === 'object') {
                 if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not'  || arg.op === 'id' || arg.op === '.')
-                    return Boolean(validateOrEvaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols)).valueOf()
+                    return Boolean(evaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols)).valueOf()
                 else if (arg.op === 'if' && arg.types[0] === 'Boolean')
-                    return Boolean(validateOrEvaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols))
+                    return Boolean(evaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols))
                 else
                     return false
             } else {
@@ -641,9 +640,9 @@ function not(expression: LispExpression, symbols: Symbols): boolean | string {
         const evaluatedArgs: Array<boolean> = args.map(arg => {
             if (typeof arg === 'object') {
                 if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not'  || arg.op === 'id' || arg.op === '.')
-                    return Boolean(validateOrEvaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols)).valueOf()
+                    return Boolean(evaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols)).valueOf()
                 else if (arg.op === 'if' && arg.types[0] === 'Boolean')
-                    return Boolean(validateOrEvaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols))
+                    return Boolean(evaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols))
                 else
                     return false
             } else {
@@ -669,33 +668,33 @@ function ifThenElse(expression: LispExpression, symbols: Symbols): string | numb
     if (expression.op === 'if' && types.length === 1 && args.length === 3 && expectedReturnType !== undefined) {
         if (typeof args[0] === 'object') {
             if (args[0].op === '==' || args[0].op === '>' || args[0].op === '<' || args[0].op === '>=' || args[0].op === '<=' || args[0].op === 'and' || args[0].op === 'or' || args[0].op === 'not' || args[0].op === 'if' || args[0].op === 'id' || args[0].op === '.') {
-                const condition = Boolean(validateOrEvaluateExpression({ ...args[0], expectedReturnType: 'Boolean' }, symbols)).valueOf()
+                const condition = Boolean(evaluateExpression({ ...args[0], expectedReturnType: 'Boolean' }, symbols)).valueOf()
                 if (condition) {
                     const arg = args[1]
                     if (typeof arg === 'object') {
                         switch (types[0]) {
-                            case 'Text': return String(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
+                            case 'Text': return String(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
                             case 'Number': {
                                 if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                    return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
+                                    return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
                                 else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                    return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
+                                    return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
                                 else
                                     return 0
                             }
                             case 'Decimal': {
                                 if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                    return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
+                                    return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
                                 else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                    return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
+                                    return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
                                 else
                                     return 0
                             }
                             case 'Boolean': {
                                 if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or'  || arg.op === 'not' || arg.op === 'id'  || arg.op === '.')
-                                    return Boolean(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
+                                    return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
                                 else if (arg.op === 'if' && arg.types[0] === 'Boolean')
-                                    return Boolean(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
+                                    return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
                                 else
                                     return false
                             }
@@ -712,28 +711,28 @@ function ifThenElse(expression: LispExpression, symbols: Symbols): string | numb
                     const arg = args[2]
                     if (typeof arg === 'object') {
                         switch (types[0]) {
-                            case 'Text': return String(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
+                            case 'Text': return String(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
                             case 'Number': {
                                 if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                    return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
+                                    return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
                                 else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                    return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
+                                    return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
                                 else
                                     return 0
                             }
                             case 'Decimal': {
                                 if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                    return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
+                                    return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
                                 else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                    return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
+                                    return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
                                 else
                                     return 0
                             }
                             case 'Boolean': {
                                 if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or'  || arg.op === 'not' || arg.op === 'id'  || arg.op === '.')
-                                    return Boolean(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
+                                    return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
                                 else if (arg.op === 'if' && arg.types[0] === 'Boolean')
-                                    return Boolean(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
+                                    return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
                                 else
                                     return false
                             }
@@ -756,28 +755,28 @@ function ifThenElse(expression: LispExpression, symbols: Symbols): string | numb
                 const arg = args[1]
                 if (typeof arg === 'object') {
                     switch (types[0]) {
-                        case 'Text': return String(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
+                        case 'Text': return String(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
                         case 'Number': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
+                                return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
                             else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
+                                return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
                             else
                                 return 0
                         }
                         case 'Decimal': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
+                                return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
                             else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
+                                return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
                             else
                                 return 0
                         }
                         case 'Boolean': {
                             if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or'  || arg.op === 'not' || arg.op === 'id'  || arg.op === '.')
-                                return Boolean(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
+                                return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
                             else if (arg.op === 'if' && arg.types[0] === 'Boolean')
-                                return Boolean(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
+                                return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
                             else
                                 return false
                         }
@@ -794,28 +793,28 @@ function ifThenElse(expression: LispExpression, symbols: Symbols): string | numb
                 const arg = args[2]
                 if (typeof arg === 'object') {
                     switch (types[0]) {
-                        case 'Text': return String(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
+                        case 'Text': return String(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
                         case 'Number': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
+                                return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
                             else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                return parseInt(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
+                                return parseInt(String(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
                             else
                                 return 0
                         }
                         case 'Decimal': {
                             if (arg.op === '+' || arg.op === '*' || arg.op === '-' || arg.op === '/' || arg.op === '^' || arg.op === '%' || arg.op === 'id' || arg.op === '.')
-                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
+                                return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
                             else if (arg.op === 'if' && (arg.types[0] === 'Number' || arg.types[0] === 'Decimal'))
-                                return parseFloat(String(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
+                                return parseFloat(String(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols)))
                             else
                                 return 0
                         }
                         case 'Boolean': {
                             if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or'  || arg.op === 'not' || arg.op === 'id'  || arg.op === '.')
-                                return Boolean(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
+                                return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
                             else if (arg.op === 'if' && arg.types[0] === 'Boolean')
-                                return Boolean(validateOrEvaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
+                                return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
                             else
                                 return false
                         }
@@ -980,7 +979,7 @@ function concat(expression: LispExpression, symbols: Symbols): string {
         const evaluatedArgs: Array<string> = args.map((arg, index) => {
             const type = types[index]
             if (typeof arg === 'object') {
-                return String(validateOrEvaluateExpression({ ...arg, expectedReturnType: 'Text' }, symbols))
+                return String(evaluateExpression({ ...arg, expectedReturnType: 'Text' }, symbols))
             } else {
                 switch (type) {
                     case 'Text': return String(arg)
