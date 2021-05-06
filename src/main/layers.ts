@@ -24,7 +24,7 @@ export type Diff = {
     }
 }
 
-export function applyDiff(layer: Layer, diff: Diff): Layer {
+export function applyDiff(layer: Readonly<Layer>, diff: Diff): Layer {
     if (diff.active === false)
         return layer
     else {
@@ -43,7 +43,7 @@ export function applyDiff(layer: Layer, diff: Diff): Layer {
     }
 }
 
-export function compose(base: Layer, diffs: Array<Diff>) {
+export function compose(base: Readonly<Layer>, diffs: Array<Diff>) {
     var result: Layer = base
     diffs.forEach(diff => {
         result = applyDiff(result, diff)
@@ -51,7 +51,7 @@ export function compose(base: Layer, diffs: Array<Diff>) {
     return result
 }
 
-export const emptyDiff: Diff = {
+export const noDiff: Diff = {
     id: -1,
     active: true,
     Product: {

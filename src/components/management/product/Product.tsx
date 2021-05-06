@@ -9,7 +9,7 @@ import { Container, Item, none } from '../../../main/commons'
 import * as Grid1 from './grids/main/main'
 import * as Grid2 from './grids/main/details'
 import { store } from '../../../main/store'
-import { Layer, Diff, emptyDiff, compose } from '../../../main/layers'
+import { Layer, Diff, noDiff, compose } from '../../../main/layers'
 import { Vector } from 'prelude-ts'
 
 type State = Immutable<{
@@ -72,21 +72,9 @@ function reducer(state: Draft<State>, action: Action) {
     }
 }
 
-
-function createDiff(product: ProductVariable): Diff {
-    return {
-        ...emptyDiff,
-        Product: {
-            replace: Vector.of(product),
-            remove: Vector.of()
-        }
-    }
-}
-
 export default function Product() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const [base, diffs, addDiff] = store(state => [state.base, state.diffs, state.addDiff])
-    console.log(compose(base, diffs))
+    const addDiff = store(state => state.addDiff)
     const onInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         dispatch({
             type: event.target.name,
@@ -104,7 +92,7 @@ export default function Product() {
     const onSubmit = async (event: React.FormEvent<HTMLButtonElement>) => {
         event.preventDefault()
         addDiff({
-            ...emptyDiff,
+            ...noDiff,
             Product: {
                 replace: Vector.of(state.variable),
                 remove: Vector.of()
