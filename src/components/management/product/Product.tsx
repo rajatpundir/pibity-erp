@@ -99,7 +99,7 @@ export default function Product() {
     }
 
     return (
-        <Container area={none} layout={Grid.layouts.main} className="bg-gray-100 rounded-lg">
+        <Container area={none} layout={Grid.layouts.main} className="bg-gray-100 rounded-lg shadow-lg">
             <Item area={Grid.header}>
                 <Title>Create Product</Title>
             </Item>
