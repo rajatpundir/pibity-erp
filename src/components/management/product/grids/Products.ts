@@ -6,6 +6,7 @@ export const details: Area = isoArea.wrap('details')
 
 export const layouts: { [index: string]: GridLayout } = {
     main: validateLayout({
+        margin: 1,
         rowGap: '1rem',
         columnGap: '1rem',
         layout_mobile: {

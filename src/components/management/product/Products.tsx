@@ -1,20 +1,20 @@
-import React, { MouseEvent } from 'react'
-import { makeStyles, useTheme, withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableHead from '@material-ui/core/TableHead';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableFooter from '@material-ui/core/TableFooter';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import IconButton from '@material-ui/core/IconButton';
+import React from 'react'
+import { makeStyles, withStyles } from '@material-ui/core/styles'
+import Table from '@material-ui/core/Table'
+import TableHead from '@material-ui/core/TableHead'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableContainer from '@material-ui/core/TableContainer'
+import TableFooter from '@material-ui/core/TableFooter'
+import TablePagination from '@material-ui/core/TablePagination'
+import TableRow from '@material-ui/core/TableRow'
+import Paper from '@material-ui/core/Paper'
+import IconButton from '@material-ui/core/IconButton'
 import { store } from '../../../main/store'
 import { Container, Item, none } from '../../../main/commons'
 import * as Grid from './grids/Products'
 import tw from 'twin.macro'
-import { ProductVariable, isoProduct } from '../../../main/types';
+import { ProductVariable, isoProduct } from '../../../main/types'
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -148,7 +148,6 @@ interface TablePaginationActionsProps {
 
 function TablePaginationActions(props: TablePaginationActionsProps) {
     const classes = useStyles1();
-    const theme = useTheme();
     const { count, page, rowsPerPage, onChangePage } = props;
 
     const handleFirstPageButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {

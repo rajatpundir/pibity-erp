@@ -8,6 +8,7 @@ export const uom: Area = isoArea.wrap('uom')
 
 export const layouts: { [index: string]: GridLayout } = {
     main: validateLayout({
+        margin: 1,
         rowGap: '1rem',
         columnGap: '1rem',
         layout_mobile: {
@@ -58,6 +59,7 @@ export const layouts: { [index: string]: GridLayout } = {
         }
     }),
     details: validateLayout({
+        margin: 1,
         rowGap: '1rem',
         columnGap: '2rem',
         layout_mobile: {
