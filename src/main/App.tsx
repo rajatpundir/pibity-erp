@@ -1,7 +1,8 @@
 import Product from '../components/management/product/Product'
-import { store } from './store'
-import { Diff } from './layers'
+import Products from '../components/management/product/Products'
 import { Vector } from 'prelude-ts'
+import { store } from './store'
+import { Diff, Layer, compose } from './layers'
 
 const diff3: Diff = {
   id: 3,
@@ -23,18 +24,27 @@ const diff3: Diff = {
 }
 
 function App() {
-  const [variables, diffs, addDiff] = store(state => [state.variables, state.diffs, state.addDiff])
-  console.log(variables())
-  const q = Vector.of<Diff>().appendAll(diffs)
-  console.log(diffs)
-  if(!q.anyMatch(x => x.id === diff3.id))
-    addDiff(diff3)
-    // diffs.push(diff3)
-  console.log(diffs)
-  console.log(variables())
+
+
+  // const [base, diffs, addDiff] = store(state => [state.base, state.diffs, state.addDiff])
+  // console.log(compose(base, diffs))
+  // console.log(diffs)
+
+
+
+  // if (!Vector.of<Diff>().appendAll(diffs).anyMatch(x => x.id === diff3.id))
+  //   addDiff(diff3)
+
+
+  // console.log(compose(base, diffs))
+  // console.log(diffs)
+
+
+
   return (
     <div className="App font-nunito">
       <Product />
+      <Products/>
     </div>
   );
 }

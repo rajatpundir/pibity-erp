@@ -1,4 +1,5 @@
 import { Vector } from 'prelude-ts'
+import { ProductVariable, Product, isoProduct } from './types'
 
 type Variable = {
     variableName: string
@@ -6,7 +7,7 @@ type Variable = {
 }
 
 export type Layer = {
-    Product: Vector<Variable>
+    Product: Vector<ProductVariable>
     Supplier: Vector<Variable>
 }
 
@@ -14,8 +15,8 @@ export type Diff = {
     id: number
     active: boolean
     Product: {
-        replace: Vector<Variable>
-        remove: Vector<string>
+        replace: Vector<ProductVariable>
+        remove: Vector<Product>
     }
     Supplier: {
         replace: Vector<Variable>
@@ -29,8 +30,8 @@ export function applyDiff(layer: Layer, diff: Diff): Layer {
     else {
         const result: Layer = {
             Product: layer.Product
-                .filter(x => !diff.Product.remove.contains(x.variableName))
-                .filter(x => !diff.Product.replace.anyMatch(y => y.variableName === x.variableName))
+                .filter(x => !diff.Product.remove.map(y => isoProduct.unwrap(y)).contains(isoProduct.unwrap(x.variableName)))
+                .filter(x => !diff.Product.replace.anyMatch(y => isoProduct.unwrap(y.variableName) === isoProduct.unwrap(x.variableName)))
                 .appendAll(diff.Product.replace)
             ,
             Supplier: layer.Supplier
@@ -42,10 +43,23 @@ export function applyDiff(layer: Layer, diff: Diff): Layer {
     }
 }
 
-export function applyAllDiff(base: Layer, diffs: Array<Diff>) {
+export function compose(base: Layer, diffs: Array<Diff>) {
     var result: Layer = base
     diffs.forEach(diff => {
         result = applyDiff(result, diff)
     })
     return result
+}
+
+export const emptyDiff: Diff = {
+    id: -1,
+    active: true,
+    Product: {
+        replace: Vector.of(),
+        remove: Vector.of()
+    },
+    Supplier: {
+        replace: Vector.of(),
+        remove: Vector.of()
+    }
 }

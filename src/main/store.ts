@@ -1,6 +1,7 @@
 import { Vector } from 'prelude-ts'
 import create from 'zustand'
-import { Layer, Diff, applyAllDiff } from './layers'
+import { Layer, Diff, compose } from './layers'
+import { devtools } from 'zustand/middleware'
 
 const base: Layer = {
     Product: Vector.of(),
@@ -14,61 +15,66 @@ const base: Layer = {
     )
 }
 
-const diff1: Diff = {
-    id: 1,
-    active: true,
-    Product: {
-        replace: Vector.of(
-            {
-                variableName: "PC",
-                values: {
-                    x: 2
-                }
-            }
-        ),
-        remove: Vector.of("Books")
-    },
-    Supplier: {
-        replace: Vector.of(),
-        remove: Vector.of()
-    }
-}
+// const diff1: Diff = {
+//     id: 1,
+//     active: true,
+//     Product: {
+//         replace: Vector.of(
+//             {
+//                 variableName: "PC",
+//                 values: {
+//                     x: 2
+//                 }
+//             }
+//         ),
+//         remove: Vector.of("Books")
+//     },
+//     Supplier: {
+//         replace: Vector.of(),
+//         remove: Vector.of()
+//     }
+// }
 
-const diff2: Diff = {
-    id: 2,
-    active: true,
-    Product: {
-        replace: Vector.of(),
-        remove: Vector.of()
-    },
-    Supplier: {
-        replace: Vector.of(
-            {
-                variableName: "XYZ",
-                values: {
-                    product: "Laptop"
-                }
-            }),
-        remove: Vector.of()
-    }
-}
+// const diff2: Diff = {
+//     id: 2,
+//     active: true,
+//     Product: {
+//         replace: Vector.of(),
+//         remove: Vector.of()
+//     },
+//     Supplier: {
+//         replace: Vector.of(
+//             {
+//                 variableName: "XYZ",
+//                 values: {
+//                     product: "Laptop"
+//                 }
+//             }),
+//         remove: Vector.of()
+//     }
+// }
 
-const diffs: Array<Diff> = [diff1, diff2]
+const diffs: Array<Diff> = []
 
 type State = {
-    base: Layer,
+    counter: number
+    base: Layer
     diffs: Array<Diff>
-    variables: () => Layer
-    addDiff: (diff: Diff) => void
+    variables: Layer
+    addDiff: (diff: Diff) => Diff
 }
 
-export const store = create<State>((set, get) => ({
+// Note: fileds in store should be mutable, or change is not reflected where they are used
+export const store = create<State>(devtools((set, get) => ({
+    counter: 0,
     base: base,
     diffs: diffs,
-    variables: () => applyAllDiff(get().base, get().diffs),
+    variables: base,
     addDiff: (diff) => {
-        const diffs = get().diffs
-        diffs.push(diff)
-        set({diffs: diffs})
+        const x = {...diff, id: get().counter}
+        get().diffs.push(x)
+        set({variables: compose(get().base, get().diffs)})
+        get().counter += 1
+        return x
     }
-}))
+})))

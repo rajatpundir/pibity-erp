@@ -1,6 +1,6 @@
-import React from 'react';
-import { Immutable, Draft } from 'immer';
-import { useImmerReducer } from "use-immer";
+import React from 'react'
+import { Immutable, Draft } from 'immer'
+import { useImmerReducer } from "use-immer"
 import { isoProduct, UOMVariable } from '../../../main/types'
 import { ProductVariable } from '../../../main/types'
 import tw from 'twin.macro'
@@ -8,13 +8,12 @@ import Switch from '@material-ui/core/Switch';
 import { Container, Item, none } from '../../../main/commons'
 import * as Grid1 from './grids/main/main'
 import * as Grid2 from './grids/main/details'
-import { HashSet } from 'prelude-ts';
+import { store } from '../../../main/store'
+import { Layer, Diff, emptyDiff, compose } from '../../../main/layers'
+import { Vector } from 'prelude-ts'
 
 type State = Immutable<{
     variable: ProductVariable
-    lists: {
-        uom: HashSet<UOMVariable>
-    }
 }>
 
 export type Action =
@@ -23,7 +22,7 @@ export type Action =
         payload?: string | boolean
     }
 
-const initialState : State = {
+const initialState: State = {
     variable: {
         typeName: 'Product',
         variableName: isoProduct.wrap(''),
@@ -33,9 +32,6 @@ const initialState : State = {
             consumable: true,
             producable: false
         }
-    },
-    lists: {
-        uom: HashSet.of()
     }
 }
 
@@ -76,9 +72,21 @@ function reducer(state: Draft<State>, action: Action) {
     }
 }
 
+
+function createDiff(product: ProductVariable): Diff {
+    return {
+        ...emptyDiff,
+        Product: {
+            replace: Vector.of(product),
+            remove: Vector.of()
+        }
+    }
+}
+
 export default function Product() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-
+    const [base, diffs, addDiff] = store(state => [state.base, state.diffs, state.addDiff])
+    console.log(compose(base, diffs))
     const onInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         dispatch({
             type: event.target.name,
@@ -93,10 +101,14 @@ export default function Product() {
         })
     }
 
-    const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const onSubmit = async (event: React.FormEvent<HTMLButtonElement>) => {
         event.preventDefault()
-        dispatch({
-            type: 'reset'
+        addDiff({
+            ...emptyDiff,
+            Product: {
+                replace: Vector.of(state.variable),
+                remove: Vector.of()
+            }
         })
     }
 
@@ -106,7 +118,7 @@ export default function Product() {
                 <Title>Create Product</Title>
             </Item>
             <Item area={Grid1.button} justify='center' align='center'>
-                <Button>Save</Button>
+                <Button onClick={onSubmit}>Save</Button>
             </Item>
             <Container area={Grid1.details} layout={Grid2.layout}>
                 <Item>
