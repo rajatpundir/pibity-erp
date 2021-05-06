@@ -50,16 +50,3 @@ export function compose(base: Readonly<Layer>, diffs: Array<Diff>) {
     })
     return result
 }
-
-export const noDiff: Diff = {
-    id: -1,
-    active: true,
-    Product: {
-        replace: Vector.of(),
-        remove: Vector.of()
-    },
-    Supplier: {
-        replace: Vector.of(),
-        remove: Vector.of()
-    }
-}

@@ -8,6 +8,19 @@ const base: Layer = {
     Supplier: Vector.of()
 }
 
+export const noDiff: Diff = {
+    id: -1,
+    active: true,
+    Product: {
+        replace: Vector.of(),
+        remove: Vector.of()
+    },
+    Supplier: {
+        replace: Vector.of(),
+        remove: Vector.of()
+    }
+}
+
 type State = {
     counter: number
     base: Layer

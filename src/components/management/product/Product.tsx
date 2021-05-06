@@ -1,15 +1,13 @@
 import React from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from "use-immer"
-import { isoProduct, UOMVariable } from '../../../main/types'
+import { isoProduct } from '../../../main/types'
 import { ProductVariable } from '../../../main/types'
 import tw from 'twin.macro'
 import Switch from '@material-ui/core/Switch';
 import { Container, Item, none } from '../../../main/commons'
-import * as Grid1 from './grids/main/main'
-import * as Grid2 from './grids/main/details'
-import { store } from '../../../main/store'
-import { Layer, Diff, noDiff, compose } from '../../../main/layers'
+import * as Grid from './grids/Product'
+import { store, noDiff } from '../../../main/store'
 import { Vector } from 'prelude-ts'
 
 type State = Immutable<{
@@ -101,14 +99,14 @@ export default function Product() {
     }
 
     return (
-        <Container area={none} layout={Grid1.layout} className="bg-gray-100 rounded-lg">
-            <Item area={Grid1.header}>
+        <Container area={none} layout={Grid.layouts.main} className="bg-gray-100 rounded-lg">
+            <Item area={Grid.header}>
                 <Title>Create Product</Title>
             </Item>
-            <Item area={Grid1.button} justify='center' align='center'>
+            <Item area={Grid.button} justify='center' align='center'>
                 <Button onClick={onSubmit}>Save</Button>
             </Item>
-            <Container area={Grid1.details} layout={Grid2.layout}>
+            <Container area={Grid.details} layout={Grid.layouts.details}>
                 <Item>
                     <Label>Product Name</Label>
                     <Input type='text' onChange={onInputChange} value={isoProduct.unwrap(state.variable.variableName)} name='variableName' />
