@@ -113,8 +113,6 @@ export const Item = styled.div<GridItem>`
 
 type TableContainer = {
     area: Area
-    rows: number
-    columns: number
     margin?: number
     rowGap?: string
     columnGap?: string
@@ -127,10 +125,24 @@ export const Table = styled.div<TableContainer>`
     grid-area: ${props => isoArea.unwrap(props.area)};
     margin: ${props => props.margin ? props.margin + 'rem' : '0rem'};
     display: grid;
-    grid-template-rows: ${props => `repeat(${props.rows}, 1fr)`};
-    grid-template-columns: ${props => `repeat(${props.columns}, 1fr)`};
     gap: ${props => props.columnGap ? props.columnGap : '0rem'} ${props => props.rowGap ? props.rowGap : '0rem'};
     justify-items: ${props => props.justify ? props.justify : 'stretch'};
     align-items: ${props => props.align ? props.align : 'stretch'};
+    grid-auto-rows: '120rem';
     grid-auto-flow: ${props => props.autoFlow ? props.autoFlow : 'row'};
+`
+
+export type CellItem = {
+    row: string
+    column: string
+    justify?: 'start' | 'center' | 'end' | 'stretch'
+    align?: 'start' | 'center' | 'end' | 'stretch'
+}
+
+export const Cell = styled.div<CellItem>`
+    grid-row: ${props => props.row};
+    grid-column: ${props => props.column};
+    justify-self: ${props => props.justify ? props.justify : 'stretch'};
+    align-self: ${props => props.align ? props.align : 'stretch'};
+    /* background-color: aquamarine; */
 `
