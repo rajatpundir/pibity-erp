@@ -10,7 +10,7 @@ function getItems(products: Vector<ProductVariable>): Vector<unknown> {
     var counter = 0
     var items = Vector.of()
     products.forEach(product => {
-        items = items.append(<Item key={counter}>{isoProduct.unwrap(product.variableName)}</Item>)
+        items = items.append(<Item key={counter} className="font-bold">{isoProduct.unwrap(product.variableName)}</Item>)
         counter += 1
         items = items.append(<Item key={counter}>{product.values.sku}</Item>)
         counter += 1
@@ -66,9 +66,9 @@ export default function ProductsX() {
                     Array(emptyRows * 5).fill(0).map((x, index) => <Container area={none} layout={Grid.layouts.row} key={index} className="odd:bg-gray-500" />)
                 }
             </Table>
-            <Container area={Grid.footer} layout={Grid.layouts.footer} className="bg-gray-50">
+            <Container area={Grid.footer} layout={Grid.layouts.footer} className="bg-gray-50 border-t-2">
                 <Item justify='start' align='center' className="mx-8">
-                    Offset: 0 Limit: 5
+                    Page: {offset + 1} Rows: {limit}
                 </Item>
                 <Item justify='end' align='center' className="mx-8">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline-block mx-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -80,9 +80,9 @@ export default function ProductsX() {
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline-block mx-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline-block mx-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline-block mx-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-                    </svg>
+                    </svg> */}
                 </Item>
             </Container>
         </Container>

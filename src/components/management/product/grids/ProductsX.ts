@@ -1,5 +1,5 @@
 import { Vector } from 'prelude-ts'
-import { GridLayout, Area, isoArea, validateLayout } from '../../../../main/commons'
+import { GridLayout, Area, isoArea, none, validateLayout } from '../../../../main/commons'
 
 export const header: Area = isoArea.wrap('header')
 export const body: Area = isoArea.wrap('body')
@@ -39,20 +39,20 @@ export const layouts: { [index: string]: GridLayout } = {
         },
         layout_lg: {
             rows: Vector.of('1fr', '3fr', '1fr'),
-            columns: Vector.of('1fr'),
+            columns: Vector.of('1fr', '4fr', '1fr'),
             areas: Vector.of(
-                Vector.of(header),
-                Vector.of(body),
-                Vector.of(footer)
+                Vector.of(none, header, none),
+                Vector.of(none, body, none),
+                Vector.of(none, footer, none)
             )
         },
         layout_xl: {
             rows: Vector.of('1fr', '3fr', '1fr'),
-            columns: Vector.of('1fr'),
+            columns: Vector.of('1fr', '4fr', '1fr'),
             areas: Vector.of(
-                Vector.of(header),
-                Vector.of(body),
-                Vector.of(footer)
+                Vector.of(none, header, none),
+                Vector.of(none, body, none),
+                Vector.of(none, footer, none)
             )
         }
     }),
