@@ -128,7 +128,6 @@ export const Table = styled.div<TableContainer>`
     gap: ${props => props.columnGap ? props.columnGap : '0rem'} ${props => props.rowGap ? props.rowGap : '0rem'};
     justify-items: ${props => props.justify ? props.justify : 'stretch'};
     align-items: ${props => props.align ? props.align : 'stretch'};
-    grid-auto-rows: '120rem';
     grid-auto-flow: ${props => props.autoFlow ? props.autoFlow : 'row'};
 `
 

@@ -25,7 +25,7 @@ const initialState: State = {
     typeName: 'Product',
     query: {},
     offset: 0,
-    limit: 2
+    limit: 3
 }
 
 function reducer(state: Draft<State>, action: Action) {
@@ -90,7 +90,10 @@ export default function ProductsX() {
 
     return (
         <Container area={none} layout={Grid.layouts.main} className="bg-gray-100 rounded-lg shadow-lg border-gray-200 border-2">
-            <Table area={Grid.body}>
+            <Item area={Grid.header}>
+                <Title>Products</Title>
+            </Item>
+            <Table area={Grid.body} className="border-gray-900">
                 <Cell row="1/2" column="1/2" className="bg-black rounded-tl-lg pl-2">
                     <Column>Name</Column>
                 </Cell>
@@ -111,15 +114,31 @@ export default function ProductsX() {
                 }
             </Table>
             <Container area={Grid.footer} layout={Grid.layouts.footer} className="bg-gray-100">
-                <Item justify='start' align='center' className="mx-8">
-                    Page: <Input value={state.offset + 1} />
-
-                    <button>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </button>
-                    Count: {products.toArray().slice(start, end).length} / <Input value={state.limit} />
+                <Item align='center' className="mx-6">
+                    <span className="mx-2">
+                        Page: <Input value={state.offset + 1} /> / {Math.ceil(products.length() / state.limit)}
+                        <button className="align-text-bottom">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                    </span>
+                    <span className="mx-2">
+                        {start + 1}-{end} of {products.length()}
+                    </span>
+                    <span className="mx-2">
+                        Rows: {state.limit}
+                        <button>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                            </svg>
+                        </button>
+                        <button>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+                            </svg>
+                        </button>
+                    </span>
                 </Item>
                 <Item justify='end' align='center' className="mx-8">
                     <button onClick={firstPage}>
@@ -180,6 +199,8 @@ function getCells(products: Vector<ProductVariable>, start: number, end: number)
     })
     return cells
 }
+
+const Title = tw.div`py-8 text-4xl text-gray-900 font-bold mx-1`
 
 const Column = tw.div`text-white font-medium text-xl py-3 text-left`
 

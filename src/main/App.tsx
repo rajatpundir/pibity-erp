@@ -6,8 +6,8 @@ function App() {
   return (
     <div className="App font-nunito">
       <Product/>
-      <Products/>
       <ProductsX/>
+      <Products/>
     </div>
   );
 }

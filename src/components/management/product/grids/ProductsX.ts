@@ -1,50 +1,56 @@
 import { Vector } from 'prelude-ts'
 import { GridLayout, Area, isoArea, none, validateLayout } from '../../../../main/commons'
 
+export const header: Area = isoArea.wrap('header')
 export const body: Area = isoArea.wrap('body')
 export const footer: Area = isoArea.wrap('footer')
 
 export const layouts: { [index: string]: GridLayout } = {
     main: validateLayout({
-        margin: 1,
+        margin: 0,
         rowGap: '1rem',
         columnGap: '0rem',
         layout_mobile: {
-            rows: Vector.of('1fr', '3rem'),
+            rows: Vector.of('6rem', '1fr', '3rem'),
             columns: Vector.of('1fr'),
             areas: Vector.of(
+                Vector.of(header),
                 Vector.of(body),
                 Vector.of(footer)
             )
         },
         layout_sm: {
-            rows: Vector.of('1fr', '3rem'),
+            rows: Vector.of('6rem', '1fr', '3rem'),
             columns: Vector.of('1fr'),
             areas: Vector.of(
+                Vector.of(header),
                 Vector.of(body),
                 Vector.of(footer)
             )
         },
         layout_md: {
-            rows: Vector.of('1fr', '3rem'),
-            columns: Vector.of('1fr'),
+            rows: Vector.of('6rem', '1fr', '3rem'),
+            columns: Vector.of('1fr', '40fr', '1fr'),
             areas: Vector.of(
-                Vector.of(body),
-                Vector.of(footer)
+                Vector.of(none, header, none),
+                Vector.of(none, body, none),
+                Vector.of(none, footer, none)
             )
         },
         layout_lg: {
-            rows: Vector.of('1fr', '3rem'),
-            columns: Vector.of('1fr', '4fr', '1fr'),
+            rows: Vector.of('6rem', '1fr', '3rem'),
+            columns: Vector.of('1fr', '40fr', '1fr'),
             areas: Vector.of(
+                Vector.of(none, header, none),
                 Vector.of(none, body, none),
                 Vector.of(none, footer, none)
             )
         },
         layout_xl: {
-            rows: Vector.of('1fr', '3rem'),
-            columns: Vector.of('1fr', '4fr', '1fr'),
+            rows: Vector.of('6rem', '1fr', '3rem'),
+            columns: Vector.of('1fr', '10fr', '1fr'),
             areas: Vector.of(
+                Vector.of(none, header, none),
                 Vector.of(none, body, none),
                 Vector.of(none, footer, none)
             )
