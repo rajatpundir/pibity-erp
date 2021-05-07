@@ -10,7 +10,7 @@ export const layouts: { [index: string]: GridLayout } = {
         rowGap: '1rem',
         columnGap: '0rem',
         layout_mobile: {
-            rows: Vector.of('3fr', '1fr'),
+            rows: Vector.of('1fr', '3rem'),
             columns: Vector.of('1fr'),
             areas: Vector.of(
                 Vector.of(body),
@@ -18,7 +18,7 @@ export const layouts: { [index: string]: GridLayout } = {
             )
         },
         layout_sm: {
-            rows: Vector.of('3fr', '1fr'),
+            rows: Vector.of('1fr', '3rem'),
             columns: Vector.of('1fr'),
             areas: Vector.of(
                 Vector.of(body),
@@ -26,7 +26,7 @@ export const layouts: { [index: string]: GridLayout } = {
             )
         },
         layout_md: {
-            rows: Vector.of('3fr', '1fr'),
+            rows: Vector.of('1fr', '3rem'),
             columns: Vector.of('1fr'),
             areas: Vector.of(
                 Vector.of(body),
@@ -34,7 +34,7 @@ export const layouts: { [index: string]: GridLayout } = {
             )
         },
         layout_lg: {
-            rows: Vector.of('3fr', '1fr'),
+            rows: Vector.of('1fr', '3rem'),
             columns: Vector.of('1fr', '4fr', '1fr'),
             areas: Vector.of(
                 Vector.of(none, body, none),
@@ -42,7 +42,7 @@ export const layouts: { [index: string]: GridLayout } = {
             )
         },
         layout_xl: {
-            rows: Vector.of('3fr', '1fr'),
+            rows: Vector.of('1fr', '3rem'),
             columns: Vector.of('1fr', '4fr', '1fr'),
             areas: Vector.of(
                 Vector.of(none, body, none),
