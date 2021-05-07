@@ -67,8 +67,8 @@ export default function Products() {
                     <Table className={classes.table} aria-label="simple table">
                         <TableHead>
                             <StyledTableRow>
-                                <StyledTableCell>Name</StyledTableCell>
-                                <StyledTableCell align="right">SKU</StyledTableCell>
+                                <StyledTableCell>SKU</StyledTableCell>
+                                <StyledTableCell align="right">Name</StyledTableCell>
                                 <StyledTableCell align="right">Orderable</StyledTableCell>
                                 <StyledTableCell align="right">Consumable</StyledTableCell>
                                 <StyledTableCell align="right">Producable</StyledTableCell>
@@ -93,7 +93,7 @@ export default function Products() {
                             ).map((variable: ProductVariable) => (
                                 <StyledTableRow key={String(variable.variableName)}>
                                     <StyledTableCell component="th" scope="row">{variable.variableName}</StyledTableCell>
-                                    <StyledTableCell align="right">{variable.values.sku}</StyledTableCell>
+                                    <StyledTableCell align="right">{variable.values.name}</StyledTableCell>
                                     <StyledTableCell align="right">{variable.values.orderable ? 'Yes' : 'No'}</StyledTableCell>
                                     <StyledTableCell align="right">{variable.values.consumable ? 'Yes' : 'No'}</StyledTableCell>
                                     <StyledTableCell align="right">{variable.values.producable ? 'Yes' : 'No'}</StyledTableCell>

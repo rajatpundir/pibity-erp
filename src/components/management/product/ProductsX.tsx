@@ -11,21 +11,23 @@ import { Vector } from 'prelude-ts'
 type State = Immutable<{
     typeName: 'Product'
     query: {}
-    offset: number
     limit: number
+    offset: number
+    page: string
 }>
 
 export type Action =
     | {
         type: string
-        payload: object | number
+        payload: string | number | object
     }
 
 const initialState: State = {
     typeName: 'Product',
     query: {},
+    limit: 3,
     offset: 0,
-    limit: 3
+    page: '0'
 }
 
 function reducer(state: Draft<State>, action: Action) {
@@ -38,15 +40,21 @@ function reducer(state: Draft<State>, action: Action) {
             }
             return;
         }
+        case 'limit': {
+            if (typeof action.payload == 'number') {
+                state.limit = action.payload
+            }
+            return;
+        }
         case 'offset': {
             if (typeof action.payload == 'number') {
                 state.offset = action.payload
             }
             return;
         }
-        case 'limit': {
-            if (typeof action.payload == 'number') {
-                state.limit = action.payload
+        case 'page': {
+            if (typeof action.payload == 'string') {
+                state.page = action.payload
             }
             return;
         }
@@ -76,17 +84,37 @@ export default function ProductsX() {
     const nextPage = async (event: React.MouseEvent<HTMLButtonElement>) => {
         dispatch({
             type: 'offset',
-            payload: Math.min(Math.floor(products.length() / state.limit), parseInt(String(state.offset + 1)))
+            payload: Math.min(Math.floor(products.length() / state.limit) - 1, parseInt(String(state.offset + 1)))
         })
     }
 
     const lastPage = async (event: React.MouseEvent<HTMLButtonElement>) => {
         dispatch({
             type: 'offset',
-            payload: Math.floor(products.length() / state.limit)
+            payload: Math.floor(products.length() / state.limit) - 1
         })
     }
 
+    const changePage = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        dispatch({
+            type: 'page',
+            payload: event.target.value
+        })
+    }
+
+    const rowUp = async (event: React.MouseEvent<HTMLButtonElement>) => {
+        dispatch({
+            type: 'limit',
+            payload: state.limit + 5
+        })
+    }
+
+    const rowDown = async (event: React.MouseEvent<HTMLButtonElement>) => {
+        dispatch({
+            type: 'limit',
+            payload: Math.max(5, state.limit - 5)
+        })
+    }
 
     return (
         <Container area={none} layout={Grid.layouts.main} className="bg-gray-100 rounded-lg shadow-lg border-gray-200 border-2">
@@ -95,10 +123,10 @@ export default function ProductsX() {
             </Item>
             <Table area={Grid.body} className="border-gray-900">
                 <Cell row="1/2" column="1/2" className="bg-black rounded-tl-lg pl-2">
-                    <Column>Name</Column>
+                    <Column>SKU</Column>
                 </Cell>
                 <Cell row="1/2" column="2/3" className="bg-black">
-                    <Column>SKU</Column>
+                    <Column>Name</Column>
                 </Cell>
                 <Cell row="1/2" column="3/4" className="bg-black">
                     <Column>Orderable</Column>
@@ -116,7 +144,7 @@ export default function ProductsX() {
             <Container area={Grid.footer} layout={Grid.layouts.footer} className="bg-gray-100">
                 <Item align='center' className="mx-6">
                     <span className="mx-2">
-                        Page: <Input value={state.offset + 1} /> / {Math.ceil(products.length() / state.limit)}
+                        Page: <Input onChange={changePage} value={state.offset + 1} /> / {Math.ceil(products.length() / state.limit)}
                         <button className="align-text-bottom">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -128,12 +156,12 @@ export default function ProductsX() {
                     </span>
                     <span className="mx-2">
                         Rows: {state.limit}
-                        <button>
+                        <button onClick={rowUp}>
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
                             </svg>
                         </button>
-                        <button>
+                        <button onClick={rowDown}>
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
                             </svg>
@@ -174,7 +202,7 @@ function getCells(products: Vector<ProductVariable>, start: number, end: number)
         if (index % 2 === 0) {
             cells = cells.append(<Cell key={counter} className="pl-2 pt-4 pb-4 border-b-2 w-full font-bold" row={`${index + 2}/${index + 3}`} column="1/2">{isoProduct.unwrap(product.variableName)}</Cell>)
             counter += 1
-            cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${index + 2}/${index + 3}`} column="2/3">{product.values.sku}</Cell>)
+            cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${index + 2}/${index + 3}`} column="2/3">{product.values.name}</Cell>)
             counter += 1
             cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" row={`${index + 2}/${index + 3}`} column="3/4">{product.values.orderable ? 'Yes' : 'No'}</Cell>)
             counter += 1
@@ -186,7 +214,7 @@ function getCells(products: Vector<ProductVariable>, start: number, end: number)
         } else {
             cells = cells.append(<Cell key={counter} className="pl-2 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${index + 2}/${index + 3}`} column="1/2">{isoProduct.unwrap(product.variableName)}</Cell>)
             counter += 1
-            cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${index + 2}/${index + 3}`} column="2/3">{product.values.sku}</Cell>)
+            cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${index + 2}/${index + 3}`} column="2/3">{product.values.name}</Cell>)
             counter += 1
             cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" row={`${index + 2}/${index + 3}`} column="3/4">{product.values.orderable ? 'Yes' : 'No'}</Cell>)
             counter += 1

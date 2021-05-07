@@ -25,7 +25,7 @@ const initialState: State = {
         typeName: 'Product',
         variableName: isoProduct.wrap(''),
         values: {
-            sku: '',
+            name: '',
             orderable: true,
             consumable: true,
             producable: false
@@ -45,7 +45,7 @@ function reducer(state: Draft<State>, action: Action) {
         }
         case 'sku': {
             if (action.payload != null) {
-                state.variable.values.sku = String(action.payload)
+                state.variable.values.name = String(action.payload)
             }
             return;
         }
@@ -108,12 +108,12 @@ export default function Product() {
             </Item>
             <Container area={Grid.details} layout={Grid.layouts.details}>
                 <Item>
-                    <Label>Product Name</Label>
+                    <Label>SKU</Label>
                     <Input type='text' onChange={onInputChange} value={isoProduct.unwrap(state.variable.variableName)} name='variableName' />
                 </Item>
                 <Item>
-                    <Label>SKU</Label>
-                    <Input type='text' onChange={onInputChange} value={state.variable.values.sku} name='sku' />
+                    <Label>Product Name</Label>
+                    <Input type='text' onChange={onInputChange} value={state.variable.values.name} name='sku' />
                 </Item>
                 <Item>
                     <InlineLabel>Orderable</InlineLabel>
