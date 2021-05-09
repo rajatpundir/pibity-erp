@@ -13,9 +13,15 @@ export type Formula = string
 
 export type Subspace = string
 
+export interface Variable {
+    typeName: string
+    variableName: any
+    values: object
+}
+
 export interface Product extends Newtype<{ readonly Product: unique symbol }, string> {}
 export const isoProduct = iso<Product>()
-export type ProductVariable = {
+export interface ProductVariable extends Variable {
     typeName: 'Product'
     variableName: Product
     values: {

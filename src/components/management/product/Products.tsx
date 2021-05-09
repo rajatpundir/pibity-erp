@@ -1,205 +1,126 @@
-import React from 'react'
-import { makeStyles, withStyles } from '@material-ui/core/styles'
-import Table from '@material-ui/core/Table'
-import TableHead from '@material-ui/core/TableHead'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableContainer from '@material-ui/core/TableContainer'
-import TableFooter from '@material-ui/core/TableFooter'
-import TablePagination from '@material-ui/core/TablePagination'
-import TableRow from '@material-ui/core/TableRow'
-import Paper from '@material-ui/core/Paper'
-import IconButton from '@material-ui/core/IconButton'
-import { store } from '../../../main/store'
-import { Container, Item, none } from '../../../main/commons'
+import { Immutable, Draft } from 'immer'
+import { useImmerReducer } from "use-immer"
+import { Container, Item, none, Table, Cell, TableFooter, getCells, Area } from '../../../main/commons'
 import * as Grid from './grids/Products'
 import tw from 'twin.macro'
-import { ProductVariable, isoProduct } from '../../../main/types'
+import { store } from '../../../main/store'
+import { Vector } from 'prelude-ts'
+import { Variable } from '../../../main/types'
 
-const StyledTableCell = withStyles((theme) => ({
-    head: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-    },
-    body: {
-        fontSize: 14,
-    },
-}))(TableCell)
+type State = Immutable<{
+    typeName: 'Product'
+    query: {}
+    limit: number
+    offset: number
+    page: string
+}>
 
-const StyledTableRow = withStyles((theme) => ({
-    root: {
-        '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-        },
-    },
-}))(TableRow)
+export type Action =
+    | {
+        type: 'reset' | 'query' | 'limit' | 'offset' | 'page'
+        payload: string | number
+    }
 
-const useStyles = makeStyles({
-    table: {
-        minWidth: 650,
-    },
-})
+const initialState: State = {
+    typeName: 'Product',
+    query: {},
+    limit: 5,
+    offset: 0,
+    page: '1'
+}
+
+function reducer(state: Draft<State>, action: Action) {
+    switch (action.type) {
+        case 'reset':
+            return initialState;
+        case 'query': {
+            if (typeof action.payload == 'object') {
+                state.query = action.payload
+            }
+            return;
+        }
+        case 'limit': {
+            if (typeof action.payload == 'number') {
+                state.limit = Math.max(initialState.limit, action.payload)
+            }
+            return;
+        }
+        case 'offset': {
+            if (typeof action.payload == 'number') {
+                state.offset = Math.max(0, action.payload)
+                state.page = String(Math.max(0, action.payload) + 1)
+            }
+            return;
+        }
+        case 'page': {
+            if (typeof action.payload == 'string') {
+                state.page = action.payload
+            }
+            return;
+        }
+    }
+}
 
 export default function Products() {
+    const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
     const products = store(state => state.variables.Product)
-    const classes = useStyles();
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, products.length() - page * rowsPerPage);
-
-    const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-        setPage(newPage);
-    }
-
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    }
-
+    const columns: Vector<string> = Vector.of("SKU", "Name", "Orderable", "Consumable", "Producable")
     return (
-        <Container area={none} layout={Grid.layouts.main}>
+        <Container area={none} layout={Grid.layouts.main} className="bg-gray-100 rounded-lg shadow-lg border-gray-200 border-2">
             <Item area={Grid.header}>
                 <Title>Products</Title>
             </Item>
-            <Item area={Grid.details}>
-                <TableContainer component={Paper} aria-label="custom pagination table">
-                    <Table className={classes.table} aria-label="simple table">
-                        <TableHead>
-                            <StyledTableRow>
-                                <StyledTableCell>SKU</StyledTableCell>
-                                <StyledTableCell align="right">Name</StyledTableCell>
-                                <StyledTableCell align="right">Orderable</StyledTableCell>
-                                <StyledTableCell align="right">Consumable</StyledTableCell>
-                                <StyledTableCell align="right">Producable</StyledTableCell>
-                            </StyledTableRow>
-                        </TableHead>
-                        <TableBody>
-                            {(rowsPerPage > 0
-                                ? products.toArray().slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).sort((x, y) => {
-                                    if (isoProduct.unwrap(x.variableName) === isoProduct.unwrap(y.variableName))
-                                        return 0
-                                    if (isoProduct.unwrap(x.variableName) > isoProduct.unwrap(y.variableName))
-                                        return 1
-                                    else return -1
-                                })
-                                : products.toArray().sort((x, y) => {
-                                    if (isoProduct.unwrap(x.variableName) === isoProduct.unwrap(y.variableName))
-                                        return 0
-                                    if (isoProduct.unwrap(x.variableName) > isoProduct.unwrap(y.variableName))
-                                        return 1
-                                    else return -1
-                                })
-                            ).map((variable: ProductVariable) => (
-                                <StyledTableRow key={String(variable.variableName)}>
-                                    <StyledTableCell component="th" scope="row">{variable.variableName}</StyledTableCell>
-                                    <StyledTableCell align="right">{variable.values.name}</StyledTableCell>
-                                    <StyledTableCell align="right">{variable.values.orderable ? 'Yes' : 'No'}</StyledTableCell>
-                                    <StyledTableCell align="right">{variable.values.consumable ? 'Yes' : 'No'}</StyledTableCell>
-                                    <StyledTableCell align="right">{variable.values.producable ? 'Yes' : 'No'}</StyledTableCell>
-                                </StyledTableRow>
-                            ))}
-                            {emptyRows > 0 && (
-                                <TableRow style={{ height: 53 * emptyRows }}>
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )}
-                        </TableBody>
-                        <TableFooter>
-                            <TableRow>
-                                <TablePagination
-                                    rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                                    colSpan={3}
-                                    count={products.length()}
-                                    rowsPerPage={rowsPerPage}
-                                    page={page}
-                                    SelectProps={{
-                                        inputProps: { 'aria-label': 'rows per page' },
-                                        native: true,
-                                    }}
-                                    onChangePage={handleChangePage}
-                                    onChangeRowsPerPage={handleChangeRowsPerPage}
-                                    ActionsComponent={TablePaginationActions}
-                                />
-                            </TableRow>
-                        </TableFooter>
-                    </Table>
-                </TableContainer>
-            </Item>
+            {
+                getTable(Grid.body, state, dispatch, columns, products)
+            }
         </Container>
     )
 }
 
-const Title = tw.div`py-8 text-4xl text-gray-900 font-bold mx-3`
+const Title = tw.div`py-8 text-4xl text-gray-900 font-bold mx-1`
 
-const useStyles1 = makeStyles((theme) => ({
-    root: {
-        flexShrink: 0,
-        marginLeft: theme.spacing(2.5),
-    },
-}))
 
-interface TablePaginationActionsProps {
-    count: number;
-    page: number;
-    rowsPerPage: number;
-    onChangePage: (event: React.MouseEvent<HTMLButtonElement>, newPage: number) => void;
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Make this a React Component instead
+function getTable(area: Area, state: State, dispatch: React.Dispatch<Action>, columns: Vector<string>, variables: Vector<Variable>) {
+    const start = Math.min(state.limit * state.offset, variables.length())
+    const end = Math.min(start + state.limit, variables.length())
+    return (<>
+        <Table area={area} className="border-gray-200 border-l-2 border-r-2 border-t-2 rounded-tl-lg rounded-tr-lg">
+            <Cell row="1/2" column="1/2" className="bg-black rounded-tl-lg pl-2">
+                <Column>{columns.toArray()[0]}</Column>
+            </Cell>
+            {
+                columns.toArray().slice(1, columns.length() - 1).map((columnName, index) => {
+                    return (<Cell key={columnName} row="1/2" column={`${index + 2}/${index + 3}`} className="bg-black">
+                        <Column>{columnName}</Column>
+                    </Cell>)
+                })
+            }
+            <Cell row="1/2" column={`${columns.length()}/${columns.length() + 1}`} className="bg-black rounded-tr-lg">
+                <Column>{columns.toArray()[columns.length() - 1]}</Column>
+            </Cell>
+            {
+                variables.length() !== 0 && start < variables.length()
+                    ? getCells(variables, start, end)
+                    : <Cell className="pt-4 pb-4 border-b-2 w-full font-bold text-center" row="2/3" column="1/6">No records found at specified page.</Cell>
+            }
+        </Table>
+        <TableFooter area={Grid.footer} layout={Grid.layouts.footer} state={state} dispatch={dispatch} variables={variables} />
+    </>)
 }
 
-function TablePaginationActions(props: TablePaginationActionsProps) {
-    const classes = useStyles1();
-    const { count, page, rowsPerPage, onChangePage } = props;
+const Column = tw.div`text-white font-medium text-xl py-3 text-left`
 
-    const handleFirstPageButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        onChangePage(event, 0);
-    }
-
-    const handleBackButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        onChangePage(event, page - 1);
-    }
-
-    const handleNextButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        onChangePage(event, page + 1);
-    }
-
-    const handleLastPageButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-    }
-
-    return (
-        <div className={classes.root}>
-            <IconButton
-                onClick={handleFirstPageButtonClick}
-                disabled={page === 0}
-                aria-label="first page"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-                </svg>
-            </IconButton>
-            <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-            </IconButton>
-            <IconButton
-                onClick={handleNextButtonClick}
-                disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-                aria-label="next page"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-            </IconButton>
-            <IconButton
-                onClick={handleLastPageButtonClick}
-                disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-                aria-label="last page"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-                </svg>
-            </IconButton>
-        </div>
-    )
-}
