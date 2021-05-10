@@ -74,4 +74,4 @@ export default function Products() {
     )
 }
 
-const Title = tw.div`py-8 text-4xl text-gray-900 font-bold mx-1`
+const Title = tw.div`py-8 text-4xl text-gray-800 font-bold mx-1`

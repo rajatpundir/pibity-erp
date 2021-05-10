@@ -132,7 +132,7 @@ export default function Product() {
     )
 }
 
-const Title = tw.div`px-2 text-4xl text-gray-900 font-bold mx-1`
+const Title = tw.div`px-2 text-4xl text-gray-800 font-bold mx-1`
 
 const Label = tw.label`w-1/2 whitespace-nowrap`
 
