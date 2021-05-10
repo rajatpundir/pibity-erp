@@ -41,7 +41,7 @@ export const layouts: { [index: string]: GridLayout } = {
         },
         layout_lg: {
             rows: Vector.of('auto'),
-            columns: Vector.of('1fr', '1fr', '1fr', '1fr', '1fr', '1fr'),
+            columns: Vector.of('0.25fr', '1fr', '1fr', '1fr', '1fr', '0.25fr'),
             areas: Vector.of(
                 Vector.of(none, header, header, none, button, none),
                 Vector.of(none, details, details, details, details, none),
@@ -50,7 +50,7 @@ export const layouts: { [index: string]: GridLayout } = {
         },
         layout_xl: {
             rows: Vector.of('auto'),
-            columns: Vector.of('1fr', '1fr', '1fr', '1fr', '1fr', '1fr'),
+            columns: Vector.of('0.25fr', '1fr', '1fr', '1fr', '1fr', '0.25fr'),
             areas: Vector.of(
                 Vector.of(none, header, header, none, button, none),
                 Vector.of(none, details, details, details, details, none),

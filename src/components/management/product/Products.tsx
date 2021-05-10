@@ -1,6 +1,6 @@
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from "use-immer"
-import { Container, Item, none, TableContainer, Cell, Table, getCells, Area } from '../../../main/commons'
+import { Container, Item, none, Table } from '../../../main/commons'
 import * as Grid from './grids/Products'
 import tw from 'twin.macro'
 import { store } from '../../../main/store'
@@ -65,7 +65,7 @@ export default function Products() {
     const variables = store(state => state.variables.Product)
     const columns: Vector<string> = Vector.of("SKU", "Name", "Orderable", "Consumable", "Producable")
     return (
-        <Container area={none} layout={Grid.layouts.main} className="bg-gray-100 rounded-lg shadow-lg border-gray-200 border-2">
+        <Container area={none} layout={Grid.layouts.main}>
             <Item area={Grid.header}>
                 <Title>Products</Title>
             </Item>

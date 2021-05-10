@@ -152,7 +152,7 @@ export const Cell = styled.div<CellItem>`
 
 const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-8 h-6 rounded-sm inline-block`
 
-export function getCells(variables: Vector<Variable>, start: number, end: number): Vector<unknown> {
+function getCells(variables: Vector<Variable>, start: number, end: number): Vector<unknown> {
     var counter = 0
     var cells = Vector.of()
     variables.toArray().slice(start, end).forEach((variable, rowIndex) => {
@@ -371,10 +371,10 @@ export function Table(props: TableProps) {
 
 const Column = tw.div`text-white font-medium text-xl py-3 text-left`
 
-export const body: Area = isoArea.wrap('body')
-export const footer: Area = isoArea.wrap('footer')
+const body: Area = isoArea.wrap('body')
+const footer: Area = isoArea.wrap('footer')
 
-export const layouts: { [index: string]: GridLayout } = {
+const layouts: { [index: string]: GridLayout } = {
     table: validateLayout({
         rowGap: '0rem',
         columnGap: '0rem',
