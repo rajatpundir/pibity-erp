@@ -114,7 +114,7 @@ export const Item = styled.div<GridItem>`
     /* background-color: aquamarine; */
 `
 
-type TableContainer = {
+type TableContainerProps = {
     area: Area
     margin?: number
     rowGap?: string
@@ -124,7 +124,7 @@ type TableContainer = {
     align?: 'start' | 'center' | 'end' | 'stretch'
 }
 
-export const TableContainer = styled.div<TableContainer>`
+export const TableContainer = styled.div<TableContainerProps>`
     grid-area: ${props => isoArea.unwrap(props.area)};
     margin: ${props => props.margin ? props.margin + 'rem' : '0rem'};
     display: grid;
@@ -297,17 +297,17 @@ export function Table(props: TableProps) {
 
     return (<Container area={props.area} layout={layouts.table} >
         <TableContainer area={body} className="border-gray-200 border-l-2 border-r-2 border-t-2 rounded-tl-lg rounded-tr-lg">
-            <Cell row="1/2" column="1/2" className="bg-black rounded-tl-lg pl-2">
+            <Cell row="1/2" column="1/2" className="bg-gray-800 rounded-tl-lg pl-2">
                 <Column>{props.columns.toArray()[0]}</Column>
             </Cell>
             {
                 props.columns.toArray().slice(1, props.columns.length() - 1).map((columnName, index) => {
-                    return (<Cell key={columnName} row="1/2" column={`${index + 2}/${index + 3}`} className="bg-black">
+                    return (<Cell key={columnName} row="1/2" column={`${index + 2}/${index + 3}`} className="bg-gray-800">
                         <Column>{columnName}</Column>
                     </Cell>)
                 })
             }
-            <Cell row="1/2" column={`${props.columns.length()}/${props.columns.length() + 1}`} className="bg-black rounded-tr-lg">
+            <Cell row="1/2" column={`${props.columns.length()}/${props.columns.length() + 1}`} className="bg-gray-800 rounded-tr-lg">
                 <Column>{props.columns.toArray()[props.columns.length() - 1]}</Column>
             </Cell>
             {

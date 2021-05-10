@@ -103,7 +103,7 @@ export default function Product() {
             <Item area={Grid.header}>
                 <Title>Create Product</Title>
             </Item>
-            <Item area={Grid.button} justify='center' align='center'>
+            <Item area={Grid.button} justify='end' align='center'>
                 <Button onClick={onSubmit}>Save</Button>
             </Item>
             <Container area={Grid.details} layout={Grid.layouts.details}>
@@ -132,7 +132,7 @@ export default function Product() {
     )
 }
 
-const Title = tw.div`py-8 text-4xl text-gray-900 font-bold mx-3`
+const Title = tw.div`px-2 text-4xl text-gray-900 font-bold mx-1`
 
 const Label = tw.label`w-1/2 whitespace-nowrap`
 
@@ -140,4 +140,4 @@ const InlineLabel = tw.label`inline-block w-1/2 mx-2`
 
 const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full rounded-sm`
 
-const Button = tw.button`bg-gray-900 text-white text-center font-bold p-2 uppercase w-40 h-full max-w-sm rounded-lg focus:outline-none`
+const Button = tw.button`bg-gray-900 text-white text-center font-bold p-2 mx-1 uppercase w-40 h-full max-w-sm rounded-lg focus:outline-none`
