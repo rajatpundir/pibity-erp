@@ -5,7 +5,6 @@ import * as Grid from './grids/Products'
 import tw from 'twin.macro'
 import { store } from '../../../main/store'
 import { Vector } from 'prelude-ts'
-import { Variable } from '../../../main/types'
 
 type State = Immutable<{
     typeName: 'Product'
@@ -67,10 +66,9 @@ export default function Products() {
     const columns: Vector<string> = Vector.of("SKU", "Name", "Orderable", "Consumable", "Producable")
     return (
         <Container area={none} layout={Grid.layouts.main} className="bg-gray-100 rounded-lg shadow-lg border-gray-200 border-2">
-            {/* <Item area={Grid.header}>
+            <Item area={Grid.header}>
                 <Title>Products</Title>
-            </Item> */}
-            <Table area={Grid.header} state={state} dispatch={dispatch} variables={variables} columns={columns} />
+            </Item>
             <Table area={Grid.table} state={state} dispatch={dispatch} variables={variables} columns={columns} />
         </Container>
     )

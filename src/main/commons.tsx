@@ -396,26 +396,26 @@ export const layouts: { [index: string]: GridLayout } = {
         },
         layout_md: {
             rows: Vector.of('1fr', '3rem'),
-            columns: Vector.of('1fr', '10fr', '1fr'),
+            columns: Vector.of('1fr'),
             areas: Vector.of(
-                Vector.of(none, body, none),
-                Vector.of(none, footer, none)
+                Vector.of(body),
+                Vector.of(footer)
             )
         },
         layout_lg: {
             rows: Vector.of('1fr', '3rem'),
-            columns: Vector.of('1fr', '10fr', '1fr'),
+            columns: Vector.of('1fr'),
             areas: Vector.of(
-                Vector.of(none, body, none),
-                Vector.of(none, footer, none)
+                Vector.of(body),
+                Vector.of(footer)
             )
         },
         layout_xl: {
             rows: Vector.of('1fr', '3rem'),
-            columns: Vector.of('1fr', '10fr', '1fr'),
+            columns: Vector.of('1fr'),
             areas: Vector.of(
-                Vector.of(none, body, none),
-                Vector.of(none, footer, none)
+                Vector.of(body),
+                Vector.of(footer)
             )
         }
     }),
@@ -423,27 +423,27 @@ export const layouts: { [index: string]: GridLayout } = {
         rowGap: '0rem',
         columnGap: '0rem',
         layout_mobile: {
-            rows: Vector.of('reapeat(10, 1fr)'),
+            rows: Vector.of('1fr'),
             columns: Vector.of('1fr'),
             areas: Vector.of()
         },
         layout_sm: {
-            rows: Vector.of('reapeat(10, 1fr)'),
+            rows: Vector.of('1fr'),
             columns: Vector.of('1fr'),
             areas: Vector.of()
         },
         layout_md: {
-            rows: Vector.of('reapeat(10, 1fr)'),
+            rows: Vector.of('1fr'),
             columns: Vector.of('1fr'),
             areas: Vector.of()
         },
         layout_lg: {
-            rows: Vector.of('reapeat(10, 1fr)'),
+            rows: Vector.of('1fr'),
             columns: Vector.of('1fr'),
             areas: Vector.of()
         },
         layout_xl: {
-            rows: Vector.of('reapeat(10, 1fr)'),
+            rows: Vector.of('1fr'),
             columns: Vector.of('1fr'),
             areas: Vector.of()
         }
