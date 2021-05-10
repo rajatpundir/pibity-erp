@@ -1,6 +1,7 @@
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from "use-immer"
-import { Container, Item, none, Table } from '../../../main/commons'
+import { Container, Item, none } from '../../../main/commons'
+import { Table } from '../../../main/Table'
 import * as Grid from './grids/Products'
 import tw from 'twin.macro'
 import { store } from '../../../main/store'

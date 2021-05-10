@@ -3,7 +3,8 @@ import { NavLink } from 'react-router-dom'
 const navbar: { [index: string]: { [index: string]: string } } = {
     'IT': {
         'Product': '/product',
-        'Products': '/products'
+        'Products': '/products',
+        'Suppliers': '/suppliers'
     },
     'Production': {
         'Indents': '/indents',
@@ -40,14 +41,14 @@ export default function Navbar() {
         <ul className="px-2">
             {
                 Object.keys(navbar).map(module => {
-                    return (<li className="py-2">
+                    return (<li key={module} className="py-2">
                         <div className="p-2 font-bold">
                             {module}
                         </div>
                         <ul className="px-7">
                             {
                                 Object.keys(navbar[module]).map(key => {
-                                    return (<li>
+                                    return (<li key={key}>
                                         <NavLink activeClassName="font-extrabold text-lg" to={navbar[module][key]}>{key}</NavLink>
                                     </li>)
                                 })

@@ -29,7 +29,8 @@ type State = {
     addDiff: (diff: Diff) => Diff
 }
 
-// Note: fileds in store should be mutable, or change is not reflected where they are used
+// Note: fields in store should be mutable, or change is not reflected where they are used.
+// Store is limited to per page open, use Local Storage to sync store every few seconds.
 export const store = create<State>(devtools((set, get) => ({
     counter: 0,
     base: base,

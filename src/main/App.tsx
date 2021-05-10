@@ -10,10 +10,10 @@ function App() {
     <div className="App font-nunito bg-gray-100">
       <BrowserRouter>
         <Container area={none} layout={Grid.layouts.main} className="h-screen">
-          <Item area={Grid.navbar} className="bg-gray-900 text-gray-100">
+          <Item area={Grid.navbar} className="bg-gray-900 text-gray-100 overflow-y-auto">
             <Navbar />
           </Item>
-          <Item area={Grid.content} className="overflow-y-scroll py-8">
+          <Item area={Grid.content} className="overflow-y-auto py-8">
             <Switch>
               <Route exact path="/product">
                 <Product />
