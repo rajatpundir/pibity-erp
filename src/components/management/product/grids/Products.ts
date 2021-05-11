@@ -55,5 +55,35 @@ export const layouts: { [index: string]: GridLayout } = {
                 Vector.of(none, table, none)
             )
         }
+    }),
+    query: validateLayout({
+        margin: 0,
+        rowGap: '1rem',
+        columnGap: '0rem',
+        layout_mobile: {
+            rows: Vector.of('1fr'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of()
+        },
+        layout_sm: {
+            rows: Vector.of('1fr'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of()
+        },
+        layout_md: {
+            rows: Vector.of('1fr'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of()
+        },
+        layout_lg: {
+            rows: Vector.of('1fr'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of()
+        },
+        layout_xl: {
+            rows: Vector.of('1fr'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of()
+        }
     })
 }

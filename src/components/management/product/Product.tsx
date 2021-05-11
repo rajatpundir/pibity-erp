@@ -4,7 +4,7 @@ import { useImmerReducer } from "use-immer"
 import { isoProduct } from '../../../main/variables'
 import { ProductVariable } from '../../../main/variables'
 import tw from 'twin.macro'
-import Switch from '@material-ui/core/Switch';
+import Switch from '@material-ui/core/Switch'
 import { Container, Item, none } from '../../../main/commons'
 import * as Grid from './grids/Product'
 import { store, noDiff } from '../../../main/store'
