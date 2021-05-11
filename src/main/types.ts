@@ -37,12 +37,14 @@ type KeyType =
     | 'TransferMaterialSlip'
     | 'WarehouseAcceptanceSlip'
 
+export type Key = {
+    order: number
+    type: KeyType
+}
+
 type Type = {
     keys: {
-        [index: string]: {
-            order: number
-            type: KeyType
-        }
+        [index: string]: Key
     }
 }
 

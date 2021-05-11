@@ -6,6 +6,7 @@ import * as Grid from './grids/Products'
 import tw from 'twin.macro'
 import { store } from '../../../main/store'
 import { Vector } from 'prelude-ts'
+import { types, Key } from '../../../main/types'
 
 type State = Immutable<{
     typeName: 'Product'
@@ -155,26 +156,7 @@ export type Query = {
         | {
             checked: boolean
             type: string
-            operator: 'equals' | 'like'
-            value: string
-        }
-        | {
-            checked: boolean
-            type: string
-            operator: 'equals'
             value: Query
-        }
-        | {
-            checked: boolean
-            type: string
-            operator: 'between' | 'notBetween'
-            value: [string, string]
-        }
-        | {
-            checked: boolean
-            type: string
-            operator: 'in'
-            value: Array<string>
         }
     }
 }
@@ -222,6 +204,104 @@ function reducer(state: Draft<State>, action: Action) {
 export default function Products() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
     const variables = store(state => state.variables.Product)
+
+    const keys = types['Product'].keys
+
+    const query: Query = {
+        variableName: {
+            checked: false,
+            operator: 'equals',
+            value: ''
+        },
+        values: {}
+    }
+
+    const x: Query = Object.keys(keys).reduce((acc: Query, keyName: string) => {
+        const key: Key = keys[keyName]
+        switch (key.type) {
+            case 'Text': {
+                acc.values[keyName] = {
+                    checked: false,
+                    type: key.type,
+                    operator: 'equals',
+                    value: ''
+                }
+                return acc
+            }
+            case 'Number': {
+                acc.values[keyName] = {
+                    checked: false,
+                    type: key.type,
+                    operator: 'equals',
+                    value: 0
+                }
+                return acc
+            }
+            case 'Decimal': {
+                acc.values[keyName] = {
+                    checked: false,
+                    type: key.type,
+                    operator: 'equals',
+                    value: 0
+                }
+                return acc
+            }
+            case 'Boolean': {
+                acc.values[keyName] = {
+                    checked: false,
+                    type: key.type,
+                    operator: 'equals',
+                    value: false
+                }
+                return acc
+            }
+            case 'Date': {
+                acc.values[keyName] = {
+                    checked: false,
+                    type: key.type,
+                    operator: 'equals',
+                    value: -1
+                }
+                return acc
+            }
+            case 'Timestamp': {
+                acc.values[keyName] = {
+                    checked: false,
+                    type: key.type,
+                    operator: 'equals',
+                    value: -1
+                }
+                return acc
+            }
+            case 'Time': {
+                acc.values[keyName] = {
+                    checked: false,
+                    type: key.type,
+                    operator: 'equals',
+                    value: -1
+                }
+                return acc
+            }
+            default: {
+                acc.values[keyName] = {
+                    checked: false,
+                    type: key.type,
+                    value: {
+                        variableName: {
+                            checked: false,
+                            operator: 'equals',
+                            value: ''
+                        },
+                        values: {}
+                    }
+                }
+                return acc
+            }
+        }
+    }, query)
+
+    console.log(x)
+
     const columns: Vector<string> = Vector.of("SKU", "Name", "Orderable", "Consumable", "Producable")
     return (
         <Container area={none} layout={Grid.layouts.main}>
