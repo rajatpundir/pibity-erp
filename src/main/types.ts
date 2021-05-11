@@ -10,8 +10,78 @@ export type Timestamp = bigint
 export type Time = bigint
 export type Formula = string
 
+type KeyType =
+| 'Text'
+| 'Number'
+| 'Decimal'
+| 'Boolean'
+| 'Date'
+| 'Timestamp'
+| 'Time'
+| 'Formula'
+| 'Blob'
 
-export type Subspace = string
+| 'Product'
+| 'UOM'
+| 'Indent'
+
+type Types = {
+    [index: string]: {
+        keys: {
+            [index: string]: {
+                order: number
+                type: KeyType
+            }
+        }
+    }
+}
+
+const types: Types = {
+    Product: {
+        keys: {
+            name: {
+                order: 0,
+                type: 'Text'
+            },
+            orderable: {
+                order: 1,
+                type: 'Boolean'
+            },
+            consumable: {
+                order: 2,
+                type: 'Boolean'
+            },
+            producable: {
+                order: 3,
+                type: 'Boolean'
+            }
+        }
+    },
+    UOM: {
+        keys: {
+            product: {
+                order: 0,
+                type: 'Product'
+            },
+            name: {
+                order: 1,
+                type: 'Text'
+            },
+            conversionRate: {
+                order: 3,
+                type: 'Decimal'
+            }
+        }
+    },
+    Indent: {
+        keys: {
+            approved: {
+                order: 0,
+                type: 'Boolean'
+            }
+        }
+    }
+}
 
 export interface Variable {
     typeName: string
@@ -35,7 +105,7 @@ export interface ProductVariable extends Variable {
 
 export interface UOM extends Newtype<{ readonly UOM: unique symbol }, string> {}
 export const isoUOM = iso<UOM>()
-export type UOMVariable = {
+export interface UOMVariable extends Variable {
     typeName: 'UOM'
     variableName: UOM
     values: {
@@ -48,20 +118,20 @@ export type UOMVariable = {
 
 export interface Indent extends Newtype<{ readonly Indent: unique symbol }, string> {}
 export const isoIndent = iso<Indent>()
-export type IndentVariable = {
+export interface IndentVariable extends Variable {
     typeName: 'Indent'
     variableName: Indent
     values: {
         timestamp: Timestamp // redundant field
-        subspace: Subspace
-        approver: Subspace
+        // subspace: Subspace
+        // approver: Subspace
         approved: Boolean
     }
 }
 
 export interface IndentItem extends Newtype<{ readonly IndentItem: unique symbol }, string> {}
 export const isoIndentItem = iso<IndentItem>()
-export type IndentItemVariable = {
+export interface IndentItemVariable extends Variable {
     typeName: 'IndentItem'
     variableName: IndentItem
     values: {
@@ -90,7 +160,7 @@ export type IndentItemVariable = {
 
 export interface Supplier extends Newtype<{ readonly Supplier: unique symbol }, string> {}
 export const isoSupplier = iso<Supplier>()
-export type SupplierVariable = {
+export interface SupplierVariable extends Variable {
     typeName: 'Supplier'
     variableName: Supplier
     values: {
@@ -100,7 +170,7 @@ export type SupplierVariable = {
 
 export interface SupplierProduct extends Newtype<{ readonly SupplierProduct: unique symbol }, string> {}
 export const isoSupplierProduct = iso<SupplierProduct>()
-export type SupplierProductVariable = {
+export interface SupplierProductVariable extends Variable {
     typeName: 'SupplierProduct'
     variableName: SupplierProduct
     values: {
@@ -112,7 +182,7 @@ export type SupplierProductVariable = {
 
 export interface Quotation extends Newtype<{ readonly Quotation: unique symbol }, string> {}
 export const isoQuotation = iso<Quotation>()
-export type QuotationVariable = {
+export interface QuotationVariable extends Variable {
     typeName: 'Quotation'
     variableName: Quotation
     values: {
@@ -123,7 +193,7 @@ export type QuotationVariable = {
 
 export interface QuotationItem extends Newtype<{ readonly QuotationItem: unique symbol }, string> {}
 export const isoQuotationItem = iso<QuotationItem>()
-export type QuotationItemVariable = {
+export interface QuotationItemVariable extends Variable {
     typeName: 'QuotationItem'
     variableName: QuotationItem
     values: {
@@ -138,7 +208,7 @@ export type QuotationItemVariable = {
 
 export interface PurchaseOrder extends Newtype<{ readonly PurchaseOrder: unique symbol }, string> {}
 export const isoPurchaseOrder = iso<PurchaseOrder>()
-export type PurchaseOrderVariable = {
+export interface PurchaseOrderVariable extends Variable {
     typeName: 'PurchaseOrder'
     variableName: PurchaseOrder
     values: {
@@ -148,7 +218,7 @@ export type PurchaseOrderVariable = {
 
 export interface PurchaseOrderItem extends Newtype<{ readonly PurchaseOrderItem: unique symbol }, string> {}
 export const isoPurchaseOrderItem = iso<PurchaseOrderItem>()
-export type PurchaseOrderItemVariable = {
+export interface PurchaseOrderItemVariable extends Variable {
     typeName: 'PurchaseOrderItem'
     variableName: PurchaseOrderItem
     values: {
@@ -166,7 +236,7 @@ export type PurchaseOrderItemVariable = {
 
 export interface PurchaseInvoice extends Newtype<{ readonly PurchaseInvoice: unique symbol }, string> {}
 export const isoPurchaseInvoice = iso<PurchaseInvoice>()
-export type PurchaseInvoiceVariable = {
+export interface PurchaseInvoiceVariable extends Variable {
     typeName: 'PurchaseInvoice'
     variableName: PurchaseInvoice
     values: {
@@ -176,7 +246,7 @@ export type PurchaseInvoiceVariable = {
 
 export interface PurchaseInvoiceItem extends Newtype<{ readonly PurchaseInvoiceItem: unique symbol }, string> {}
 export const isoPurchaseInvoiceItem = iso<PurchaseInvoiceItem>()
-export type PurchaseInvoiceItemVariable = {
+export interface PurchaseInvoiceItemVariable extends Variable {
     typeName: 'PurchaseInvoiceItem'
     variableName: PurchaseInvoiceItem
     values: {
@@ -194,7 +264,7 @@ export type PurchaseInvoiceItemVariable = {
 
 export interface MaterialApprovalSlip extends Newtype<{ readonly MaterialApprovalSlip: unique symbol }, string> {}
 export const isoMaterialApprovalSlip = iso<MaterialApprovalSlip>()
-export type MaterialApprovalSlipVariable = {
+export interface MaterialApprovalSlipVariable extends Variable {
     typeName: 'MaterialApprovalSlip'
     variableName: MaterialApprovalSlip
     values: {
@@ -204,7 +274,7 @@ export type MaterialApprovalSlipVariable = {
 
 export interface MaterialApprovalSlipItem extends Newtype<{ readonly MaterialApprovalSlipItem: unique symbol }, string> {}
 export const isoMaterialApprovalSlipItem = iso<MaterialApprovalSlipItem>()
-export type MaterialApprovalSlipItemVariable = {
+export interface MaterialApprovalSlipItemVariable extends Variable {
     typeName: 'MaterialApprovalSlipItem'
     variableName: MaterialApprovalSlipItem
     values: {
@@ -221,7 +291,7 @@ export type MaterialApprovalSlipItemVariable = {
 
 export interface MaterialRejectionSlip extends Newtype<{ readonly MaterialRejectionSlip: unique symbol }, string> {}
 export const isoMaterialRejectionSlip = iso<MaterialRejectionSlip>()
-export type MaterialRejectionSlipVariable = {
+export interface MaterialRejectionSlipVariable extends Variable {
     typeName: 'MaterialRejectionSlip'
     variableName: MaterialRejectionSlip
     values: {
@@ -231,7 +301,7 @@ export type MaterialRejectionSlipVariable = {
 
 export interface MaterialRejectionSlipItem extends Newtype<{ readonly MaterialRejectionSlipItem: unique symbol }, string> {}
 export const isoMaterialRejectionSlipItem = iso<MaterialRejectionSlipItem>()
-export type MaterialRejectionSlipItemVariable = {
+export interface MaterialRejectionSlipItemVariable extends Variable {
     typeName: 'MaterialRejectionSlipItem'
     variableName: MaterialRejectionSlipItem
     values: {
@@ -248,7 +318,7 @@ export type MaterialRejectionSlipItemVariable = {
 
 export interface MaterialReturnSlip extends Newtype<{ readonly MaterialReturnSlip: unique symbol }, string> {}
 export const isoMaterialReturnSlip = iso<MaterialReturnSlip>()
-export type MaterialReturnSlipVariable = {
+export interface MaterialReturnSlipVariable extends Variable {
     typeName: 'MaterialReturnSlip'
     variableName: MaterialReturnSlip
     values: {
@@ -258,7 +328,7 @@ export type MaterialReturnSlipVariable = {
 
 export interface MaterialReturnSlipItem extends Newtype<{ readonly MaterialReturnSlipItem: unique symbol }, string> {}
 export const isoMaterialReturnSlipItem = iso<MaterialReturnSlipItem>()
-export type MaterialReturnSlipItemVariable = {
+export interface MaterialReturnSlipItemVariable extends Variable {
     typeName: 'MaterialReturnSlipItem'
     variableName: MaterialReturnSlipItem
     values: {
@@ -273,7 +343,7 @@ export type MaterialReturnSlipItemVariable = {
 
 export interface MaterialRequistionSlip extends Newtype<{ readonly MaterialRequistionSlip: unique symbol }, string> {}
 export const isoMaterialRequistionSlip = iso<MaterialRequistionSlip>()
-export type MaterialRequistionSlipVariable = {
+export interface MaterialRequistionSlipVariable extends Variable {
     typeName: 'MaterialRequistionSlip'
     variableName: MaterialRequistionSlip
     values: {
@@ -283,7 +353,7 @@ export type MaterialRequistionSlipVariable = {
 
 export interface MaterialRequistionSlipItem extends Newtype<{ readonly MaterialRequistionSlipItem: unique symbol }, string> {}
 export const isoMaterialRequistionSlipItem = iso<MaterialRequistionSlipItem>()
-export type MaterialRequistionSlipItemVariable = {
+export interface MaterialRequistionSlipItemVariable extends Variable {
     typeName: 'MaterialRequistionSlipItem'
     variableName: MaterialRequistionSlipItem
     values: {
@@ -300,7 +370,7 @@ export type MaterialRequistionSlipItemVariable = {
 
 export interface BOM extends Newtype<{ readonly BOM: unique symbol }, string> {}
 export const isoBOM = iso<BOM>()
-export type BOMVariable = {
+export interface BOMVariable extends Variable {
     typeName: 'BOM'
     variableName: BOM
     values: {
@@ -314,7 +384,7 @@ export type BOMVariable = {
 
 export interface BOMItem extends Newtype<{ readonly BOMItem: unique symbol }, string> {}
 export const isoBOMItem = iso<BOMItem>()
-export type BOMItemVariable = {
+export interface BOMItemVariable extends Variable {
     typeName: 'BOMItem'
     variableName: BOMItem
     values: {
@@ -330,7 +400,7 @@ export type BOMItemVariable = {
 
 export interface ProductionPreparationSlip extends Newtype<{ readonly ProductionPreparationSlip: unique symbol }, string> {}
 export const isoProductionPreparationSlip = iso<ProductionPreparationSlip>()
-export type ProductionPreparationSlipVariable = {
+export interface ProductionPreparationSlipVariable extends Variable {
     typeName: 'ProductionPreparationSlip'
     variableName: ProductionPreparationSlip
     values: {
@@ -343,7 +413,7 @@ export type ProductionPreparationSlipVariable = {
 
 export interface ProductionPreparationSlipItem extends Newtype<{ readonly ProductionPreparationSlipItem: unique symbol }, string> {}
 export const isoProductionPreparationSlipItem = iso<ProductionPreparationSlipItem>()
-export type ProductionPreparationSlipItemVariable = {
+export interface ProductionPreparationSlipItemVariable extends Variable {
     typeName: 'ProductionPreparationSlipItem'
     variable: ProductionPreparationSlipItem
     values: {
@@ -359,7 +429,7 @@ export type ProductionPreparationSlipItemVariable = {
 
 export interface ScrapMaterialSlip extends Newtype<{ readonly ScrapMaterialSlip: unique symbol }, string> {}
 export const isoScrapMaterialSlip = iso<ScrapMaterialSlip>()
-export type ScrapMaterialSlipVariable = {
+export interface ScrapMaterialSlipVariable extends Variable {
     typeName: 'ScrapMaterialSlip'
     variable: ScrapMaterialSlip
     values: {
@@ -371,7 +441,7 @@ export type ScrapMaterialSlipVariable = {
 
 export interface TransferMaterialSlip extends Newtype<{ readonly TransferMaterialSlip: unique symbol }, string> {}
 export const isoTransferMaterialSlip = iso<TransferMaterialSlip>()
-export type TransferMaterialSlipVariable = {
+export interface TransferMaterialSlipVariable extends Variable {
     typeName: 'TransferMaterialSlip'
     variable: TransferMaterialSlip
     values: {
@@ -385,7 +455,7 @@ export type TransferMaterialSlipVariable = {
 
 export interface WarehouseAcceptanceSlip extends Newtype<{ readonly WarehouseAcceptanceSlip: unique symbol }, string> {}
 export const isoWarehouseAcceptanceSlip = iso<WarehouseAcceptanceSlip>()
-export type WarehouseAcceptanceSlipVariable = {
+export interface WarehouseAcceptanceSlipVariable extends Variable {
     typeName: 'WarehouseAcceptanceSlip'
     variableName: WarehouseAcceptanceSlip
     values: {

@@ -256,7 +256,7 @@ export function Table(props: TableProps) {
     }
 
     return (<Container area={props.area} layout={layouts.table} >
-        <TableContainer area={body} className="border-gray-200 border-l-2 border-r-2 border-t-2 rounded-tl-lg rounded-tr-lg">
+        <TableContainer area={body} className="border-l-2 border-r-2 border-t-2 rounded-tl-xl rounded-tr-xl border-gray-300">
             <Cell row="1/2" column="1/2" className="bg-gray-800 rounded-tl-lg pl-4">
                 <Column>{props.columns.toArray()[0]}</Column>
             </Cell>
@@ -276,7 +276,7 @@ export function Table(props: TableProps) {
                     : <Cell className="pt-4 pb-4 border-b-2 w-full font-bold text-center bg-gray-50" row="2/3" column="1/6">No records found at specified page.</Cell>
             }
         </TableContainer>
-        <Container area={footer} layout={layouts.footer} className="bg-gray-100 border-gray-200 border-l-2 border-r-2 border-b-2">
+        <Container area={footer} layout={layouts.footer} className="bg-gray-100 border-l-2 border-r-2 border-b-2 border-gray-300">
             <Item align='center' className="mx-6">
                 <span className="mx-2">
                     Page: <Input onChange={changePage} value={props.state.page} /> / {Math.ceil(props.variables.length() / props.state.limit)}
