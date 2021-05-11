@@ -1,5 +1,5 @@
 import { Vector } from 'prelude-ts'
-import { ProductVariable, Product, isoProduct } from './types'
+import { ProductVariable, Product, isoProduct } from './variables'
 
 type Variable = {
     variableName: string

@@ -21,144 +21,161 @@ export type Action =
         payload: string | number
     }
 
-type Query = {
-    [index: string]: {
+export type Query = {
+    variableName: {
         checked: boolean
-        type: 'Text'
         operator: 'equals' | 'like'
         value: string
     }
     | {
         checked: boolean
-        type: 'Text'
         operator: 'between' | 'notBetween'
         value: [string, string]
     }
     | {
         checked: boolean
-        type: 'Text'
         operator: 'in'
         value: Array<string>
     }
-    | {
-        checked: boolean
-        type: 'Number'
-        operator: 'equals' | 'greaterThanEquals' | 'greaterThan' | 'lessThanEquals' | 'lessThan'
-        value: number
-    }
-    | {
-        checked: boolean
-        type: 'Number'
-        operator: 'between' | 'notBetween'
-        value: [number, number]
-    }
-    | {
-        checked: boolean
-        type: 'Number'
-        operator: 'in'
-        value: Array<number>
-    }
-    | {
-        checked: boolean
-        type: 'Decimal'
-        operator: 'equals' | 'greaterThanEquals' | 'greaterThan' | 'lessThanEquals' | 'lessThan'
-        value: number
-    }
-    | {
-        checked: boolean
-        type: 'Decimal'
-        operator: 'between' | 'notBetween'
-        value: [number, number]
-    }
-    | {
-        checked: boolean
-        type: 'Decimal'
-        operator: 'in'
-        value: Array<number>
-    }
-    | {
-        checked: boolean
-        type: 'Boolean'
-        operator: 'equals'
-        value: boolean
-    }
-    | {
-        checked: boolean
-        type: 'Date'
-        operator: 'equals' | 'greaterThanEquals' | 'greaterThan' | 'lessThanEquals' | 'lessThan'
-        value: number
-    }
-    | {
-        checked: boolean
-        type: 'Date'
-        operator: 'between' | 'notBetween'
-        value: [number, number]
-    }
-    | {
-        checked: boolean
-        type: 'Date'
-        operator: 'in'
-        value: Array<number>
-    }
-    | {
-        checked: boolean
-        type: 'Timestamp'
-        operator: 'equals' | 'greaterThanEquals' | 'greaterThan' | 'lessThanEquals' | 'lessThan'
-        value: number
-    }
-    | {
-        checked: boolean
-        type: 'Timestamp'
-        operator: 'between' | 'notBetween'
-        value: [number, number]
-    }
-    | {
-        checked: boolean
-        type: 'Timestamp'
-        operator: 'in'
-        value: Array<number>
-    }
-    | {
-        checked: boolean
-        type: 'Time'
-        operator: 'equals' | 'greaterThanEquals' | 'greaterThan' | 'lessThanEquals' | 'lessThan'
-        value: number
-    }
-    | {
-        checked: boolean
-        type: 'Time'
-        operator: 'between' | 'notBetween'
-        value: [number, number]
-    }
-    | {
-        checked: boolean
-        type: 'Time'
-        operator: 'in'
-        value: Array<number>
-    }
-    | {
-        checked: boolean
-        type: string
-        operator: 'equals' | 'like'
-        value: string
-    }
-    | {
-        checked: boolean
-        type: string
-        operator: 'equals'
-        value: Query
-    }
-    | {
-        checked: boolean
-        type: string
-        operator: 'between' | 'notBetween'
-        value: [string, string]
-    }
-    | {
-        checked: boolean
-        type: string
-        operator: 'in'
-        value: Array<string>
+    values: {
+        [index: string]: {
+            checked: boolean
+            type: 'Text'
+            operator: 'equals' | 'like'
+            value: string
+        }
+        | {
+            checked: boolean
+            type: 'Text'
+            operator: 'between' | 'notBetween'
+            value: [string, string]
+        }
+        | {
+            checked: boolean
+            type: 'Text'
+            operator: 'in'
+            value: Array<string>
+        }
+        | {
+            checked: boolean
+            type: 'Number'
+            operator: 'equals' | 'greaterThanEquals' | 'greaterThan' | 'lessThanEquals' | 'lessThan'
+            value: number
+        }
+        | {
+            checked: boolean
+            type: 'Number'
+            operator: 'between' | 'notBetween'
+            value: [number, number]
+        }
+        | {
+            checked: boolean
+            type: 'Number'
+            operator: 'in'
+            value: Array<number>
+        }
+        | {
+            checked: boolean
+            type: 'Decimal'
+            operator: 'equals' | 'greaterThanEquals' | 'greaterThan' | 'lessThanEquals' | 'lessThan'
+            value: number
+        }
+        | {
+            checked: boolean
+            type: 'Decimal'
+            operator: 'between' | 'notBetween'
+            value: [number, number]
+        }
+        | {
+            checked: boolean
+            type: 'Decimal'
+            operator: 'in'
+            value: Array<number>
+        }
+        | {
+            checked: boolean
+            type: 'Boolean'
+            operator: 'equals'
+            value: boolean
+        }
+        | {
+            checked: boolean
+            type: 'Date'
+            operator: 'equals' | 'greaterThanEquals' | 'greaterThan' | 'lessThanEquals' | 'lessThan'
+            value: number
+        }
+        | {
+            checked: boolean
+            type: 'Date'
+            operator: 'between' | 'notBetween'
+            value: [number, number]
+        }
+        | {
+            checked: boolean
+            type: 'Date'
+            operator: 'in'
+            value: Array<number>
+        }
+        | {
+            checked: boolean
+            type: 'Timestamp'
+            operator: 'equals' | 'greaterThanEquals' | 'greaterThan' | 'lessThanEquals' | 'lessThan'
+            value: number
+        }
+        | {
+            checked: boolean
+            type: 'Timestamp'
+            operator: 'between' | 'notBetween'
+            value: [number, number]
+        }
+        | {
+            checked: boolean
+            type: 'Timestamp'
+            operator: 'in'
+            value: Array<number>
+        }
+        | {
+            checked: boolean
+            type: 'Time'
+            operator: 'equals' | 'greaterThanEquals' | 'greaterThan' | 'lessThanEquals' | 'lessThan'
+            value: number
+        }
+        | {
+            checked: boolean
+            type: 'Time'
+            operator: 'between' | 'notBetween'
+            value: [number, number]
+        }
+        | {
+            checked: boolean
+            type: 'Time'
+            operator: 'in'
+            value: Array<number>
+        }
+        | {
+            checked: boolean
+            type: string
+            operator: 'equals' | 'like'
+            value: string
+        }
+        | {
+            checked: boolean
+            type: string
+            operator: 'equals'
+            value: Query
+        }
+        | {
+            checked: boolean
+            type: string
+            operator: 'between' | 'notBetween'
+            value: [string, string]
+        }
+        | {
+            checked: boolean
+            type: string
+            operator: 'in'
+            value: Array<string>
+        }
     }
 }
 

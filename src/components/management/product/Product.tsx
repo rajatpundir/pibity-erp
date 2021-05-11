@@ -1,8 +1,8 @@
 import React from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from "use-immer"
-import { isoProduct } from '../../../main/types'
-import { ProductVariable } from '../../../main/types'
+import { isoProduct } from '../../../main/variables'
+import { ProductVariable } from '../../../main/variables'
 import tw from 'twin.macro'
 import Switch from '@material-ui/core/Switch';
 import { Container, Item, none } from '../../../main/commons'

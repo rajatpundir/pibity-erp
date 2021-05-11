@@ -1,7 +1,7 @@
 import { Vector } from 'prelude-ts'
 import { Immutable } from 'immer'
 import tw from 'twin.macro'
-import { Variable } from './types'
+import { Variable } from './variables'
 import { Container, Item, TableContainer, Cell, validateLayout, Area, isoArea, GridLayout } from './commons'
 
 const body: Area = isoArea.wrap('body')
