@@ -1,12 +1,116 @@
-import styled from '@emotion/styled'
 import { Vector } from 'prelude-ts'
-import { Newtype, iso } from 'newtype-ts'
 import { Immutable } from 'immer'
 import tw from 'twin.macro'
 import { Variable } from './types'
 import { Container, Item, TableContainer, Cell, validateLayout, Area, isoArea, GridLayout } from './commons'
 
-const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-8 h-6 rounded-sm inline-block`
+const body: Area = isoArea.wrap('body')
+const footer: Area = isoArea.wrap('footer')
+
+const layouts: { [index: string]: GridLayout } = {
+    table: validateLayout({
+        rowGap: '0rem',
+        columnGap: '0rem',
+        layout_mobile: {
+            rows: Vector.of('1fr', '3rem'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of(
+                Vector.of(body),
+                Vector.of(footer)
+            )
+        },
+        layout_sm: {
+            rows: Vector.of('1fr', '3rem'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of(
+                Vector.of(body),
+                Vector.of(footer)
+            )
+        },
+        layout_md: {
+            rows: Vector.of('1fr', '3rem'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of(
+                Vector.of(body),
+                Vector.of(footer)
+            )
+        },
+        layout_lg: {
+            rows: Vector.of('1fr', '3rem'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of(
+                Vector.of(body),
+                Vector.of(footer)
+            )
+        },
+        layout_xl: {
+            rows: Vector.of('1fr', '3rem'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of(
+                Vector.of(body),
+                Vector.of(footer)
+            )
+        }
+    }),
+    body: validateLayout({
+        rowGap: '0rem',
+        columnGap: '0rem',
+        layout_mobile: {
+            rows: Vector.of('1fr'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of()
+        },
+        layout_sm: {
+            rows: Vector.of('1fr'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of()
+        },
+        layout_md: {
+            rows: Vector.of('1fr'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of()
+        },
+        layout_lg: {
+            rows: Vector.of('1fr'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of()
+        },
+        layout_xl: {
+            rows: Vector.of('1fr'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of()
+        }
+    }),
+    footer: validateLayout({
+        rowGap: '0rem',
+        columnGap: '0rem',
+        layout_mobile: {
+            rows: Vector.of('1fr'),
+            columns: Vector.of('1fr', '1fr'),
+            areas: Vector.of()
+        },
+        layout_sm: {
+            rows: Vector.of('1fr'),
+            columns: Vector.of('1fr', '1fr'),
+            areas: Vector.of()
+        },
+        layout_md: {
+            rows: Vector.of('1fr'),
+            columns: Vector.of('1fr', '1fr'),
+            areas: Vector.of()
+        },
+        layout_lg: {
+            rows: Vector.of('1fr'),
+            columns: Vector.of('1fr', '1fr'),
+            areas: Vector.of()
+        },
+        layout_xl: {
+            rows: Vector.of('1fr'),
+            columns: Vector.of('1fr', '1fr'),
+            areas: Vector.of()
+        }
+    })
+}
 
 function getCells(variables: Vector<Variable>, start: number, end: number): Vector<unknown> {
     var counter = 0
@@ -227,110 +331,4 @@ export function Table(props: TableProps) {
 
 const Column = tw.div`text-white font-medium text-xl py-3 text-left`
 
-const body: Area = isoArea.wrap('body')
-const footer: Area = isoArea.wrap('footer')
-
-const layouts: { [index: string]: GridLayout } = {
-    table: validateLayout({
-        rowGap: '0rem',
-        columnGap: '0rem',
-        layout_mobile: {
-            rows: Vector.of('1fr', '3rem'),
-            columns: Vector.of('1fr'),
-            areas: Vector.of(
-                Vector.of(body),
-                Vector.of(footer)
-            )
-        },
-        layout_sm: {
-            rows: Vector.of('1fr', '3rem'),
-            columns: Vector.of('1fr'),
-            areas: Vector.of(
-                Vector.of(body),
-                Vector.of(footer)
-            )
-        },
-        layout_md: {
-            rows: Vector.of('1fr', '3rem'),
-            columns: Vector.of('1fr'),
-            areas: Vector.of(
-                Vector.of(body),
-                Vector.of(footer)
-            )
-        },
-        layout_lg: {
-            rows: Vector.of('1fr', '3rem'),
-            columns: Vector.of('1fr'),
-            areas: Vector.of(
-                Vector.of(body),
-                Vector.of(footer)
-            )
-        },
-        layout_xl: {
-            rows: Vector.of('1fr', '3rem'),
-            columns: Vector.of('1fr'),
-            areas: Vector.of(
-                Vector.of(body),
-                Vector.of(footer)
-            )
-        }
-    }),
-    body: validateLayout({
-        rowGap: '0rem',
-        columnGap: '0rem',
-        layout_mobile: {
-            rows: Vector.of('1fr'),
-            columns: Vector.of('1fr'),
-            areas: Vector.of()
-        },
-        layout_sm: {
-            rows: Vector.of('1fr'),
-            columns: Vector.of('1fr'),
-            areas: Vector.of()
-        },
-        layout_md: {
-            rows: Vector.of('1fr'),
-            columns: Vector.of('1fr'),
-            areas: Vector.of()
-        },
-        layout_lg: {
-            rows: Vector.of('1fr'),
-            columns: Vector.of('1fr'),
-            areas: Vector.of()
-        },
-        layout_xl: {
-            rows: Vector.of('1fr'),
-            columns: Vector.of('1fr'),
-            areas: Vector.of()
-        }
-    }),
-    footer: validateLayout({
-        rowGap: '0rem',
-        columnGap: '0rem',
-        layout_mobile: {
-            rows: Vector.of('1fr'),
-            columns: Vector.of('1fr', '1fr'),
-            areas: Vector.of()
-        },
-        layout_sm: {
-            rows: Vector.of('1fr'),
-            columns: Vector.of('1fr', '1fr'),
-            areas: Vector.of()
-        },
-        layout_md: {
-            rows: Vector.of('1fr'),
-            columns: Vector.of('1fr', '1fr'),
-            areas: Vector.of()
-        },
-        layout_lg: {
-            rows: Vector.of('1fr'),
-            columns: Vector.of('1fr', '1fr'),
-            areas: Vector.of()
-        },
-        layout_xl: {
-            rows: Vector.of('1fr'),
-            columns: Vector.of('1fr', '1fr'),
-            areas: Vector.of()
-        }
-    })
-}
+const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-8 h-6 rounded-sm inline-block`
