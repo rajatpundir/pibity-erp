@@ -514,20 +514,27 @@ export default function Products() {
                                                     )
                                                 })
                                             }
-                                            <Button
-                                            onClick={ async () => {
+                                            <button onClick={async () => {
                                                 dispatch({
                                                     type: 'query',
                                                     payload: ['variableName', operator, [...values, '']]
                                                 })
-                                            }}>+</Button>
-                                            <Button
-                                            onClick={ async () => {
+                                            }}
+                                                className="focus:outline-none">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                                                </svg>
+                                            </button>
+                                            <button onClick={async () => {
                                                 dispatch({
                                                     type: 'query',
                                                     payload: ['variableName', operator, [...values.slice(0, values.length - 1)]]
                                                 })
-                                            }}>-</Button>
+                                            }} className="focus:outline-none">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+                                                </svg>
+                                            </button>
                                         </>)
                                     }
                                     return
