@@ -18,34 +18,15 @@ type State = Immutable<{
     page: string
 }>
 
-type Q = 
-| ['variableName', 'checked', boolean ]
-| ['variableName', 'operator', 'equals' | 'like', string]
-| ['variableName', 'operator', 'between' | 'notBetween', [string, string]]
-| ['variableName', 'operator', 'in', Array<string>]
-| ['variableName', 'equals' | 'like', string]
-| ['variableName', 'between' | 'notBetween', [string, string]]
-| ['variableName', 'in', Array<string>]
-| ['values', string, 'checked', boolean]
-| ['values', string, 'operator', 'equals' | 'like', string]
-| ['values', string, 'operator', 'between' | 'notBetween', [string, string]]
-| ['values', string, 'operator', 'in', Array<string>]
-| ['values', string, 'equals' | 'like', string]
-| ['values', string, 'between' | 'notBetween', [string, string]]
-| ['values', string, 'in', Array<string>]
-| ['values', string, 'operator', 'equals' | 'greaterThanEquals' | 'greaterThan' | 'lessThanEquals' | 'lessThan', number]
-| ['values', string, 'operator', 'between' | 'notBetween', [number, number]]
-| ['values', string, 'operator', 'in', Array<number>]
-| ['values', string, 'equals' | 'greaterThanEquals' | 'greaterThan' | 'lessThanEquals' | 'lessThan', number]
-| ['values', string, 'between' | 'notBetween', [number, number]]
-| ['values', string, 'in', Array<number>]
-| ['values', string, 'equals', boolean]
-| ['values', string, Q]
 
 export type Action =
     | {
-        type: 'reset' | 'query' | 'limit' | 'offset' | 'page'
-        payload: string | number | Q
+        type: 'reset' | 'limit' | 'offset' | 'page'
+        payload: string | number
+    }
+    | {
+        type: 'query'
+        payload: Q
     }
 
 export type Query = {
@@ -187,6 +168,84 @@ export type Query = {
     }
 }
 
+type Q =
+    | ['variableName', 'checked', boolean]
+    | ['variableName', 'operator', 'equals' | 'like', string]
+    | ['variableName', 'operator', 'between' | 'notBetween', [string, string]]
+    | ['variableName', 'operator', 'in', Array<string>]
+    | ['variableName', 'equals' | 'like', string]
+    | ['variableName', 'between' | 'notBetween', [string, string]]
+    | ['variableName', 'in', Array<string>]
+    | ['values', string, 'checked', boolean]
+    | ['values', string, 'operator', 'equals' | 'like', string]
+    | ['values', string, 'operator', 'between' | 'notBetween', [string, string]]
+    | ['values', string, 'operator', 'in', Array<string>]
+    | ['values', string, 'equals' | 'like', string]
+    | ['values', string, 'between' | 'notBetween', [string, string]]
+    | ['values', string, 'in', Array<string>]
+    | ['values', string, 'operator', 'equals' | 'greaterThanEquals' | 'greaterThan' | 'lessThanEquals' | 'lessThan', number]
+    | ['values', string, 'operator', 'between' | 'notBetween', [number, number]]
+    | ['values', string, 'operator', 'in', Array<number>]
+    | ['values', string, 'equals' | 'greaterThanEquals' | 'greaterThan' | 'lessThanEquals' | 'lessThan', number]
+    | ['values', string, 'between' | 'notBetween', [number, number]]
+    | ['values', string, 'in', Array<number>]
+    | ['values', string, 'equals', boolean]
+    | ['values', string, Q]
+
+function updateQuery(query: Query, args: Q) {
+    console.log(query, args)
+    switch (args[0]) {
+        case 'variableName': {
+            switch (args[1]) {
+                case 'checked': {
+                    query.variableName.checked = args[2]
+                    return
+                }
+                case 'operator': {
+                    query.variableName.operator = args[2]
+                    query.variableName.value = args[3]
+                    return
+                }
+                default: {
+                    console.log('----------------')
+                    query.variableName.value = args[2]
+                    return
+                }
+            }
+        }
+        case 'values': {
+            if (args[1] in query.values) {
+                const value = query.values[args[1]]
+                switch (args[2]) {
+                    case 'checked': {
+                        value.checked = args[3]
+                        return
+                    }
+                    case 'operator': {
+                        if ('operator' in value) {
+                            value.operator = args[3]
+                            value.value = args[4]
+                        }
+                        return
+                    }
+                    default: {
+                        if ('operator' in value) {
+                            if (!Array.isArray(args[2]) && args[3] !== undefined) {
+                                value.value = args[3]
+                            }
+                        } else {
+                            if (Array.isArray(args[2])) {
+                                updateQuery(value.value, args[2])
+                            }
+                        }
+                    }
+                }
+            }
+            return
+        }
+    }
+}
+
 const initialState: State = {
     typeName: 'Product',
     query: Object.keys(types['Product'].keys).reduce((acc: Query, keyName: string) => {
@@ -289,9 +348,10 @@ function reducer(state: Draft<State>, action: Action) {
         case 'reset':
             return initialState;
         case 'query': {
-            // if (typeof action.payload == 'object') {
-            //     state.query = action.payload
-            // }
+            console.log('query')
+            if (typeof action.payload == 'object') {
+                updateQuery(state.query, action.payload)
+            }
             return;
         }
         case 'limit': {
@@ -325,8 +385,6 @@ export default function Products() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
     const variables = store(state => state.variables.Product)
 
-    console.log(state.query)
-
     const columns: Vector<string> = Vector.of("SKU", "Name", "Orderable", "Consumable", "Producable")
     return (
         <Container area={none} layout={Grid.layouts.main}>
@@ -335,7 +393,7 @@ export default function Products() {
                 <Cell row="1/2" column="2/3">variableName</Cell>
                 <Cell row="1/2" column="3/4">
                     <select value={state.query.variableName.operator}>
-                        <option value="equals">EQUALS</option>
+                        <option value="equals">=</option>
                         <option value="like">LIKE</option>
                         <option value="between">BETWEEN</option>
                         <option value="notBetween">NOT BETWEEN</option>
@@ -343,7 +401,14 @@ export default function Products() {
                     </select>
                 </Cell>
                 <Cell row="1/2" column="4/5">
-                    <Input value={state.query.variableName.value}></Input>
+                    <Input value={state.query.variableName.value}
+                        onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                            dispatch({
+                                type: 'query',
+                                payload: ['variableName', 'equals', event.target.value]
+                            })
+                        }}
+                    />
                 </Cell>
                 {
                     Object.keys(state.query.values).flatMap((keyName, index) => {
@@ -356,7 +421,7 @@ export default function Products() {
                                         <Cell row={`${index + 2}/${index + 3}`} column="2/3">{keyName}</Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="3/4">
                                             <select value={value.operator}>
-                                                <option value="equals">EQUALS</option>
+                                                <option value="equals">=</option>
                                                 <option value="like">LIKE</option>
                                                 <option value="between">BETWEEN</option>
                                                 <option value="notBetween">NOT BETWEEN</option>
@@ -364,7 +429,14 @@ export default function Products() {
                                             </select>
                                         </Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="4/5">
-                                            <Input value={state.query.variableName.value}></Input>
+                                            <Input value={state.query.variableName.value}
+                                                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                    dispatch({
+                                                        type: 'query',
+                                                        payload: ['variableName', 'equals', event.target.value]
+                                                    })
+                                                }}
+                                            />
                                         </Cell>
                                     </>)
                                 }
@@ -374,8 +446,11 @@ export default function Products() {
                                         <Cell row={`${index + 2}/${index + 3}`} column="2/3">{keyName}</Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="3/4">
                                             <select value={value.operator}>
-                                                <option value="equals">EQUALS</option>
-                                                <option value="like">LIKE</option>
+                                                <option value="lessThan">&#60;</option>
+                                                <option value="lessThanEquals">&#8804;</option>
+                                                <option value="equals">=</option>
+                                                <option value="greaterThanEquals">&#8805;</option>
+                                                <option value="greaterThan">&#62;</option>
                                                 <option value="between">BETWEEN</option>
                                                 <option value="notBetween">NOT BETWEEN</option>
                                                 <option value="in">IN</option>
@@ -392,8 +467,11 @@ export default function Products() {
                                         <Cell row={`${index + 2}/${index + 3}`} column="2/3">{keyName}</Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="3/4">
                                             <select value={value.operator}>
-                                                <option value="equals">EQUALS</option>
-                                                <option value="like">LIKE</option>
+                                                <option value="lessThan">&#60;</option>
+                                                <option value="lessThanEquals">&#8804;</option>
+                                                <option value="equals">=</option>
+                                                <option value="greaterThanEquals">&#8805;</option>
+                                                <option value="greaterThan">&#62;</option>
                                                 <option value="between">BETWEEN</option>
                                                 <option value="notBetween">NOT BETWEEN</option>
                                                 <option value="in">IN</option>
@@ -410,15 +488,17 @@ export default function Products() {
                                         <Cell row={`${index + 2}/${index + 3}`} column="2/3">{keyName}</Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="3/4">
                                             <select value={value.operator}>
-                                                <option value="equals">EQUALS</option>
-                                                <option value="like">LIKE</option>
-                                                <option value="between">BETWEEN</option>
-                                                <option value="notBetween">NOT BETWEEN</option>
-                                                <option value="in">IN</option>
+                                                <option value="equals">=</option>
                                             </select>
                                         </Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="4/5">
-                                        <Switch color='primary' checked={value.value} name='producable' />
+                                            <Switch color='primary' checked={value.value} name='producable'
+                                            onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                dispatch({
+                                                    type: 'query',
+                                                    payload: ['values', keyName,'equals', event.target.checked]
+                                                })
+                                            }} />
                                         </Cell>
                                     </>)
                                 }
@@ -428,8 +508,11 @@ export default function Products() {
                                         <Cell row={`${index + 2}/${index + 3}`} column="2/3">{keyName}</Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="3/4">
                                             <select value={value.operator}>
-                                                <option value="equals">EQUALS</option>
-                                                <option value="like">LIKE</option>
+                                                <option value="lessThan">&#60;</option>
+                                                <option value="lessThanEquals">&#8804;</option>
+                                                <option value="equals">=</option>
+                                                <option value="greaterThanEquals">&#8805;</option>
+                                                <option value="greaterThan">&#62;</option>
                                                 <option value="between">BETWEEN</option>
                                                 <option value="notBetween">NOT BETWEEN</option>
                                                 <option value="in">IN</option>
@@ -446,8 +529,11 @@ export default function Products() {
                                         <Cell row={`${index + 2}/${index + 3}`} column="2/3">{keyName}</Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="3/4">
                                             <select value={value.operator}>
-                                                <option value="equals">EQUALS</option>
-                                                <option value="like">LIKE</option>
+                                                <option value="lessThan">&#60;</option>
+                                                <option value="lessThanEquals">&#8804;</option>
+                                                <option value="equals">=</option>
+                                                <option value="greaterThanEquals">&#8805;</option>
+                                                <option value="greaterThan">&#62;</option>
                                                 <option value="between">BETWEEN</option>
                                                 <option value="notBetween">NOT BETWEEN</option>
                                                 <option value="in">IN</option>
@@ -464,8 +550,11 @@ export default function Products() {
                                         <Cell row={`${index + 2}/${index + 3}`} column="2/3">{keyName}</Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="3/4">
                                             <select value={value.operator}>
-                                                <option value="equals">EQUALS</option>
-                                                <option value="like">LIKE</option>
+                                                <option value="lessThan">&#60;</option>
+                                                <option value="lessThanEquals">&#8804;</option>
+                                                <option value="equals">=</option>
+                                                <option value="greaterThanEquals">&#8805;</option>
+                                                <option value="greaterThan">&#62;</option>
                                                 <option value="between">BETWEEN</option>
                                                 <option value="notBetween">NOT BETWEEN</option>
                                                 <option value="in">IN</option>
