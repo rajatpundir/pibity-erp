@@ -635,7 +635,7 @@ export default function Products() {
                                                                 const values = value.value
                                                                 return (<>
                                                                     {
-                                                                        value.value.map((value, index) => {
+                                                                        value.value.map((v, index) => {
                                                                             return (
                                                                                 <Input value={values[index]}
                                                                                     onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -682,10 +682,12 @@ export default function Products() {
                                                                         </svg>
                                                                     </button>
                                                                     <button onClick={async () => {
-                                                                        dispatch({
-                                                                            type: 'query',
-                                                                            payload: ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
-                                                                        })
+                                                                        if (values.length !== 1) {
+                                                                            dispatch({
+                                                                                type: 'query',
+                                                                                payload: ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
+                                                                            })
+                                                                        }
                                                                     }} className="focus:outline-none">
                                                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
@@ -804,7 +806,7 @@ export default function Products() {
                                                                 const values = value.value
                                                                 return (<>
                                                                     {
-                                                                        value.value.map((value, index) => {
+                                                                        value.value.map((v, index) => {
                                                                             return (
                                                                                 <Input type='number' value={values[index]}
                                                                                     onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -851,10 +853,12 @@ export default function Products() {
                                                                         </svg>
                                                                     </button>
                                                                     <button onClick={async () => {
-                                                                        dispatch({
-                                                                            type: 'query',
-                                                                            payload: ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
-                                                                        })
+                                                                        if (values.length !== 1) {
+                                                                            dispatch({
+                                                                                type: 'query',
+                                                                                payload: ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
+                                                                            })
+                                                                        }
                                                                     }} className="focus:outline-none">
                                                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
@@ -973,7 +977,7 @@ export default function Products() {
                                                                 const values = value.value
                                                                 return (<>
                                                                     {
-                                                                        value.value.map((value, index) => {
+                                                                        value.value.map((v, index) => {
                                                                             return (
                                                                                 <Input type='number' value={values[index]}
                                                                                     onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -991,7 +995,7 @@ export default function Products() {
                                                                                                 type: 'query',
                                                                                                 payload: ['values', keyName, operator,
                                                                                                     [...values.slice(0, index),
-                                                                                                        Number(event.target.value)
+                                                                                                    Number(event.target.value)
                                                                                                     ]]
                                                                                             })
                                                                                         } else {
@@ -999,7 +1003,7 @@ export default function Products() {
                                                                                                 type: 'query',
                                                                                                 payload: ['values', keyName, operator,
                                                                                                     [...values.slice(0, index),
-                                                                                                        Number(event.target.value),
+                                                                                                    Number(event.target.value),
                                                                                                     ...values.slice(index + 1, values.length)
                                                                                                     ]]
                                                                                             })
@@ -1020,10 +1024,12 @@ export default function Products() {
                                                                         </svg>
                                                                     </button>
                                                                     <button onClick={async () => {
-                                                                        dispatch({
-                                                                            type: 'query',
-                                                                            payload: ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
-                                                                        })
+                                                                        if (values.length !== 1) {
+                                                                            dispatch({
+                                                                                type: 'query',
+                                                                                payload: ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
+                                                                            })
+                                                                        }
                                                                     }} className="focus:outline-none">
                                                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
@@ -1041,7 +1047,19 @@ export default function Products() {
                                 }
                                 case 'Boolean': {
                                     return (<>
-                                        <Cell row={`${index + 2}/${index + 3}`} column="1/2">{value.checked ? 'Yes' : 'No'}</Cell>
+                                        <Cell row={`${index + 2}/${index + 3}`} column="1/2">
+                                            <Checkbox
+                                                checked={value.checked}
+                                                color='primary'
+                                                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                    dispatch({
+                                                        type: 'query',
+                                                        payload: ['values', keyName, 'checked', event.target.checked]
+                                                    })
+                                                }}
+                                            />
+                                        </Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="2/3">{keyName}</Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="3/4">
                                             <select value={value.operator}>
@@ -1061,10 +1079,53 @@ export default function Products() {
                                 }
                                 case 'Date': {
                                     return (<>
-                                        <Cell row={`${index + 2}/${index + 3}`} column="1/2">{value.checked ? 'Yes' : 'No'}</Cell>
+                                        <Cell row={`${index + 2}/${index + 3}`} column="1/2">
+                                            <Checkbox
+                                                checked={value.checked}
+                                                color='primary'
+                                                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                    dispatch({
+                                                        type: 'query',
+                                                        payload: ['values', keyName, 'checked', event.target.checked]
+                                                    })
+                                                }}
+                                            />
+                                        </Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="2/3">{keyName}</Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="3/4">
-                                            <select value={value.operator}>
+                                            <select value={value.operator}
+                                                onChange={async (event) => {
+                                                    switch (event.target.value) {
+                                                        case 'lessThan':
+                                                        case 'lessThanEquals':
+                                                        case 'equals':
+                                                        case 'greaterThanEquals':
+                                                        case 'greaterThan': {
+                                                            dispatch({
+                                                                type: 'query',
+                                                                payload: ['values', keyName, 'operator', event.target.value, 0]
+                                                            })
+                                                            return
+                                                        }
+                                                        case 'between':
+                                                        case 'notBetween': {
+                                                            dispatch({
+                                                                type: 'query',
+                                                                payload: ['values', keyName, 'operator', event.target.value, [0, 0]]
+                                                            })
+                                                            return
+                                                        }
+                                                        case 'in': {
+                                                            dispatch({
+                                                                type: 'query',
+                                                                payload: ['values', keyName, 'operator', event.target.value, [0]]
+                                                            })
+                                                            return
+                                                        }
+                                                    }
+                                                }}
+                                            >
                                                 <option value="lessThan">&#60;</option>
                                                 <option value="lessThanEquals">&#8804;</option>
                                                 <option value="equals">=</option>
@@ -1076,13 +1137,132 @@ export default function Products() {
                                             </select>
                                         </Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="4/5">
-                                            <Input value={state.query.variableName.value}></Input>
+                                            {
+                                                (() => {
+                                                    const operator = value.operator
+                                                    switch (operator) {
+                                                        case 'lessThan':
+                                                        case 'lessThanEquals':
+                                                        case 'equals':
+                                                        case 'greaterThanEquals':
+                                                        case 'greaterThan': {
+                                                            return (<Input type='number' value={value.value as number}
+                                                                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                                    dispatch({
+                                                                        type: 'query',
+                                                                        payload: ['values', keyName, operator, parseInt(event.target.value)]
+                                                                    })
+                                                                }} />)
+                                                        }
+                                                        case 'between':
+                                                        case 'notBetween': {
+                                                            return (
+                                                                <>
+                                                                    <Input type='number' value={value.value[0]}
+                                                                        onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                                            dispatch({
+                                                                                type: 'query',
+                                                                                payload: ['values', keyName, operator, [parseInt(event.target.value), value.value[1]]]
+                                                                            })
+                                                                        }} />
+                                                                    <Input type='number' value={value.value[1]}
+                                                                        onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                                            dispatch({
+                                                                                type: 'query',
+                                                                                payload: ['values', keyName, operator, [value.value[0], parseInt(event.target.value)]]
+                                                                            })
+                                                                        }} />
+                                                                </>
+                                                            )
+                                                        }
+                                                        case 'in': {
+                                                            if (value.operator === "in") {
+                                                                const values = value.value
+                                                                return (<>
+                                                                    {
+                                                                        value.value.map((v, index) => {
+                                                                            return (
+                                                                                <Input type='number' value={values[index]}
+                                                                                    onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                                                        if (index === 0) {
+                                                                                            dispatch({
+                                                                                                type: 'query',
+                                                                                                payload: ['values', keyName, operator,
+                                                                                                    [
+                                                                                                        parseInt(event.target.value),
+                                                                                                        ...values.slice(index + 1, values.length)
+                                                                                                    ]]
+                                                                                            })
+                                                                                        } else if (index === values.length - 1) {
+                                                                                            dispatch({
+                                                                                                type: 'query',
+                                                                                                payload: ['values', keyName, operator,
+                                                                                                    [...values.slice(0, index),
+                                                                                                    parseInt(event.target.value)
+                                                                                                    ]]
+                                                                                            })
+                                                                                        } else {
+                                                                                            dispatch({
+                                                                                                type: 'query',
+                                                                                                payload: ['values', keyName, operator,
+                                                                                                    [...values.slice(0, index),
+                                                                                                    parseInt(event.target.value),
+                                                                                                    ...values.slice(index + 1, values.length)
+                                                                                                    ]]
+                                                                                            })
+                                                                                        }
+                                                                                    }} />
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                    <button onClick={async () => {
+                                                                        dispatch({
+                                                                            type: 'query',
+                                                                            payload: ['values', keyName, operator, [...values, 0]]
+                                                                        })
+                                                                    }}
+                                                                        className="focus:outline-none">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                                                                        </svg>
+                                                                    </button>
+                                                                    <button onClick={async () => {
+                                                                        if (values.length !== 1) {
+                                                                            dispatch({
+                                                                                type: 'query',
+                                                                                payload: ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
+                                                                            })
+                                                                        }
+                                                                    }} className="focus:outline-none">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+                                                                        </svg>
+                                                                    </button>
+                                                                </>)
+                                                            }
+                                                            return
+                                                        }
+                                                    }
+                                                })()
+                                            }
                                         </Cell>
                                     </>)
                                 }
                                 case 'Timestamp': {
                                     return (<>
-                                        <Cell row={`${index + 2}/${index + 3}`} column="1/2">{value.checked ? 'Yes' : 'No'}</Cell>
+                                        <Cell row={`${index + 2}/${index + 3}`} column="1/2">
+                                            <Checkbox
+                                                checked={value.checked}
+                                                color='primary'
+                                                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                    dispatch({
+                                                        type: 'query',
+                                                        payload: ['values', keyName, 'checked', event.target.checked]
+                                                    })
+                                                }}
+                                            />
+                                        </Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="2/3">{keyName}</Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="3/4">
                                             <select value={value.operator}>
@@ -1103,7 +1283,19 @@ export default function Products() {
                                 }
                                 case 'Time': {
                                     return (<>
-                                        <Cell row={`${index + 2}/${index + 3}`} column="1/2">{value.checked ? 'Yes' : 'No'}</Cell>
+                                        <Cell row={`${index + 2}/${index + 3}`} column="1/2">
+                                            <Checkbox
+                                                checked={value.checked}
+                                                color='primary'
+                                                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                    dispatch({
+                                                        type: 'query',
+                                                        payload: ['values', keyName, 'checked', event.target.checked]
+                                                    })
+                                                }}
+                                            />
+                                        </Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="2/3">{keyName}</Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="3/4">
                                             <select value={value.operator}>
