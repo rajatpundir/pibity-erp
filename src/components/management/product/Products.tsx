@@ -9,7 +9,6 @@ import { Vector } from 'prelude-ts'
 import { types, Key } from '../../../main/types'
 import Switch from '@material-ui/core/Switch'
 import Checkbox from '@material-ui/core/Checkbox'
-import { button } from './grids/Product'
 
 type State = Immutable<{
     typeName: 'Product'
@@ -374,11 +373,6 @@ function reducer(state: Draft<State>, action: Action) {
     }
 }
 
-
-{/* <Checkbox checked={state.query.variableName.checked}
-// onChange={handleChange}
-inputProps={{ 'aria-label': 'secondary checkbox' }}/> */}
-
 export default function Products() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
     const variables = store(state => state.variables.Product)
@@ -475,7 +469,7 @@ export default function Products() {
                                     )
                                 }
                                 case 'in': {
-                                    if (state.query.variableName.operator == "in") {
+                                    if (state.query.variableName.operator === "in") {
                                         const values = state.query.variableName.value
                                         return (<>
                                             {
@@ -550,7 +544,19 @@ export default function Products() {
                             switch (value.type) {
                                 case 'Text': {
                                     return (<>
-                                        <Cell row={`${index + 2}/${index + 3}`} column="1/2">{value.checked ? 'Yes' : 'No'}</Cell>
+                                        <Cell row={`${index + 2}/${index + 3}`} column="1/2">
+                                            <Checkbox
+                                                checked={value.checked}
+                                                color='primary'
+                                                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                    dispatch({
+                                                        type: 'query',
+                                                        payload: ['values', keyName, 'checked', event.target.checked]
+                                                    })
+                                                }}
+                                            />
+                                        </Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="2/3">{keyName}</Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="3/4">
                                             <select value={value.operator}>
@@ -699,10 +705,8 @@ export default function Products() {
                                     </>)
                                 }
                             }
-                        } else {
-                            return
                         }
-
+                        return []
                     })
                 }
             </TableContainer>
@@ -715,5 +719,3 @@ export default function Products() {
 }
 
 const Title = tw.div`py-8 text-4xl text-gray-800 font-bold mx-1`
-
-const Button = tw.button`bg-gray-900 text-white text-center font-bold p-2 mx-1 uppercase w-40 h-full max-w-sm rounded-lg focus:outline-none`
