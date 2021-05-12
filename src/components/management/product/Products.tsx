@@ -782,18 +782,18 @@ export default function Products() {
                                                         case 'notBetween': {
                                                             return (
                                                                 <>
-                                                                    <Input value={value.value[0]}
+                                                                    <Input type='number' value={value.value[0]}
                                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                             dispatch({
                                                                                 type: 'query',
-                                                                                payload: ['values', keyName, operator, [parseInt(event.target.value || '0'), value.value[1]]]
+                                                                                payload: ['values', keyName, operator, [parseInt(event.target.value), value.value[1]]]
                                                                             })
                                                                         }} />
-                                                                    <Input value={value.value[1]}
+                                                                    <Input type='number' value={value.value[1]}
                                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                             dispatch({
                                                                                 type: 'query',
-                                                                                payload: ['values', keyName, operator, [value.value[0], parseInt(event.target.value || '0')]]
+                                                                                payload: ['values', keyName, operator, [value.value[0], parseInt(event.target.value)]]
                                                                             })
                                                                         }} />
                                                                 </>
@@ -806,14 +806,14 @@ export default function Products() {
                                                                     {
                                                                         value.value.map((value, index) => {
                                                                             return (
-                                                                                <Input value={values[index]}
+                                                                                <Input type='number' value={values[index]}
                                                                                     onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                                         if (index === 0) {
                                                                                             dispatch({
                                                                                                 type: 'query',
                                                                                                 payload: ['values', keyName, operator,
                                                                                                     [
-                                                                                                        parseInt(event.target.value || '0'),
+                                                                                                        parseInt(event.target.value),
                                                                                                         ...values.slice(index + 1, values.length)
                                                                                                     ]]
                                                                                             })
@@ -822,7 +822,7 @@ export default function Products() {
                                                                                                 type: 'query',
                                                                                                 payload: ['values', keyName, operator,
                                                                                                     [...values.slice(0, index),
-                                                                                                    parseInt(event.target.value || '0')
+                                                                                                    parseInt(event.target.value)
                                                                                                     ]]
                                                                                             })
                                                                                         } else {
@@ -830,7 +830,7 @@ export default function Products() {
                                                                                                 type: 'query',
                                                                                                 payload: ['values', keyName, operator,
                                                                                                     [...values.slice(0, index),
-                                                                                                    parseInt(event.target.value || '0'),
+                                                                                                    parseInt(event.target.value),
                                                                                                     ...values.slice(index + 1, values.length)
                                                                                                     ]]
                                                                                             })
@@ -943,7 +943,7 @@ export default function Products() {
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, parseFloat(event.target.value)]
+                                                                        payload: ['values', keyName, operator, Number(event.target.value)]
                                                                     })
                                                                 }} />)
                                                         }
@@ -951,18 +951,18 @@ export default function Products() {
                                                         case 'notBetween': {
                                                             return (
                                                                 <>
-                                                                    <Input value={value.value[0]}
+                                                                    <Input type='number' value={value.value[0]}
                                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                             dispatch({
                                                                                 type: 'query',
-                                                                                payload: ['values', keyName, operator, [parseFloat(event.target.value || '0'), value.value[1]]]
+                                                                                payload: ['values', keyName, operator, [Number(event.target.value || '0'), value.value[1]]]
                                                                             })
                                                                         }} />
-                                                                    <Input value={value.value[1]}
+                                                                    <Input type='number' value={value.value[1]}
                                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                             dispatch({
                                                                                 type: 'query',
-                                                                                payload: ['values', keyName, operator, [value.value[0], parseFloat(event.target.value || '0')]]
+                                                                                payload: ['values', keyName, operator, [value.value[0], Number(event.target.value || '0')]]
                                                                             })
                                                                         }} />
                                                                 </>
@@ -975,14 +975,14 @@ export default function Products() {
                                                                     {
                                                                         value.value.map((value, index) => {
                                                                             return (
-                                                                                <Input value={values[index]}
+                                                                                <Input type='number' value={values[index]}
                                                                                     onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                                         if (index === 0) {
                                                                                             dispatch({
                                                                                                 type: 'query',
                                                                                                 payload: ['values', keyName, operator,
                                                                                                     [
-                                                                                                        parseFloat(event.target.value || '0'),
+                                                                                                        Number(event.target.value || '0'),
                                                                                                         ...values.slice(index + 1, values.length)
                                                                                                     ]]
                                                                                             })
@@ -991,7 +991,7 @@ export default function Products() {
                                                                                                 type: 'query',
                                                                                                 payload: ['values', keyName, operator,
                                                                                                     [...values.slice(0, index),
-                                                                                                    parseFloat(event.target.value || '0')
+                                                                                                        Number(event.target.value || '0')
                                                                                                     ]]
                                                                                             })
                                                                                         } else {
@@ -999,7 +999,7 @@ export default function Products() {
                                                                                                 type: 'query',
                                                                                                 payload: ['values', keyName, operator,
                                                                                                     [...values.slice(0, index),
-                                                                                                    parseFloat(event.target.value || '0'),
+                                                                                                        Number(event.target.value || '0'),
                                                                                                     ...values.slice(index + 1, values.length)
                                                                                                     ]]
                                                                                             })
