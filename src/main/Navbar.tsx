@@ -62,7 +62,7 @@ export default function Navbar() {
             {
                 Object.keys(navbar).map((module, index) => {
                     return (<>
-                        <li key={module} className="py-2">
+                        <li key={module} className="py-2 mb-1 border-gray-800 border-t-2">
                             <div className="m-2 font-bold text-lg">
                                 {icons[index]} {module}
                             </div>
