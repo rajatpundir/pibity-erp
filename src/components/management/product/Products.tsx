@@ -9,6 +9,7 @@ import { Vector } from 'prelude-ts'
 import { types, Key } from '../../../main/types'
 import Switch from '@material-ui/core/Switch'
 import Checkbox from '@material-ui/core/Checkbox'
+import { button } from './grids/Product'
 
 type State = Immutable<{
     typeName: 'Product'
@@ -193,7 +194,6 @@ type Q =
     | ['values', string, Q]
 
 function updateQuery(query: Query, args: Q) {
-    console.log(query, args)
     switch (args[0]) {
         case 'variableName': {
             switch (args[1]) {
@@ -207,7 +207,6 @@ function updateQuery(query: Query, args: Q) {
                     return
                 }
                 default: {
-                    console.log('----------------')
                     query.variableName.value = args[2]
                     return
                 }
@@ -348,7 +347,6 @@ function reducer(state: Draft<State>, action: Action) {
         case 'reset':
             return initialState;
         case 'query': {
-            console.log('query')
             if (typeof action.payload == 'object') {
                 updateQuery(state.query, action.payload)
             }
@@ -389,10 +387,50 @@ export default function Products() {
     return (
         <Container area={none} layout={Grid.layouts.main}>
             <TableContainer area={Grid.query}>
-                <Cell row="1/2" column="1/2">{state.query.variableName.checked ? 'Yes' : 'No'}</Cell>
-                <Cell row="1/2" column="2/3">variableName</Cell>
+                <Cell row="1/2" column="1/2">
+                    <Checkbox
+                        checked={state.query.variableName.checked}
+                        color='primary'
+                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                        onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                            dispatch({
+                                type: 'query',
+                                payload: ['variableName', 'checked', event.target.checked]
+                            })
+                        }}
+                    />
+                </Cell>
+                <Cell row="1/2" column="2/3">SKU</Cell>
                 <Cell row="1/2" column="3/4">
-                    <select value={state.query.variableName.operator}>
+                    <select value={state.query.variableName.operator}
+                        onChange={async (event) => {
+                            switch (event.target.value) {
+                                case 'equals':
+                                case 'like': {
+                                    dispatch({
+                                        type: 'query',
+                                        payload: ['variableName', 'operator', event.target.value, '']
+                                    })
+                                    return
+                                }
+                                case 'between':
+                                case 'notBetween': {
+                                    dispatch({
+                                        type: 'query',
+                                        payload: ['variableName', 'operator', event.target.value, ['', '']]
+                                    })
+                                    return
+                                }
+                                case 'in': {
+                                    dispatch({
+                                        type: 'query',
+                                        payload: ['variableName', 'operator', event.target.value, ['']]
+                                    })
+                                    return
+                                }
+                            }
+                        }}
+                    >
                         <option value="equals">=</option>
                         <option value="like">LIKE</option>
                         <option value="between">BETWEEN</option>
@@ -401,14 +439,102 @@ export default function Products() {
                     </select>
                 </Cell>
                 <Cell row="1/2" column="4/5">
-                    <Input value={state.query.variableName.value}
-                        onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                            dispatch({
-                                type: 'query',
-                                payload: ['variableName', 'equals', event.target.value]
-                            })
-                        }}
-                    />
+                    {
+                        (() => {
+                            const operator = state.query.variableName.operator
+                            switch (operator) {
+                                case 'equals':
+                                case 'like': {
+                                    return (<Input value={state.query.variableName.value}
+                                        onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                            dispatch({
+                                                type: 'query',
+                                                payload: ['variableName', operator, event.target.value]
+                                            })
+                                        }} />)
+                                }
+                                case 'between':
+                                case 'notBetween': {
+                                    return (
+                                        <>
+                                            <Input value={state.query.variableName.value[0]}
+                                                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                    dispatch({
+                                                        type: 'query',
+                                                        payload: ['variableName', operator, [event.target.value, state.query.variableName.value[1]]]
+                                                    })
+                                                }} />
+                                            <Input value={state.query.variableName.value[1]}
+                                                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                    dispatch({
+                                                        type: 'query',
+                                                        payload: ['variableName', operator, [state.query.variableName.value[0], event.target.value]]
+                                                    })
+                                                }} />
+                                        </>
+                                    )
+                                }
+                                case 'in': {
+                                    if (state.query.variableName.operator == "in") {
+                                        const values = state.query.variableName.value
+                                        return (<>
+                                            {
+                                                state.query.variableName.value.map((value, index) => {
+                                                    return (
+                                                        <Input value={state.query.variableName.value[index]}
+                                                            onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                                if (index === 0) {
+                                                                    dispatch({
+                                                                        type: 'query',
+                                                                        payload: ['variableName', operator,
+                                                                            [
+                                                                                event.target.value,
+                                                                                ...values.slice(index + 1, state.query.variableName.value.length)
+                                                                            ]]
+                                                                    })
+                                                                } else if (index === values.length - 1) {
+                                                                    dispatch({
+                                                                        type: 'query',
+                                                                        payload: ['variableName', operator,
+                                                                            [...values.slice(0, index),
+                                                                            event.target.value
+                                                                            ]]
+                                                                    })
+                                                                } else {
+                                                                    dispatch({
+                                                                        type: 'query',
+                                                                        payload: ['variableName', operator,
+                                                                            [...values.slice(0, index),
+                                                                            event.target.value,
+                                                                            ...values.slice(index + 1, state.query.variableName.value.length)
+                                                                            ]]
+                                                                    })
+                                                                }
+                                                            }} />
+                                                    )
+                                                })
+                                            }
+                                            <Button
+                                            onClick={ async () => {
+                                                dispatch({
+                                                    type: 'query',
+                                                    payload: ['variableName', operator, [...values, '']]
+                                                })
+                                            }}>+</Button>
+                                            <Button
+                                            onClick={ async () => {
+                                                dispatch({
+                                                    type: 'query',
+                                                    payload: ['variableName', operator, [...values.slice(0, values.length - 1)]]
+                                                })
+                                            }}>-</Button>
+                                        </>)
+                                    }
+                                    return
+                                }
+                            }
+                        })()
+                    }
                 </Cell>
                 {
                     Object.keys(state.query.values).flatMap((keyName, index) => {
@@ -493,12 +619,12 @@ export default function Products() {
                                         </Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="4/5">
                                             <Switch color='primary' checked={value.value} name='producable'
-                                            onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                dispatch({
-                                                    type: 'query',
-                                                    payload: ['values', keyName,'equals', event.target.checked]
-                                                })
-                                            }} />
+                                                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                    dispatch({
+                                                        type: 'query',
+                                                        payload: ['values', keyName, 'equals', event.target.checked]
+                                                    })
+                                                }} />
                                         </Cell>
                                     </>)
                                 }
@@ -582,3 +708,5 @@ export default function Products() {
 }
 
 const Title = tw.div`py-8 text-4xl text-gray-800 font-bold mx-1`
+
+const Button = tw.button`bg-gray-900 text-white text-center font-bold p-2 mx-1 uppercase w-40 h-full max-w-sm rounded-lg focus:outline-none`
