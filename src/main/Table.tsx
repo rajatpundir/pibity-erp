@@ -185,11 +185,11 @@ type TableProps = {
     state: Immutable<{
         limit: number
         offset: number
-        page: string
+        page: number
     }>
     dispatch: React.Dispatch<{
         type: 'limit' | 'offset' | 'page'
-        payload: string | number
+        payload: number
     }>
     variables: Vector<any>
     columns: Vector<string>
@@ -230,14 +230,14 @@ export function Table(props: TableProps) {
     const changePage = async (event: React.ChangeEvent<HTMLInputElement>) => {
         props.dispatch({
             type: 'page',
-            payload: event.target.value
+            payload: parseInt(event.target.value)
         })
     }
 
     const setPage = async (event: React.MouseEvent<HTMLButtonElement>) => {
         props.dispatch({
             type: 'offset',
-            payload: Math.min(Math.ceil(props.variables.length() / props.state.limit) - 1, parseInt(props.state.page) - 1)
+            payload: Math.min(Math.ceil(props.variables.length() / props.state.limit) - 1, parseInt(String(props.state.page)) - 1)
         })
     }
 
@@ -279,7 +279,7 @@ export function Table(props: TableProps) {
         <Container area={footer} layout={layouts.footer} className="bg-gray-100 border-l-2 border-r-2 border-b-2 border-gray-300">
             <Item align='center' className="mx-6">
                 <span className="mx-2">
-                    Page: <Input onChange={changePage} value={props.state.page} /> / {Math.ceil(props.variables.length() / props.state.limit)}
+                    Page: <Input type='number' onChange={changePage} value={props.state.page} /> / {Math.ceil(props.variables.length() / props.state.limit)}
                     <button onClick={setPage} className="align-text-bottom focus:outline-none">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -331,4 +331,4 @@ export function Table(props: TableProps) {
 
 const Column = tw.div`text-white font-medium text-xl py-3 text-left`
 
-export const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-8 h-6 rounded-sm inline-block`
+export const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-12 h-6 rounded-sm inline-block`

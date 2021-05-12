@@ -59,11 +59,11 @@ export const types: Types = {
             },
             orderable: {
                 order: 1,
-                type: 'Boolean'
+                type: 'Number'
             },
             consumable: {
                 order: 2,
-                type: 'Boolean'
+                type: 'Decimal'
             },
             producable: {
                 order: 3,
