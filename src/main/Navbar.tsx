@@ -63,14 +63,14 @@ export default function Navbar() {
                 Object.keys(navbar).map((module, index) => {
                     return (<>
                         <li key={module} className="py-2 mb-1 border-gray-800 border-t-2">
-                            <div className="m-2 font-bold text-lg">
+                            <div className="m-2 font-bold text-lg text-gray-50">
                                 {icons[index]} {module}
                             </div>
                             <ul className="px-7">
                                 {
                                     Object.keys(navbar[module]).map(key => {
-                                        return (<li key={key}>
-                                            <NavLink activeClassName="font-extrabold text-lg" to={navbar[module][key]}>{key}</NavLink>
+                                        return (<li key={key} className="whitespace-nowrap">
+                                            <NavLink activeClassName="font-extrabold text-lg text-white" to={navbar[module][key]}>{key}</NavLink>
                                         </li>)
                                     })
                                 }
