@@ -197,7 +197,26 @@ type Args =
     | ['values', string, 'equals', boolean]
     | ['values', string, Args]
 
+type S = ['values', string, undefined] | ['values', string, S]
+
+function R(x: S, args: Args): ['values', string, Args] {
+    if (x[2] === undefined) {
+        return ['values', x[1], args]
+    } else {
+        return ['values', x[1], R(x[2], args)]
+    }
+}
+
+function T(parent: S, keyName: string): S {
+    if (parent[2] === undefined) {
+        return (['values', parent[1], ['values', keyName, undefined]])
+    } else {
+        return (['values', parent[1], T(parent[2], keyName)])
+    }
+}
+
 function updateQuery(query: Query, args: Args) {
+    console.log(args)
     switch (args[0]) {
         case 'variableName': {
             switch (args[1]) {
@@ -249,10 +268,9 @@ function updateQuery(query: Query, args: Args) {
     }
 }
 
-const initialState: State = {
-    typeName: 'Product',
-    query: Object.keys(types['Product'].keys).reduce((acc: Query, keyName: string) => {
-        const key: Key = types['Product'].keys[keyName]
+function getQuery(typeName: string): Query {
+    return Object.keys(types[typeName].keys).reduce((acc: Query, keyName: string) => {
+        const key: Key = types[typeName].keys[keyName]
         switch (key.type) {
             case 'Text': {
                 acc.values[keyName] = {
@@ -321,14 +339,7 @@ const initialState: State = {
                 acc.values[keyName] = {
                     checked: false,
                     type: key.type,
-                    value: {
-                        variableName: {
-                            checked: false,
-                            operator: 'equals',
-                            value: ''
-                        },
-                        values: {}
-                    }
+                    value: getQuery(key.type)
                 }
                 return acc
             }
@@ -340,7 +351,12 @@ const initialState: State = {
             value: ''
         },
         values: {}
-    }),
+    })
+}
+
+const initialState: State = {
+    typeName: 'Product',
+    query: getQuery('PurchaseOrder'),
     limit: 5,
     offset: 0,
     page: 1
@@ -382,8 +398,10 @@ export default function Products() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
     const variables = store(state => state.variables.Product)
     const columns: Vector<string> = Vector.of("SKU", "Name", "Orderable", "Consumable", "Producable")
+    console.log('--------------------')
+    console.log(state.query)
     return (
-        <Container area={none} layout={Grid.layouts.main}>
+        <Container area={none} layout={Grid.layouts.main} className="overflow-x-scroll overflow-y-scroll">
             {
                 getFilter(state.query, dispatch)
             }
@@ -399,7 +417,7 @@ const Title = tw.div`py-8 text-4xl text-gray-800 font-bold mx-1`
 
 const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full h-6 rounded-sm inline-block`
 
-function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
+function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>, parent?: S) {
     return (<TableContainer area={Grid.query}>
         <Cell row="1/2" column="1/2">
             <Checkbox
@@ -409,12 +427,12 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                     dispatch({
                         type: 'query',
-                        payload: ['variableName', 'checked', event.target.checked]
+                        payload: parent ? R(parent, ['variableName', 'checked', event.target.checked]) : ['variableName', 'checked', event.target.checked]
                     })
                 }}
             />
         </Cell>
-        <Cell row="1/2" column="2/3">SKU</Cell>
+        <Cell row="1/2" column="2/3">ID</Cell>
         <Cell row="1/2" column="3/4">
             <select value={query.variableName.operator}
                 onChange={async (event) => {
@@ -423,7 +441,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                         case 'like': {
                             dispatch({
                                 type: 'query',
-                                payload: ['variableName', 'operator', event.target.value, '']
+                                payload: parent ? R(parent, ['variableName', 'operator', event.target.value, '']) : ['variableName', 'operator', event.target.value, '']
                             })
                             return
                         }
@@ -431,14 +449,14 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                         case 'notBetween': {
                             dispatch({
                                 type: 'query',
-                                payload: ['variableName', 'operator', event.target.value, ['', '']]
+                                payload: parent ? R(parent, ['variableName', 'operator', event.target.value, ['', '']]) : ['variableName', 'operator', event.target.value, ['', '']]
                             })
                             return
                         }
                         case 'in': {
                             dispatch({
                                 type: 'query',
-                                payload: ['variableName', 'operator', event.target.value, ['']]
+                                payload: parent ? R(parent, ['variableName', 'operator', event.target.value, ['']]) : ['variableName', 'operator', event.target.value, ['']]
                             })
                             return
                         }
@@ -463,7 +481,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                     dispatch({
                                         type: 'query',
-                                        payload: ['variableName', operator, event.target.value]
+                                        payload: parent ? R(parent, ['variableName', operator, event.target.value]) : ['variableName', operator, event.target.value]
                                     })
                                 }} />)
                         }
@@ -475,14 +493,14 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                             dispatch({
                                                 type: 'query',
-                                                payload: ['variableName', operator, [event.target.value, query.variableName.value[1]]]
+                                                payload: parent ? R(parent, ['variableName', operator, [event.target.value, query.variableName.value[1]]]) : ['variableName', operator, [event.target.value, query.variableName.value[1]]]
                                             })
                                         }} />
                                     <Input value={query.variableName.value[1]}
                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                             dispatch({
                                                 type: 'query',
-                                                payload: ['variableName', operator, [query.variableName.value[0], event.target.value]]
+                                                payload: parent ? R(parent, ['variableName', operator, [query.variableName.value[0], event.target.value]]) : ['variableName', operator, [query.variableName.value[0], event.target.value]]
                                             })
                                         }} />
                                 </>
@@ -500,7 +518,11 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                         if (index === 0) {
                                                             dispatch({
                                                                 type: 'query',
-                                                                payload: ['variableName', operator,
+                                                                payload: parent ? R(parent, ['variableName', operator,
+                                                                    [
+                                                                        event.target.value,
+                                                                        ...values.slice(index + 1, query.variableName.value.length)
+                                                                    ]]) : ['variableName', operator,
                                                                     [
                                                                         event.target.value,
                                                                         ...values.slice(index + 1, query.variableName.value.length)
@@ -509,7 +531,10 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                         } else if (index === values.length - 1) {
                                                             dispatch({
                                                                 type: 'query',
-                                                                payload: ['variableName', operator,
+                                                                payload: parent ? R(parent, ['variableName', operator,
+                                                                    [...values.slice(0, index),
+                                                                    event.target.value
+                                                                    ]]) : ['variableName', operator,
                                                                     [...values.slice(0, index),
                                                                     event.target.value
                                                                     ]]
@@ -517,7 +542,11 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                         } else {
                                                             dispatch({
                                                                 type: 'query',
-                                                                payload: ['variableName', operator,
+                                                                payload: parent ? R(parent, ['variableName', operator,
+                                                                    [...values.slice(0, index),
+                                                                    event.target.value,
+                                                                    ...values.slice(index + 1, query.variableName.value.length)
+                                                                    ]]) : ['variableName', operator,
                                                                     [...values.slice(0, index),
                                                                     event.target.value,
                                                                     ...values.slice(index + 1, query.variableName.value.length)
@@ -531,7 +560,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                     <button onClick={async () => {
                                         dispatch({
                                             type: 'query',
-                                            payload: ['variableName', operator, [...values, '']]
+                                            payload: parent ? R(parent, ['variableName', operator, [...values, '']]) : ['variableName', operator, [...values, '']]
                                         })
                                     }}
                                         className="focus:outline-none">
@@ -540,10 +569,12 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                         </svg>
                                     </button>
                                     <button onClick={async () => {
-                                        dispatch({
-                                            type: 'query',
-                                            payload: ['variableName', operator, [...values.slice(0, values.length - 1)]]
-                                        })
+                                        if (values.length !== 1) {
+                                            dispatch({
+                                                type: 'query',
+                                                payload: parent ? R(parent, ['variableName', operator, [...values.slice(0, values.length - 1)]]) : ['variableName', operator, [...values.slice(0, values.length - 1)]]
+                                            })
+                                        }
                                     }} className="focus:outline-none">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
@@ -572,7 +603,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                             dispatch({
                                                 type: 'query',
-                                                payload: ['values', keyName, 'checked', event.target.checked]
+                                                payload: parent ? R(parent, ['values', keyName, 'checked', event.target.checked]) : ['values', keyName, 'checked', event.target.checked]
                                             })
                                         }}
                                     />
@@ -586,7 +617,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                 case 'like': {
                                                     dispatch({
                                                         type: 'query',
-                                                        payload: ['values', keyName, 'operator', event.target.value, '']
+                                                        payload: parent ? R(parent, ['values', keyName, 'operator', event.target.value, '']) : ['values', keyName, 'operator', event.target.value, '']
                                                     })
                                                     return
                                                 }
@@ -594,14 +625,14 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                 case 'notBetween': {
                                                     dispatch({
                                                         type: 'query',
-                                                        payload: ['values', keyName, 'operator', event.target.value, ['', '']]
+                                                        payload: parent ? R(parent, ['values', keyName, 'operator', event.target.value, ['', '']]) : ['values', keyName, 'operator', event.target.value, ['', '']]
                                                     })
                                                     return
                                                 }
                                                 case 'in': {
                                                     dispatch({
                                                         type: 'query',
-                                                        payload: ['values', keyName, 'operator', event.target.value, ['']]
+                                                        payload: parent ? R(parent, ['values', keyName, 'operator', event.target.value, ['']]) : ['values', keyName, 'operator', event.target.value, ['']]
                                                     })
                                                     return
                                                 }
@@ -626,7 +657,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                             dispatch({
                                                                 type: 'query',
-                                                                payload: ['values', keyName, operator, event.target.value]
+                                                                payload: parent ? R(parent, ['values', keyName, operator, event.target.value]) : ['values', keyName, operator, event.target.value]
                                                             })
                                                         }} />)
                                                 }
@@ -638,14 +669,14 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, [event.target.value, value.value[1]]]
+                                                                        payload: parent ? R(parent, ['values', keyName, operator, [event.target.value, value.value[1]]]) : ['values', keyName, operator, [event.target.value, value.value[1]]]
                                                                     })
                                                                 }} />
                                                             <Input value={value.value[1]}
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, [value.value[0], event.target.value]]
+                                                                        payload: parent ? R(parent, ['values', keyName, operator, [value.value[0], event.target.value]]) : ['values', keyName, operator, [value.value[0], event.target.value]]
                                                                     })
                                                                 }} />
                                                         </>
@@ -663,7 +694,11 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                                 if (index === 0) {
                                                                                     dispatch({
                                                                                         type: 'query',
-                                                                                        payload: ['values', keyName, operator,
+                                                                                        payload: parent ? R(parent, ['values', keyName, operator,
+                                                                                            [
+                                                                                                event.target.value,
+                                                                                                ...values.slice(index + 1, values.length)
+                                                                                            ]]) : ['values', keyName, operator,
                                                                                             [
                                                                                                 event.target.value,
                                                                                                 ...values.slice(index + 1, values.length)
@@ -672,7 +707,10 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                                 } else if (index === values.length - 1) {
                                                                                     dispatch({
                                                                                         type: 'query',
-                                                                                        payload: ['values', keyName, operator,
+                                                                                        payload: parent ? R(parent, ['values', keyName, operator,
+                                                                                            [...values.slice(0, index),
+                                                                                            event.target.value
+                                                                                            ]]) : ['values', keyName, operator,
                                                                                             [...values.slice(0, index),
                                                                                             event.target.value
                                                                                             ]]
@@ -680,7 +718,11 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                                 } else {
                                                                                     dispatch({
                                                                                         type: 'query',
-                                                                                        payload: ['values', keyName, operator,
+                                                                                        payload: parent ? R(parent, ['values', keyName, operator,
+                                                                                            [...values.slice(0, index),
+                                                                                            event.target.value,
+                                                                                            ...values.slice(index + 1, values.length)
+                                                                                            ]]) : ['values', keyName, operator,
                                                                                             [...values.slice(0, index),
                                                                                             event.target.value,
                                                                                             ...values.slice(index + 1, values.length)
@@ -694,7 +736,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                             <button onClick={async () => {
                                                                 dispatch({
                                                                     type: 'query',
-                                                                    payload: ['values', keyName, operator, [...values, '']]
+                                                                    payload: parent ? R(parent, ['values', keyName, operator, [...values, '']]) : ['values', keyName, operator, [...values, '']]
                                                                 })
                                                             }}
                                                                 className="focus:outline-none">
@@ -706,7 +748,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                 if (values.length !== 1) {
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
+                                                                        payload: parent ? R(parent, ['values', keyName, operator, [...values.slice(0, values.length - 1)]]) : ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
                                                                     })
                                                                 }
                                                             }} className="focus:outline-none">
@@ -734,7 +776,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                             dispatch({
                                                 type: 'query',
-                                                payload: ['values', keyName, 'checked', event.target.checked]
+                                                payload: parent ? R(parent, ['values', keyName, 'checked', event.target.checked]) : ['values', keyName, 'checked', event.target.checked]
                                             })
                                         }}
                                     />
@@ -751,7 +793,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                 case 'greaterThan': {
                                                     dispatch({
                                                         type: 'query',
-                                                        payload: ['values', keyName, 'operator', event.target.value, 0]
+                                                        payload: parent ? R(parent, ['values', keyName, 'operator', event.target.value, 0]) : ['values', keyName, 'operator', event.target.value, 0]
                                                     })
                                                     return
                                                 }
@@ -759,14 +801,14 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                 case 'notBetween': {
                                                     dispatch({
                                                         type: 'query',
-                                                        payload: ['values', keyName, 'operator', event.target.value, [0, 0]]
+                                                        payload: parent ? R(parent, ['values', keyName, 'operator', event.target.value, [0, 0]]) : ['values', keyName, 'operator', event.target.value, [0, 0]]
                                                     })
                                                     return
                                                 }
                                                 case 'in': {
                                                     dispatch({
                                                         type: 'query',
-                                                        payload: ['values', keyName, 'operator', event.target.value, [0]]
+                                                        payload: parent ? R(parent, ['values', keyName, 'operator', event.target.value, [0]]) : ['values', keyName, 'operator', event.target.value, [0]]
                                                     })
                                                     return
                                                 }
@@ -797,7 +839,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                             dispatch({
                                                                 type: 'query',
-                                                                payload: ['values', keyName, operator, parseInt(event.target.value)]
+                                                                payload: parent ? R(parent, ['values', keyName, operator, parseInt(event.target.value)]) : ['values', keyName, operator, parseInt(event.target.value)]
                                                             })
                                                         }} />)
                                                 }
@@ -809,14 +851,14 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, [parseInt(event.target.value), value.value[1]]]
+                                                                        payload: parent ? R(parent, ['values', keyName, operator, [parseInt(event.target.value), value.value[1]]]) : ['values', keyName, operator, [parseInt(event.target.value), value.value[1]]]
                                                                     })
                                                                 }} />
                                                             <Input type='number' value={value.value[1]}
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, [value.value[0], parseInt(event.target.value)]]
+                                                                        payload: parent ? R(parent, ['values', keyName, operator, [value.value[0], parseInt(event.target.value)]]) : ['values', keyName, operator, [value.value[0], parseInt(event.target.value)]]
                                                                     })
                                                                 }} />
                                                         </>
@@ -834,7 +876,11 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                                 if (index === 0) {
                                                                                     dispatch({
                                                                                         type: 'query',
-                                                                                        payload: ['values', keyName, operator,
+                                                                                        payload: parent ? R(parent, ['values', keyName, operator,
+                                                                                            [
+                                                                                                parseInt(event.target.value),
+                                                                                                ...values.slice(index + 1, values.length)
+                                                                                            ]]) : ['values', keyName, operator,
                                                                                             [
                                                                                                 parseInt(event.target.value),
                                                                                                 ...values.slice(index + 1, values.length)
@@ -843,7 +889,10 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                                 } else if (index === values.length - 1) {
                                                                                     dispatch({
                                                                                         type: 'query',
-                                                                                        payload: ['values', keyName, operator,
+                                                                                        payload: parent ? R(parent, ['values', keyName, operator,
+                                                                                            [...values.slice(0, index),
+                                                                                            parseInt(event.target.value)
+                                                                                            ]]) : ['values', keyName, operator,
                                                                                             [...values.slice(0, index),
                                                                                             parseInt(event.target.value)
                                                                                             ]]
@@ -851,7 +900,11 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                                 } else {
                                                                                     dispatch({
                                                                                         type: 'query',
-                                                                                        payload: ['values', keyName, operator,
+                                                                                        payload: parent ? R(parent, ['values', keyName, operator,
+                                                                                            [...values.slice(0, index),
+                                                                                            parseInt(event.target.value),
+                                                                                            ...values.slice(index + 1, values.length)
+                                                                                            ]]) : ['values', keyName, operator,
                                                                                             [...values.slice(0, index),
                                                                                             parseInt(event.target.value),
                                                                                             ...values.slice(index + 1, values.length)
@@ -865,7 +918,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                             <button onClick={async () => {
                                                                 dispatch({
                                                                     type: 'query',
-                                                                    payload: ['values', keyName, operator, [...values, 0]]
+                                                                    payload: parent ? R(parent, ['values', keyName, operator, [...values, 0]]) : ['values', keyName, operator, [...values, 0]]
                                                                 })
                                                             }}
                                                                 className="focus:outline-none">
@@ -877,7 +930,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                 if (values.length !== 1) {
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
+                                                                        payload: parent ? R(parent, ['values', keyName, operator, [...values.slice(0, values.length - 1)]]) : ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
                                                                     })
                                                                 }
                                                             }} className="focus:outline-none">
@@ -905,7 +958,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                             dispatch({
                                                 type: 'query',
-                                                payload: ['values', keyName, 'checked', event.target.checked]
+                                                payload: parent ? R(parent, ['values', keyName, 'checked', event.target.checked]) : ['values', keyName, 'checked', event.target.checked]
                                             })
                                         }}
                                     />
@@ -922,7 +975,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                 case 'greaterThan': {
                                                     dispatch({
                                                         type: 'query',
-                                                        payload: ['values', keyName, 'operator', event.target.value, 0]
+                                                        payload: parent ? R(parent, ['values', keyName, 'operator', event.target.value, 0]) : ['values', keyName, 'operator', event.target.value, 0]
                                                     })
                                                     return
                                                 }
@@ -930,14 +983,14 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                 case 'notBetween': {
                                                     dispatch({
                                                         type: 'query',
-                                                        payload: ['values', keyName, 'operator', event.target.value, [0, 0]]
+                                                        payload: parent ? R(parent, ['values', keyName, 'operator', event.target.value, [0, 0]]) : ['values', keyName, 'operator', event.target.value, [0, 0]]
                                                     })
                                                     return
                                                 }
                                                 case 'in': {
                                                     dispatch({
                                                         type: 'query',
-                                                        payload: ['values', keyName, 'operator', event.target.value, [0]]
+                                                        payload: parent ? R(parent, ['values', keyName, 'operator', event.target.value, [0]]) : ['values', keyName, 'operator', event.target.value, [0]]
                                                     })
                                                     return
                                                 }
@@ -968,7 +1021,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                             dispatch({
                                                                 type: 'query',
-                                                                payload: ['values', keyName, operator, parseFloat(event.target.value)]
+                                                                payload: parent ? R(parent, ['values', keyName, operator, parseFloat(event.target.value)]) : ['values', keyName, operator, parseFloat(event.target.value)]
                                                             })
                                                         }} />)
                                                 }
@@ -980,14 +1033,14 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, [parseFloat(event.target.value), value.value[1]]]
+                                                                        payload: parent ? R(parent, ['values', keyName, operator, [parseFloat(event.target.value), value.value[1]]]) : ['values', keyName, operator, [parseFloat(event.target.value), value.value[1]]]
                                                                     })
                                                                 }} />
                                                             <Input type='number' value={value.value[1]}
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, [value.value[0], parseFloat(event.target.value)]]
+                                                                        payload: parent ? R(parent, ['values', keyName, operator, [value.value[0], parseFloat(event.target.value)]]) : ['values', keyName, operator, [value.value[0], parseFloat(event.target.value)]]
                                                                     })
                                                                 }} />
                                                         </>
@@ -1005,7 +1058,11 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                                 if (index === 0) {
                                                                                     dispatch({
                                                                                         type: 'query',
-                                                                                        payload: ['values', keyName, operator,
+                                                                                        payload: parent ? R(parent, ['values', keyName, operator,
+                                                                                            [
+                                                                                                parseFloat(event.target.value),
+                                                                                                ...values.slice(index + 1, values.length)
+                                                                                            ]]) : ['values', keyName, operator,
                                                                                             [
                                                                                                 parseFloat(event.target.value),
                                                                                                 ...values.slice(index + 1, values.length)
@@ -1014,7 +1071,10 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                                 } else if (index === values.length - 1) {
                                                                                     dispatch({
                                                                                         type: 'query',
-                                                                                        payload: ['values', keyName, operator,
+                                                                                        payload: parent ? R(parent, ['values', keyName, operator,
+                                                                                            [...values.slice(0, index),
+                                                                                            Number(event.target.value)
+                                                                                            ]]) : ['values', keyName, operator,
                                                                                             [...values.slice(0, index),
                                                                                             Number(event.target.value)
                                                                                             ]]
@@ -1022,7 +1082,11 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                                 } else {
                                                                                     dispatch({
                                                                                         type: 'query',
-                                                                                        payload: ['values', keyName, operator,
+                                                                                        payload: parent ? R(parent, ['values', keyName, operator,
+                                                                                            [...values.slice(0, index),
+                                                                                            Number(event.target.value),
+                                                                                            ...values.slice(index + 1, values.length)
+                                                                                            ]]) : ['values', keyName, operator,
                                                                                             [...values.slice(0, index),
                                                                                             Number(event.target.value),
                                                                                             ...values.slice(index + 1, values.length)
@@ -1036,7 +1100,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                             <button onClick={async () => {
                                                                 dispatch({
                                                                     type: 'query',
-                                                                    payload: ['values', keyName, operator, [...values, 0]]
+                                                                    payload: parent ? R(parent, ['values', keyName, operator, [...values, 0]]) : ['values', keyName, operator, [...values, 0]]
                                                                 })
                                                             }}
                                                                 className="focus:outline-none">
@@ -1048,7 +1112,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                 if (values.length !== 1) {
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
+                                                                        payload: parent ? R(parent, ['values', keyName, operator, [...values.slice(0, values.length - 1)]]) : ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
                                                                     })
                                                                 }
                                                             }} className="focus:outline-none">
@@ -1076,7 +1140,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                             dispatch({
                                                 type: 'query',
-                                                payload: ['values', keyName, 'checked', event.target.checked]
+                                                payload: parent ? R(parent, ['values', keyName, 'checked', event.target.checked]) : ['values', keyName, 'checked', event.target.checked]
                                             })
                                         }}
                                     />
@@ -1092,7 +1156,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                             dispatch({
                                                 type: 'query',
-                                                payload: ['values', keyName, 'equals', event.target.checked]
+                                                payload: parent ? R(parent, ['values', keyName, 'equals', event.target.checked]) : ['values', keyName, 'equals', event.target.checked]
                                             })
                                         }} />
                                 </Cell>
@@ -1108,7 +1172,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                             dispatch({
                                                 type: 'query',
-                                                payload: ['values', keyName, 'checked', event.target.checked]
+                                                payload: parent ? R(parent, ['values', keyName, 'checked', event.target.checked]) : ['values', keyName, 'checked', event.target.checked]
                                             })
                                         }}
                                     />
@@ -1125,7 +1189,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                 case 'greaterThan': {
                                                     dispatch({
                                                         type: 'query',
-                                                        payload: ['values', keyName, 'operator', event.target.value, Date.now()]
+                                                        payload: parent ? R(parent, ['values', keyName, 'operator', event.target.value, Date.now()]) : ['values', keyName, 'operator', event.target.value, Date.now()]
                                                     })
                                                     return
                                                 }
@@ -1133,15 +1197,17 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                 case 'notBetween': {
                                                     dispatch({
                                                         type: 'query',
-                                                        payload: ['values', keyName, 'operator', event.target.value,
-                                                            [new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() === 6 ? 5 : (new Date().getDay() === 0 ? 6 : (new Date().getDay() === 1 ? 7 : 1))))).setHours(0, 0, 0), Date.now()]]
+                                                        payload: parent ? R(parent, ['values', keyName, 'operator', event.target.value,
+                                                            [new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() === 6 ? 5 : (new Date().getDay() === 0 ? 6 : (new Date().getDay() === 1 ? 7 : 1))))).setHours(0, 0, 0), Date.now()]])
+                                                            : ['values', keyName, 'operator', event.target.value,
+                                                                [new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() === 6 ? 5 : (new Date().getDay() === 0 ? 6 : (new Date().getDay() === 1 ? 7 : 1))))).setHours(0, 0, 0), Date.now()]]
                                                     })
                                                     return
                                                 }
                                                 case 'in': {
                                                     dispatch({
                                                         type: 'query',
-                                                        payload: ['values', keyName, 'operator', event.target.value, [Date.now()]]
+                                                        payload: parent ? R(parent, ['values', keyName, 'operator', event.target.value, [Date.now()]]) : ['values', keyName, 'operator', event.target.value, [Date.now()]]
                                                     })
                                                     return
                                                 }
@@ -1173,7 +1239,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                             dispatch({
                                                                 type: 'query',
-                                                                payload: ['values', keyName, operator, getTime(parseISO(event.target.value))]
+                                                                payload: parent ? R(parent, ['values', keyName, operator, getTime(parseISO(event.target.value))]) : ['values', keyName, operator, getTime(parseISO(event.target.value))]
                                                             })
                                                         }}
                                                     />)
@@ -1187,7 +1253,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, [getTime(parseISO(event.target.value)), value.value[1]]]
+                                                                        payload: parent ? R(parent, ['values', keyName, operator, [getTime(parseISO(event.target.value)), value.value[1]]]) : ['values', keyName, operator, [getTime(parseISO(event.target.value)), value.value[1]]]
                                                                     })
                                                                 }} />
                                                             <Input type="date"
@@ -1195,7 +1261,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, [value.value[0], getTime(parseISO(event.target.value))]]
+                                                                        payload: parent ? R(parent, ['values', keyName, operator, [value.value[0], getTime(parseISO(event.target.value))]]) : ['values', keyName, operator, [value.value[0], getTime(parseISO(event.target.value))]]
                                                                     })
                                                                 }} />
                                                         </>
@@ -1214,7 +1280,11 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                                 if (index === 0) {
                                                                                     dispatch({
                                                                                         type: 'query',
-                                                                                        payload: ['values', keyName, operator,
+                                                                                        payload: parent ? R(parent, ['values', keyName, operator,
+                                                                                            [
+                                                                                                getTime(parseISO(event.target.value)),
+                                                                                                ...values.slice(index + 1, values.length)
+                                                                                            ]]) : ['values', keyName, operator,
                                                                                             [
                                                                                                 getTime(parseISO(event.target.value)),
                                                                                                 ...values.slice(index + 1, values.length)
@@ -1223,7 +1293,10 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                                 } else if (index === values.length - 1) {
                                                                                     dispatch({
                                                                                         type: 'query',
-                                                                                        payload: ['values', keyName, operator,
+                                                                                        payload: parent ? R(parent, ['values', keyName, operator,
+                                                                                            [...values.slice(0, index),
+                                                                                            getTime(parseISO(event.target.value))
+                                                                                            ]]) : ['values', keyName, operator,
                                                                                             [...values.slice(0, index),
                                                                                             getTime(parseISO(event.target.value))
                                                                                             ]]
@@ -1231,7 +1304,11 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                                 } else {
                                                                                     dispatch({
                                                                                         type: 'query',
-                                                                                        payload: ['values', keyName, operator,
+                                                                                        payload: parent ? R(parent, ['values', keyName, operator,
+                                                                                            [...values.slice(0, index),
+                                                                                            getTime(parseISO(event.target.value)),
+                                                                                            ...values.slice(index + 1, values.length)
+                                                                                            ]]) : ['values', keyName, operator,
                                                                                             [...values.slice(0, index),
                                                                                             getTime(parseISO(event.target.value)),
                                                                                             ...values.slice(index + 1, values.length)
@@ -1245,7 +1322,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                             <button onClick={async () => {
                                                                 dispatch({
                                                                     type: 'query',
-                                                                    payload: ['values', keyName, operator, [...values, getTime(new Date())]]
+                                                                    payload: parent ? R(parent, ['values', keyName, operator, [...values, getTime(new Date())]]) : ['values', keyName, operator, [...values, getTime(new Date())]]
                                                                 })
                                                             }}
                                                                 className="focus:outline-none">
@@ -1257,7 +1334,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                 if (values.length !== 1) {
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
+                                                                        payload: parent ? R(parent, ['values', keyName, operator, [...values.slice(0, values.length - 1)]]) : ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
                                                                     })
                                                                 }
                                                             }} className="focus:outline-none">
@@ -1285,7 +1362,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                             dispatch({
                                                 type: 'query',
-                                                payload: ['values', keyName, 'checked', event.target.checked]
+                                                payload: parent ? R(parent, ['values', keyName, 'checked', event.target.checked]) : ['values', keyName, 'checked', event.target.checked]
                                             })
                                         }}
                                     />
@@ -1302,7 +1379,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                 case 'greaterThan': {
                                                     dispatch({
                                                         type: 'query',
-                                                        payload: ['values', keyName, 'operator', event.target.value, Date.now()]
+                                                        payload: parent ? R(parent, ['values', keyName, 'operator', event.target.value, Date.now()]) : ['values', keyName, 'operator', event.target.value, Date.now()]
                                                     })
                                                     return
                                                 }
@@ -1310,15 +1387,17 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                 case 'notBetween': {
                                                     dispatch({
                                                         type: 'query',
-                                                        payload: ['values', keyName, 'operator', event.target.value,
-                                                            [new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() === 6 ? 5 : (new Date().getDay() === 0 ? 6 : (new Date().getDay() === 1 ? 7 : 1))))).setHours(0, 0, 0), Date.now()]]
+                                                        payload: parent ? R(parent, ['values', keyName, 'operator', event.target.value,
+                                                            [new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() === 6 ? 5 : (new Date().getDay() === 0 ? 6 : (new Date().getDay() === 1 ? 7 : 1))))).setHours(0, 0, 0), Date.now()]])
+                                                            : ['values', keyName, 'operator', event.target.value,
+                                                                [new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() === 6 ? 5 : (new Date().getDay() === 0 ? 6 : (new Date().getDay() === 1 ? 7 : 1))))).setHours(0, 0, 0), Date.now()]]
                                                     })
                                                     return
                                                 }
                                                 case 'in': {
                                                     dispatch({
                                                         type: 'query',
-                                                        payload: ['values', keyName, 'operator', event.target.value, [Date.now()]]
+                                                        payload: parent ? R(parent, ['values', keyName, 'operator', event.target.value, [Date.now()]]) : ['values', keyName, 'operator', event.target.value, [Date.now()]]
                                                     })
                                                     return
                                                 }
@@ -1350,7 +1429,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                             dispatch({
                                                                 type: 'query',
-                                                                payload: ['values', keyName, operator, getTime(parseISO(event.target.value))]
+                                                                payload: parent ? R(parent, ['values', keyName, operator, getTime(parseISO(event.target.value))]) : ['values', keyName, operator, getTime(parseISO(event.target.value))]
                                                             })
                                                         }}
                                                     />)
@@ -1364,7 +1443,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, [getTime(parseISO(event.target.value)), value.value[1]]]
+                                                                        payload: parent ? R(parent, ['values', keyName, operator, [getTime(parseISO(event.target.value)), value.value[1]]]) : ['values', keyName, operator, [getTime(parseISO(event.target.value)), value.value[1]]]
                                                                     })
                                                                 }} />
                                                             <Input type="datetime-local"
@@ -1372,7 +1451,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, [value.value[0], getTime(parseISO(event.target.value))]]
+                                                                        payload: parent ? R(parent, ['values', keyName, operator, [value.value[0], getTime(parseISO(event.target.value))]]) : ['values', keyName, operator, [value.value[0], getTime(parseISO(event.target.value))]]
                                                                     })
                                                                 }} />
                                                         </>
@@ -1391,7 +1470,11 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                                 if (index === 0) {
                                                                                     dispatch({
                                                                                         type: 'query',
-                                                                                        payload: ['values', keyName, operator,
+                                                                                        payload: parent ? R(parent, ['values', keyName, operator,
+                                                                                            [
+                                                                                                getTime(parseISO(event.target.value)),
+                                                                                                ...values.slice(index + 1, values.length)
+                                                                                            ]]) : ['values', keyName, operator,
                                                                                             [
                                                                                                 getTime(parseISO(event.target.value)),
                                                                                                 ...values.slice(index + 1, values.length)
@@ -1400,7 +1483,10 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                                 } else if (index === values.length - 1) {
                                                                                     dispatch({
                                                                                         type: 'query',
-                                                                                        payload: ['values', keyName, operator,
+                                                                                        payload: parent ? R(parent, ['values', keyName, operator,
+                                                                                            [...values.slice(0, index),
+                                                                                            getTime(parseISO(event.target.value))
+                                                                                            ]]) : ['values', keyName, operator,
                                                                                             [...values.slice(0, index),
                                                                                             getTime(parseISO(event.target.value))
                                                                                             ]]
@@ -1408,7 +1494,11 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                                 } else {
                                                                                     dispatch({
                                                                                         type: 'query',
-                                                                                        payload: ['values', keyName, operator,
+                                                                                        payload: parent ? R(parent, ['values', keyName, operator,
+                                                                                            [...values.slice(0, index),
+                                                                                            getTime(parseISO(event.target.value)),
+                                                                                            ...values.slice(index + 1, values.length)
+                                                                                            ]]) : ['values', keyName, operator,
                                                                                             [...values.slice(0, index),
                                                                                             getTime(parseISO(event.target.value)),
                                                                                             ...values.slice(index + 1, values.length)
@@ -1422,7 +1512,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                             <button onClick={async () => {
                                                                 dispatch({
                                                                     type: 'query',
-                                                                    payload: ['values', keyName, operator, [...values, getTime(new Date())]]
+                                                                    payload: parent ? R(parent, ['values', keyName, operator, [...values, getTime(new Date())]]) : ['values', keyName, operator, [...values, getTime(new Date())]]
                                                                 })
                                                             }}
                                                                 className="focus:outline-none">
@@ -1434,7 +1524,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                 if (values.length !== 1) {
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
+                                                                        payload: parent ? R(parent, ['values', keyName, operator, [...values.slice(0, values.length - 1)]]) : ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
                                                                     })
                                                                 }
                                                             }} className="focus:outline-none">
@@ -1462,12 +1552,13 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                             dispatch({
                                                 type: 'query',
-                                                payload: ['values', keyName, 'checked', event.target.checked]
+                                                payload: parent ? R(parent, ['values', keyName, 'checked', event.target.checked]) : ['values', keyName, 'checked', event.target.checked]
                                             })
                                         }}
                                     />
                                 </Cell>
                                 <Cell row={`${index + 2}/${index + 3}`} column="2/3">{keyName}</Cell>
+                                <Cell row={`${index + 2}/${index + 3}`} column="3/6">{keyName}</Cell>
                                 <Cell row={`${index + 2}/${index + 3}`} column="3/4">
                                     <select value={value.operator}
                                         onChange={async (event) => {
@@ -1479,7 +1570,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                 case 'greaterThan': {
                                                     dispatch({
                                                         type: 'query',
-                                                        payload: ['values', keyName, 'operator', event.target.value, Date.now()]
+                                                        payload: parent ? R(parent, ['values', keyName, 'operator', event.target.value, Date.now()]) : ['values', keyName, 'operator', event.target.value, Date.now()]
                                                     })
                                                     return
                                                 }
@@ -1487,15 +1578,17 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                 case 'notBetween': {
                                                     dispatch({
                                                         type: 'query',
-                                                        payload: ['values', keyName, 'operator', event.target.value,
-                                                            [new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() === 6 ? 5 : (new Date().getDay() === 0 ? 6 : (new Date().getDay() === 1 ? 7 : 1))))).setHours(0, 0, 0), Date.now()]]
+                                                        payload: parent ? R(parent, ['values', keyName, 'operator', event.target.value,
+                                                            [new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() === 6 ? 5 : (new Date().getDay() === 0 ? 6 : (new Date().getDay() === 1 ? 7 : 1))))).setHours(0, 0, 0), Date.now()]])
+                                                            : ['values', keyName, 'operator', event.target.value,
+                                                                [new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() === 6 ? 5 : (new Date().getDay() === 0 ? 6 : (new Date().getDay() === 1 ? 7 : 1))))).setHours(0, 0, 0), Date.now()]]
                                                     })
                                                     return
                                                 }
                                                 case 'in': {
                                                     dispatch({
                                                         type: 'query',
-                                                        payload: ['values', keyName, 'operator', event.target.value, [Date.now()]]
+                                                        payload: parent ? R(parent, ['values', keyName, 'operator', event.target.value, [Date.now()]]) : ['values', keyName, 'operator', event.target.value, [Date.now()]]
                                                     })
                                                     return
                                                 }
@@ -1527,7 +1620,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                             dispatch({
                                                                 type: 'query',
-                                                                payload: ['values', keyName, operator, getTime(parse(event.target.value, 'HH:mm', new Date()))]
+                                                                payload: parent ? R(parent, ['values', keyName, operator, getTime(parse(event.target.value, 'HH:mm', new Date()))]) : ['values', keyName, operator, getTime(parse(event.target.value, 'HH:mm', new Date()))]
                                                             })
                                                         }}
                                                     />)
@@ -1541,7 +1634,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, [getTime(parse(event.target.value, 'HH:mm', new Date())), value.value[1]]]
+                                                                        payload: parent ? R(parent, ['values', keyName, operator, [getTime(parse(event.target.value, 'HH:mm', new Date())), value.value[1]]]) : ['values', keyName, operator, [getTime(parse(event.target.value, 'HH:mm', new Date())), value.value[1]]]
                                                                     })
                                                                 }} />
                                                             <Input type="time"
@@ -1549,7 +1642,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, [value.value[0], getTime(parse(event.target.value, 'HH:mm', new Date()))]]
+                                                                        payload: parent ? R(parent, ['values', keyName, operator, [value.value[0], getTime(parse(event.target.value, 'HH:mm', new Date()))]]) : ['values', keyName, operator, [value.value[0], getTime(parse(event.target.value, 'HH:mm', new Date()))]]
                                                                     })
                                                                 }} />
                                                         </>
@@ -1568,7 +1661,11 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                                 if (index === 0) {
                                                                                     dispatch({
                                                                                         type: 'query',
-                                                                                        payload: ['values', keyName, operator,
+                                                                                        payload: parent ? R(parent, ['values', keyName, operator,
+                                                                                            [
+                                                                                                getTime(parse(event.target.value, 'HH:mm', new Date())),
+                                                                                                ...values.slice(index + 1, values.length)
+                                                                                            ]]) : ['values', keyName, operator,
                                                                                             [
                                                                                                 getTime(parse(event.target.value, 'HH:mm', new Date())),
                                                                                                 ...values.slice(index + 1, values.length)
@@ -1577,7 +1674,10 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                                 } else if (index === values.length - 1) {
                                                                                     dispatch({
                                                                                         type: 'query',
-                                                                                        payload: ['values', keyName, operator,
+                                                                                        payload: parent ? R(parent, ['values', keyName, operator,
+                                                                                            [...values.slice(0, index),
+                                                                                            getTime(parse(event.target.value, 'HH:mm', new Date()))
+                                                                                            ]]) : ['values', keyName, operator,
                                                                                             [...values.slice(0, index),
                                                                                             getTime(parse(event.target.value, 'HH:mm', new Date()))
                                                                                             ]]
@@ -1585,7 +1685,11 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                                 } else {
                                                                                     dispatch({
                                                                                         type: 'query',
-                                                                                        payload: ['values', keyName, operator,
+                                                                                        payload: parent ? R(parent, ['values', keyName, operator,
+                                                                                            [...values.slice(0, index),
+                                                                                            getTime(parse(event.target.value, 'HH:mm', new Date())),
+                                                                                            ...values.slice(index + 1, values.length)
+                                                                                            ]]) : ['values', keyName, operator,
                                                                                             [...values.slice(0, index),
                                                                                             getTime(parse(event.target.value, 'HH:mm', new Date())),
                                                                                             ...values.slice(index + 1, values.length)
@@ -1599,7 +1703,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                             <button onClick={async () => {
                                                                 dispatch({
                                                                     type: 'query',
-                                                                    payload: ['values', keyName, operator, [...values, getTime(new Date())]]
+                                                                    payload: parent ? R(parent, ['values', keyName, operator, [...values, getTime(new Date())]]) : ['values', keyName, operator, [...values, getTime(new Date())]]
                                                                 })
                                                             }}
                                                                 className="focus:outline-none">
@@ -1611,7 +1715,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                                                                 if (values.length !== 1) {
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
+                                                                        payload: parent ? R(parent, ['values', keyName, operator, [...values.slice(0, values.length - 1)]]) : ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
                                                                     })
                                                                 }
                                                             }} className="focus:outline-none">
@@ -1634,160 +1738,21 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>) {
                     return (<>
                         <Cell row={`${index + 2}/${index + 3}`} column="1/2">
                             <Checkbox
-                                checked={value.value.variableName.checked}
+                                checked={value.checked}
                                 color='primary'
                                 inputProps={{ 'aria-label': 'secondary checkbox' }}
                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                     dispatch({
                                         type: 'query',
-                                        payload: ['values', keyName, ['variableName', 'checked', event.target.checked]]
+                                        payload: parent ? R(parent, ['values', keyName, 'checked', event.target.checked]) : ['values', keyName, 'checked', event.target.checked]
                                     })
                                 }}
                             />
                         </Cell>
                         <Cell row={`${index + 2}/${index + 3}`} column="2/3">{keyName}</Cell>
-                        <Cell row={`${index + 2}/${index + 3}`} column="3/4">
-                            <select value={value.value.variableName.operator}
-                                onChange={async (event) => {
-                                    switch (event.target.value) {
-                                        case 'equals':
-                                        case 'like': {
-                                            dispatch({
-                                                type: 'query',
-                                                payload: ['values', keyName, ['variableName', 'operator', event.target.value, '']]
-                                            })
-                                            return
-                                        }
-                                        case 'between':
-                                        case 'notBetween': {
-                                            dispatch({
-                                                type: 'query',
-                                                payload: ['values', keyName, ['variableName', 'operator', event.target.value, ['', '']]]
-                                            })
-                                            return
-                                        }
-                                        case 'in': {
-                                            dispatch({
-                                                type: 'query',
-                                                payload: ['values', keyName, ['variableName', 'operator', event.target.value, ['']]]
-                                            })
-                                            return
-                                        }
-                                    }
-                                }}
-                            >
-                                <option value="equals">=</option>
-                                <option value="like">LIKE</option>
-                                <option value="between">BETWEEN</option>
-                                <option value="notBetween">NOT BETWEEN</option>
-                                <option value="in">IN</option>
-                            </select>
-                        </Cell>
-                        <Cell row={`${index + 2}/${index + 3}`} column="4/5">
+                        <Cell row={`${index + 2}/${index + 3}`} column="3/5">
                             {
-                                (() => {
-                                    const operator = value.value.variableName.operator
-                                    switch (operator) {
-                                        case 'equals':
-                                        case 'like': {
-                                            return (<Input value={value.value.variableName.value}
-                                                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                    dispatch({
-                                                        type: 'query',
-                                                        payload: ['values', keyName, ['variableName', operator, event.target.value]]
-                                                    })
-                                                }} />)
-                                        }
-                                        case 'between':
-                                        case 'notBetween': {
-                                            return (
-                                                <>
-                                                    <Input value={value.value.variableName.value[0]}
-                                                        onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                            dispatch({
-                                                                type: 'query',
-                                                                payload: ['values', keyName, ['variableName', operator, [event.target.value, value.value[1]]]]
-                                                            })
-                                                        }} />
-                                                    <Input value={value.value.variableName.value[1]}
-                                                        onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                            dispatch({
-                                                                type: 'query',
-                                                                payload: ['values', keyName, ['variableName', operator, [value.value[0], event.target.value]]]
-                                                            })
-                                                        }} />
-                                                </>
-                                            )
-                                        }
-                                        case 'in': {
-                                            if (value.value.variableName.operator === "in") {
-                                                const values = value.value.variableName.value
-                                                return (<>
-                                                    {
-                                                        value.value.variableName.value.map((v, index) => {
-                                                            return (
-                                                                <Input value={values[index]}
-                                                                    onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                                        if (index === 0) {
-                                                                            dispatch({
-                                                                                type: 'query',
-                                                                                payload: ['values', keyName, ['variableName', operator,
-                                                                                    [
-                                                                                        event.target.value,
-                                                                                        ...values.slice(index + 1, values.length)
-                                                                                    ]]]
-                                                                            })
-                                                                        } else if (index === values.length - 1) {
-                                                                            dispatch({
-                                                                                type: 'query',
-                                                                                payload: ['values', keyName, ['variableName', operator,
-                                                                                    [...values.slice(0, index),
-                                                                                    event.target.value
-                                                                                    ]]]
-                                                                            })
-                                                                        } else {
-                                                                            dispatch({
-                                                                                type: 'query',
-                                                                                payload: ['values', keyName, ['variableName', operator,
-                                                                                    [...values.slice(0, index),
-                                                                                    event.target.value,
-                                                                                    ...values.slice(index + 1, values.length)
-                                                                                    ]]]
-                                                                            })
-                                                                        }
-                                                                    }} />
-                                                            )
-                                                        })
-                                                    }
-                                                    <button onClick={async () => {
-                                                        dispatch({
-                                                            type: 'query',
-                                                            payload: ['values', keyName, ['variableName', operator, [...values, '']]]
-                                                        })
-                                                    }}
-                                                        className="focus:outline-none">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
-                                                        </svg>
-                                                    </button>
-                                                    <button onClick={async () => {
-                                                        if (values.length !== 1) {
-                                                            dispatch({
-                                                                type: 'query',
-                                                                payload: ['values', keyName, ['variableName', operator, [...values.slice(0, values.length - 1)]]]
-                                                            })
-                                                        }
-                                                    }} className="focus:outline-none">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
-                                                        </svg>
-                                                    </button>
-                                                </>)
-                                            }
-                                            return
-                                        }
-                                    }
-                                })()
+                                getFilter(value.value, dispatch, parent ? T(parent, keyName) : ['values', keyName, undefined])
                             }
                         </Cell>
                     </>)
