@@ -61,22 +61,20 @@ export default function Navbar() {
         <ul className="px-2">
             {
                 Object.keys(navbar).map((module, index) => {
-                    return (<>
-                        <li key={module} className="py-2 mb-1 border-gray-800 border-t-2">
-                            <div className="m-2 font-bold text-lg text-gray-50">
-                                {icons[index]} {module}
-                            </div>
-                            <ul className="px-7">
-                                {
-                                    Object.keys(navbar[module]).map(key => {
-                                        return (<li key={key} className="whitespace-nowrap">
-                                            <NavLink activeClassName="font-extrabold text-lg text-white" to={navbar[module][key]}>{key}</NavLink>
-                                        </li>)
-                                    })
-                                }
-                            </ul>
-                        </li>
-                    </>)
+                    return (<li key={module} className="py-2 mb-1 border-gray-800 border-t-2">
+                        <div className="m-2 font-bold text-lg text-gray-50">
+                            {icons[index]} {module}
+                        </div>
+                        <ul className="px-7">
+                            {
+                                Object.keys(navbar[module]).map(key => {
+                                    return (<li key={key} className="whitespace-nowrap">
+                                        <NavLink activeClassName="font-extrabold text-lg text-white" to={navbar[module][key]}>{key}</NavLink>
+                                    </li>)
+                                })
+                            }
+                        </ul>
+                    </li>)
                 })
             }
         </ul>

@@ -80,6 +80,10 @@ export const types: Types = {
             time: {
                 order: 3,
                 type: 'Time'
+            },
+            global: {
+                order: 3,
+                type: 'TransferMaterialSlip'
             }
         }
     },
