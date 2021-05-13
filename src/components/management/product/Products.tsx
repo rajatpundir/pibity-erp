@@ -9,10 +9,11 @@ import { Vector } from 'prelude-ts'
 import { types, Key } from '../../../main/types'
 import Switch from '@material-ui/core/Switch'
 import Checkbox from '@material-ui/core/Checkbox'
-import TextField from '@material-ui/core/TextField'
 import { format, toDate } from 'date-fns'
 import parse from 'date-fns/parse'
 import getTime from 'date-fns/getTime'
+import formatISO from 'date-fns/formatISO'
+import parseISO from 'date-fns/parseISO'
 
 type State = Immutable<{
     typeName: 'Product'
@@ -349,26 +350,26 @@ function reducer(state: Draft<State>, action: Action) {
         case 'reset':
             return initialState;
         case 'query': {
-            if (typeof action.payload == 'object') {
+            if (typeof action.payload === 'object') {
                 updateQuery(state.query, action.payload)
             }
             return;
         }
         case 'limit': {
-            if (typeof action.payload == 'number') {
+            if (typeof action.payload === 'number') {
                 state.limit = Math.max(initialState.limit, action.payload)
             }
             return;
         }
         case 'offset': {
-            if (typeof action.payload == 'number') {
+            if (typeof action.payload === 'number') {
                 state.offset = Math.max(0, action.payload)
                 state.page = Math.max(0, action.payload) + 1
             }
             return;
         }
         case 'page': {
-            if (typeof action.payload == 'number') {
+            if (typeof action.payload === 'number') {
                 state.page = action.payload
             }
             return;
@@ -379,7 +380,6 @@ function reducer(state: Draft<State>, action: Action) {
 export default function Products() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
     const variables = store(state => state.variables.Product)
-
     const columns: Vector<string> = Vector.of("SKU", "Name", "Orderable", "Consumable", "Producable")
     return (
         <Container area={none} layout={Grid.layouts.main}>
@@ -1108,7 +1108,7 @@ export default function Products() {
                                                         case 'greaterThan': {
                                                             dispatch({
                                                                 type: 'query',
-                                                                payload: ['values', keyName, 'operator', event.target.value, getTime(new Date())]
+                                                                payload: ['values', keyName, 'operator', event.target.value, Date.now()]
                                                             })
                                                             return
                                                         }
@@ -1116,14 +1116,15 @@ export default function Products() {
                                                         case 'notBetween': {
                                                             dispatch({
                                                                 type: 'query',
-                                                                payload: ['values', keyName, 'operator', event.target.value, [0, getTime(new Date())]]
+                                                                payload: ['values', keyName, 'operator', event.target.value, 
+                                                                [new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() === 6 ? 5 : (new Date().getDay() === 0 ? 6 : (new Date().getDay() === 1 ? 7 : 1))))).setHours(0, 0, 0), Date.now()]]
                                                             })
                                                             return
                                                         }
                                                         case 'in': {
                                                             dispatch({
                                                                 type: 'query',
-                                                                payload: ['values', keyName, 'operator', event.target.value, [getTime(new Date())]]
+                                                                payload: ['values', keyName, 'operator', event.target.value, [Date.now()]]
                                                             })
                                                             return
                                                         }
@@ -1150,14 +1151,12 @@ export default function Products() {
                                                         case 'equals':
                                                         case 'greaterThanEquals':
                                                         case 'greaterThan': {
-                                                            return (<TextField type="date"
-                                                                defaultValue={format(toDate(value.value as number), 'yyyy-MM-dd')}
+                                                            return (<Input type="date"
+                                                                value={formatISO(toDate(value.value as number)).substr(0, 10)}
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                                    console.log(parse(event.target.value, 'yyyy-MM-dd', new Date()).toISOString())
-                                                                    console.log(getTime(parse(event.target.value, 'yyyy-MM-dd', new Date())))
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, getTime(parse(event.target.value, 'yyyy-MM-dd', new Date()))]
+                                                                        payload: ['values', keyName, operator, getTime(parseISO(event.target.value))]
                                                                     })
                                                                 }}
                                                             />)
@@ -1166,20 +1165,20 @@ export default function Products() {
                                                         case 'notBetween': {
                                                             return (
                                                                 <>
-                                                                    <TextField type="date"
-                                                                        defaultValue={format(toDate(value.value[0]), 'yyyy-MM-dd')}
+                                                                    <Input type="date"
+                                                                        value={formatISO(toDate(value.value[0])).substr(0, 10)}
                                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                             dispatch({
                                                                                 type: 'query',
-                                                                                payload: ['values', keyName, operator, [getTime(parse(event.target.value, 'yyyy-MM-dd', new Date())), value.value[1]]]
+                                                                                payload: ['values', keyName, operator, [getTime(parseISO(event.target.value)), value.value[1]]]
                                                                             })
                                                                         }} />
-                                                                    <TextField type="date"
-                                                                        defaultValue={format(toDate(value.value[1]), 'yyyy-MM-dd')}
+                                                                    <Input type="date"
+                                                                        value={formatISO(toDate(value.value[1])).substr(0, 10)}
                                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                             dispatch({
                                                                                 type: 'query',
-                                                                                payload: ['values', keyName, operator, [value.value[0], getTime(parse(event.target.value, 'yyyy-MM-dd', new Date()))]]
+                                                                                payload: ['values', keyName, operator, [value.value[0], getTime(parseISO(event.target.value))]]
                                                                             })
                                                                         }} />
                                                                 </>
@@ -1192,15 +1191,15 @@ export default function Products() {
                                                                     {
                                                                         value.value.map((v, index) => {
                                                                             return (
-                                                                                <TextField type="date"
-                                                                                    defaultValue={format(toDate(values[index]), 'yyyy-MM-dd')}
+                                                                                <Input type="date"
+                                                                                    value={formatISO(toDate(values[index])).substr(0, 10)}
                                                                                     onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                                         if (index === 0) {
                                                                                             dispatch({
                                                                                                 type: 'query',
                                                                                                 payload: ['values', keyName, operator,
                                                                                                     [
-                                                                                                        getTime(parse(event.target.value, 'yyyy-MM-dd', new Date())),
+                                                                                                        getTime(parseISO(event.target.value)),
                                                                                                         ...values.slice(index + 1, values.length)
                                                                                                     ]]
                                                                                             })
@@ -1209,7 +1208,7 @@ export default function Products() {
                                                                                                 type: 'query',
                                                                                                 payload: ['values', keyName, operator,
                                                                                                     [...values.slice(0, index),
-                                                                                                    getTime(parse(event.target.value, 'yyyy-MM-dd', new Date()))
+                                                                                                    getTime(parseISO(event.target.value))
                                                                                                     ]]
                                                                                             })
                                                                                         } else {
@@ -1217,7 +1216,7 @@ export default function Products() {
                                                                                                 type: 'query',
                                                                                                 payload: ['values', keyName, operator,
                                                                                                     [...values.slice(0, index),
-                                                                                                    getTime(parse(event.target.value, 'yyyy-MM-dd', new Date())),
+                                                                                                    getTime(parseISO(event.target.value)),
                                                                                                     ...values.slice(index + 1, values.length)
                                                                                                     ]]
                                                                                             })
@@ -1276,7 +1275,39 @@ export default function Products() {
                                         </Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="2/3">{keyName}</Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="3/4">
-                                            <select value={value.operator}>
+                                            <select value={value.operator}
+                                                onChange={async (event) => {
+                                                    switch (event.target.value) {
+                                                        case 'lessThan':
+                                                        case 'lessThanEquals':
+                                                        case 'equals':
+                                                        case 'greaterThanEquals':
+                                                        case 'greaterThan': {
+                                                            dispatch({
+                                                                type: 'query',
+                                                                payload: ['values', keyName, 'operator', event.target.value, Date.now()]
+                                                            })
+                                                            return
+                                                        }
+                                                        case 'between':
+                                                        case 'notBetween': {
+                                                            dispatch({
+                                                                type: 'query',
+                                                                payload: ['values', keyName, 'operator', event.target.value, 
+                                                                [new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() === 6 ? 5 : (new Date().getDay() === 0 ? 6 : (new Date().getDay() === 1 ? 7 : 1))))).setHours(0, 0, 0), Date.now()]]
+                                                            })
+                                                            return
+                                                        }
+                                                        case 'in': {
+                                                            dispatch({
+                                                                type: 'query',
+                                                                payload: ['values', keyName, 'operator', event.target.value, [Date.now()]]
+                                                            })
+                                                            return
+                                                        }
+                                                    }
+                                                }}
+                                            >
                                                 <option value="lessThan">&#60;</option>
                                                 <option value="lessThanEquals">&#8804;</option>
                                                 <option value="equals">=</option>
@@ -1288,7 +1319,119 @@ export default function Products() {
                                             </select>
                                         </Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="4/5">
-                                            <Input value={state.query.variableName.value}></Input>
+                                            {
+                                                (() => {
+                                                    const operator = value.operator
+                                                    switch (operator) {
+                                                        case 'lessThan':
+                                                        case 'lessThanEquals':
+                                                        case 'equals':
+                                                        case 'greaterThanEquals':
+                                                        case 'greaterThan': {
+                                                            return (<Input type="datetime-local"
+                                                                value={formatISO(toDate(value.value as number)).substr(0, 17)}
+                                                                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                                    dispatch({
+                                                                        type: 'query',
+                                                                        payload: ['values', keyName, operator, getTime(parseISO(event.target.value))]
+                                                                    })
+                                                                }}
+                                                            />)
+                                                        }
+                                                        case 'between':
+                                                        case 'notBetween': {
+                                                            return (
+                                                                <>
+                                                                    <Input type="datetime-local"
+                                                                        value={formatISO(toDate(value.value[0])).substr(0, 17)}
+                                                                        onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                                            dispatch({
+                                                                                type: 'query',
+                                                                                payload: ['values', keyName, operator, [getTime(parseISO(event.target.value)), value.value[1]]]
+                                                                            })
+                                                                        }} />
+                                                                    <Input type="datetime-local"
+                                                                        value={formatISO(toDate(value.value[1])).substr(0, 17)}
+                                                                        onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                                            dispatch({
+                                                                                type: 'query',
+                                                                                payload: ['values', keyName, operator, [value.value[0], getTime(parseISO(event.target.value))]]
+                                                                            })
+                                                                        }} />
+                                                                </>
+                                                            )
+                                                        }
+                                                        case 'in': {
+                                                            if (value.operator === "in") {
+                                                                const values = value.value
+                                                                return (<>
+                                                                    {
+                                                                        value.value.map((v, index) => {
+                                                                            return (
+                                                                                <Input type="datetime-local"
+                                                                                    value={formatISO(toDate(values[index])).substr(0, 17)}
+                                                                                    onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                                                        if (index === 0) {
+                                                                                            dispatch({
+                                                                                                type: 'query',
+                                                                                                payload: ['values', keyName, operator,
+                                                                                                    [
+                                                                                                        getTime(parseISO(event.target.value)),
+                                                                                                        ...values.slice(index + 1, values.length)
+                                                                                                    ]]
+                                                                                            })
+                                                                                        } else if (index === values.length - 1) {
+                                                                                            dispatch({
+                                                                                                type: 'query',
+                                                                                                payload: ['values', keyName, operator,
+                                                                                                    [...values.slice(0, index),
+                                                                                                    getTime(parseISO(event.target.value))
+                                                                                                    ]]
+                                                                                            })
+                                                                                        } else {
+                                                                                            dispatch({
+                                                                                                type: 'query',
+                                                                                                payload: ['values', keyName, operator,
+                                                                                                    [...values.slice(0, index),
+                                                                                                    getTime(parseISO(event.target.value)),
+                                                                                                    ...values.slice(index + 1, values.length)
+                                                                                                    ]]
+                                                                                            })
+                                                                                        }
+                                                                                    }} />
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                    <button onClick={async () => {
+                                                                        dispatch({
+                                                                            type: 'query',
+                                                                            payload: ['values', keyName, operator, [...values, getTime(new Date())]]
+                                                                        })
+                                                                    }}
+                                                                        className="focus:outline-none">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                                                                        </svg>
+                                                                    </button>
+                                                                    <button onClick={async () => {
+                                                                        if (values.length !== 1) {
+                                                                            dispatch({
+                                                                                type: 'query',
+                                                                                payload: ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
+                                                                            })
+                                                                        }
+                                                                    }} className="focus:outline-none">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+                                                                        </svg>
+                                                                    </button>
+                                                                </>)
+                                                            }
+                                                            return
+                                                        }
+                                                    }
+                                                })()
+                                            }
                                         </Cell>
                                     </>)
                                 }
@@ -1309,7 +1452,39 @@ export default function Products() {
                                         </Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="2/3">{keyName}</Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="3/4">
-                                            <select value={value.operator}>
+                                            <select value={value.operator}
+                                                onChange={async (event) => {
+                                                    switch (event.target.value) {
+                                                        case 'lessThan':
+                                                        case 'lessThanEquals':
+                                                        case 'equals':
+                                                        case 'greaterThanEquals':
+                                                        case 'greaterThan': {
+                                                            dispatch({
+                                                                type: 'query',
+                                                                payload: ['values', keyName, 'operator', event.target.value, Date.now()]
+                                                            })
+                                                            return
+                                                        }
+                                                        case 'between':
+                                                        case 'notBetween': {
+                                                            dispatch({
+                                                                type: 'query',
+                                                                payload: ['values', keyName, 'operator', event.target.value, 
+                                                                [new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() === 6 ? 5 : (new Date().getDay() === 0 ? 6 : (new Date().getDay() === 1 ? 7 : 1))))).setHours(0, 0, 0), Date.now()]]
+                                                            })
+                                                            return
+                                                        }
+                                                        case 'in': {
+                                                            dispatch({
+                                                                type: 'query',
+                                                                payload: ['values', keyName, 'operator', event.target.value, [Date.now()]]
+                                                            })
+                                                            return
+                                                        }
+                                                    }
+                                                }}
+                                            >
                                                 <option value="lessThan">&#60;</option>
                                                 <option value="lessThanEquals">&#8804;</option>
                                                 <option value="equals">=</option>
@@ -1321,7 +1496,119 @@ export default function Products() {
                                             </select>
                                         </Cell>
                                         <Cell row={`${index + 2}/${index + 3}`} column="4/5">
-                                            <Input value={state.query.variableName.value}></Input>
+                                            {
+                                                (() => {
+                                                    const operator = value.operator
+                                                    switch (operator) {
+                                                        case 'lessThan':
+                                                        case 'lessThanEquals':
+                                                        case 'equals':
+                                                        case 'greaterThanEquals':
+                                                        case 'greaterThan': {
+                                                            return (<Input type="time"
+                                                                value={formatISO(toDate(value.value as number)).substr(11, 5)}
+                                                                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                                    dispatch({
+                                                                        type: 'query',
+                                                                        payload: ['values', keyName, operator, getTime(parse(event.target.value, 'HH:mm', new Date()))]
+                                                                    })
+                                                                }}
+                                                            />)
+                                                        }
+                                                        case 'between':
+                                                        case 'notBetween': {
+                                                            return (
+                                                                <>
+                                                                    <Input type="time"
+                                                                        value={formatISO(toDate(value.value[0])).substr(11, 5)}
+                                                                        onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                                            dispatch({
+                                                                                type: 'query',
+                                                                                payload: ['values', keyName, operator, [getTime(parse(event.target.value, 'HH:mm', new Date())), value.value[1]]]
+                                                                            })
+                                                                        }} />
+                                                                    <Input type="time"
+                                                                        value={formatISO(toDate(value.value[1])).substr(11, 5)}
+                                                                        onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                                            dispatch({
+                                                                                type: 'query',
+                                                                                payload: ['values', keyName, operator, [value.value[0], getTime(parse(event.target.value, 'HH:mm', new Date()))]]
+                                                                            })
+                                                                        }} />
+                                                                </>
+                                                            )
+                                                        }
+                                                        case 'in': {
+                                                            if (value.operator === "in") {
+                                                                const values = value.value
+                                                                return (<>
+                                                                    {
+                                                                        value.value.map((v, index) => {
+                                                                            return (
+                                                                                <Input type="time"
+                                                                                    value={formatISO(toDate(values[index])).substr(11, 5)}
+                                                                                    onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                                                        if (index === 0) {
+                                                                                            dispatch({
+                                                                                                type: 'query',
+                                                                                                payload: ['values', keyName, operator,
+                                                                                                    [
+                                                                                                        getTime(parse(event.target.value, 'HH:mm', new Date())),
+                                                                                                        ...values.slice(index + 1, values.length)
+                                                                                                    ]]
+                                                                                            })
+                                                                                        } else if (index === values.length - 1) {
+                                                                                            dispatch({
+                                                                                                type: 'query',
+                                                                                                payload: ['values', keyName, operator,
+                                                                                                    [...values.slice(0, index),
+                                                                                                    getTime(parse(event.target.value, 'HH:mm', new Date()))
+                                                                                                    ]]
+                                                                                            })
+                                                                                        } else {
+                                                                                            dispatch({
+                                                                                                type: 'query',
+                                                                                                payload: ['values', keyName, operator,
+                                                                                                    [...values.slice(0, index),
+                                                                                                    getTime(parse(event.target.value, 'HH:mm', new Date())),
+                                                                                                    ...values.slice(index + 1, values.length)
+                                                                                                    ]]
+                                                                                            })
+                                                                                        }
+                                                                                    }} />
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                    <button onClick={async () => {
+                                                                        dispatch({
+                                                                            type: 'query',
+                                                                            payload: ['values', keyName, operator, [...values, getTime(new Date())]]
+                                                                        })
+                                                                    }}
+                                                                        className="focus:outline-none">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                                                                        </svg>
+                                                                    </button>
+                                                                    <button onClick={async () => {
+                                                                        if (values.length !== 1) {
+                                                                            dispatch({
+                                                                                type: 'query',
+                                                                                payload: ['values', keyName, operator, [...values.slice(0, values.length - 1)]]
+                                                                            })
+                                                                        }
+                                                                    }} className="focus:outline-none">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+                                                                        </svg>
+                                                                    </button>
+                                                                </>)
+                                                            }
+                                                            return
+                                                        }
+                                                    }
+                                                })()
+                                            }
                                         </Cell>
                                     </>)
                                 }
