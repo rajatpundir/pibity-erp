@@ -9,6 +9,10 @@ import { Vector } from 'prelude-ts'
 import { types, Key } from '../../../main/types'
 import Switch from '@material-ui/core/Switch'
 import Checkbox from '@material-ui/core/Checkbox'
+import TextField from '@material-ui/core/TextField'
+import { format, toDate } from 'date-fns'
+import parse from 'date-fns/parse'
+import getTime from 'date-fns/getTime'
 
 type State = Immutable<{
     typeName: 'Product'
@@ -289,7 +293,7 @@ const initialState: State = {
                     checked: false,
                     type: key.type,
                     operator: 'equals',
-                    value: -1
+                    value: getTime(new Date())
                 }
                 return acc
             }
@@ -298,7 +302,7 @@ const initialState: State = {
                     checked: false,
                     type: key.type,
                     operator: 'equals',
-                    value: -1
+                    value: getTime(new Date())
                 }
                 return acc
             }
@@ -307,7 +311,7 @@ const initialState: State = {
                     checked: false,
                     type: key.type,
                     operator: 'equals',
-                    value: -1
+                    value: getTime(new Date())
                 }
                 return acc
             }
@@ -329,7 +333,7 @@ const initialState: State = {
         }
     }, {
         variableName: {
-            checked: true,
+            checked: false,
             operator: 'equals',
             value: ''
         },
@@ -1104,7 +1108,7 @@ export default function Products() {
                                                         case 'greaterThan': {
                                                             dispatch({
                                                                 type: 'query',
-                                                                payload: ['values', keyName, 'operator', event.target.value, 0]
+                                                                payload: ['values', keyName, 'operator', event.target.value, getTime(new Date())]
                                                             })
                                                             return
                                                         }
@@ -1112,14 +1116,14 @@ export default function Products() {
                                                         case 'notBetween': {
                                                             dispatch({
                                                                 type: 'query',
-                                                                payload: ['values', keyName, 'operator', event.target.value, [0, 0]]
+                                                                payload: ['values', keyName, 'operator', event.target.value, [0, getTime(new Date())]]
                                                             })
                                                             return
                                                         }
                                                         case 'in': {
                                                             dispatch({
                                                                 type: 'query',
-                                                                payload: ['values', keyName, 'operator', event.target.value, [0]]
+                                                                payload: ['values', keyName, 'operator', event.target.value, [getTime(new Date())]]
                                                             })
                                                             return
                                                         }
@@ -1146,30 +1150,36 @@ export default function Products() {
                                                         case 'equals':
                                                         case 'greaterThanEquals':
                                                         case 'greaterThan': {
-                                                            return (<Input type='number' value={value.value as number}
+                                                            return (<TextField type="date"
+                                                                defaultValue={format(toDate(value.value as number), 'yyyy-MM-dd')}
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                                    console.log(parse(event.target.value, 'yyyy-MM-dd', new Date()).toISOString())
+                                                                    console.log(getTime(parse(event.target.value, 'yyyy-MM-dd', new Date())))
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, parseInt(event.target.value)]
+                                                                        payload: ['values', keyName, operator, getTime(parse(event.target.value, 'yyyy-MM-dd', new Date()))]
                                                                     })
-                                                                }} />)
+                                                                }}
+                                                            />)
                                                         }
                                                         case 'between':
                                                         case 'notBetween': {
                                                             return (
                                                                 <>
-                                                                    <Input type='number' value={value.value[0]}
+                                                                    <TextField type="date"
+                                                                        defaultValue={format(toDate(value.value[0]), 'yyyy-MM-dd')}
                                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                             dispatch({
                                                                                 type: 'query',
-                                                                                payload: ['values', keyName, operator, [parseInt(event.target.value), value.value[1]]]
+                                                                                payload: ['values', keyName, operator, [getTime(parse(event.target.value, 'yyyy-MM-dd', new Date())), value.value[1]]]
                                                                             })
                                                                         }} />
-                                                                    <Input type='number' value={value.value[1]}
+                                                                    <TextField type="date"
+                                                                        defaultValue={format(toDate(value.value[1]), 'yyyy-MM-dd')}
                                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                             dispatch({
                                                                                 type: 'query',
-                                                                                payload: ['values', keyName, operator, [value.value[0], parseInt(event.target.value)]]
+                                                                                payload: ['values', keyName, operator, [value.value[0], getTime(parse(event.target.value, 'yyyy-MM-dd', new Date()))]]
                                                                             })
                                                                         }} />
                                                                 </>
@@ -1182,14 +1192,15 @@ export default function Products() {
                                                                     {
                                                                         value.value.map((v, index) => {
                                                                             return (
-                                                                                <Input type='number' value={values[index]}
+                                                                                <TextField type="date"
+                                                                                    defaultValue={format(toDate(values[index]), 'yyyy-MM-dd')}
                                                                                     onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                                         if (index === 0) {
                                                                                             dispatch({
                                                                                                 type: 'query',
                                                                                                 payload: ['values', keyName, operator,
                                                                                                     [
-                                                                                                        parseInt(event.target.value),
+                                                                                                        getTime(parse(event.target.value, 'yyyy-MM-dd', new Date())),
                                                                                                         ...values.slice(index + 1, values.length)
                                                                                                     ]]
                                                                                             })
@@ -1198,7 +1209,7 @@ export default function Products() {
                                                                                                 type: 'query',
                                                                                                 payload: ['values', keyName, operator,
                                                                                                     [...values.slice(0, index),
-                                                                                                    parseInt(event.target.value)
+                                                                                                    getTime(parse(event.target.value, 'yyyy-MM-dd', new Date()))
                                                                                                     ]]
                                                                                             })
                                                                                         } else {
@@ -1206,7 +1217,7 @@ export default function Products() {
                                                                                                 type: 'query',
                                                                                                 payload: ['values', keyName, operator,
                                                                                                     [...values.slice(0, index),
-                                                                                                    parseInt(event.target.value),
+                                                                                                    getTime(parse(event.target.value, 'yyyy-MM-dd', new Date())),
                                                                                                     ...values.slice(index + 1, values.length)
                                                                                                     ]]
                                                                                             })
@@ -1218,7 +1229,7 @@ export default function Products() {
                                                                     <button onClick={async () => {
                                                                         dispatch({
                                                                             type: 'query',
-                                                                            payload: ['values', keyName, operator, [...values, 0]]
+                                                                            payload: ['values', keyName, operator, [...values, getTime(new Date())]]
                                                                         })
                                                                     }}
                                                                         className="focus:outline-none">
@@ -1330,4 +1341,4 @@ export default function Products() {
 
 const Title = tw.div`py-8 text-4xl text-gray-800 font-bold mx-1`
 
-export const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full h-6 rounded-sm inline-block`
+const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full h-6 rounded-sm inline-block`

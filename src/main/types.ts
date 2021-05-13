@@ -68,6 +68,18 @@ export const types: Types = {
             producable: {
                 order: 3,
                 type: 'Boolean'
+            },
+            date: {
+                order: 1,
+                type: 'Date'
+            },
+            timestamp: {
+                order: 2,
+                type: 'Timestamp'
+            },
+            time: {
+                order: 3,
+                type: 'Time'
             }
         }
     },

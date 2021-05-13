@@ -331,4 +331,4 @@ export function Table(props: TableProps) {
 
 const Column = tw.div`text-white font-medium text-xl py-3 text-left`
 
-export const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-12 h-6 rounded-sm inline-block`
+export const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-10 h-6 rounded-sm inline-block`
