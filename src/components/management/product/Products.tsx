@@ -951,7 +951,7 @@ export default function Products() {
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                     dispatch({
                                                                         type: 'query',
-                                                                        payload: ['values', keyName, operator, Number(event.target.value)]
+                                                                        payload: ['values', keyName, operator, parseFloat(event.target.value)]
                                                                     })
                                                                 }} />)
                                                         }
@@ -963,14 +963,14 @@ export default function Products() {
                                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                             dispatch({
                                                                                 type: 'query',
-                                                                                payload: ['values', keyName, operator, [Number(event.target.value), value.value[1]]]
+                                                                                payload: ['values', keyName, operator, [parseFloat(event.target.value), value.value[1]]]
                                                                             })
                                                                         }} />
                                                                     <Input type='number' value={value.value[1]}
                                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                             dispatch({
                                                                                 type: 'query',
-                                                                                payload: ['values', keyName, operator, [value.value[0], Number(event.target.value)]]
+                                                                                payload: ['values', keyName, operator, [value.value[0], parseFloat(event.target.value)]]
                                                                             })
                                                                         }} />
                                                                 </>
@@ -990,7 +990,7 @@ export default function Products() {
                                                                                                 type: 'query',
                                                                                                 payload: ['values', keyName, operator,
                                                                                                     [
-                                                                                                        Number(event.target.value),
+                                                                                                        parseFloat(event.target.value),
                                                                                                         ...values.slice(index + 1, values.length)
                                                                                                     ]]
                                                                                             })
