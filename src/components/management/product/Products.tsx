@@ -175,8 +175,7 @@ export type Query = {
     }
 }
 
-
-function getExpression(query: Query): LispExpression {
+function getExpression(query: Immutable<Query>): LispExpression {
     const expression: LispExpression = {
         expectedReturnType: 'Boolean',
         op: 'and',
@@ -286,110 +285,418 @@ function getExpression(query: Query): LispExpression {
     }
     Object.keys(query.values).forEach(keyName => {
         const value = query.values[keyName]
-        if ('operator' in value) {
-            switch (value.type) {
-                case 'Text': {
-                    switch (value.operator) {
-                        case 'equals': {
-                            valuesExpression.args = [...valuesExpression.args, {
-                                expectedReturnType: 'Boolean',
-                                op: '==',
-                                types: ['Text'],
-                                args: [value.value, {
-                                    op: '.',
-                                    types: [],
-                                    args: ['values', keyName]
+        if (value.checked == true) {
+            if ('operator' in value) {
+                switch (value.type) {
+                    case 'Text': {
+                        switch (value.operator) {
+                            case 'equals': {
+                                valuesExpression.args = [...valuesExpression.args, {
+                                    expectedReturnType: 'Boolean',
+                                    op: '==',
+                                    types: ['Text'],
+                                    args: [value.value, {
+                                        op: '.',
+                                        types: [],
+                                        args: ['values', keyName]
+                                    }]
                                 }]
-                            }]
-                            break
-                        }
-                        case 'like': {
+                                break
+                            }
+                            case 'like': {
 
-                            break
-                        }
-                        case 'between': {
-                            valuesExpression.args = [...valuesExpression.args, {
-                                expectedReturnType: 'Boolean',
-                                op: 'and',
-                                types: ['Boolean'],
-                                args: [{
+                                break
+                            }
+                            case 'between': {
+                                valuesExpression.args = [...valuesExpression.args, {
                                     expectedReturnType: 'Boolean',
-                                    op: '<=',
-                                    types: ['Text'],
-                                    args: [value.value[0], {
-                                        op: '.',
-                                        types: [],
-                                        args: ['values', keyName]
-                                    }]
-                                }, {
-                                    expectedReturnType: 'Boolean',
-                                    op: '>=',
-                                    types: ['Text'],
-                                    args: [value.value[1], {
-                                        op: '.',
-                                        types: [],
-                                        args: ['values', keyName]
-                                    }]
-                                }]
-                            }]
-                            break
-                        }
-                        case 'notBetween': {
-                            valuesExpression.args = [...valuesExpression.args, {
-                                expectedReturnType: 'Boolean',
-                                op: 'or',
-                                types: ['Boolean'],
-                                args: [{
-                                    expectedReturnType: 'Boolean',
-                                    op: '<',
-                                    types: ['Text'],
+                                    op: 'and',
+                                    types: ['Boolean'],
                                     args: [{
-                                        op: '.',
-                                        types: [],
-                                        args: ['values', keyName]
-                                    }, value.value[0]]
-                                }, {
-                                    expectedReturnType: 'Boolean',
-                                    op: '>',
-                                    types: ['Text'],
-                                    args: [value.value[1], {
-                                        op: '.',
-                                        types: [],
-                                        args: ['values', keyName]
-                                    }]
-                                }]
-                            }]
-                            break
-                        }
-                        case 'in': {
-                            const valuesExpression: LispExpression = {
-                                expectedReturnType: 'Boolean',
-                                op: 'or',
-                                types: ['Boolean'],
-                                args: value.value.map(x => {
-                                    return ({
                                         expectedReturnType: 'Boolean',
-                                        op: '==',
+                                        op: '<=',
                                         types: ['Text'],
-                                        args: [x, {
+                                        args: [value.value[0], {
                                             op: '.',
                                             types: [],
                                             args: ['values', keyName]
                                         }]
-                                    })
-                                })
+                                    }, {
+                                        expectedReturnType: 'Boolean',
+                                        op: '>=',
+                                        types: ['Text'],
+                                        args: [value.value[1], {
+                                            op: '.',
+                                            types: [],
+                                            args: ['values', keyName]
+                                        }]
+                                    }]
+                                }]
+                                break
                             }
-                            break
+                            case 'notBetween': {
+                                valuesExpression.args = [...valuesExpression.args, {
+                                    expectedReturnType: 'Boolean',
+                                    op: 'or',
+                                    types: ['Boolean'],
+                                    args: [{
+                                        expectedReturnType: 'Boolean',
+                                        op: '<',
+                                        types: ['Text'],
+                                        args: [{
+                                            op: '.',
+                                            types: [],
+                                            args: ['values', keyName]
+                                        }, value.value[0]]
+                                    }, {
+                                        expectedReturnType: 'Boolean',
+                                        op: '>',
+                                        types: ['Text'],
+                                        args: [value.value[1], {
+                                            op: '.',
+                                            types: [],
+                                            args: ['values', keyName]
+                                        }]
+                                    }]
+                                }]
+                                break
+                            }
+                            case 'in': {
+                                const valuesExpression: LispExpression = {
+                                    expectedReturnType: 'Boolean',
+                                    op: 'or',
+                                    types: ['Boolean'],
+                                    args: value.value.map(x => {
+                                        return ({
+                                            expectedReturnType: 'Boolean',
+                                            op: '==',
+                                            types: ['Text'],
+                                            args: [x, {
+                                                op: '.',
+                                                types: [],
+                                                args: ['values', keyName]
+                                            }]
+                                        })
+                                    })
+                                }
+                                break
+                            }
                         }
+                        break
                     }
-                    break
-                }
-                case 'Number': {
-                    
+                    case 'Date':
+                    case 'Timestamp':
+                    case 'Time':
+                    case 'Number': {
+                        switch (value.operator) {
+                            case 'equals': {
+                                valuesExpression.args = [...valuesExpression.args, {
+                                    expectedReturnType: 'Boolean',
+                                    op: '==',
+                                    types: ['Number'],
+                                    args: [value.value, {
+                                        op: '.',
+                                        types: [],
+                                        args: ['values', keyName]
+                                    }]
+                                }]
+                                break
+                            }
+                            case 'greaterThanEquals': {
+                                valuesExpression.args = [...valuesExpression.args, {
+                                    expectedReturnType: 'Boolean',
+                                    op: '>=',
+                                    types: ['Number'],
+                                    args: [{
+                                        op: '.',
+                                        types: [],
+                                        args: ['values', keyName]
+                                    }, value.value,]
+                                }]
+                                break
+                            }
+                            case 'greaterThan': {
+                                valuesExpression.args = [...valuesExpression.args, {
+                                    expectedReturnType: 'Boolean',
+                                    op: '>',
+                                    types: ['Number'],
+                                    args: [{
+                                        op: '.',
+                                        types: [],
+                                        args: ['values', keyName]
+                                    }, value.value,]
+                                }]
+                                break
+                            }
+                            case 'lessThanEquals': {
+                                valuesExpression.args = [...valuesExpression.args, {
+                                    expectedReturnType: 'Boolean',
+                                    op: '<=',
+                                    types: ['Number'],
+                                    args: [{
+                                        op: '.',
+                                        types: [],
+                                        args: ['values', keyName]
+                                    }, value.value,]
+                                }]
+                                break
+                            }
+                            case 'lessThan': {
+                                valuesExpression.args = [...valuesExpression.args, {
+                                    expectedReturnType: 'Boolean',
+                                    op: '<',
+                                    types: ['Number'],
+                                    args: [{
+                                        op: '.',
+                                        types: [],
+                                        args: ['values', keyName]
+                                    }, value.value,]
+                                }]
+                                break
+                            }
+                            case 'between': {
+                                valuesExpression.args = [...valuesExpression.args, {
+                                    expectedReturnType: 'Boolean',
+                                    op: 'and',
+                                    types: ['Boolean'],
+                                    args: [{
+                                        expectedReturnType: 'Boolean',
+                                        op: '<=',
+                                        types: ['Number'],
+                                        args: [value.value[0], {
+                                            op: '.',
+                                            types: [],
+                                            args: ['values', keyName]
+                                        }]
+                                    }, {
+                                        expectedReturnType: 'Boolean',
+                                        op: '>=',
+                                        types: ['Number'],
+                                        args: [value.value[1], {
+                                            op: '.',
+                                            types: [],
+                                            args: ['values', keyName]
+                                        }]
+                                    }]
+                                }]
+                                break
+                            }
+                            case 'notBetween': {
+                                valuesExpression.args = [...valuesExpression.args, {
+                                    expectedReturnType: 'Boolean',
+                                    op: 'or',
+                                    types: ['Boolean'],
+                                    args: [{
+                                        expectedReturnType: 'Boolean',
+                                        op: '<',
+                                        types: ['Number'],
+                                        args: [{
+                                            op: '.',
+                                            types: [],
+                                            args: ['values', keyName]
+                                        }, value.value[0]]
+                                    }, {
+                                        expectedReturnType: 'Boolean',
+                                        op: '>',
+                                        types: ['Number'],
+                                        args: [value.value[1], {
+                                            op: '.',
+                                            types: [],
+                                            args: ['values', keyName]
+                                        }]
+                                    }]
+                                }]
+                                break
+                            }
+                            case 'in': {
+                                const valuesExpression: LispExpression = {
+                                    expectedReturnType: 'Boolean',
+                                    op: 'or',
+                                    types: ['Boolean'],
+                                    args: value.value.map(x => {
+                                        return ({
+                                            expectedReturnType: 'Boolean',
+                                            op: '==',
+                                            types: ['Number'],
+                                            args: [x, {
+                                                op: '.',
+                                                types: [],
+                                                args: ['values', keyName]
+                                            }]
+                                        })
+                                    })
+                                }
+                                break
+                            }
+                        }
+                        break
+                    }
+                    case 'Decimal': {
+                        switch (value.operator) {
+                            case 'equals': {
+                                valuesExpression.args = [...valuesExpression.args, {
+                                    expectedReturnType: 'Boolean',
+                                    op: '==',
+                                    types: ['Decimal'],
+                                    args: [value.value, {
+                                        op: '.',
+                                        types: [],
+                                        args: ['values', keyName]
+                                    }]
+                                }]
+                                break
+                            }
+                            case 'greaterThanEquals': {
+                                valuesExpression.args = [...valuesExpression.args, {
+                                    expectedReturnType: 'Boolean',
+                                    op: '>=',
+                                    types: ['Decimal'],
+                                    args: [{
+                                        op: '.',
+                                        types: [],
+                                        args: ['values', keyName]
+                                    }, value.value,]
+                                }]
+                                break
+                            }
+                            case 'greaterThan': {
+                                valuesExpression.args = [...valuesExpression.args, {
+                                    expectedReturnType: 'Boolean',
+                                    op: '>',
+                                    types: ['Decimal'],
+                                    args: [{
+                                        op: '.',
+                                        types: [],
+                                        args: ['values', keyName]
+                                    }, value.value,]
+                                }]
+                                break
+                            }
+                            case 'lessThanEquals': {
+                                valuesExpression.args = [...valuesExpression.args, {
+                                    expectedReturnType: 'Boolean',
+                                    op: '<=',
+                                    types: ['Decimal'],
+                                    args: [{
+                                        op: '.',
+                                        types: [],
+                                        args: ['values', keyName]
+                                    }, value.value,]
+                                }]
+                                break
+                            }
+                            case 'lessThan': {
+                                valuesExpression.args = [...valuesExpression.args, {
+                                    expectedReturnType: 'Boolean',
+                                    op: '<',
+                                    types: ['Decimal'],
+                                    args: [{
+                                        op: '.',
+                                        types: [],
+                                        args: ['values', keyName]
+                                    }, value.value,]
+                                }]
+                                break
+                            }
+                            case 'between': {
+                                valuesExpression.args = [...valuesExpression.args, {
+                                    expectedReturnType: 'Boolean',
+                                    op: 'and',
+                                    types: ['Boolean'],
+                                    args: [{
+                                        expectedReturnType: 'Boolean',
+                                        op: '<=',
+                                        types: ['Decimal'],
+                                        args: [value.value[0], {
+                                            op: '.',
+                                            types: [],
+                                            args: ['values', keyName]
+                                        }]
+                                    }, {
+                                        expectedReturnType: 'Boolean',
+                                        op: '>=',
+                                        types: ['Decimal'],
+                                        args: [value.value[1], {
+                                            op: '.',
+                                            types: [],
+                                            args: ['values', keyName]
+                                        }]
+                                    }]
+                                }]
+                                break
+                            }
+                            case 'notBetween': {
+                                valuesExpression.args = [...valuesExpression.args, {
+                                    expectedReturnType: 'Boolean',
+                                    op: 'or',
+                                    types: ['Boolean'],
+                                    args: [{
+                                        expectedReturnType: 'Boolean',
+                                        op: '<',
+                                        types: ['Decimal'],
+                                        args: [{
+                                            op: '.',
+                                            types: [],
+                                            args: ['values', keyName]
+                                        }, value.value[0]]
+                                    }, {
+                                        expectedReturnType: 'Boolean',
+                                        op: '>',
+                                        types: ['Decimal'],
+                                        args: [value.value[1], {
+                                            op: '.',
+                                            types: [],
+                                            args: ['values', keyName]
+                                        }]
+                                    }]
+                                }]
+                                break
+                            }
+                            case 'in': {
+                                const valuesExpression: LispExpression = {
+                                    expectedReturnType: 'Boolean',
+                                    op: 'or',
+                                    types: ['Boolean'],
+                                    args: value.value.map(x => {
+                                        return ({
+                                            expectedReturnType: 'Boolean',
+                                            op: '==',
+                                            types: ['Decimal'],
+                                            args: [x, {
+                                                op: '.',
+                                                types: [],
+                                                args: ['values', keyName]
+                                            }]
+                                        })
+                                    })
+                                }
+                                break
+                            }
+                        }
+                        break
+                    }
+                    case 'Boolean': {
+                        switch (value.operator) {
+                            case 'equals': {
+                                valuesExpression.args = [...valuesExpression.args, {
+                                    expectedReturnType: 'Boolean',
+                                    op: '==',
+                                    types: ['Text'],
+                                    args: [String(value.value), {
+                                        op: '.',
+                                        types: [],
+                                        args: ['values', keyName]
+                                    }]
+                                }]
+                                break
+                            }
+                        }
+                        break
+                    }
+
                 }
             }
         }
-
     })
     expression.args = [...expression.args, valuesExpression]
     return expression
@@ -626,6 +933,8 @@ export default function Products() {
     const columns: Vector<string> = Vector.of("SKU", "Name", "Orderable", "Consumable", "Producable")
     console.log('--------------------')
     console.log(state.query)
+    console.log('$$$$$$$$$$$')
+    console.log(getExpression(state.query))
     return (
         <Container area={none} layout={Grid.layouts.main} className="overflow-x-scroll overflow-y-scroll">
             {
