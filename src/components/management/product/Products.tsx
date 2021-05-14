@@ -16,7 +16,6 @@ import formatISO from 'date-fns/formatISO'
 import parseISO from 'date-fns/parseISO'
 import React from 'react'
 import { LispExpression } from '../../../main/lisp'
-import { key } from 'monocle-ts/lib/Traversal'
 
 type State = Immutable<{
     typeName: 'Product'
@@ -182,11 +181,10 @@ function getExpression(query: Immutable<Query>): LispExpression {
         types: ['Boolean'],
         args: []
     }
-    if (query.variableName.checked == true) {
+    if (query.variableName.checked === true) {
         switch (query.variableName.operator) {
             case 'equals': {
                 expression.args = [...expression.args, {
-                    expectedReturnType: 'Boolean',
                     op: '==',
                     types: ['Text'],
                     args: [query.variableName.value, {
@@ -203,11 +201,9 @@ function getExpression(query: Immutable<Query>): LispExpression {
             }
             case 'between': {
                 expression.args = [...expression.args, {
-                    expectedReturnType: 'Boolean',
                     op: 'and',
                     types: ['Boolean'],
                     args: [{
-                        expectedReturnType: 'Boolean',
                         op: '<=',
                         types: ['Text'],
                         args: [query.variableName.value[0], {
@@ -216,7 +212,6 @@ function getExpression(query: Immutable<Query>): LispExpression {
                             args: ['variableName']
                         }]
                     }, {
-                        expectedReturnType: 'Boolean',
                         op: '>=',
                         types: ['Text'],
                         args: [query.variableName.value[1], {
@@ -230,11 +225,9 @@ function getExpression(query: Immutable<Query>): LispExpression {
             }
             case 'notBetween': {
                 expression.args = [...expression.args, {
-                    expectedReturnType: 'Boolean',
                     op: 'or',
                     types: ['Boolean'],
                     args: [{
-                        expectedReturnType: 'Boolean',
                         op: '<',
                         types: ['Text'],
                         args: [{
@@ -243,7 +236,6 @@ function getExpression(query: Immutable<Query>): LispExpression {
                             args: ['variableName']
                         }, query.variableName.value[0]]
                     }, {
-                        expectedReturnType: 'Boolean',
                         op: '>',
                         types: ['Text'],
                         args: [query.variableName.value[1], {
@@ -256,13 +248,11 @@ function getExpression(query: Immutable<Query>): LispExpression {
                 break
             }
             case 'in': {
-                const expression: LispExpression = {
-                    expectedReturnType: 'Boolean',
+                expression.args = [...expression.args, {
                     op: 'or',
                     types: ['Boolean'],
                     args: query.variableName.value.map(x => {
                         return ({
-                            expectedReturnType: 'Boolean',
                             op: '==',
                             types: ['Text'],
                             args: [x, {
@@ -272,27 +262,25 @@ function getExpression(query: Immutable<Query>): LispExpression {
                             }]
                         })
                     })
-                }
+                }]
                 break
             }
         }
     }
     const valuesExpression: LispExpression = {
-        expectedReturnType: 'Boolean',
         op: 'and',
         types: ['Boolean'],
         args: []
     }
     Object.keys(query.values).forEach(keyName => {
         const value = query.values[keyName]
-        if (value.checked == true) {
+        if (value.checked) {
             if ('operator' in value) {
                 switch (value.type) {
                     case 'Text': {
                         switch (value.operator) {
                             case 'equals': {
                                 valuesExpression.args = [...valuesExpression.args, {
-                                    expectedReturnType: 'Boolean',
                                     op: '==',
                                     types: ['Text'],
                                     args: [value.value, {
@@ -309,11 +297,9 @@ function getExpression(query: Immutable<Query>): LispExpression {
                             }
                             case 'between': {
                                 valuesExpression.args = [...valuesExpression.args, {
-                                    expectedReturnType: 'Boolean',
                                     op: 'and',
                                     types: ['Boolean'],
                                     args: [{
-                                        expectedReturnType: 'Boolean',
                                         op: '<=',
                                         types: ['Text'],
                                         args: [value.value[0], {
@@ -322,7 +308,6 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                             args: ['values', keyName]
                                         }]
                                     }, {
-                                        expectedReturnType: 'Boolean',
                                         op: '>=',
                                         types: ['Text'],
                                         args: [value.value[1], {
@@ -336,11 +321,9 @@ function getExpression(query: Immutable<Query>): LispExpression {
                             }
                             case 'notBetween': {
                                 valuesExpression.args = [...valuesExpression.args, {
-                                    expectedReturnType: 'Boolean',
                                     op: 'or',
                                     types: ['Boolean'],
                                     args: [{
-                                        expectedReturnType: 'Boolean',
                                         op: '<',
                                         types: ['Text'],
                                         args: [{
@@ -349,7 +332,6 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                             args: ['values', keyName]
                                         }, value.value[0]]
                                     }, {
-                                        expectedReturnType: 'Boolean',
                                         op: '>',
                                         types: ['Text'],
                                         args: [value.value[1], {
@@ -362,13 +344,11 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                 break
                             }
                             case 'in': {
-                                const valuesExpression: LispExpression = {
-                                    expectedReturnType: 'Boolean',
+                                expression.args = [...expression.args, {
                                     op: 'or',
                                     types: ['Boolean'],
                                     args: value.value.map(x => {
                                         return ({
-                                            expectedReturnType: 'Boolean',
                                             op: '==',
                                             types: ['Text'],
                                             args: [x, {
@@ -378,7 +358,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                             }]
                                         })
                                     })
-                                }
+                                }]
                                 break
                             }
                         }
@@ -391,7 +371,6 @@ function getExpression(query: Immutable<Query>): LispExpression {
                         switch (value.operator) {
                             case 'equals': {
                                 valuesExpression.args = [...valuesExpression.args, {
-                                    expectedReturnType: 'Boolean',
                                     op: '==',
                                     types: ['Number'],
                                     args: [value.value, {
@@ -404,7 +383,6 @@ function getExpression(query: Immutable<Query>): LispExpression {
                             }
                             case 'greaterThanEquals': {
                                 valuesExpression.args = [...valuesExpression.args, {
-                                    expectedReturnType: 'Boolean',
                                     op: '>=',
                                     types: ['Number'],
                                     args: [{
@@ -417,7 +395,6 @@ function getExpression(query: Immutable<Query>): LispExpression {
                             }
                             case 'greaterThan': {
                                 valuesExpression.args = [...valuesExpression.args, {
-                                    expectedReturnType: 'Boolean',
                                     op: '>',
                                     types: ['Number'],
                                     args: [{
@@ -430,7 +407,6 @@ function getExpression(query: Immutable<Query>): LispExpression {
                             }
                             case 'lessThanEquals': {
                                 valuesExpression.args = [...valuesExpression.args, {
-                                    expectedReturnType: 'Boolean',
                                     op: '<=',
                                     types: ['Number'],
                                     args: [{
@@ -443,7 +419,6 @@ function getExpression(query: Immutable<Query>): LispExpression {
                             }
                             case 'lessThan': {
                                 valuesExpression.args = [...valuesExpression.args, {
-                                    expectedReturnType: 'Boolean',
                                     op: '<',
                                     types: ['Number'],
                                     args: [{
@@ -456,11 +431,9 @@ function getExpression(query: Immutable<Query>): LispExpression {
                             }
                             case 'between': {
                                 valuesExpression.args = [...valuesExpression.args, {
-                                    expectedReturnType: 'Boolean',
                                     op: 'and',
                                     types: ['Boolean'],
                                     args: [{
-                                        expectedReturnType: 'Boolean',
                                         op: '<=',
                                         types: ['Number'],
                                         args: [value.value[0], {
@@ -469,7 +442,6 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                             args: ['values', keyName]
                                         }]
                                     }, {
-                                        expectedReturnType: 'Boolean',
                                         op: '>=',
                                         types: ['Number'],
                                         args: [value.value[1], {
@@ -483,11 +455,9 @@ function getExpression(query: Immutable<Query>): LispExpression {
                             }
                             case 'notBetween': {
                                 valuesExpression.args = [...valuesExpression.args, {
-                                    expectedReturnType: 'Boolean',
                                     op: 'or',
                                     types: ['Boolean'],
                                     args: [{
-                                        expectedReturnType: 'Boolean',
                                         op: '<',
                                         types: ['Number'],
                                         args: [{
@@ -496,7 +466,6 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                             args: ['values', keyName]
                                         }, value.value[0]]
                                     }, {
-                                        expectedReturnType: 'Boolean',
                                         op: '>',
                                         types: ['Number'],
                                         args: [value.value[1], {
@@ -509,13 +478,11 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                 break
                             }
                             case 'in': {
-                                const valuesExpression: LispExpression = {
-                                    expectedReturnType: 'Boolean',
+                                expression.args = [...expression.args, {
                                     op: 'or',
                                     types: ['Boolean'],
                                     args: value.value.map(x => {
                                         return ({
-                                            expectedReturnType: 'Boolean',
                                             op: '==',
                                             types: ['Number'],
                                             args: [x, {
@@ -525,7 +492,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                             }]
                                         })
                                     })
-                                }
+                                }]
                                 break
                             }
                         }
@@ -535,7 +502,6 @@ function getExpression(query: Immutable<Query>): LispExpression {
                         switch (value.operator) {
                             case 'equals': {
                                 valuesExpression.args = [...valuesExpression.args, {
-                                    expectedReturnType: 'Boolean',
                                     op: '==',
                                     types: ['Decimal'],
                                     args: [value.value, {
@@ -548,7 +514,6 @@ function getExpression(query: Immutable<Query>): LispExpression {
                             }
                             case 'greaterThanEquals': {
                                 valuesExpression.args = [...valuesExpression.args, {
-                                    expectedReturnType: 'Boolean',
                                     op: '>=',
                                     types: ['Decimal'],
                                     args: [{
@@ -561,7 +526,6 @@ function getExpression(query: Immutable<Query>): LispExpression {
                             }
                             case 'greaterThan': {
                                 valuesExpression.args = [...valuesExpression.args, {
-                                    expectedReturnType: 'Boolean',
                                     op: '>',
                                     types: ['Decimal'],
                                     args: [{
@@ -574,7 +538,6 @@ function getExpression(query: Immutable<Query>): LispExpression {
                             }
                             case 'lessThanEquals': {
                                 valuesExpression.args = [...valuesExpression.args, {
-                                    expectedReturnType: 'Boolean',
                                     op: '<=',
                                     types: ['Decimal'],
                                     args: [{
@@ -587,7 +550,6 @@ function getExpression(query: Immutable<Query>): LispExpression {
                             }
                             case 'lessThan': {
                                 valuesExpression.args = [...valuesExpression.args, {
-                                    expectedReturnType: 'Boolean',
                                     op: '<',
                                     types: ['Decimal'],
                                     args: [{
@@ -600,11 +562,9 @@ function getExpression(query: Immutable<Query>): LispExpression {
                             }
                             case 'between': {
                                 valuesExpression.args = [...valuesExpression.args, {
-                                    expectedReturnType: 'Boolean',
                                     op: 'and',
                                     types: ['Boolean'],
                                     args: [{
-                                        expectedReturnType: 'Boolean',
                                         op: '<=',
                                         types: ['Decimal'],
                                         args: [value.value[0], {
@@ -613,7 +573,6 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                             args: ['values', keyName]
                                         }]
                                     }, {
-                                        expectedReturnType: 'Boolean',
                                         op: '>=',
                                         types: ['Decimal'],
                                         args: [value.value[1], {
@@ -627,11 +586,9 @@ function getExpression(query: Immutable<Query>): LispExpression {
                             }
                             case 'notBetween': {
                                 valuesExpression.args = [...valuesExpression.args, {
-                                    expectedReturnType: 'Boolean',
                                     op: 'or',
                                     types: ['Boolean'],
                                     args: [{
-                                        expectedReturnType: 'Boolean',
                                         op: '<',
                                         types: ['Decimal'],
                                         args: [{
@@ -640,7 +597,6 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                             args: ['values', keyName]
                                         }, value.value[0]]
                                     }, {
-                                        expectedReturnType: 'Boolean',
                                         op: '>',
                                         types: ['Decimal'],
                                         args: [value.value[1], {
@@ -653,13 +609,11 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                 break
                             }
                             case 'in': {
-                                const valuesExpression: LispExpression = {
-                                    expectedReturnType: 'Boolean',
+                                expression.args = [...expression.args, {
                                     op: 'or',
                                     types: ['Boolean'],
                                     args: value.value.map(x => {
                                         return ({
-                                            expectedReturnType: 'Boolean',
                                             op: '==',
                                             types: ['Decimal'],
                                             args: [x, {
@@ -669,7 +623,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                             }]
                                         })
                                     })
-                                }
+                                }]
                                 break
                             }
                         }
@@ -679,7 +633,6 @@ function getExpression(query: Immutable<Query>): LispExpression {
                         switch (value.operator) {
                             case 'equals': {
                                 valuesExpression.args = [...valuesExpression.args, {
-                                    expectedReturnType: 'Boolean',
                                     op: '==',
                                     types: ['Text'],
                                     args: [String(value.value), {
