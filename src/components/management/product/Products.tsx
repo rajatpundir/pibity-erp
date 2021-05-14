@@ -15,6 +15,8 @@ import getTime from 'date-fns/getTime'
 import formatISO from 'date-fns/formatISO'
 import parseISO from 'date-fns/parseISO'
 import React from 'react'
+import { LispExpression } from '../../../main/lisp'
+import { key } from 'monocle-ts/lib/Traversal'
 
 type State = Immutable<{
     typeName: 'Product'
@@ -171,6 +173,226 @@ export type Query = {
             value: Query
         }
     }
+}
+
+
+function getExpression(query: Query): LispExpression {
+    const expression: LispExpression = {
+        expectedReturnType: 'Boolean',
+        op: 'and',
+        types: ['Boolean'],
+        args: []
+    }
+    if (query.variableName.checked == true) {
+        switch (query.variableName.operator) {
+            case 'equals': {
+                expression.args = [...expression.args, {
+                    expectedReturnType: 'Boolean',
+                    op: '==',
+                    types: ['Text'],
+                    args: [query.variableName.value, {
+                        op: '.',
+                        types: [],
+                        args: ['variableName']
+                    }]
+                }]
+                break
+            }
+            case 'like': {
+
+                break
+            }
+            case 'between': {
+                expression.args = [...expression.args, {
+                    expectedReturnType: 'Boolean',
+                    op: 'and',
+                    types: ['Boolean'],
+                    args: [{
+                        expectedReturnType: 'Boolean',
+                        op: '<=',
+                        types: ['Text'],
+                        args: [query.variableName.value[0], {
+                            op: '.',
+                            types: [],
+                            args: ['variableName']
+                        }]
+                    }, {
+                        expectedReturnType: 'Boolean',
+                        op: '>=',
+                        types: ['Text'],
+                        args: [query.variableName.value[1], {
+                            op: '.',
+                            types: [],
+                            args: ['variableName']
+                        }]
+                    }]
+                }]
+                break
+            }
+            case 'notBetween': {
+                expression.args = [...expression.args, {
+                    expectedReturnType: 'Boolean',
+                    op: 'or',
+                    types: ['Boolean'],
+                    args: [{
+                        expectedReturnType: 'Boolean',
+                        op: '<',
+                        types: ['Text'],
+                        args: [{
+                            op: '.',
+                            types: [],
+                            args: ['variableName']
+                        }, query.variableName.value[0]]
+                    }, {
+                        expectedReturnType: 'Boolean',
+                        op: '>',
+                        types: ['Text'],
+                        args: [query.variableName.value[1], {
+                            op: '.',
+                            types: [],
+                            args: ['variableName']
+                        }]
+                    }]
+                }]
+                break
+            }
+            case 'in': {
+                const expression: LispExpression = {
+                    expectedReturnType: 'Boolean',
+                    op: 'or',
+                    types: ['Boolean'],
+                    args: query.variableName.value.map(x => {
+                        return ({
+                            expectedReturnType: 'Boolean',
+                            op: '==',
+                            types: ['Text'],
+                            args: [x, {
+                                op: '.',
+                                types: [],
+                                args: ['variableName']
+                            }]
+                        })
+                    })
+                }
+                break
+            }
+        }
+    }
+    const valuesExpression: LispExpression = {
+        expectedReturnType: 'Boolean',
+        op: 'and',
+        types: ['Boolean'],
+        args: []
+    }
+    Object.keys(query.values).forEach(keyName => {
+        const value = query.values[keyName]
+        if ('operator' in value) {
+            switch (value.type) {
+                case 'Text': {
+                    switch (value.operator) {
+                        case 'equals': {
+                            valuesExpression.args = [...valuesExpression.args, {
+                                expectedReturnType: 'Boolean',
+                                op: '==',
+                                types: ['Text'],
+                                args: [value.value, {
+                                    op: '.',
+                                    types: [],
+                                    args: ['values', keyName]
+                                }]
+                            }]
+                            break
+                        }
+                        case 'like': {
+
+                            break
+                        }
+                        case 'between': {
+                            valuesExpression.args = [...valuesExpression.args, {
+                                expectedReturnType: 'Boolean',
+                                op: 'and',
+                                types: ['Boolean'],
+                                args: [{
+                                    expectedReturnType: 'Boolean',
+                                    op: '<=',
+                                    types: ['Text'],
+                                    args: [value.value[0], {
+                                        op: '.',
+                                        types: [],
+                                        args: ['values', keyName]
+                                    }]
+                                }, {
+                                    expectedReturnType: 'Boolean',
+                                    op: '>=',
+                                    types: ['Text'],
+                                    args: [value.value[1], {
+                                        op: '.',
+                                        types: [],
+                                        args: ['values', keyName]
+                                    }]
+                                }]
+                            }]
+                            break
+                        }
+                        case 'notBetween': {
+                            valuesExpression.args = [...valuesExpression.args, {
+                                expectedReturnType: 'Boolean',
+                                op: 'or',
+                                types: ['Boolean'],
+                                args: [{
+                                    expectedReturnType: 'Boolean',
+                                    op: '<',
+                                    types: ['Text'],
+                                    args: [{
+                                        op: '.',
+                                        types: [],
+                                        args: ['values', keyName]
+                                    }, value.value[0]]
+                                }, {
+                                    expectedReturnType: 'Boolean',
+                                    op: '>',
+                                    types: ['Text'],
+                                    args: [value.value[1], {
+                                        op: '.',
+                                        types: [],
+                                        args: ['values', keyName]
+                                    }]
+                                }]
+                            }]
+                            break
+                        }
+                        case 'in': {
+                            const valuesExpression: LispExpression = {
+                                expectedReturnType: 'Boolean',
+                                op: 'or',
+                                types: ['Boolean'],
+                                args: value.value.map(x => {
+                                    return ({
+                                        expectedReturnType: 'Boolean',
+                                        op: '==',
+                                        types: ['Text'],
+                                        args: [x, {
+                                            op: '.',
+                                            types: [],
+                                            args: ['values', keyName]
+                                        }]
+                                    })
+                                })
+                            }
+                            break
+                        }
+                    }
+                    break
+                }
+                case 'Number': {
+                    
+                }
+            }
+        }
+
+    })
+    expression.args = [...expression.args, valuesExpression]
+    return expression
 }
 
 type Args =
@@ -360,7 +582,7 @@ function getQuery(typeName: string): Query {
 
 const initialState: State = {
     typeName: 'Product',
-    query: getQuery('WarehouseAcceptanceSlip'),
+    query: getQuery('Product'),
     limit: 5,
     offset: 0,
     page: 1
