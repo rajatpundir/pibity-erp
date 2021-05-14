@@ -934,7 +934,7 @@ export default function Products() {
     console.log('--------------------')
     console.log(state.query)
     console.log('$$$$$$$$$$$')
-    console.log(getExpression(state.query))
+    console.log(JSON.stringify(getExpression(state.query), null, 2))
     return (
         <Container area={none} layout={Grid.layouts.main} className="overflow-x-scroll overflow-y-scroll">
             {
