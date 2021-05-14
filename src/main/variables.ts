@@ -478,6 +478,7 @@ export function getVariableName(variable: Variable): string {
         case 'TransferMaterialSlip': return iso<TransferMaterialSlip>().unwrap(variable.variableName)
         case 'WarehouseAcceptanceSlip': return iso<WarehouseAcceptanceSlip>().unwrap(variable.variableName)
         default: {
+            console.log('never!')
             return ""
         }
     }

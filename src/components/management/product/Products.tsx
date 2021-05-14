@@ -196,7 +196,7 @@ function getSymbols(symbolPaths: Vector<Vector<string>>, variable: Variable): Sy
     return {
         variableName: {
             type: 'Text',
-            value: getVariableName(variable),  
+            value: getVariableName(variable),
         },
         values: {
             type: 'Text',
@@ -205,7 +205,7 @@ function getSymbols(symbolPaths: Vector<Vector<string>>, variable: Variable): Sy
                 if (symbolPaths.anyMatch(path => path.toArray()[0] === 'values' && path.toArray()[1] === keyName)) {
                     const keyType = type.keys[keyName].type
                     switch (keyType) {
-                        case 'Text': 
+                        case 'Text':
                         case 'Number':
                         case 'Decimal': {
                             acc[keyName] = {
@@ -230,10 +230,7 @@ function getSymbols(symbolPaths: Vector<Vector<string>>, variable: Variable): Sy
                             }
                             break
                         }
-                        default: {
-                            console.log(keyType, 'whatever')
-                            // keyType
-                        }
+                        default: { }
                     }
                 }
                 return acc
@@ -783,7 +780,6 @@ function J(path: Array<string>, parent?: S): Array<string> {
 }
 
 function updateQuery(query: Query, args: Args) {
-    console.log(args)
     switch (args[0]) {
         case 'variableName': {
             switch (args[1]) {
@@ -964,27 +960,9 @@ function reducer(state: Draft<State>, action: Action) {
 export default function Products() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
     const variables = store(state => state.variables.Product).filter(variable => {
-        const isChecked = Object.keys(state.query.values).reduce((acc, keyName) => acc || state.query.values[keyName].checked, false)
-        if(state.query.variableName.checked || isChecked)
-            return Boolean(evaluateExpression(getExpression(state.query), getSymbols(getSymbolPaths(getExpression(state.query)), variable))).valueOf()
-        else
-            return true
-
+        return Boolean(evaluateExpression(getExpression(state.query), getSymbols(getSymbolPaths(getExpression(state.query)), variable))).valueOf()
     })
     const columns: Vector<string> = Vector.of("SKU", "Name", "Orderable", "Consumable", "Producable")
-    console.log('--------------------')
-    console.log(state.query)
-    console.log('$$$$$$$$$$$')
-    console.log(JSON.stringify(getExpression(state.query), null, 2))
-    console.log('@@@@@@@@@@@@@@@@@@@@@@')
-    console.log(JSON.stringify(getSymbolPaths(getExpression(state.query)).toArray().map(x => x.toArray()), null, 2))
-    console.log('@@@@@@@@@@@@@@@@@@@@@@')
-    variables.forEach(variable => {
-        console.log('#################')
-        console.log(JSON.stringify(getSymbols(getSymbolPaths(getExpression(state.query)), variable), null, 2))
-        console.log()
-        console.log('#################')
-    })
     return (
         <Container area={none} layout={Grid.layouts.main} className="overflow-x-scroll overflow-y-scroll">
             {

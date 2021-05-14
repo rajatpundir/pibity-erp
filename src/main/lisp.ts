@@ -583,7 +583,7 @@ function and(expression: LispExpression, symbols: Symbols): boolean | string {
         const { expectedReturnType, args } = expression
         const evaluatedArgs: Array<boolean> = args.map(arg => {
             if (typeof arg === 'object') {
-                if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not'  || arg.op === 'id' || arg.op === '.')
+                if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.')
                     return Boolean(evaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols)).valueOf()
                 else if (arg.op === 'if' && arg.types[0] === 'Boolean')
                     return Boolean(evaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols))
@@ -593,14 +593,12 @@ function and(expression: LispExpression, symbols: Symbols): boolean | string {
                 return arg
             }
         })
-        if (evaluatedArgs.length !== 0) {
-            const result: Boolean = evaluatedArgs.reduce((acc, x) => acc && x, true)
-            switch (expectedReturnType) {
-                case 'Boolean': return result.valueOf()
-                case 'Text': return String(result.valueOf())
-            }
+        const result: Boolean = evaluatedArgs.reduce((acc, x) => acc && x, true)
+        switch (expectedReturnType) {
+            case 'Boolean': return result.valueOf()
+            case 'Text': return String(result.valueOf())
+            default: return true
         }
-        return false
     } else {
         return false
     }
@@ -611,7 +609,7 @@ function or(expression: LispExpression, symbols: Symbols): boolean | string {
         const { expectedReturnType, args } = expression
         const evaluatedArgs: Array<boolean> = args.map(arg => {
             if (typeof arg === 'object') {
-                if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not'  || arg.op === 'id' || arg.op === '.')
+                if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.')
                     return Boolean(evaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols)).valueOf()
                 else if (arg.op === 'if' && arg.types[0] === 'Boolean')
                     return Boolean(evaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols))
@@ -621,14 +619,12 @@ function or(expression: LispExpression, symbols: Symbols): boolean | string {
                 return arg
             }
         })
-        if (evaluatedArgs.length !== 0) {
-            const result: Boolean = evaluatedArgs.reduce((acc, x) => acc || x, false)
-            switch (expectedReturnType) {
-                case 'Boolean': return result.valueOf()
-                case 'Text': return String(result.valueOf())
-            }
+        const result: Boolean = evaluatedArgs.reduce((acc, x) => acc || x, false)
+        switch (expectedReturnType) {
+            case 'Boolean': return result.valueOf()
+            case 'Text': return String(result.valueOf())
+            default: return false
         }
-        return false
     } else {
         return false
     }
@@ -639,7 +635,7 @@ function not(expression: LispExpression, symbols: Symbols): boolean | string {
         const { expectedReturnType, args } = expression
         const evaluatedArgs: Array<boolean> = args.map(arg => {
             if (typeof arg === 'object') {
-                if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not'  || arg.op === 'id' || arg.op === '.')
+                if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.')
                     return Boolean(evaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols)).valueOf()
                 else if (arg.op === 'if' && arg.types[0] === 'Boolean')
                     return Boolean(evaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols))
@@ -649,14 +645,12 @@ function not(expression: LispExpression, symbols: Symbols): boolean | string {
                 return arg
             }
         })
-        if (evaluatedArgs.length !== 0) {
-            const result: Boolean = !evaluatedArgs[0]
-            switch (expectedReturnType) {
-                case 'Boolean': return result.valueOf()
-                case 'Text': return String(result.valueOf())
-            }
+        const result: Boolean = !evaluatedArgs[0]
+        switch (expectedReturnType) {
+            case 'Boolean': return result.valueOf()
+            case 'Text': return String(result.valueOf())
+            default: return false
         }
-        return false
     } else {
         return false
     }
@@ -691,7 +685,7 @@ function ifThenElse(expression: LispExpression, symbols: Symbols): string | numb
                                     return 0
                             }
                             case 'Boolean': {
-                                if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or'  || arg.op === 'not' || arg.op === 'id'  || arg.op === '.')
+                                if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.')
                                     return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
                                 else if (arg.op === 'if' && arg.types[0] === 'Boolean')
                                     return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
@@ -729,7 +723,7 @@ function ifThenElse(expression: LispExpression, symbols: Symbols): string | numb
                                     return 0
                             }
                             case 'Boolean': {
-                                if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or'  || arg.op === 'not' || arg.op === 'id'  || arg.op === '.')
+                                if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.')
                                     return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
                                 else if (arg.op === 'if' && arg.types[0] === 'Boolean')
                                     return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
@@ -773,7 +767,7 @@ function ifThenElse(expression: LispExpression, symbols: Symbols): string | numb
                                 return 0
                         }
                         case 'Boolean': {
-                            if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or'  || arg.op === 'not' || arg.op === 'id'  || arg.op === '.')
+                            if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.')
                                 return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
                             else if (arg.op === 'if' && arg.types[0] === 'Boolean')
                                 return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
@@ -811,7 +805,7 @@ function ifThenElse(expression: LispExpression, symbols: Symbols): string | numb
                                 return 0
                         }
                         case 'Boolean': {
-                            if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or'  || arg.op === 'not' || arg.op === 'id'  || arg.op === '.')
+                            if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.')
                                 return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
                             else if (arg.op === 'if' && arg.types[0] === 'Boolean')
                                 return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
