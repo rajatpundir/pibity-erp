@@ -215,6 +215,10 @@ function T(parent: S, keyName: string): S {
     }
 }
 
+function Y(args: Args, parent?: S) {
+    return (parent ? R(parent, args) : args)
+}
+
 function updateQuery(query: Query, args: Args) {
     console.log(args)
     switch (args[0]) {
@@ -356,7 +360,7 @@ function getQuery(typeName: string): Query {
 
 const initialState: State = {
     typeName: 'Product',
-    query: getQuery('PurchaseOrder'),
+    query: getQuery('WarehouseAcceptanceSlip'),
     limit: 5,
     offset: 0,
     page: 1
@@ -427,7 +431,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>, pa
                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                     dispatch({
                         type: 'query',
-                        payload: parent ? R(parent, ['variableName', 'checked', event.target.checked]) : ['variableName', 'checked', event.target.checked]
+                        payload: Y(['variableName', 'checked', event.target.checked], parent)
                     })
                 }}
             />
@@ -441,7 +445,7 @@ function getFilter(query: Immutable<Query>, dispatch: React.Dispatch<Action>, pa
                         case 'like': {
                             dispatch({
                                 type: 'query',
-                                payload: parent ? R(parent, ['variableName', 'operator', event.target.value, '']) : ['variableName', 'operator', event.target.value, '']
+                                payload: Y(['variableName', 'operator', event.target.value, ''], parent)
                             })
                             return
                         }
