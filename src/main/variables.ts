@@ -1,3 +1,4 @@
+
 import { Newtype, iso } from 'newtype-ts'
 
 // Primitive Types
@@ -10,15 +11,66 @@ export type Timestamp = bigint
 export type Time = bigint
 export type Formula = string
 
-export interface Variable {
-    typeName: string
-    variableName: any
-    values: object
-}
+export type Variable = 
+| ProductVariable
+| UOMVariable
+| IndentVariable
+| IndentItemVariable
+| SupplierVariable
+| SupplierProductVariable
+| QuotationVariable
+| QuotationItemVariable
+| PurchaseOrderVariable
+| PurchaseOrderItemVariable
+| PurchaseInvoiceVariable
+| PurchaseInvoiceItemVariable
+| MaterialApprovalSlipVariable
+| MaterialApprovalSlipItemVariable
+| MaterialRejectionSlipVariable
+| MaterialRejectionSlipItemVariable
+| MaterialReturnSlipVariable
+| MaterialReturnSlipItemVariable
+| MaterialRequistionSlipVariable
+| MaterialRequistionSlipItemVariable
+| BOMVariable
+| BOMItemVariable
+| ProductionPreparationSlipVariable
+| ProductionPreparationSlipItemVariable
+| ScrapMaterialSlipVariable
+| TransferMaterialSlipVariable
+| WarehouseAcceptanceSlipVariable
+
+// type VariableName =
+// | Product
+// | UOM
+// | Indent
+// | IndentItem
+// | Supplier
+// | SupplierProduct
+// | Quotation
+// | QuotationItem
+// | PurchaseOrder
+// | PurchaseOrderItem
+// | PurchaseInvoice
+// | PurchaseInvoiceItem
+// | MaterialApprovalSlip
+// | MaterialApprovalSlipItem
+// | MaterialRejectionSlip
+// | MaterialRejectionSlipItem
+// | MaterialReturnSlip
+// | MaterialReturnSlipItem
+// | MaterialRequistionSlip
+// | MaterialRequistionSlipItem
+// | BOM
+// | BOMItem
+// | ProductionPreparationSlip
+// | ProductionPreparationSlipItem
+// | ScrapMaterialSlip
+// | TransferMaterialSlip
+// | WarehouseAcceptanceSlip
 
 export interface Product extends Newtype<{ readonly Product: unique symbol }, string> { }
-export const isoProduct = iso<Product>()
-export interface ProductVariable extends Variable {
+export interface ProductVariable {
     typeName: 'Product'
     variableName: Product
     values: {
@@ -31,8 +83,7 @@ export interface ProductVariable extends Variable {
 }
 
 export interface UOM extends Newtype<{ readonly UOM: unique symbol }, string> { }
-export const isoUOM = iso<UOM>()
-export interface UOMVariable extends Variable {
+export interface UOMVariable {
     typeName: 'UOM'
     variableName: UOM
     values: {
@@ -44,8 +95,7 @@ export interface UOMVariable extends Variable {
 }
 
 export interface Indent extends Newtype<{ readonly Indent: unique symbol }, string> { }
-export const isoIndent = iso<Indent>()
-export interface IndentVariable extends Variable {
+export interface IndentVariable {
     typeName: 'Indent'
     variableName: Indent
     values: {
@@ -57,8 +107,7 @@ export interface IndentVariable extends Variable {
 }
 
 export interface IndentItem extends Newtype<{ readonly IndentItem: unique symbol }, string> { }
-export const isoIndentItem = iso<IndentItem>()
-export interface IndentItemVariable extends Variable {
+export interface IndentItemVariable {
     typeName: 'IndentItem'
     variableName: IndentItem
     values: {
@@ -86,8 +135,7 @@ export interface IndentItemVariable extends Variable {
 }
 
 export interface Supplier extends Newtype<{ readonly Supplier: unique symbol }, string> { }
-export const isoSupplier = iso<Supplier>()
-export interface SupplierVariable extends Variable {
+export interface SupplierVariable {
     typeName: 'Supplier'
     variableName: Supplier
     values: {
@@ -96,8 +144,7 @@ export interface SupplierVariable extends Variable {
 }
 
 export interface SupplierProduct extends Newtype<{ readonly SupplierProduct: unique symbol }, string> { }
-export const isoSupplierProduct = iso<SupplierProduct>()
-export interface SupplierProductVariable extends Variable {
+export interface SupplierProductVariable {
     typeName: 'SupplierProduct'
     variableName: SupplierProduct
     values: {
@@ -108,8 +155,7 @@ export interface SupplierProductVariable extends Variable {
 }
 
 export interface Quotation extends Newtype<{ readonly Quotation: unique symbol }, string> { }
-export const isoQuotation = iso<Quotation>()
-export interface QuotationVariable extends Variable {
+export interface QuotationVariable {
     typeName: 'Quotation'
     variableName: Quotation
     values: {
@@ -119,8 +165,7 @@ export interface QuotationVariable extends Variable {
 }
 
 export interface QuotationItem extends Newtype<{ readonly QuotationItem: unique symbol }, string> { }
-export const isoQuotationItem = iso<QuotationItem>()
-export interface QuotationItemVariable extends Variable {
+export interface QuotationItemVariable {
     typeName: 'QuotationItem'
     variableName: QuotationItem
     values: {
@@ -134,8 +179,7 @@ export interface QuotationItemVariable extends Variable {
 }
 
 export interface PurchaseOrder extends Newtype<{ readonly PurchaseOrder: unique symbol }, string> { }
-export const isoPurchaseOrder = iso<PurchaseOrder>()
-export interface PurchaseOrderVariable extends Variable {
+export interface PurchaseOrderVariable {
     typeName: 'PurchaseOrder'
     variableName: PurchaseOrder
     values: {
@@ -144,8 +188,7 @@ export interface PurchaseOrderVariable extends Variable {
 }
 
 export interface PurchaseOrderItem extends Newtype<{ readonly PurchaseOrderItem: unique symbol }, string> { }
-export const isoPurchaseOrderItem = iso<PurchaseOrderItem>()
-export interface PurchaseOrderItemVariable extends Variable {
+export interface PurchaseOrderItemVariable {
     typeName: 'PurchaseOrderItem'
     variableName: PurchaseOrderItem
     values: {
@@ -162,8 +205,7 @@ export interface PurchaseOrderItemVariable extends Variable {
 }
 
 export interface PurchaseInvoice extends Newtype<{ readonly PurchaseInvoice: unique symbol }, string> { }
-export const isoPurchaseInvoice = iso<PurchaseInvoice>()
-export interface PurchaseInvoiceVariable extends Variable {
+export interface PurchaseInvoiceVariable {
     typeName: 'PurchaseInvoice'
     variableName: PurchaseInvoice
     values: {
@@ -172,8 +214,7 @@ export interface PurchaseInvoiceVariable extends Variable {
 }
 
 export interface PurchaseInvoiceItem extends Newtype<{ readonly PurchaseInvoiceItem: unique symbol }, string> { }
-export const isoPurchaseInvoiceItem = iso<PurchaseInvoiceItem>()
-export interface PurchaseInvoiceItemVariable extends Variable {
+export interface PurchaseInvoiceItemVariable {
     typeName: 'PurchaseInvoiceItem'
     variableName: PurchaseInvoiceItem
     values: {
@@ -190,8 +231,7 @@ export interface PurchaseInvoiceItemVariable extends Variable {
 }
 
 export interface MaterialApprovalSlip extends Newtype<{ readonly MaterialApprovalSlip: unique symbol }, string> { }
-export const isoMaterialApprovalSlip = iso<MaterialApprovalSlip>()
-export interface MaterialApprovalSlipVariable extends Variable {
+export interface MaterialApprovalSlipVariable {
     typeName: 'MaterialApprovalSlip'
     variableName: MaterialApprovalSlip
     values: {
@@ -200,8 +240,7 @@ export interface MaterialApprovalSlipVariable extends Variable {
 }
 
 export interface MaterialApprovalSlipItem extends Newtype<{ readonly MaterialApprovalSlipItem: unique symbol }, string> { }
-export const isoMaterialApprovalSlipItem = iso<MaterialApprovalSlipItem>()
-export interface MaterialApprovalSlipItemVariable extends Variable {
+export interface MaterialApprovalSlipItemVariable {
     typeName: 'MaterialApprovalSlipItem'
     variableName: MaterialApprovalSlipItem
     values: {
@@ -217,8 +256,7 @@ export interface MaterialApprovalSlipItemVariable extends Variable {
 }
 
 export interface MaterialRejectionSlip extends Newtype<{ readonly MaterialRejectionSlip: unique symbol }, string> { }
-export const isoMaterialRejectionSlip = iso<MaterialRejectionSlip>()
-export interface MaterialRejectionSlipVariable extends Variable {
+export interface MaterialRejectionSlipVariable {
     typeName: 'MaterialRejectionSlip'
     variableName: MaterialRejectionSlip
     values: {
@@ -227,8 +265,7 @@ export interface MaterialRejectionSlipVariable extends Variable {
 }
 
 export interface MaterialRejectionSlipItem extends Newtype<{ readonly MaterialRejectionSlipItem: unique symbol }, string> { }
-export const isoMaterialRejectionSlipItem = iso<MaterialRejectionSlipItem>()
-export interface MaterialRejectionSlipItemVariable extends Variable {
+export interface MaterialRejectionSlipItemVariable {
     typeName: 'MaterialRejectionSlipItem'
     variableName: MaterialRejectionSlipItem
     values: {
@@ -244,8 +281,7 @@ export interface MaterialRejectionSlipItemVariable extends Variable {
 }
 
 export interface MaterialReturnSlip extends Newtype<{ readonly MaterialReturnSlip: unique symbol }, string> { }
-export const isoMaterialReturnSlip = iso<MaterialReturnSlip>()
-export interface MaterialReturnSlipVariable extends Variable {
+export interface MaterialReturnSlipVariable {
     typeName: 'MaterialReturnSlip'
     variableName: MaterialReturnSlip
     values: {
@@ -254,8 +290,7 @@ export interface MaterialReturnSlipVariable extends Variable {
 }
 
 export interface MaterialReturnSlipItem extends Newtype<{ readonly MaterialReturnSlipItem: unique symbol }, string> { }
-export const isoMaterialReturnSlipItem = iso<MaterialReturnSlipItem>()
-export interface MaterialReturnSlipItemVariable extends Variable {
+export interface MaterialReturnSlipItemVariable {
     typeName: 'MaterialReturnSlipItem'
     variableName: MaterialReturnSlipItem
     values: {
@@ -269,8 +304,7 @@ export interface MaterialReturnSlipItemVariable extends Variable {
 }
 
 export interface MaterialRequistionSlip extends Newtype<{ readonly MaterialRequistionSlip: unique symbol }, string> { }
-export const isoMaterialRequistionSlip = iso<MaterialRequistionSlip>()
-export interface MaterialRequistionSlipVariable extends Variable {
+export interface MaterialRequistionSlipVariable {
     typeName: 'MaterialRequistionSlip'
     variableName: MaterialRequistionSlip
     values: {
@@ -279,8 +313,7 @@ export interface MaterialRequistionSlipVariable extends Variable {
 }
 
 export interface MaterialRequistionSlipItem extends Newtype<{ readonly MaterialRequistionSlipItem: unique symbol }, string> { }
-export const isoMaterialRequistionSlipItem = iso<MaterialRequistionSlipItem>()
-export interface MaterialRequistionSlipItemVariable extends Variable {
+export interface MaterialRequistionSlipItemVariable {
     typeName: 'MaterialRequistionSlipItem'
     variableName: MaterialRequistionSlipItem
     values: {
@@ -296,8 +329,7 @@ export interface MaterialRequistionSlipItemVariable extends Variable {
 }
 
 export interface BOM extends Newtype<{ readonly BOM: unique symbol }, string> { }
-export const isoBOM = iso<BOM>()
-export interface BOMVariable extends Variable {
+export interface BOMVariable {
     typeName: 'BOM'
     variableName: BOM
     values: {
@@ -310,8 +342,7 @@ export interface BOMVariable extends Variable {
 }
 
 export interface BOMItem extends Newtype<{ readonly BOMItem: unique symbol }, string> { }
-export const isoBOMItem = iso<BOMItem>()
-export interface BOMItemVariable extends Variable {
+export interface BOMItemVariable {
     typeName: 'BOMItem'
     variableName: BOMItem
     values: {
@@ -326,8 +357,7 @@ export interface BOMItemVariable extends Variable {
 }
 
 export interface ProductionPreparationSlip extends Newtype<{ readonly ProductionPreparationSlip: unique symbol }, string> { }
-export const isoProductionPreparationSlip = iso<ProductionPreparationSlip>()
-export interface ProductionPreparationSlipVariable extends Variable {
+export interface ProductionPreparationSlipVariable {
     typeName: 'ProductionPreparationSlip'
     variableName: ProductionPreparationSlip
     values: {
@@ -339,10 +369,9 @@ export interface ProductionPreparationSlipVariable extends Variable {
 }
 
 export interface ProductionPreparationSlipItem extends Newtype<{ readonly ProductionPreparationSlipItem: unique symbol }, string> { }
-export const isoProductionPreparationSlipItem = iso<ProductionPreparationSlipItem>()
-export interface ProductionPreparationSlipItemVariable extends Variable {
+export interface ProductionPreparationSlipItemVariable {
     typeName: 'ProductionPreparationSlipItem'
-    variable: ProductionPreparationSlipItem
+    variableName: ProductionPreparationSlipItem
     values: {
         // UNQ(productionPreparationSlip, bomItem)
         productionPreparationSlip: ProductionPreparationSlip
@@ -355,10 +384,9 @@ export interface ProductionPreparationSlipItemVariable extends Variable {
 }
 
 export interface ScrapMaterialSlip extends Newtype<{ readonly ScrapMaterialSlip: unique symbol }, string> { }
-export const isoScrapMaterialSlip = iso<ScrapMaterialSlip>()
-export interface ScrapMaterialSlipVariable extends Variable {
+export interface ScrapMaterialSlipVariable {
     typeName: 'ScrapMaterialSlip'
-    variable: ScrapMaterialSlip
+    variableName: ScrapMaterialSlip
     values: {
         productionPreparationSlip: ProductionPreparationSlip
         // assertion(quantity <= productionPreparationSlip.bom.quantity && quantity > 0)
@@ -367,10 +395,9 @@ export interface ScrapMaterialSlipVariable extends Variable {
 }
 
 export interface TransferMaterialSlip extends Newtype<{ readonly TransferMaterialSlip: unique symbol }, string> { }
-export const isoTransferMaterialSlip = iso<TransferMaterialSlip>()
-export interface TransferMaterialSlipVariable extends Variable {
+export interface TransferMaterialSlipVariable {
     typeName: 'TransferMaterialSlip'
-    variable: TransferMaterialSlip
+    variableName: TransferMaterialSlip
     values: {
         productionPreparationSlip: ProductionPreparationSlip
         // assertion(quantity <= productionPreparationSlip.bom.quantity && quantity > 0)
@@ -381,8 +408,7 @@ export interface TransferMaterialSlipVariable extends Variable {
 }
 
 export interface WarehouseAcceptanceSlip extends Newtype<{ readonly WarehouseAcceptanceSlip: unique symbol }, string> { }
-export const isoWarehouseAcceptanceSlip = iso<WarehouseAcceptanceSlip>()
-export interface WarehouseAcceptanceSlipVariable extends Variable {
+export interface WarehouseAcceptanceSlipVariable {
     typeName: 'WarehouseAcceptanceSlip'
     variableName: WarehouseAcceptanceSlip
     values: {
@@ -392,3 +418,67 @@ export interface WarehouseAcceptanceSlipVariable extends Variable {
     }
 }
 
+export const isoVariableName = {
+    'Product': iso<Product>(),
+    'UOM': iso<UOM>(),
+    'Indent': iso<Indent>(),
+    'IndentItem': iso<IndentItem>(),
+    'Supplier': iso<Supplier>(),
+    'SupplierProduct': iso<SupplierProduct>(),
+    'Quotation': iso<Quotation>(),
+    'QuotationItem': iso<QuotationItem>(),
+    'PurchaseOrder': iso<PurchaseOrder>(),
+    'PurchaseOrderItem': iso<PurchaseOrderItem>(),
+    'PurchaseInvoice': iso<PurchaseInvoice>(),
+    'PurchaseInvoiceItem': iso<PurchaseInvoiceItem>(),
+    'MaterialApprovalSlip': iso<MaterialApprovalSlip>(),
+    'MaterialApprovalSlipItem': iso<MaterialApprovalSlipItem>(),
+    'MaterialRejectionSlip': iso<MaterialRejectionSlip>(),
+    'MaterialRejectionSlipItem': iso<MaterialRejectionSlipItem>(),
+    'MaterialReturnSlip': iso<MaterialReturnSlip>(),
+    'MaterialReturnSlipItem': iso<MaterialReturnSlipItem>(),
+    'MaterialRequistionSlip': iso<MaterialRequistionSlip>(),
+    'MaterialRequistionSlipItem': iso<MaterialRequistionSlipItem>(),
+    'BOM': iso<BOM>(),
+    'BOMItem': iso<BOMItem>(),
+    'ProductionPreparationSlip': iso<ProductionPreparationSlip>(),
+    'ProductionPreparationSlipItem': iso<ProductionPreparationSlipItem>(),
+    'ScrapMaterialSlip': iso<ScrapMaterialSlip>(),
+    'TransferMaterialSlip': iso<TransferMaterialSlip>(),
+    'WarehouseAcceptanceSlip': iso<WarehouseAcceptanceSlip>()
+}
+
+export function getVariableName(variable: Variable): string {
+    switch (variable.typeName) {
+        case 'Product': return iso<Product>().unwrap(variable.variableName)
+        case 'UOM': return iso<UOM>().unwrap(variable.variableName)
+        case 'Indent': return iso<Indent>().unwrap(variable.variableName)
+        case 'IndentItem': return iso<IndentItem>().unwrap(variable.variableName)
+        case 'SupplierProduct': return iso<SupplierProduct>().unwrap(variable.variableName)
+        case 'Supplier': return iso<Supplier>().unwrap(variable.variableName)
+        case 'Quotation': return iso<Quotation>().unwrap(variable.variableName)
+        case 'QuotationItem': return iso<QuotationItem>().unwrap(variable.variableName)
+        case 'PurchaseOrder': return iso<PurchaseOrder>().unwrap(variable.variableName)
+        case 'PurchaseOrderItem': return iso<PurchaseOrderItem>().unwrap(variable.variableName)
+        case 'PurchaseInvoice': return iso<PurchaseInvoice>().unwrap(variable.variableName)
+        case 'PurchaseInvoiceItem': return iso<PurchaseInvoiceItem>().unwrap(variable.variableName)
+        case 'MaterialApprovalSlip': return iso<MaterialApprovalSlip>().unwrap(variable.variableName)
+        case 'MaterialApprovalSlipItem': return iso<MaterialApprovalSlipItem>().unwrap(variable.variableName)
+        case 'MaterialRejectionSlip': return iso<MaterialRejectionSlip>().unwrap(variable.variableName)
+        case 'MaterialRejectionSlipItem': return iso<MaterialRejectionSlipItem>().unwrap(variable.variableName)
+        case 'MaterialReturnSlip': return iso<MaterialReturnSlip>().unwrap(variable.variableName)
+        case 'MaterialReturnSlipItem': return iso<MaterialReturnSlipItem>().unwrap(variable.variableName)
+        case 'MaterialRequistionSlip': return iso<MaterialRequistionSlip>().unwrap(variable.variableName)
+        case 'MaterialRequistionSlipItem': return iso<MaterialRequistionSlipItem>().unwrap(variable.variableName)
+        case 'BOM': return iso<BOM>().unwrap(variable.variableName)
+        case 'BOMItem': return iso<BOMItem>().unwrap(variable.variableName)
+        case 'ProductionPreparationSlip': return iso<ProductionPreparationSlip>().unwrap(variable.variableName)
+        case 'ProductionPreparationSlipItem': return iso<ProductionPreparationSlipItem>().unwrap(variable.variableName)
+        case 'ScrapMaterialSlip': return iso<ScrapMaterialSlip>().unwrap(variable.variableName)
+        case 'TransferMaterialSlip': return iso<TransferMaterialSlip>().unwrap(variable.variableName)
+        case 'WarehouseAcceptanceSlip': return iso<WarehouseAcceptanceSlip>().unwrap(variable.variableName)
+        default: {
+            return ""
+        }
+    }
+}

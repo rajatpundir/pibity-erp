@@ -1,5 +1,5 @@
 import { Vector } from 'prelude-ts'
-import { ProductVariable, Product, isoProduct } from './variables'
+import { ProductVariable, Product, isoVariableName } from './variables'
 
 type Variable = {
     variableName: string
@@ -30,8 +30,8 @@ export function applyDiff(layer: Readonly<Layer>, diff: Diff): Layer {
     else {
         const result: Layer = {
             Product: layer.Product
-                .filter(x => !diff.Product.remove.map(y => isoProduct.unwrap(y)).contains(isoProduct.unwrap(x.variableName)))
-                .filter(x => !diff.Product.replace.anyMatch(y => isoProduct.unwrap(y.variableName) === isoProduct.unwrap(x.variableName)))
+                .filter(x => !diff.Product.remove.map(y => isoVariableName['Product'].unwrap(y)).contains(isoVariableName['Product'].unwrap(x.variableName)))
+                .filter(x => !diff.Product.replace.anyMatch(y => isoVariableName['Product'].unwrap(y.variableName) === isoVariableName['Product'].unwrap(x.variableName)))
                 .appendAll(diff.Product.replace)
             ,
             Supplier: layer.Supplier

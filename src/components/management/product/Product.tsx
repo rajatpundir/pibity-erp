@@ -1,7 +1,7 @@
 import React from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from "use-immer"
-import { isoProduct } from '../../../main/variables'
+import { isoVariableName } from '../../../main/variables'
 import { ProductVariable } from '../../../main/variables'
 import tw from 'twin.macro'
 import Switch from '@material-ui/core/Switch'
@@ -23,7 +23,7 @@ export type Action =
 const initialState: State = {
     variable: {
         typeName: 'Product',
-        variableName: isoProduct.wrap(''),
+        variableName: isoVariableName['Product'].wrap(''),
         values: {
             name: '',
             orderable: true,
@@ -39,7 +39,7 @@ function reducer(state: Draft<State>, action: Action) {
             return initialState;
         case 'variableName': {
             if (action.payload != null) {
-                state.variable.variableName = isoProduct.wrap(String(action.payload))
+                state.variable.variableName = isoVariableName['Product'].wrap(String(action.payload))
             }
             return;
         }
@@ -109,7 +109,7 @@ export default function Product() {
             <Container area={Grid.details} layout={Grid.layouts.details}>
                 <Item>
                     <Label>SKU</Label>
-                    <Input type='text' onChange={onInputChange} value={isoProduct.unwrap(state.variable.variableName)} name='variableName' />
+                    <Input type='text' onChange={onInputChange} value={isoVariableName['Product'].unwrap(state.variable.variableName)} name='variableName' />
                 </Item>
                 <Item>
                     <Label>Product Name</Label>

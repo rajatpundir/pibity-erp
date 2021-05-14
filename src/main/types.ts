@@ -1,5 +1,5 @@
 
-type KeyType =
+export type KeyType =
     | 'Text'
     | 'Number'
     | 'Decimal'
@@ -15,6 +15,7 @@ type KeyType =
     | 'Indent'
     | 'IndentItem'
     | 'Supplier'
+    | 'SupplierProduct'
     | 'Quotation'
     | 'QuotationItem'
     | 'PurchaseOrder'
@@ -59,15 +60,23 @@ export const types: Types = {
             },
             orderable: {
                 order: 1,
-                type: 'Number'
+                type: 'Boolean'
             },
             consumable: {
                 order: 2,
-                type: 'Decimal'
+                type: 'Boolean'
             },
             producable: {
                 order: 3,
                 type: 'Boolean'
+            },
+            number: {
+                order: 1,
+                type: 'Number'
+            },
+            decimal: {
+                order: 1,
+                type: 'Decimal'
             },
             date: {
                 order: 1,

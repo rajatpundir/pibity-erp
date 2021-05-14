@@ -15,7 +15,8 @@ import getTime from 'date-fns/getTime'
 import formatISO from 'date-fns/formatISO'
 import parseISO from 'date-fns/parseISO'
 import React from 'react'
-import { LispExpression } from '../../../main/lisp'
+import { evaluateExpression, LispExpression, Symbols } from '../../../main/lisp'
+import { Variable, getVariableName } from '../../../main/variables'
 
 type State = Immutable<{
     typeName: 'Product'
@@ -170,6 +171,73 @@ export type Query = {
             checked: boolean
             type: string
             value: Query
+        }
+    }
+}
+
+export function getSymbolPaths(expression: LispExpression): Vector<Vector<string>> {
+    var symbolPaths: Vector<Vector<string>> = Vector.of()
+    expression.args.forEach(arg => {
+        if (typeof arg === 'object') {
+            if (arg.op === '.') {
+                symbolPaths = symbolPaths.append(Vector.of<string>().appendAll(arg.args))
+            } else {
+                getSymbolPaths(arg).forEach(x => {
+                    symbolPaths = symbolPaths.append(x)
+                })
+            }
+        }
+    })
+    return symbolPaths
+}
+
+function getSymbols(symbolPaths: Vector<Vector<string>>, variable: Variable): Symbols {
+    const type = types[variable.typeName]
+    return {
+        variableName: {
+            type: 'Text',
+            value: getVariableName(variable),  
+        },
+        values: {
+            type: 'Text',
+            value: '',
+            values: Object.keys(variable.values).reduce((acc, keyName) => {
+                if (symbolPaths.anyMatch(path => path.toArray()[0] === 'values' && path.toArray()[1] === keyName)) {
+                    const keyType = type.keys[keyName].type
+                    switch (keyType) {
+                        case 'Text': 
+                        case 'Number':
+                        case 'Decimal': {
+                            acc[keyName] = {
+                                type: keyType,
+                                value: variable.values[keyName]
+                            }
+                            break
+                        }
+                        case 'Boolean': {
+                            acc[keyName] = {
+                                type: keyType,
+                                value: variable.values[keyName]
+                            }
+                            break
+                        }
+                        case 'Date':
+                        case 'Timestamp':
+                        case 'Time': {
+                            acc[keyName] = {
+                                type: 'Number',
+                                value: variable.values[keyName]
+                            }
+                            break
+                        }
+                        default: {
+                            console.log(keyType, 'whatever')
+                            // keyType
+                        }
+                    }
+                }
+                return acc
+            }, {})
         }
     }
 }
@@ -703,7 +771,7 @@ function Y(args: Args, parent?: S): Args {
 }
 
 function H(parent: S, path: Array<string>): Array<string> {
-    if(parent[2] === undefined) {
+    if (parent[2] === undefined) {
         return (['values', parent[1], ...path])
     } else {
         return (['values', parent[1], ...H(parent[2], path)])
@@ -855,7 +923,7 @@ function getQuery(typeName: string): Query {
 
 const initialState: State = {
     typeName: 'Product',
-    query: getQuery('PurchaseOrder'),
+    query: getQuery('Product'),
     limit: 5,
     offset: 0,
     page: 1
@@ -895,12 +963,28 @@ function reducer(state: Draft<State>, action: Action) {
 
 export default function Products() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const variables = store(state => state.variables.Product)
+    const variables = store(state => state.variables.Product).filter(variable => {
+        const isChecked = Object.keys(state.query.values).reduce((acc, keyName) => acc || state.query.values[keyName].checked, false)
+        if(state.query.variableName.checked || isChecked)
+            return Boolean(evaluateExpression(getExpression(state.query), getSymbols(getSymbolPaths(getExpression(state.query)), variable))).valueOf()
+        else
+            return true
+
+    })
     const columns: Vector<string> = Vector.of("SKU", "Name", "Orderable", "Consumable", "Producable")
     console.log('--------------------')
     console.log(state.query)
     console.log('$$$$$$$$$$$')
     console.log(JSON.stringify(getExpression(state.query), null, 2))
+    console.log('@@@@@@@@@@@@@@@@@@@@@@')
+    console.log(JSON.stringify(getSymbolPaths(getExpression(state.query)).toArray().map(x => x.toArray()), null, 2))
+    console.log('@@@@@@@@@@@@@@@@@@@@@@')
+    variables.forEach(variable => {
+        console.log('#################')
+        console.log(JSON.stringify(getSymbols(getSymbolPaths(getExpression(state.query)), variable), null, 2))
+        console.log()
+        console.log('#################')
+    })
     return (
         <Container area={none} layout={Grid.layouts.main} className="overflow-x-scroll overflow-y-scroll">
             {
