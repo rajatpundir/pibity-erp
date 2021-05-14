@@ -174,7 +174,7 @@ export type Query = {
     }
 }
 
-function getExpression(query: Immutable<Query>): LispExpression {
+function getExpression(query: Immutable<Query>, parent?: S): LispExpression {
     const expression: LispExpression = {
         expectedReturnType: 'Boolean',
         op: 'and',
@@ -190,7 +190,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                     args: [query.variableName.value, {
                         op: '.',
                         types: [],
-                        args: ['variableName']
+                        args: J(['variableName'], parent)
                     }]
                 }]
                 break
@@ -209,7 +209,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                         args: [query.variableName.value[0], {
                             op: '.',
                             types: [],
-                            args: ['variableName']
+                            args: J(['variableName'], parent)
                         }]
                     }, {
                         op: '>=',
@@ -217,7 +217,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                         args: [query.variableName.value[1], {
                             op: '.',
                             types: [],
-                            args: ['variableName']
+                            args: J(['variableName'], parent)
                         }]
                     }]
                 }]
@@ -233,7 +233,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                         args: [{
                             op: '.',
                             types: [],
-                            args: ['variableName']
+                            args: J(['variableName'], parent)
                         }, query.variableName.value[0]]
                     }, {
                         op: '>',
@@ -241,7 +241,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                         args: [query.variableName.value[1], {
                             op: '.',
                             types: [],
-                            args: ['variableName']
+                            args: J(['variableName'], parent)
                         }]
                     }]
                 }]
@@ -258,7 +258,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                             args: [x, {
                                 op: '.',
                                 types: [],
-                                args: ['variableName']
+                                args: J(['variableName'], parent)
                             }]
                         })
                     })
@@ -286,7 +286,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                     args: [value.value, {
                                         op: '.',
                                         types: [],
-                                        args: ['values', keyName]
+                                        args: J(['values', keyName], parent)
                                     }]
                                 }]
                                 break
@@ -305,7 +305,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                         args: [value.value[0], {
                                             op: '.',
                                             types: [],
-                                            args: ['values', keyName]
+                                            args: J(['values', keyName], parent)
                                         }]
                                     }, {
                                         op: '>=',
@@ -313,7 +313,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                         args: [value.value[1], {
                                             op: '.',
                                             types: [],
-                                            args: ['values', keyName]
+                                            args: J(['values', keyName], parent)
                                         }]
                                     }]
                                 }]
@@ -329,7 +329,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                         args: [{
                                             op: '.',
                                             types: [],
-                                            args: ['values', keyName]
+                                            args: J(['values', keyName], parent)
                                         }, value.value[0]]
                                     }, {
                                         op: '>',
@@ -337,7 +337,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                         args: [value.value[1], {
                                             op: '.',
                                             types: [],
-                                            args: ['values', keyName]
+                                            args: J(['values', keyName], parent)
                                         }]
                                     }]
                                 }]
@@ -354,7 +354,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                             args: [x, {
                                                 op: '.',
                                                 types: [],
-                                                args: ['values', keyName]
+                                                args: J(['values', keyName], parent)
                                             }]
                                         })
                                     })
@@ -376,7 +376,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                     args: [value.value, {
                                         op: '.',
                                         types: [],
-                                        args: ['values', keyName]
+                                        args: J(['values', keyName], parent)
                                     }]
                                 }]
                                 break
@@ -388,7 +388,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                     args: [{
                                         op: '.',
                                         types: [],
-                                        args: ['values', keyName]
+                                        args: J(['values', keyName], parent)
                                     }, value.value,]
                                 }]
                                 break
@@ -400,7 +400,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                     args: [{
                                         op: '.',
                                         types: [],
-                                        args: ['values', keyName]
+                                        args: J(['values', keyName], parent)
                                     }, value.value,]
                                 }]
                                 break
@@ -412,7 +412,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                     args: [{
                                         op: '.',
                                         types: [],
-                                        args: ['values', keyName]
+                                        args: J(['values', keyName], parent)
                                     }, value.value,]
                                 }]
                                 break
@@ -424,7 +424,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                     args: [{
                                         op: '.',
                                         types: [],
-                                        args: ['values', keyName]
+                                        args: J(['values', keyName], parent)
                                     }, value.value,]
                                 }]
                                 break
@@ -439,7 +439,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                         args: [value.value[0], {
                                             op: '.',
                                             types: [],
-                                            args: ['values', keyName]
+                                            args: J(['values', keyName], parent)
                                         }]
                                     }, {
                                         op: '>=',
@@ -447,7 +447,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                         args: [value.value[1], {
                                             op: '.',
                                             types: [],
-                                            args: ['values', keyName]
+                                            args: J(['values', keyName], parent)
                                         }]
                                     }]
                                 }]
@@ -463,7 +463,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                         args: [{
                                             op: '.',
                                             types: [],
-                                            args: ['values', keyName]
+                                            args: J(['values', keyName], parent)
                                         }, value.value[0]]
                                     }, {
                                         op: '>',
@@ -471,7 +471,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                         args: [value.value[1], {
                                             op: '.',
                                             types: [],
-                                            args: ['values', keyName]
+                                            args: J(['values', keyName], parent)
                                         }]
                                     }]
                                 }]
@@ -488,7 +488,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                             args: [x, {
                                                 op: '.',
                                                 types: [],
-                                                args: ['values', keyName]
+                                                args: J(['values', keyName], parent)
                                             }]
                                         })
                                     })
@@ -507,7 +507,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                     args: [value.value, {
                                         op: '.',
                                         types: [],
-                                        args: ['values', keyName]
+                                        args: J(['values', keyName], parent)
                                     }]
                                 }]
                                 break
@@ -519,7 +519,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                     args: [{
                                         op: '.',
                                         types: [],
-                                        args: ['values', keyName]
+                                        args: J(['values', keyName], parent)
                                     }, value.value,]
                                 }]
                                 break
@@ -531,7 +531,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                     args: [{
                                         op: '.',
                                         types: [],
-                                        args: ['values', keyName]
+                                        args: J(['values', keyName], parent)
                                     }, value.value,]
                                 }]
                                 break
@@ -543,7 +543,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                     args: [{
                                         op: '.',
                                         types: [],
-                                        args: ['values', keyName]
+                                        args: J(['values', keyName], parent)
                                     }, value.value,]
                                 }]
                                 break
@@ -555,7 +555,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                     args: [{
                                         op: '.',
                                         types: [],
-                                        args: ['values', keyName]
+                                        args: J(['values', keyName], parent)
                                     }, value.value,]
                                 }]
                                 break
@@ -570,7 +570,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                         args: [value.value[0], {
                                             op: '.',
                                             types: [],
-                                            args: ['values', keyName]
+                                            args: J(['values', keyName], parent)
                                         }]
                                     }, {
                                         op: '>=',
@@ -578,7 +578,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                         args: [value.value[1], {
                                             op: '.',
                                             types: [],
-                                            args: ['values', keyName]
+                                            args: J(['values', keyName], parent)
                                         }]
                                     }]
                                 }]
@@ -594,7 +594,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                         args: [{
                                             op: '.',
                                             types: [],
-                                            args: ['values', keyName]
+                                            args: J(['values', keyName], parent)
                                         }, value.value[0]]
                                     }, {
                                         op: '>',
@@ -602,7 +602,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                         args: [value.value[1], {
                                             op: '.',
                                             types: [],
-                                            args: ['values', keyName]
+                                            args: J(['values', keyName], parent)
                                         }]
                                     }]
                                 }]
@@ -619,7 +619,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                             args: [x, {
                                                 op: '.',
                                                 types: [],
-                                                args: ['values', keyName]
+                                                args: J(['values', keyName], parent)
                                             }]
                                         })
                                     })
@@ -638,7 +638,7 @@ function getExpression(query: Immutable<Query>): LispExpression {
                                     args: [String(value.value), {
                                         op: '.',
                                         types: [],
-                                        args: ['values', keyName]
+                                        args: J(['values', keyName], parent)
                                     }]
                                 }]
                                 break
@@ -646,8 +646,9 @@ function getExpression(query: Immutable<Query>): LispExpression {
                         }
                         break
                     }
-
                 }
+            } else {
+                valuesExpression.args = [...valuesExpression.args, getExpression(value.value, parent ? T(parent, keyName) : ['values', keyName, undefined])]
             }
         }
     })
@@ -699,6 +700,18 @@ function T(parent: S, keyName: string): S {
 
 function Y(args: Args, parent?: S): Args {
     return (parent ? R(parent, args) : args)
+}
+
+function H(parent: S, path: Array<string>): Array<string> {
+    if(parent[2] === undefined) {
+        return (['values', parent[1], ...path])
+    } else {
+        return (['values', parent[1], ...H(parent[2], path)])
+    }
+}
+
+function J(path: Array<string>, parent?: S): Array<string> {
+    return (parent ? H(parent, path) : path)
 }
 
 function updateQuery(query: Query, args: Args) {
@@ -842,7 +855,7 @@ function getQuery(typeName: string): Query {
 
 const initialState: State = {
     typeName: 'Product',
-    query: getQuery('Product'),
+    query: getQuery('PurchaseOrder'),
     limit: 5,
     offset: 0,
     page: 1
