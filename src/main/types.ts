@@ -82,13 +82,13 @@ export const types: Types = {
                 order: 1,
                 type: 'Date'
             },
-            timestamp: {
-                order: 2,
-                type: 'Timestamp'
-            },
             time: {
                 order: 3,
                 type: 'Time'
+            },
+            timestamp: {
+                order: 2,
+                type: 'Timestamp'
             }
         }
     },

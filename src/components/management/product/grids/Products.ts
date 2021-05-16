@@ -47,7 +47,7 @@ export const layouts: { [index: string]: GridLayout } = {
             )
         },
         layout_xl: {
-            rows: Vector.of('6rem', '1fr', '1fr'),
+            rows: Vector.of('6rem', '1fr ', '1fr'),
             columns: Vector.of('0.8fr', '10fr', '0.8fr'),
             areas: Vector.of(
                 Vector.of(none, header, none),
