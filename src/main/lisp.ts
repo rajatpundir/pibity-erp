@@ -45,6 +45,11 @@ export type LispExpression = {
     op: '.'
     types: []
     args: ReadonlyArray<string>
+} | {
+    expectedReturnType?: 'Boolean' | 'Text'
+    op: 'regex'
+    types: Array<ControlFlowType>
+    args: ReadonlyArray<string | number | boolean | LispExpression>
 }
 
 type SymbolValue = {
@@ -83,6 +88,7 @@ export function evaluateExpression(expression: LispExpression, symbols: Symbols)
         case 'id': return id(expression)
         case '.': return dot(expression, symbols)
         case '++': return concat(expression, symbols)
+        case 'regex': return regex(expression, symbols) 
         default: return "Operator not defined"
     }
 }
@@ -583,7 +589,7 @@ function and(expression: LispExpression, symbols: Symbols): boolean | string {
         const { expectedReturnType, args } = expression
         const evaluatedArgs: Array<boolean> = args.map(arg => {
             if (typeof arg === 'object') {
-                if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.')
+                if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.' || arg.op === 'regex')
                     return Boolean(evaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols)).valueOf()
                 else if (arg.op === 'if' && arg.types[0] === 'Boolean')
                     return Boolean(evaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols))
@@ -609,7 +615,7 @@ function or(expression: LispExpression, symbols: Symbols): boolean | string {
         const { expectedReturnType, args } = expression
         const evaluatedArgs: Array<boolean> = args.map(arg => {
             if (typeof arg === 'object') {
-                if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.')
+                if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.' || arg.op === 'regex')
                     return Boolean(evaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols)).valueOf()
                 else if (arg.op === 'if' && arg.types[0] === 'Boolean')
                     return Boolean(evaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols))
@@ -635,7 +641,7 @@ function not(expression: LispExpression, symbols: Symbols): boolean | string {
         const { expectedReturnType, args } = expression
         const evaluatedArgs: Array<boolean> = args.map(arg => {
             if (typeof arg === 'object') {
-                if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.')
+                if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.' || arg.op === 'regex')
                     return Boolean(evaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols)).valueOf()
                 else if (arg.op === 'if' && arg.types[0] === 'Boolean')
                     return Boolean(evaluateExpression({ ...arg, expectedReturnType: 'Boolean' }, symbols))
@@ -661,7 +667,7 @@ function ifThenElse(expression: LispExpression, symbols: Symbols): string | numb
     const { expectedReturnType, types, args } = expression
     if (expression.op === 'if' && types.length === 1 && args.length === 3 && expectedReturnType !== undefined) {
         if (typeof args[0] === 'object') {
-            if (args[0].op === '==' || args[0].op === '>' || args[0].op === '<' || args[0].op === '>=' || args[0].op === '<=' || args[0].op === 'and' || args[0].op === 'or' || args[0].op === 'not' || args[0].op === 'if' || args[0].op === 'id' || args[0].op === '.') {
+            if (args[0].op === '==' || args[0].op === '>' || args[0].op === '<' || args[0].op === '>=' || args[0].op === '<=' || args[0].op === 'and' || args[0].op === 'or' || args[0].op === 'not' || args[0].op === 'if' || args[0].op === 'id' || args[0].op === '.' || args[0].op === 'regex') {
                 const condition = Boolean(evaluateExpression({ ...args[0], expectedReturnType: 'Boolean' }, symbols)).valueOf()
                 if (condition) {
                     const arg = args[1]
@@ -685,7 +691,7 @@ function ifThenElse(expression: LispExpression, symbols: Symbols): string | numb
                                     return 0
                             }
                             case 'Boolean': {
-                                if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.')
+                                if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.' || arg.op === 'regex')
                                     return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
                                 else if (arg.op === 'if' && arg.types[0] === 'Boolean')
                                     return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
@@ -723,7 +729,7 @@ function ifThenElse(expression: LispExpression, symbols: Symbols): string | numb
                                     return 0
                             }
                             case 'Boolean': {
-                                if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.')
+                                if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.' || arg.op === 'regex')
                                     return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
                                 else if (arg.op === 'if' && arg.types[0] === 'Boolean')
                                     return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
@@ -767,7 +773,7 @@ function ifThenElse(expression: LispExpression, symbols: Symbols): string | numb
                                 return 0
                         }
                         case 'Boolean': {
-                            if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.')
+                            if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.' || arg.op === 'regex')
                                 return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
                             else if (arg.op === 'if' && arg.types[0] === 'Boolean')
                                 return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
@@ -805,7 +811,7 @@ function ifThenElse(expression: LispExpression, symbols: Symbols): string | numb
                                 return 0
                         }
                         case 'Boolean': {
-                            if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.')
+                            if (arg.op === '==' || arg.op === '>' || arg.op === '<' || arg.op === '>=' || arg.op === '<=' || arg.op === 'and' || arg.op === 'or' || arg.op === 'not' || arg.op === 'id' || arg.op === '.' || arg.op === 'regex')
                                 return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
                             else if (arg.op === 'if' && arg.types[0] === 'Boolean')
                                 return Boolean(evaluateExpression({ ...arg, expectedReturnType: types[0] }, symbols))
@@ -988,4 +994,42 @@ function concat(expression: LispExpression, symbols: Symbols): string {
     }
     else
         return ""
+}
+
+function regex(expression: LispExpression, symbols: Symbols): boolean | string {
+    if (expression.op === 'regex' && expression.expectedReturnType !== undefined) {
+        const { expectedReturnType, types, args } = expression
+        if (args.length > types.length) {
+            const typeCount = types.length
+            for (let i = 0; i < args.length - typeCount; i++) {
+                types.push(types[typeCount - 1])
+            }
+        }
+        const evaluatedArgs: Array<string> = args.map((arg, index) => {
+            const type = types[index]
+            if (typeof arg === 'object') {
+                return String(evaluateExpression({ ...arg, expectedReturnType: 'Text' }, symbols))
+            } else {
+                switch (type) {
+                    case 'Text': return String(arg)
+                    case 'Number': return String(parseInt(String(arg)))
+                    case 'Decimal': return String(parseFloat(String(arg)))
+                    case 'Boolean': return String(Boolean(arg).valueOf())
+                    default: return ""
+                }
+            }
+        })
+        if (evaluatedArgs.length != 0) {
+            const pattern = RegExp('^' + evaluatedArgs[0] + '$')
+            const result = evaluatedArgs.slice(1).reduce((acc: boolean, x) => acc && pattern.test(x), true)
+            switch (expectedReturnType) {
+                case 'Boolean': return result.valueOf()
+                case 'Text': return String(result.valueOf())
+                default: return false
+            }
+        } else
+            return false
+    }
+    else
+        return false
 }

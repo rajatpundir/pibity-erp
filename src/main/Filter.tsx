@@ -14,7 +14,7 @@ import { Vector } from 'prelude-ts'
 import { getVariableName, Variable } from './variables'
 import { Key, types } from './types'
 
-const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full h-6 rounded-sm inline-block`
+const Input = tw.input`p-1.5 min-w-full text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full h-6 rounded-sm inline-block`
 
 export type Query = {
     variableName: {
@@ -232,7 +232,7 @@ function FilterRows(props: FilterRowsProps) {
     var startRow: number = props.startRow
     var startColumn: number = props.startColumn
     return (<>
-        <Cell className="px-1" row={`${startRow + 1}/${startRow + 2}`} column={`${startColumn + 1}/${startColumn + 2}`}>
+        <Cell justify='center' className="px-1" row={`${startRow + 1}/${startRow + 2}`} column={`${startColumn + 1}/${startColumn + 2}`}>
             <Checkbox className="w-2"
                 checked={props.query.variableName.checked}
                 color='primary'
@@ -404,7 +404,7 @@ function FilterRows(props: FilterRowsProps) {
                     switch (value.type) {
                         case 'Text': {
                             return (<>
-                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 1}/${startColumn + 2}`}>
+                                <Cell justify='center' className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 1}/${startColumn + 2}`}>
                                     <Checkbox className="w-2"
                                         checked={value.checked}
                                         color='primary'
@@ -568,7 +568,7 @@ function FilterRows(props: FilterRowsProps) {
                         }
                         case 'Number': {
                             return (<>
-                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 1}/${startColumn + 2}`}>
+                                <Cell justify='center' className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 1}/${startColumn + 2}`}>
                                     <Checkbox className="w-2"
                                         checked={value.checked}
                                         color='primary'
@@ -741,7 +741,7 @@ function FilterRows(props: FilterRowsProps) {
                         }
                         case 'Decimal': {
                             return (<>
-                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 1}/${startColumn + 2}`}>
+                                <Cell justify='center' className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 1}/${startColumn + 2}`}>
                                     <Checkbox className="w-2"
                                         checked={value.checked}
                                         color='primary'
@@ -914,7 +914,7 @@ function FilterRows(props: FilterRowsProps) {
                         }
                         case 'Boolean': {
                             return (<>
-                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 1}/${startColumn + 2}`}>
+                                <Cell justify='center' className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 1}/${startColumn + 2}`}>
                                     <Checkbox className="w-2"
                                         checked={value.checked}
                                         color='primary'
@@ -950,7 +950,7 @@ function FilterRows(props: FilterRowsProps) {
                         }
                         case 'Date': {
                             return (<>
-                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 1}/${startColumn + 2}`}>
+                                <Cell justify='center' className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 1}/${startColumn + 2}`}>
                                     <Checkbox className="w-2"
                                         checked={value.checked}
                                         color='primary'
@@ -1129,7 +1129,7 @@ function FilterRows(props: FilterRowsProps) {
                         }
                         case 'Timestamp': {
                             return (<>
-                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 1}/${startColumn + 2}`}>
+                                <Cell justify='center' className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 1}/${startColumn + 2}`}>
                                     <Checkbox className="w-2"
                                         checked={value.checked}
                                         color='primary'
@@ -1308,7 +1308,7 @@ function FilterRows(props: FilterRowsProps) {
                         }
                         case 'Time': {
                             return (<>
-                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 1}/${startColumn + 2}`}>
+                                <Cell justify='center' className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 1}/${startColumn + 2}`}>
                                     <Checkbox className="w-2"
                                         checked={value.checked}
                                         color='primary'
@@ -1488,7 +1488,7 @@ function FilterRows(props: FilterRowsProps) {
                     }
                 } else {
                     return (<>
-                        <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 1}/${startColumn + 2}`}>
+                        <Cell justify='center' className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 1}/${startColumn + 2}`}>
                             <Checkbox className="w-2"
                                 checked={value.checked}
                                 color='primary'
@@ -1511,6 +1511,7 @@ function FilterRows(props: FilterRowsProps) {
                         }
                     </>)
                 }
+                return []
             })
         }
     </>)
@@ -1701,7 +1702,15 @@ function getExpression(query: Immutable<Query>, parent?: S): LispExpression {
                 break
             }
             case 'like': {
-
+                expression.args = [...expression.args, {
+                    op: 'regex',
+                    types: ['Text'],
+                    args: [query.variableName.value, {
+                        op: '.',
+                        types: [],
+                        args: J(['variableName'], parent)
+                    }]
+                }]
                 break
             }
             case 'between': {
@@ -1797,7 +1806,15 @@ function getExpression(query: Immutable<Query>, parent?: S): LispExpression {
                                 break
                             }
                             case 'like': {
-
+                                valuesExpression.args = [...valuesExpression.args, {
+                                    op: 'regex',
+                                    types: ['Text'],
+                                    args: [value.value, {
+                                        op: '.',
+                                        types: [],
+                                        args: J(['values', keyName], parent)
+                                    }]
+                                }]
                                 break
                             }
                             case 'between': {

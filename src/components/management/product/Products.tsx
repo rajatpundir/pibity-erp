@@ -26,9 +26,11 @@ export type Action =
         payload: Args
     }
 
+const typeName = 'Product'    
+
 const initialState: State = {
-    typeName: 'Product',
-    query: getQuery('Product'),
+    typeName: typeName,
+    query: getQuery(typeName),
     limit: 5,
     offset: 0,
     page: 1
