@@ -179,7 +179,7 @@ export type Args =
     | ['values', string, 'equals', boolean]
     | ['values', string, Args]
 
-export type S = ['values', string, undefined] | ['values', string, S]
+type S = ['values', string, undefined] | ['values', string, S]
 
 function R(x: S, args: Args): ['values', string, Args] {
     if (x[2] === undefined) {
@@ -189,7 +189,7 @@ function R(x: S, args: Args): ['values', string, Args] {
     }
 }
 
-export function T(parent: S, keyName: string): S {
+function T(parent: S, keyName: string): S {
     if (parent[2] === undefined) {
         return (['values', parent[1], ['values', keyName, undefined]])
     } else {
@@ -201,7 +201,7 @@ function Y(args: Args, parent?: S): Args {
     return (parent ? R(parent, args) : args)
 }
 
-export type Action =
+type Action =
     | {
         type: 'query'
         payload: Args
@@ -1538,7 +1538,7 @@ function H(parent: S, path: Array<string>): Array<string> {
     }
 }
 
-export function J(path: Array<string>, parent?: S): Array<string> {
+function J(path: Array<string>, parent?: S): Array<string> {
     return (parent ? H(parent, path) : path)
 }
 
@@ -2178,15 +2178,15 @@ function getExpression(query: Immutable<Query>, parent?: S): LispExpression {
     return expression
 }
 
-function getSymbolPaths(expression: LispExpression): Vector<Vector<string>> {
-    var symbolPaths: Vector<Vector<string>> = Vector.of()
+function getSymbolPaths(expression: LispExpression): Array<ReadonlyArray<string>> {
+    var symbolPaths: Array<ReadonlyArray<string>> = []
     expression.args.forEach(arg => {
         if (typeof arg === 'object') {
             if (arg.op === '.') {
-                symbolPaths = symbolPaths.append(Vector.of<string>().appendAll(arg.args))
+                symbolPaths.push(arg.args)
             } else {
                 getSymbolPaths(arg).forEach(x => {
-                    symbolPaths = symbolPaths.append(x)
+                    symbolPaths.push(x)
                 })
             }
         }
@@ -2194,7 +2194,7 @@ function getSymbolPaths(expression: LispExpression): Vector<Vector<string>> {
     return symbolPaths
 }
 
-function getSymbols(symbolPaths: Vector<Vector<string>>, variable: Variable): Symbols {
+function getSymbols(symbolPaths: Array<ReadonlyArray<string>>, variable: Variable): Symbols {
     const type = types[variable.typeName]
     return {
         variableName: {
@@ -2205,7 +2205,7 @@ function getSymbols(symbolPaths: Vector<Vector<string>>, variable: Variable): Sy
             type: 'Text',
             value: '',
             values: Object.keys(variable.values).reduce((acc, keyName) => {
-                if (symbolPaths.anyMatch(path => path.toArray()[0] === 'values' && path.toArray()[1] === keyName)) {
+                if (symbolPaths.filter(path => path[0] === 'values' && path[1] === keyName).length !== 0) {
                     const keyType = type.keys[keyName].type
                     switch (keyType) {
                         case 'Text':
@@ -2234,7 +2234,7 @@ function getSymbols(symbolPaths: Vector<Vector<string>>, variable: Variable): Sy
                             break
                         }
                         default: {
-                            symbolPaths.filter(x => x.toArray()[0] === 'values' && x.toArray[1] === keyName).map(x => Vector.of().appendAll(x.toArray().slice(2)))
+                            symbolPaths.filter(x => x[0] === 'values' && x[1] === keyName).map(x => Vector.of().appendAll(x.slice(2)))
                         }
                     }
                 }

@@ -1,4 +1,3 @@
-
 import { Newtype, iso } from 'newtype-ts'
 
 // Primitive Types

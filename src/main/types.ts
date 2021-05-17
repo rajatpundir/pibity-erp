@@ -1,5 +1,12 @@
 
+
 export type KeyType =
+    | PrimitiveType
+    // | 'Formula'
+    // | 'Blob'
+    | NonPrimitiveType
+
+export type PrimitiveType =
     | 'Text'
     | 'Number'
     | 'Decimal'
@@ -7,9 +14,10 @@ export type KeyType =
     | 'Date'
     | 'Timestamp'
     | 'Time'
-    | 'Formula'
-    | 'Blob'
+// | 'Formula'
+// | 'Blob'
 
+export type NonPrimitiveType =
     | 'Product'
     | 'UOM'
     | 'Indent'
