@@ -29,7 +29,7 @@ export type Action =
 const typeName = 'Product'    
 
 const initialState: State = {
-    typeName: typeName,
+    typeName: 'Product',
     query: getQuery(typeName),
     limit: 5,
     offset: 0,

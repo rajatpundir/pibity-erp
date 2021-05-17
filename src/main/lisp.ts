@@ -1019,8 +1019,8 @@ function regex(expression: LispExpression, symbols: Symbols): boolean | string {
                 }
             }
         })
-        if (evaluatedArgs.length != 0) {
-            const pattern = RegExp('^' + evaluatedArgs[0] + '$')
+        if (evaluatedArgs.length !== 0) {
+            const pattern = RegExp(evaluatedArgs[0])
             const result = evaluatedArgs.slice(1).reduce((acc: boolean, x) => acc && pattern.test(x), true)
             switch (expectedReturnType) {
                 case 'Boolean': return result.valueOf()

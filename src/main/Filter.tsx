@@ -14,7 +14,7 @@ import { Vector } from 'prelude-ts'
 import { getVariableName, Variable } from './variables'
 import { Key, types } from './types'
 
-const Input = tw.input`p-1.5 min-w-full text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full h-6 rounded-sm inline-block`
+const Input = tw.input`p-1.5 min-w-min text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full h-6 rounded-sm inline-block`
 
 export type Query = {
     variableName: {
