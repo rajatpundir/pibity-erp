@@ -2,10 +2,15 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Product from '../components/management/product/Product'
 import Products from '../components/management/product/Products'
 import { Container, Item, none } from './commons';
+import { functions, executeFunction } from "./function";
 import * as Grid from './grids'
 import Navbar from './Navbar'
 
 function App() {
+  console.log(executeFunction(functions['add'], {
+    a: 2.88,
+    b: 3.99
+  }))
   return (
     <div className="App font-nunito bg-gray-100">
       <BrowserRouter>
