@@ -5,7 +5,7 @@ import tw from 'twin.macro'
 import Switch from '@material-ui/core/Switch'
 import { Container, Item, none } from '../../../main/commons'
 import * as Grid from './grids/Product'
-import { HashSet, Vector } from 'prelude-ts'
+import { HashSet } from 'prelude-ts'
 import { noDiff } from '../../../main/store'
 import { useStore } from '../../../main/useStore'
 import { Product, ProductVariable } from '../../../main/variables'
@@ -34,7 +34,7 @@ function reducer(state: Draft<State>, action: Action) {
             switch (action[1]) {
                 case 'variableName': {
                     state.variable.variableName = new Product(action[2])
-                    return
+                    return state
                 }
                 case 'values': {
                     switch (action[2]) {
@@ -118,7 +118,7 @@ export default function ProductX() {
                 </Item>
                 <Item>
                     <Label>Product Name</Label>
-                    <Input type='text' onChange={onInputChange} value={state.variable.values.name} name='sku' />
+                    <Input type='text' onChange={onInputChange} value={state.variable.values.name} name='name' />
                 </Item>
                 <Item>
                     <InlineLabel>Orderable</InlineLabel>

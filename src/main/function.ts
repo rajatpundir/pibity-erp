@@ -193,7 +193,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
         symbolValue.values = {}
         switch (typeName) {
             case 'Product': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.variableName.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -234,7 +234,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -246,7 +246,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'UOM': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -287,7 +287,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -299,7 +299,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'Indent': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -340,7 +340,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -352,7 +352,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'IndentItem': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -393,7 +393,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -405,7 +405,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'Supplier': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -446,7 +446,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -458,7 +458,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'SupplierProduct': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -499,7 +499,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -511,7 +511,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'Quotation': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -552,7 +552,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -564,7 +564,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'QuotationItem': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -605,7 +605,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -617,7 +617,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'PurchaseOrder': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -658,7 +658,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -670,7 +670,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'PurchaseOrderItem': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -711,7 +711,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -723,7 +723,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'PurchaseInvoice': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -764,7 +764,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -776,7 +776,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'PurchaseInvoiceItem': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -817,7 +817,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -829,7 +829,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'MaterialApprovalSlip': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -870,7 +870,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -882,7 +882,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'MaterialApprovalSlipItem': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -923,7 +923,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -935,7 +935,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'MaterialRejectionSlip': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -976,7 +976,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -988,7 +988,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'MaterialRejectionSlipItem': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -1029,7 +1029,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -1041,7 +1041,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'MaterialReturnSlip': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -1082,7 +1082,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -1094,7 +1094,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'MaterialReturnSlipItem': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -1135,7 +1135,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -1147,7 +1147,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'MaterialRequistionSlip': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -1188,7 +1188,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -1200,7 +1200,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'MaterialRequistionSlipItem': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -1241,7 +1241,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -1253,7 +1253,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'BOM': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -1294,7 +1294,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -1306,7 +1306,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'BOMItem': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -1347,7 +1347,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -1359,7 +1359,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'ProductionPreparationSlip': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -1400,7 +1400,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -1412,7 +1412,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'ProductionPreparationSlipItem': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -1453,7 +1453,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -1465,7 +1465,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'ScrapMaterialSlip': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -1506,7 +1506,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -1518,7 +1518,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'TransferMaterialSlip': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -1559,7 +1559,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -1571,7 +1571,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                 break
             }
             case 'WarehouseAcceptanceSlip': {
-                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                const variables = getState().variables[typeName].filter(x => x.toString() === variableName)
                 if (variables.length() === 1) {
                     Object.keys(type).forEach(keyName => {
                         if (symbolPaths.filter(x => x[0] === keyName)) {
@@ -1612,7 +1612,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                     default: {
                                         symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
                                             key.type,
-                                            getVariableName(variables[0].values[keyName]))
+                                            variables[0].values[keyName].toString())
                                     }
                                 }
                             }
@@ -1739,243 +1739,243 @@ export function executeFunction(fx: Function, args: object): object {
                                 default: {
                                     switch (key.type) {
                                         case 'Product': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'UOM': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'Indent': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'IndentItem': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'Supplier': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'SupplierProduct': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'Quotation': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'QuotationItem': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'PurchaseOrder': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'PurchaseOrderItem': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'PurchaseInvoice': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'PurchaseInvoiceItem': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'MaterialApprovalSlip': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'MaterialApprovalSlipItem': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'MaterialRejectionSlip': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'MaterialRejectionSlipItem': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'MaterialReturnSlip': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'MaterialReturnSlipItem': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'MaterialRequistionSlip': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'MaterialRequistionSlipItem': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'BOM': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'BOMItem': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'ProductionPreparationSlip': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'ProductionPreparationSlipItem': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'ScrapMaterialSlip': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'TransferMaterialSlip': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
                                             break
                                         }
                                         case 'WarehouseAcceptanceSlip': {
-                                            const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                variable.values[keyName] = variables[0].variableName.toString()
                                             } else {
 
                                             }
@@ -1994,7 +1994,7 @@ export function executeFunction(fx: Function, args: object): object {
                     case 'update': {
                         switch (fo.type) {
                             case 'Product': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -2022,243 +2022,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -2277,7 +2277,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'UOM': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -2305,243 +2305,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -2560,7 +2560,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'Indent': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -2588,243 +2588,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -2843,7 +2843,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'IndentItem': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -2871,243 +2871,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -3126,7 +3126,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'Supplier': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -3154,243 +3154,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -3409,7 +3409,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'SupplierProduct': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -3437,243 +3437,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -3692,7 +3692,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'Quotation': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -3720,243 +3720,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -3975,7 +3975,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'QuotationItem': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -4003,243 +4003,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -4258,7 +4258,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'PurchaseOrder': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -4286,243 +4286,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -4541,7 +4541,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'PurchaseOrderItem': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -4569,243 +4569,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -4824,7 +4824,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'PurchaseInvoice': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -4852,243 +4852,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -5107,7 +5107,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'PurchaseInvoiceItem': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -5135,243 +5135,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -5390,7 +5390,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'MaterialApprovalSlip': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -5418,243 +5418,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -5673,7 +5673,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'MaterialApprovalSlipItem': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -5701,243 +5701,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -5956,7 +5956,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'MaterialRejectionSlip': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -5984,243 +5984,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -6239,7 +6239,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'MaterialRejectionSlipItem': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -6267,243 +6267,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -6522,7 +6522,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'MaterialReturnSlip': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -6550,243 +6550,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -6805,7 +6805,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'MaterialReturnSlipItem': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -6833,243 +6833,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -7088,7 +7088,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'MaterialRequistionSlip': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -7116,243 +7116,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -7371,7 +7371,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'MaterialRequistionSlipItem': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -7399,243 +7399,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -7654,7 +7654,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'BOM': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -7682,243 +7682,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -7937,7 +7937,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'BOMItem': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -7965,243 +7965,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -8220,7 +8220,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'ProductionPreparationSlip': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -8248,243 +8248,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -8503,7 +8503,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'ProductionPreparationSlipItem': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -8531,243 +8531,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -8786,7 +8786,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'ScrapMaterialSlip': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -8814,243 +8814,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -9069,7 +9069,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'TransferMaterialSlip': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -9097,243 +9097,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -9352,7 +9352,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'WarehouseAcceptanceSlip': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === variableName)
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === variableName)
                                 if (variables.length() === 1) {
                                     const variable = variables[0]
                                     Object.keys(fo.values).forEach(keyName => {
@@ -9380,243 +9380,243 @@ export function executeFunction(fx: Function, args: object): object {
                                             default: {
                                                 switch (key.type) {
                                                     case 'Product': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'UOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Indent': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'IndentItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Supplier': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'SupplierProduct': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'Quotation': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'QuotationItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrder': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseOrderItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoice': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'PurchaseInvoiceItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialApprovalSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRejectionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialReturnSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'MaterialRequistionSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOM': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'BOMItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ProductionPreparationSlipItem': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'ScrapMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'TransferMaterialSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
                                                         break
                                                     }
                                                     case 'WarehouseAcceptanceSlip': {
-                                                        const variables = getState().variables[key.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[keyName], symbols)))
+                                                        const variables = getState().variables[key.type].filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                                         if (variables.length() === 1) {
-                                                            variable.values[keyName] = getVariableName(variables[0].variableName)
+                                                            variable.values[keyName] = variables[0].variableName.toString()
                                                         } else {
 
                                                         }
@@ -9643,7 +9643,7 @@ export function executeFunction(fx: Function, args: object): object {
                     case 'delete': {
                         switch (fo.type) {
                             case 'Product': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9652,7 +9652,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'UOM': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9661,7 +9661,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'Indent': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9670,7 +9670,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'IndentItem': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9679,7 +9679,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'Supplier': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9688,7 +9688,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'SupplierProduct': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9697,7 +9697,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'Quotation': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9706,7 +9706,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'QuotationItem': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9715,7 +9715,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'PurchaseOrder': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9724,7 +9724,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'PurchaseOrderItem': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9733,7 +9733,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'PurchaseInvoice': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9742,7 +9742,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'PurchaseInvoiceItem': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9751,7 +9751,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'MaterialApprovalSlip': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9760,7 +9760,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'MaterialApprovalSlipItem': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9769,7 +9769,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'MaterialRejectionSlip': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9778,7 +9778,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'MaterialRejectionSlipItem': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9787,7 +9787,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'MaterialReturnSlip': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9796,7 +9796,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'MaterialReturnSlipItem': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9805,7 +9805,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'MaterialRequistionSlip': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9814,7 +9814,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'MaterialRequistionSlipItem': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9823,7 +9823,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'BOM': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9832,7 +9832,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'BOMItem': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9841,7 +9841,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'ProductionPreparationSlip': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9850,7 +9850,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'ProductionPreparationSlipItem': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9859,7 +9859,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'ScrapMaterialSlip': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9868,7 +9868,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'TransferMaterialSlip': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {
@@ -9877,7 +9877,7 @@ export function executeFunction(fx: Function, args: object): object {
                                 break
                             }
                             case 'WarehouseAcceptanceSlip': {
-                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                const variables = getState().variables[fo.type].filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                                 if (variables.length() === 1) {
                                     result[outputName] = variables[0]
                                 } else {

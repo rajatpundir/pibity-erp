@@ -1,4 +1,4 @@
-import { Vector, HashSet } from 'prelude-ts'
+import { HashSet } from 'prelude-ts'
 import create from 'zustand/vanilla'
 import { Layer, Diff, compose } from './layers'
 import { devtools } from 'zustand/middleware'

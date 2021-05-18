@@ -12,6 +12,7 @@ import tw from 'twin.macro'
 import { evaluateExpression, LispExpression, Symbols } from './lisp'
 import { Vector } from 'prelude-ts'
 import { Key, types } from './types'
+import { Variable } from './variables'
 
 const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full min-w-max h-6 rounded-sm inline-block`
 
@@ -2196,12 +2197,12 @@ function getSymbolPaths(expression: LispExpression): Array<ReadonlyArray<string>
     return symbolPaths
 }
 
-function getSymbols(symbolPaths: Array<ReadonlyArray<string>>, variable: Variable): Symbols {
+function getSymbols(symbolPaths: Array<ReadonlyArray<string>>, variable: Immutable<Variable>): Symbols {
     const type = types[variable.typeName]
     return {
         variableName: {
             type: 'Text',
-            value: getVariableName(variable),
+            value: variable.toString(),
         },
         values: {
             type: 'Text',
@@ -2246,6 +2247,6 @@ function getSymbols(symbolPaths: Array<ReadonlyArray<string>>, variable: Variabl
     }
 }
 
-export function applyFilter(query: Immutable<Query>, variable: Variable): boolean {
+export function applyFilter(query: Immutable<Query>, variable: Immutable<Variable>): boolean {
     return Boolean(evaluateExpression(getExpression(query), getSymbols(getSymbolPaths(getExpression(query)), variable))).valueOf()
 }
