@@ -7,14 +7,14 @@ import parse from 'date-fns/parse'
 import parseISO from 'date-fns/parseISO'
 import { Immutable } from 'immer'
 import React from 'react'
-import { Area, Cell, TableContainer } from './commons'
+import { Cell, none, TableContainer } from './commons'
 import tw from 'twin.macro'
 import { evaluateExpression, LispExpression, Symbols } from './lisp'
 import { Vector } from 'prelude-ts'
 import { getVariableName, Variable } from './variables'
 import { Key, types } from './types'
 
-const Input = tw.input`p-1.5 min-w-min text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full h-6 rounded-sm inline-block`
+const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full min-w-max h-6 rounded-sm inline-block`
 
 export type Query = {
     variableName: {
@@ -207,17 +207,20 @@ type Action =
         payload: Args
     }
 
-
 type FilterProps = {
-    area: Area
     query: Immutable<Query>
     dispatch: React.Dispatch<Action>
 }
 
 export function Filter(props: FilterProps) {
-    return (<TableContainer area={props.area} className="overflow-x-scroll overflow-y-scroll">
-        <FilterRows query={props.query} dispatch={props.dispatch} startRow={0} startColumn={0} />
-    </TableContainer>)
+    return (<>
+        <div className="bg-gray-200 font-nunito h-screen max-w-min overflow-y-scroll">
+            <div className="font-bold text-4xl text-gray-700 pt-8 px-6">Filter</div>
+            <TableContainer area={none} className="p-6 w-auto">
+                <FilterRows query={props.query} dispatch={props.dispatch} startRow={0} startColumn={0} />
+            </TableContainer>
+        </div>
+    </>)
 }
 
 type FilterRowsProps = {
