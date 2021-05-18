@@ -9642,7 +9642,254 @@ export function executeFunction(fx: Function, args: object): object {
                         break
                     }
                     case 'delete': {
+                        switch (fo.type) {
+                            case 'Product': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
 
+                                }
+                                break
+                            }
+                            case 'UOM': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'Indent': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'IndentItem': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'Supplier': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'SupplierProduct': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'Quotation': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'QuotationItem': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'PurchaseOrder': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'PurchaseOrderItem': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'PurchaseInvoice': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'PurchaseInvoiceItem': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'MaterialApprovalSlip': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'MaterialApprovalSlipItem': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'MaterialRejectionSlip': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'MaterialRejectionSlipItem': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'MaterialReturnSlip': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'MaterialReturnSlipItem': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'MaterialRequistionSlip': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'MaterialRequistionSlipItem': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'BOM': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'BOMItem': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'ProductionPreparationSlip': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'ProductionPreparationSlipItem': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'ScrapMaterialSlip': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'TransferMaterialSlip': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            case 'WarehouseAcceptanceSlip': {
+                                const variables = getState().variables[fo.type].filter(x => getVariableName(x) === String(evaluateExpression(fo.values[fo.type], symbols)))
+                                if (variables.length() === 1) {
+                                    result[outputName] = variables[0]
+                                } else {
+
+                                }
+                                break
+                            }
+                            default: {
+                                console.log('Case not covered for NonPrimitiveType')
+                            }
+                        }
                         break
                     }
                 }
