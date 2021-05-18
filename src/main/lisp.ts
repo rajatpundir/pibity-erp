@@ -52,7 +52,7 @@ export type LispExpression = {
     args: ReadonlyArray<string | number | boolean | LispExpression>
 }
 
-type SymbolValue = {
+export type SymbolValue = {
     type: 'Text'
     value: string
     values?: Symbols

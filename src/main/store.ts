@@ -1,5 +1,5 @@
 import { Vector } from 'prelude-ts'
-import create from 'zustand'
+import create from 'zustand/vanilla'
 import { Layer, Diff, compose } from './layers'
 import { devtools } from 'zustand/middleware'
 
@@ -169,3 +169,5 @@ export const store = create<State>(devtools((set, get) => ({
         return x
     }
 })))
+
+export const { getState, setState, subscribe, destroy } = store

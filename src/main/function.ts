@@ -1,5 +1,7 @@
-import { LispExpression, Symbols } from "./lisp"
-import { PrimitiveType, NonPrimitiveType, types } from './types'
+import { LispExpression, Symbols, SymbolValue } from "./lisp"
+import { getState } from "./store"
+import { PrimitiveType, NonPrimitiveType, types, Key } from './types'
+import { getVariableName, Variable } from "./variables"
 
 type FunctionInput =
     | {
@@ -24,7 +26,8 @@ type FunctionOutput =
     {
         type: PrimitiveType
         value: LispExpression
-    } | {
+    }
+    | {
         op: 'create' | 'update' | 'delete'
         type: NonPrimitiveType
         variableName: LispExpression
@@ -54,7 +57,6 @@ const functions: Functions = {
             c: {
                 type: 'Number',
                 value: {
-                    expectedReturnType: 'Number',
                     op: '+',
                     types: ['Number', 'Decimal'],
                     args: [{
@@ -71,7 +73,6 @@ const functions: Functions = {
             d: {
                 type: 'Decimal',
                 value: {
-                    expectedReturnType: 'Decimal',
                     op: '*',
                     types: ['Number', 'Decimal'],
                     args: [{
@@ -179,7 +180,74 @@ function getSymbolPathsForFunction(fx: Function): Array<ReadonlyArray<string>> {
     return symbolPaths
 }
 
-function getSymbolsForFunction(fx: Function) {
+
+function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveType, variableName: string): SymbolValue {
+    const type = types[typeName]
+    const symbolValue: SymbolValue = {
+        type: 'Text',
+        value: variableName
+    }
+    if (symbolPaths.length !== 0) {
+        symbolValue.values = {}
+        switch (typeName) {
+            case 'Product': {
+                const variables = getState().variables[typeName].filter(x => getVariableName(x) === variableName)
+                if (variables.length() === 1) {
+                    Object.keys(type).forEach(keyName => {
+                        if (symbolPaths.filter(x => x[0] === keyName)) {
+                            const key: Key = type[keyName]
+                            if (symbolValue['values'] !== undefined) {
+                                switch (key.type) {
+                                    case 'Text': {
+                                        symbolValue.values[keyName] = {
+                                            type: key.type,
+                                            value: variables[0].values[keyName]
+                                        }
+                                        break
+                                    }
+                                    case 'Number':
+                                    case 'Date':
+                                    case 'Timestamp':
+                                    case 'Time': {
+                                        symbolValue.values[keyName] = {
+                                            type: 'Number',
+                                            value: variables[0].values[keyName]
+                                        }
+                                        break
+                                    }
+                                    case 'Decimal': {
+                                        symbolValue.values[keyName] = {
+                                            type: 'Decimal',
+                                            value: variables[0].values[keyName]
+                                        }
+                                        break
+                                    }
+                                    case 'Boolean': {
+                                        symbolValue.values[keyName] = {
+                                            type: key.type,
+                                            value: variables[0].values[keyName]
+                                        }
+                                        break
+                                    }
+                                    default: {
+                                        symbolValue.values[keyName] = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)),
+                                            key.type,
+                                            getVariableName(variables[0].values[keyName]))
+                                    }
+                                }
+                            }
+                        }
+                    })
+                } else {
+
+                }
+            }
+        }
+    }
+    return symbolValue
+}
+
+function getSymbolsForFunction(fx: Function, args: object) {
     const symbolPaths = getSymbolPathsForFunction(fx)
     const symbols: Symbols = {}
     Object.keys(fx.inputs).forEach(inputName => {
@@ -189,7 +257,7 @@ function getSymbolsForFunction(fx: Function) {
                 case 'Text': {
                     symbols[inputName] = {
                         type: 'Text',
-                        value: ''
+                        value: inputName in args ? String(args[inputName]) : ''
                     }
                     break
                 }
@@ -199,26 +267,37 @@ function getSymbolsForFunction(fx: Function) {
                 case 'Time': {
                     symbols[inputName] = {
                         type: 'Number',
-                        value: 0
+                        value: inputName in args ? parseInt(String(args[inputName])) : 0
                     }
                     break
                 }
                 case 'Decimal': {
                     symbols[inputName] = {
                         type: 'Decimal',
-                        value: 0
+                        value: inputName in args ? parseFloat(String(args[inputName])) : 0
                     }
                     break
                 }
                 case 'Boolean': {
                     symbols[inputName] = {
                         type: 'Boolean',
-                        value: false
+                        value: inputName in args ? Boolean(args[inputName]).valueOf() : false
                     }
                     break
                 }
                 default: {
                     const type = types[fi.type]
+                    const q = symbolPaths.filter(x => x[0] == inputName && x.length !== 1)
+
+
+                    symbols[inputName] = {
+                        type: 'Text',
+                        value: inputName in args ? String(args[inputName]) : '',
+                        values: q.length !== 0 ? {} : {}
+                    }
+
+
+
                     if (fi.variableName !== undefined) {
                         getSymbolPaths(fi.variableName).forEach(x => symbolPaths.push(x))
                     }

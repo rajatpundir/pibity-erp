@@ -1,10 +1,6 @@
 
 
-export type KeyType =
-    | PrimitiveType
-    // | 'Formula'
-    // | 'Blob'
-    | NonPrimitiveType
+export type KeyType = PrimitiveType | NonPrimitiveType
 
 export type PrimitiveType =
     | 'Text'

@@ -3,15 +3,15 @@ import { Vector } from 'prelude-ts'
 import tw from 'twin.macro'
 import { useImmerReducer } from "use-immer"
 import { Container, Item, none } from '../../../main/commons'
-import { store } from '../../../main/store'
 import { Table } from '../../../main/Table'
 import * as Grid from './grids/Products'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
 import Drawer from '@material-ui/core/Drawer'
 import { useState } from 'react'
+import { useStore } from '../../../main/useStore'
 
 type State = Immutable<{
-    typeName: 'TransferMaterialSlip'
+    typeName: 'Product'
     query: Query
     limit: number
     offset: number
@@ -29,8 +29,8 @@ export type Action =
     }
 
 const initialState: State = {
-    typeName: 'TransferMaterialSlip',
-    query: getQuery('TransferMaterialSlip'),
+    typeName: 'Product',
+    query: getQuery('Product'),
     limit: 5,
     offset: 0,
     page: 1
@@ -70,7 +70,7 @@ function reducer(state: Draft<State>, action: Action) {
 
 export default function Products() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const variables = store(state => state.variables.Product).filter(variable => applyFilter(state.query, variable))
+    const variables = useStore(state => state.variables.Product).filter(variable => applyFilter(state.query, variable))
     const columns: Vector<string> = Vector.of("SKU", "Name", "Orderable", "Consumable", "Producable")
     const [open, setOpen] = useState(false)
     return (

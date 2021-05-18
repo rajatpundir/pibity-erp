@@ -7,8 +7,9 @@ import tw from 'twin.macro'
 import Switch from '@material-ui/core/Switch'
 import { Container, Item, none } from '../../../main/commons'
 import * as Grid from './grids/Product'
-import { store, noDiff } from '../../../main/store'
 import { Vector } from 'prelude-ts'
+import { noDiff } from '../../../main/store'
+import { useStore } from '../../../main/useStore'
 
 type State = Immutable<{
     variable: ProductVariable
@@ -72,7 +73,7 @@ function reducer(state: Draft<State>, action: Action) {
 
 export default function Product() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const addDiff = store(state => state.addDiff)
+    const addDiff = useStore(state => state.addDiff)
     const onInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         dispatch({
             type: event.target.name,
