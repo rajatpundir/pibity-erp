@@ -1,8 +1,8 @@
-import { Vector } from 'prelude-ts'
+import { HashSet, Vector } from 'prelude-ts'
 import { Immutable } from 'immer'
 import tw from 'twin.macro'
-import { Variable } from './variables'
 import { Container, Item, TableContainer, Cell, validateLayout, Area, isoArea, GridLayout } from './commons'
+import { Variable } from './variables'
 
 const body: Area = isoArea.wrap('body')
 const footer: Area = isoArea.wrap('footer')
@@ -112,7 +112,7 @@ const layouts: { [index: string]: GridLayout } = {
     })
 }
 
-function getCells(variables: Vector<Variable>, start: number, end: number): Vector<unknown> {
+function getCells(variables: HashSet<Variable>, start: number, end: number): Vector<unknown> {
     var counter = 0
     var cells = Vector.of()
     variables.toArray().slice(start, end).forEach((variable, rowIndex) => {
@@ -191,7 +191,7 @@ type TableProps = {
         type: 'limit' | 'offset' | 'page'
         payload: number
     }>
-    variables: Vector<any>
+    variables: HashSet<any>
     columns: Vector<string>
 }
 

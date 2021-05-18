@@ -1,6 +1,4 @@
-import { Newtype, iso } from 'newtype-ts'
 
-// Primitive Types
 export type Text = string
 export type Number = bigint
 export type Decimal = number
@@ -42,7 +40,7 @@ export type Variable =
 // type VariableName =
 // | Product
 // | UOM
-// | Indent
+// | Inden
 // | IndentItem
 // | Supplier
 // | SupplierProduct
@@ -68,9 +66,27 @@ export type Variable =
 // | TransferMaterialSlip
 // | WarehouseAcceptanceSlip
 
-export interface Product extends Newtype<{ readonly Product: unique symbol }, string> { }
-export interface ProductVariable {
-    typeName: 'Product'
+export class Product {
+    constructor(private variableName: string) { }
+
+    equals(other: Product): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class ProductVariable {
+    readonly typeName = 'Product'
     variableName: Product
     values: {
         // UNQ(SKU)
@@ -79,11 +95,49 @@ export interface ProductVariable {
         consumable: Boolean
         producable: Boolean
     }
+
+    constructor(variableName: string, name: Text, orderable: Boolean, consumable: Boolean, producable: Boolean) {
+        this.variableName = new Product(variableName)
+        this.values = { name, orderable, consumable, producable }
+    }
+
+    equals(other: ProductVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface UOM extends Newtype<{ readonly UOM: unique symbol }, string> { }
-export interface UOMVariable {
-    typeName: 'UOM'
+export class UOM {
+    constructor(private variableName: string) { }
+
+    equals(other: UOM): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class UOMVariable {
+    readonly typeName = 'UOM'
     variableName: UOM
     values: {
         // UNQ(product, name)
@@ -91,11 +145,49 @@ export interface UOMVariable {
         name: Text
         conversionRate: Decimal
     }
+
+    constructor(variableName: string, product: Product, name: Text, conversionRate: Decimal) {
+        this.variableName = new UOM(variableName)
+        this.values = { product, name, conversionRate }
+    }
+
+    equals(other: UOMVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface Indent extends Newtype<{ readonly Indent: unique symbol }, string> { }
-export interface IndentVariable {
-    typeName: 'Indent'
+export class Indent {
+    constructor(private variableName: string) { }
+
+    equals(other: Indent): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class IndentVariable {
+    readonly typeName = 'Indent'
     variableName: Indent
     values: {
         timestamp: Timestamp // redundant field
@@ -103,11 +195,49 @@ export interface IndentVariable {
         // approver: Subspace
         approved: Boolean
     }
+
+    constructor(variableName: string, timestamp: Timestamp, approved: Boolean) {
+        this.variableName = new Indent(variableName)
+        this.values = { timestamp, approved }
+    }
+
+    equals(other: IndentVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface IndentItem extends Newtype<{ readonly IndentItem: unique symbol }, string> { }
-export interface IndentItemVariable {
-    typeName: 'IndentItem'
+export class IndentItem {
+    constructor(private variableName: string) { }
+
+    equals(other: IndentItem): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class IndentItemVariable {
+    readonly typeName = 'IndentItem'
     variableName: IndentItem
     values: {
         // UNQ(indent, product)
@@ -131,41 +261,191 @@ export interface IndentItemVariable {
         // assertion(consumed <= requisted)
         consumed: Number
     }
-}
 
-export interface Supplier extends Newtype<{ readonly Supplier: unique symbol }, string> { }
-export interface SupplierVariable {
-    typeName: 'Supplier'
-    variableName: Supplier
-    values: {
+    constructor(variableName: string, indent: Indent, product: Product, quantity: Number, uom: UOM, ordered: Number, received: Number, approved: Number, rejected: Number, returned: Number, requisted: Number, consumed: Number) {
+        this.variableName = new IndentItem(variableName)
+        this.values = { indent, product, quantity, uom, ordered, received, approved, rejected, returned, requisted, consumed }
+    }
 
+    equals(other: IndentItemVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
     }
 }
 
-export interface SupplierProduct extends Newtype<{ readonly SupplierProduct: unique symbol }, string> { }
-export interface SupplierProductVariable {
-    typeName: 'SupplierProduct'
+export class Supplier {
+    constructor(private variableName: string) { }
+
+    equals(other: Supplier): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class SupplierVariable {
+    readonly typeName = 'Supplier'
+    variableName: Supplier
+    values: {}
+
+    constructor(variableName: string) {
+        this.variableName = new Supplier(variableName)
+        this.values = {}
+    }
+
+    equals(other: SupplierVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
+}
+
+export class SupplierProduct {
+    constructor(private variableName: string) { }
+
+    equals(other: SupplierProduct): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class SupplierProductVariable {
+    readonly typeName = 'SupplierProduct'
     variableName: SupplierProduct
     values: {
         // UNQ(supplier, product)
         supplier: Supplier
         product: Product
     }
+
+    constructor(variableName: string, supplier: Supplier, product: Product) {
+        this.variableName = new SupplierProduct(variableName)
+        this.values = { supplier, product }
+    }
+
+    equals(other: SupplierProductVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface Quotation extends Newtype<{ readonly Quotation: unique symbol }, string> { }
-export interface QuotationVariable {
-    typeName: 'Quotation'
+export class Quotation {
+    constructor(private variableName: string) { }
+
+    equals(other: Quotation): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class QuotationVariable {
+    readonly typeName = 'Quotation'
     variableName: Quotation
     values: {
         indent: Indent
         supplier: Supplier
     }
+
+    constructor(variableName: string, indent: Indent, supplier: Supplier) {
+        this.variableName = new Quotation(variableName)
+        this.values = { indent, supplier }
+    }
+
+    equals(other: QuotationVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface QuotationItem extends Newtype<{ readonly QuotationItem: unique symbol }, string> { }
-export interface QuotationItemVariable {
-    typeName: 'QuotationItem'
+export class QuotationItem {
+    constructor(private variableName: string) { }
+
+    equals(other: QuotationItem): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class QuotationItemVariable {
+    readonly typeName = 'QuotationItem'
     variableName: QuotationItem
     values: {
         // UNQ(quotation, indentItem)
@@ -175,20 +455,96 @@ export interface QuotationItemVariable {
         // assertion(quantity <= (indentItem.quantity - (ordered - rejected)) && quantity > 0)
         quantity: Number
     }
+
+    constructor(variableName: string, quotation: Quotation, indentItem: IndentItem, quantity: Number) {
+        this.variableName = new QuotationItem(variableName)
+        this.values = { quotation, indentItem, quantity }
+    }
+
+    equals(other: QuotationItemVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface PurchaseOrder extends Newtype<{ readonly PurchaseOrder: unique symbol }, string> { }
-export interface PurchaseOrderVariable {
-    typeName: 'PurchaseOrder'
+export class PurchaseOrder {
+    constructor(private variableName: string) { }
+
+    equals(other: PurchaseOrder): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class PurchaseOrderVariable {
+    readonly typeName = 'PurchaseOrder'
     variableName: PurchaseOrder
     values: {
         quotation: Quotation
     }
+
+    constructor(variableName: string, quotation: Quotation) {
+        this.variableName = new PurchaseOrder(variableName)
+        this.values = { quotation }
+    }
+
+    equals(other: PurchaseOrderVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface PurchaseOrderItem extends Newtype<{ readonly PurchaseOrderItem: unique symbol }, string> { }
-export interface PurchaseOrderItemVariable {
-    typeName: 'PurchaseOrderItem'
+export class PurchaseOrderItem {
+    constructor(private variableName: string) { }
+
+    equals(other: PurchaseOrderItem): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class PurchaseOrderItemVariable {
+    readonly typeName = 'PurchaseOrderItem'
     variableName: PurchaseOrderItem
     values: {
         // UNQ(purchaseOrder, quotationItem)
@@ -201,20 +557,96 @@ export interface PurchaseOrderItemVariable {
         // assertion(received >= 0 && received <= quantity)
         received: Number
     }
+
+    constructor(variableName: string, purchaseOrder: PurchaseOrder, quotationItem: QuotationItem, quantity: Number, price: Decimal, received: Number) {
+        this.variableName = new PurchaseOrderItem(variableName)
+        this.values = { purchaseOrder, quotationItem, quantity, price, received }
+    }
+
+    equals(other: PurchaseOrderItemVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface PurchaseInvoice extends Newtype<{ readonly PurchaseInvoice: unique symbol }, string> { }
-export interface PurchaseInvoiceVariable {
-    typeName: 'PurchaseInvoice'
+export class PurchaseInvoice {
+    constructor(private variableName: string) { }
+
+    equals(other: PurchaseInvoice): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class PurchaseInvoiceVariable {
+    readonly typeName = 'PurchaseInvoice'
     variableName: PurchaseInvoice
     values: {
         purchaseOrder: PurchaseOrder
     }
+
+    constructor(variableName: string, purchaseOrder: PurchaseOrder) {
+        this.variableName = new PurchaseInvoice(variableName)
+        this.values = { purchaseOrder }
+    }
+
+    equals(other: PurchaseInvoiceVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface PurchaseInvoiceItem extends Newtype<{ readonly PurchaseInvoiceItem: unique symbol }, string> { }
-export interface PurchaseInvoiceItemVariable {
-    typeName: 'PurchaseInvoiceItem'
+export class PurchaseInvoiceItem {
+    constructor(private variableName: string) { }
+
+    equals(other: PurchaseInvoiceItem): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class PurchaseInvoiceItemVariable {
+    readonly typeName = 'PurchaseInvoiceItem'
     variableName: PurchaseInvoiceItem
     values: {
         // UNQ(purchaseInvoice, purchaseOrderItem)
@@ -227,20 +659,96 @@ export interface PurchaseInvoiceItemVariable {
         approved: Number
         rejected: Number
     }
+
+    constructor(variableName: string, purchaseInvoice: PurchaseInvoice, purchaseOrderItem: PurchaseOrderItem, quantity: Number, approved: Number, rejected: Number) {
+        this.variableName = new PurchaseInvoiceItem(variableName)
+        this.values = { purchaseInvoice, purchaseOrderItem, quantity, approved, rejected }
+    }
+
+    equals(other: PurchaseInvoiceItemVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface MaterialApprovalSlip extends Newtype<{ readonly MaterialApprovalSlip: unique symbol }, string> { }
-export interface MaterialApprovalSlipVariable {
-    typeName: 'MaterialApprovalSlip'
+export class MaterialApprovalSlip {
+    constructor(private variableName: string) { }
+
+    equals(other: MaterialApprovalSlip): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class MaterialApprovalSlipVariable {
+    readonly typeName = 'MaterialApprovalSlip'
     variableName: MaterialApprovalSlip
     values: {
         purchaseInvoice: PurchaseInvoice
     }
+
+    constructor(variableName: string, purchaseInvoice: PurchaseInvoice) {
+        this.variableName = new MaterialApprovalSlip(variableName)
+        this.values = { purchaseInvoice }
+    }
+
+    equals(other: MaterialApprovalSlipVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface MaterialApprovalSlipItem extends Newtype<{ readonly MaterialApprovalSlipItem: unique symbol }, string> { }
-export interface MaterialApprovalSlipItemVariable {
-    typeName: 'MaterialApprovalSlipItem'
+export class MaterialApprovalSlipItem {
+    constructor(private variableName: string) { }
+
+    equals(other: MaterialApprovalSlipItem): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class MaterialApprovalSlipItemVariable {
+    readonly typeName = 'MaterialApprovalSlipItem'
     variableName: MaterialApprovalSlipItem
     values: {
         // UNQ(materialApprovalSlip, purchaseInvoiceItem)
@@ -252,20 +760,96 @@ export interface MaterialApprovalSlipItemVariable {
         // assertion(requisted <= quantity && requisted >= 0)
         requisted: Number
     }
+
+    constructor(variableName: string, materialApprovalSlip: MaterialApprovalSlip, purchaseInvoiceItem: PurchaseInvoiceItem, quantity: Number, requisted: Number) {
+        this.variableName = new MaterialApprovalSlipItem(variableName)
+        this.values = { materialApprovalSlip, purchaseInvoiceItem, quantity, requisted }
+    }
+
+    equals(other: MaterialApprovalSlipItemVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface MaterialRejectionSlip extends Newtype<{ readonly MaterialRejectionSlip: unique symbol }, string> { }
-export interface MaterialRejectionSlipVariable {
-    typeName: 'MaterialRejectionSlip'
+export class MaterialRejectionSlip {
+    constructor(private variableName: string) { }
+
+    equals(other: MaterialRejectionSlip): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class MaterialRejectionSlipVariable {
+    readonly typeName = 'MaterialRejectionSlip'
     variableName: MaterialRejectionSlip
     values: {
         purchaseInvoice: PurchaseInvoice
     }
+
+    constructor(variableName: string, purchaseInvoice: PurchaseInvoice) {
+        this.variableName = new MaterialRejectionSlip(variableName)
+        this.values = { purchaseInvoice }
+    }
+
+    equals(other: MaterialRejectionSlipVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface MaterialRejectionSlipItem extends Newtype<{ readonly MaterialRejectionSlipItem: unique symbol }, string> { }
-export interface MaterialRejectionSlipItemVariable {
-    typeName: 'MaterialRejectionSlipItem'
+export class MaterialRejectionSlipItem {
+    constructor(private variableName: string) { }
+
+    equals(other: MaterialRejectionSlipItem): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class MaterialRejectionSlipItemVariable {
+    readonly typeName = 'MaterialRejectionSlipItem'
     variableName: MaterialRejectionSlipItem
     values: {
         // UNQ(materialRejectionSlip, purchaseInvoiceItem)
@@ -277,20 +861,96 @@ export interface MaterialRejectionSlipItemVariable {
         // assertion(returned <= quantity && returned >= 0)
         returned: Number
     }
+
+    constructor(variableName: string, materialRejectionSlip: MaterialRejectionSlip, purchaseInvoiceItem: PurchaseInvoiceItem, quantity: Number, returned: Number) {
+        this.variableName = new MaterialRejectionSlipItem(variableName)
+        this.values = { materialRejectionSlip, purchaseInvoiceItem, quantity, returned }
+    }
+
+    equals(other: MaterialRejectionSlipItemVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface MaterialReturnSlip extends Newtype<{ readonly MaterialReturnSlip: unique symbol }, string> { }
-export interface MaterialReturnSlipVariable {
-    typeName: 'MaterialReturnSlip'
+export class MaterialReturnSlip {
+    constructor(private variableName: string) { }
+
+    equals(other: MaterialReturnSlip): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class MaterialReturnSlipVariable {
+    readonly typeName = 'MaterialReturnSlip'
     variableName: MaterialReturnSlip
     values: {
         materialRejectionSlip: MaterialRejectionSlip
     }
+
+    constructor(variableName: string, materialRejectionSlip: MaterialRejectionSlip) {
+        this.variableName = new MaterialReturnSlip(variableName)
+        this.values = { materialRejectionSlip }
+    }
+
+    equals(other: MaterialReturnSlipVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface MaterialReturnSlipItem extends Newtype<{ readonly MaterialReturnSlipItem: unique symbol }, string> { }
-export interface MaterialReturnSlipItemVariable {
-    typeName: 'MaterialReturnSlipItem'
+export class MaterialReturnSlipItem {
+    constructor(private variableName: string) { }
+
+    equals(other: MaterialReturnSlipItem): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class MaterialReturnSlipItemVariable {
+    readonly typeName = 'MaterialReturnSlipItem'
     variableName: MaterialReturnSlipItem
     values: {
         // UNQ(materialReturnSlip, materialRejectionSlipItem)
@@ -300,20 +960,96 @@ export interface MaterialReturnSlipItemVariable {
         // assertion(quantity <= materialRejectionSlipItem.quantity && quantity > 0)
         quantity: Number // { materialRejectionSlipItem.returned += quantity && materialRejectionSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.returned += quantity }
     }
+
+    constructor(variableName: string, materialReturnSlip: MaterialReturnSlip, materialRejectionSlipItem: MaterialReturnSlipItem, quantity: Number) {
+        this.variableName = new MaterialReturnSlipItem(variableName)
+        this.values = { materialReturnSlip, materialRejectionSlipItem, quantity }
+    }
+
+    equals(other: MaterialReturnSlipItemVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface MaterialRequistionSlip extends Newtype<{ readonly MaterialRequistionSlip: unique symbol }, string> { }
-export interface MaterialRequistionSlipVariable {
-    typeName: 'MaterialRequistionSlip'
+export class MaterialRequistionSlip {
+    constructor(private variableName: string) { }
+
+    equals(other: MaterialRequistionSlip): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class MaterialRequistionSlipVariable {
+    readonly typeName = 'MaterialRequistionSlip'
     variableName: MaterialRequistionSlip
     values: {
         materialApprovalSlip: MaterialApprovalSlip
     }
+
+    constructor(variableName: string, materialApprovalSlip: MaterialApprovalSlip) {
+        this.variableName = new MaterialRequistionSlip(variableName)
+        this.values = { materialApprovalSlip }
+    }
+
+    equals(other: MaterialRequistionSlipVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface MaterialRequistionSlipItem extends Newtype<{ readonly MaterialRequistionSlipItem: unique symbol }, string> { }
-export interface MaterialRequistionSlipItemVariable {
-    typeName: 'MaterialRequistionSlipItem'
+export class MaterialRequistionSlipItem {
+    constructor(private variableName: string) { }
+
+    equals(other: MaterialRequistionSlipItem): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class MaterialRequistionSlipItemVariable {
+    readonly typeName = 'MaterialRequistionSlipItem'
     variableName: MaterialRequistionSlipItem
     values: {
         // UNQ(materialRequistionSlip, materialApprovalSlipItem)
@@ -325,11 +1061,49 @@ export interface MaterialRequistionSlipItemVariable {
         // assertion(consumed <= quantity && consumed >= 0)
         consumed: Number
     }
+
+    constructor(variableName: string, materialRequistionSlip: MaterialRequistionSlip, materialApprovalSlipItem: MaterialApprovalSlipItem, quantity: Number, consumed: Number) {
+        this.variableName = new MaterialRequistionSlipItem(variableName)
+        this.values = { materialRequistionSlip, materialApprovalSlipItem, quantity, consumed }
+    }
+
+    equals(other: MaterialRequistionSlipItemVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface BOM extends Newtype<{ readonly BOM: unique symbol }, string> { }
-export interface BOMVariable {
-    typeName: 'BOM'
+export class BOM {
+    constructor(private variableName: string) { }
+
+    equals(other: BOM): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class BOMVariable {
+    readonly typeName = 'BOM'
     variableName: BOM
     values: {
         // assertion(product.producable == true)
@@ -338,11 +1112,49 @@ export interface BOMVariable {
         // assertion(uom.product == product)
         uom: UOM
     }
+
+    constructor(variableName: string, product: Product, quantity: Number, uom: UOM) {
+        this.variableName = new BOM(variableName)
+        this.values = { product, quantity, uom }
+    }
+
+    equals(other: BOMVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface BOMItem extends Newtype<{ readonly BOMItem: unique symbol }, string> { }
-export interface BOMItemVariable {
-    typeName: 'BOMItem'
+export class BOMItem {
+    constructor(private variableName: string) { }
+
+    equals(other: BOMItem): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class BOMItemVariable {
+    readonly typeName = 'BOMItem'
     variableName: BOMItem
     values: {
         // UNQ(bom, product)
@@ -353,11 +1165,49 @@ export interface BOMItemVariable {
         quantity: Number
         uom: UOM
     }
+
+    constructor(variableName: string, bom: BOM, product: Product, quantity: Number, uom: UOM) {
+        this.variableName = new BOMItem(variableName)
+        this.values = { bom, product, quantity, uom }
+    }
+
+    equals(other: BOMItemVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface ProductionPreparationSlip extends Newtype<{ readonly ProductionPreparationSlip: unique symbol }, string> { }
-export interface ProductionPreparationSlipVariable {
-    typeName: 'ProductionPreparationSlip'
+export class ProductionPreparationSlip {
+    constructor(private variableName: string) { }
+
+    equals(other: ProductionPreparationSlip): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class ProductionPreparationSlipVariable {
+    readonly typeName = 'ProductionPreparationSlip'
     variableName: ProductionPreparationSlip
     values: {
         bom: BOM
@@ -365,11 +1215,49 @@ export interface ProductionPreparationSlipVariable {
         approved: Number
         scrapped: Number
     }
+
+    constructor(variableName: string, bom: BOM, approved: Number, scrapped: Number) {
+        this.variableName = new ProductionPreparationSlip(variableName)
+        this.values = { bom, approved, scrapped }
+    }
+
+    equals(other: ProductionPreparationSlipVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface ProductionPreparationSlipItem extends Newtype<{ readonly ProductionPreparationSlipItem: unique symbol }, string> { }
-export interface ProductionPreparationSlipItemVariable {
-    typeName: 'ProductionPreparationSlipItem'
+export class ProductionPreparationSlipItem {
+    constructor(private variableName: string) { }
+
+    equals(other: ProductionPreparationSlipItem): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class ProductionPreparationSlipItemVariable {
+    readonly typeName = 'ProductionPreparationSlipItem'
     variableName: ProductionPreparationSlipItem
     values: {
         // UNQ(productionPreparationSlip, bomItem)
@@ -380,22 +1268,98 @@ export interface ProductionPreparationSlipItemVariable {
         // { materialRequistionSlipItem.consumed += bomItem.quantity * materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.uom.conversionRate / bomItem.product.uom.conversionRate }
         // { materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.consumed += bomItem.quantity * materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.uom.conversionRate / bomItem.product.uom.conversionRate }
     }
+
+    constructor(variableName: string, productionPreparationSlip: ProductionPreparationSlip, bomItem: string, materialRequistionSlipItem: MaterialRequistionSlipItem) {
+        this.variableName = new ProductionPreparationSlipItem(variableName)
+        this.values = { productionPreparationSlip, bomItem, materialRequistionSlipItem }
+    }
+
+    equals(other: ProductionPreparationSlipItemVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface ScrapMaterialSlip extends Newtype<{ readonly ScrapMaterialSlip: unique symbol }, string> { }
-export interface ScrapMaterialSlipVariable {
-    typeName: 'ScrapMaterialSlip'
+export class ScrapMaterialSlip {
+    constructor(private variableName: string) { }
+
+    equals(other: ScrapMaterialSlip): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class ScrapMaterialSlipVariable {
+    readonly typeName = 'ScrapMaterialSlip'
     variableName: ScrapMaterialSlip
     values: {
         productionPreparationSlip: ProductionPreparationSlip
         // assertion(quantity <= productionPreparationSlip.bom.quantity && quantity > 0)
         quantity: Number // { productionPreparationSlip.scrapped += quantity }
     }
+
+    constructor(variableName: string, productionPreparationSlip: ProductionPreparationSlip, quantity: Number) {
+        this.variableName = new ScrapMaterialSlip(variableName)
+        this.values = { productionPreparationSlip, quantity }
+    }
+
+    equals(other: ScrapMaterialSlipVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface TransferMaterialSlip extends Newtype<{ readonly TransferMaterialSlip: unique symbol }, string> { }
-export interface TransferMaterialSlipVariable {
-    typeName: 'TransferMaterialSlip'
+export class TransferMaterialSlip {
+    constructor(private variableName: string) { }
+
+    equals(other: TransferMaterialSlip): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class TransferMaterialSlipVariable {
+    readonly typeName = 'TransferMaterialSlip'
     variableName: TransferMaterialSlip
     values: {
         productionPreparationSlip: ProductionPreparationSlip
@@ -404,78 +1368,73 @@ export interface TransferMaterialSlipVariable {
         // assertion(transfered <= quantity && transfered >= 0)
         transfered: Number
     }
+
+    constructor(variableName: string, productionPreparationSlip: ProductionPreparationSlip, quantity: Number, transfered: Number) {
+        this.variableName = new TransferMaterialSlip(variableName)
+        this.values = { productionPreparationSlip, quantity, transfered }
+    }
+
+    equals(other: TransferMaterialSlipVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
+    }
 }
 
-export interface WarehouseAcceptanceSlip extends Newtype<{ readonly WarehouseAcceptanceSlip: unique symbol }, string> { }
-export interface WarehouseAcceptanceSlipVariable {
-    typeName: 'WarehouseAcceptanceSlip'
+export class WarehouseAcceptanceSlip {
+    constructor(private variableName: string) { }
+
+    equals(other: WarehouseAcceptanceSlip): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.variableName}`;
+    }
+}
+
+export class WarehouseAcceptanceSlipVariable {
+    readonly typeName = 'WarehouseAcceptanceSlip'
     variableName: WarehouseAcceptanceSlip
     values: {
         transferMaterialSlip: TransferMaterialSlip
         // assertion(quantity <= transferMaterialSlip.quantity && quantity > 0)
         quantity: Number // { transferMaterialSlip.transfered += quantity }
     }
-}
 
-export const isoVariableName = {
-    'Product': iso<Product>(),
-    'UOM': iso<UOM>(),
-    'Indent': iso<Indent>(),
-    'IndentItem': iso<IndentItem>(),
-    'Supplier': iso<Supplier>(),
-    'SupplierProduct': iso<SupplierProduct>(),
-    'Quotation': iso<Quotation>(),
-    'QuotationItem': iso<QuotationItem>(),
-    'PurchaseOrder': iso<PurchaseOrder>(),
-    'PurchaseOrderItem': iso<PurchaseOrderItem>(),
-    'PurchaseInvoice': iso<PurchaseInvoice>(),
-    'PurchaseInvoiceItem': iso<PurchaseInvoiceItem>(),
-    'MaterialApprovalSlip': iso<MaterialApprovalSlip>(),
-    'MaterialApprovalSlipItem': iso<MaterialApprovalSlipItem>(),
-    'MaterialRejectionSlip': iso<MaterialRejectionSlip>(),
-    'MaterialRejectionSlipItem': iso<MaterialRejectionSlipItem>(),
-    'MaterialReturnSlip': iso<MaterialReturnSlip>(),
-    'MaterialReturnSlipItem': iso<MaterialReturnSlipItem>(),
-    'MaterialRequistionSlip': iso<MaterialRequistionSlip>(),
-    'MaterialRequistionSlipItem': iso<MaterialRequistionSlipItem>(),
-    'BOM': iso<BOM>(),
-    'BOMItem': iso<BOMItem>(),
-    'ProductionPreparationSlip': iso<ProductionPreparationSlip>(),
-    'ProductionPreparationSlipItem': iso<ProductionPreparationSlipItem>(),
-    'ScrapMaterialSlip': iso<ScrapMaterialSlip>(),
-    'TransferMaterialSlip': iso<TransferMaterialSlip>(),
-    'WarehouseAcceptanceSlip': iso<WarehouseAcceptanceSlip>()
-}
+    constructor(variableName: string, transferMaterialSlip: TransferMaterialSlip, quantity: Number) {
+        this.variableName = new WarehouseAcceptanceSlip(variableName)
+        this.values = { transferMaterialSlip, quantity }
+    }
 
-export function getVariableName(variable: Variable): string {
-    switch (variable.typeName) {
-        case 'Product': return iso<Product>().unwrap(variable.variableName)
-        case 'UOM': return iso<UOM>().unwrap(variable.variableName)
-        case 'Indent': return iso<Indent>().unwrap(variable.variableName)
-        case 'IndentItem': return iso<IndentItem>().unwrap(variable.variableName)
-        case 'SupplierProduct': return iso<SupplierProduct>().unwrap(variable.variableName)
-        case 'Supplier': return iso<Supplier>().unwrap(variable.variableName)
-        case 'Quotation': return iso<Quotation>().unwrap(variable.variableName)
-        case 'QuotationItem': return iso<QuotationItem>().unwrap(variable.variableName)
-        case 'PurchaseOrder': return iso<PurchaseOrder>().unwrap(variable.variableName)
-        case 'PurchaseOrderItem': return iso<PurchaseOrderItem>().unwrap(variable.variableName)
-        case 'PurchaseInvoice': return iso<PurchaseInvoice>().unwrap(variable.variableName)
-        case 'PurchaseInvoiceItem': return iso<PurchaseInvoiceItem>().unwrap(variable.variableName)
-        case 'MaterialApprovalSlip': return iso<MaterialApprovalSlip>().unwrap(variable.variableName)
-        case 'MaterialApprovalSlipItem': return iso<MaterialApprovalSlipItem>().unwrap(variable.variableName)
-        case 'MaterialRejectionSlip': return iso<MaterialRejectionSlip>().unwrap(variable.variableName)
-        case 'MaterialRejectionSlipItem': return iso<MaterialRejectionSlipItem>().unwrap(variable.variableName)
-        case 'MaterialReturnSlip': return iso<MaterialReturnSlip>().unwrap(variable.variableName)
-        case 'MaterialReturnSlipItem': return iso<MaterialReturnSlipItem>().unwrap(variable.variableName)
-        case 'MaterialRequistionSlip': return iso<MaterialRequistionSlip>().unwrap(variable.variableName)
-        case 'MaterialRequistionSlipItem': return iso<MaterialRequistionSlipItem>().unwrap(variable.variableName)
-        case 'BOM': return iso<BOM>().unwrap(variable.variableName)
-        case 'BOMItem': return iso<BOMItem>().unwrap(variable.variableName)
-        case 'ProductionPreparationSlip': return iso<ProductionPreparationSlip>().unwrap(variable.variableName)
-        case 'ProductionPreparationSlipItem': return iso<ProductionPreparationSlipItem>().unwrap(variable.variableName)
-        case 'ScrapMaterialSlip': return iso<ScrapMaterialSlip>().unwrap(variable.variableName)
-        case 'TransferMaterialSlip': return iso<TransferMaterialSlip>().unwrap(variable.variableName)
-        case 'WarehouseAcceptanceSlip': return iso<WarehouseAcceptanceSlip>().unwrap(variable.variableName)
-        default: return ''
+    equals(other: WarehouseAcceptanceSlipVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${JSON.stringify(this)}`;
     }
 }

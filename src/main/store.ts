@@ -1,148 +1,148 @@
-import { Vector } from 'prelude-ts'
+import { Vector, HashSet } from 'prelude-ts'
 import create from 'zustand/vanilla'
 import { Layer, Diff, compose } from './layers'
 import { devtools } from 'zustand/middleware'
 
 const base: Layer = {
-    Product: Vector.of(),
-    UOM: Vector.of(),
-    Indent: Vector.of(),
-    IndentItem: Vector.of(),
-    Supplier: Vector.of(),
-    SupplierProduct: Vector.of(),
-    Quotation: Vector.of(),
-    QuotationItem: Vector.of(),
-    PurchaseOrder: Vector.of(),
-    PurchaseOrderItem: Vector.of(),
-    PurchaseInvoice: Vector.of(),
-    PurchaseInvoiceItem: Vector.of(),
-    MaterialApprovalSlip: Vector.of(),
-    MaterialApprovalSlipItem: Vector.of(),
-    MaterialRejectionSlip: Vector.of(),
-    MaterialRejectionSlipItem: Vector.of(),
-    MaterialReturnSlip: Vector.of(),
-    MaterialReturnSlipItem: Vector.of(),
-    MaterialRequistionSlip: Vector.of(),
-    MaterialRequistionSlipItem: Vector.of(),
-    BOM: Vector.of(),
-    BOMItem: Vector.of(),
-    ProductionPreparationSlip: Vector.of(),
-    ProductionPreparationSlipItem: Vector.of(),
-    ScrapMaterialSlip: Vector.of(),
-    TransferMaterialSlip: Vector.of(),
-    WarehouseAcceptanceSlip: Vector.of()
+    Product: HashSet.of(),
+    UOM: HashSet.of(),
+    Indent: HashSet.of(),
+    IndentItem: HashSet.of(),
+    Supplier: HashSet.of(),
+    SupplierProduct: HashSet.of(),
+    Quotation: HashSet.of(),
+    QuotationItem: HashSet.of(),
+    PurchaseOrder: HashSet.of(),
+    PurchaseOrderItem: HashSet.of(),
+    PurchaseInvoice: HashSet.of(),
+    PurchaseInvoiceItem: HashSet.of(),
+    MaterialApprovalSlip: HashSet.of(),
+    MaterialApprovalSlipItem: HashSet.of(),
+    MaterialRejectionSlip: HashSet.of(),
+    MaterialRejectionSlipItem: HashSet.of(),
+    MaterialReturnSlip: HashSet.of(),
+    MaterialReturnSlipItem: HashSet.of(),
+    MaterialRequistionSlip: HashSet.of(),
+    MaterialRequistionSlipItem: HashSet.of(),
+    BOM: HashSet.of(),
+    BOMItem: HashSet.of(),
+    ProductionPreparationSlip: HashSet.of(),
+    ProductionPreparationSlipItem: HashSet.of(),
+    ScrapMaterialSlip: HashSet.of(),
+    TransferMaterialSlip: HashSet.of(),
+    WarehouseAcceptanceSlip: HashSet.of()
 }
 
 export const noDiff: Diff = {
     id: -1,
     active: true,
     Product: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     UOM: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     Indent: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     IndentItem: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     Supplier: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     SupplierProduct: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     Quotation: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     QuotationItem: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     PurchaseOrder: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     PurchaseOrderItem: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     PurchaseInvoice: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     PurchaseInvoiceItem: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     MaterialApprovalSlip: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     MaterialApprovalSlipItem: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     MaterialRejectionSlip: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     MaterialRejectionSlipItem: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     MaterialReturnSlip: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     MaterialReturnSlipItem: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     MaterialRequistionSlip: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     MaterialRequistionSlipItem: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     BOM: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     BOMItem: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     ProductionPreparationSlip: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     ProductionPreparationSlipItem: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     ScrapMaterialSlip: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     TransferMaterialSlip: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     },
     WarehouseAcceptanceSlip: {
-        replace: Vector.of(),
-        remove: Vector.of()
+        replace: HashSet.of(),
+        remove: HashSet.of()
     }
 }
 

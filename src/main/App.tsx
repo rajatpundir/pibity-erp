@@ -1,5 +1,5 @@
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import Product from '../components/management/product/Product'
+import ProductX from '../components/management/product/Product'
 import Products from '../components/management/product/Products'
 import { Container, Item, none } from './commons';
 import { functions, executeFunction } from "./function";
@@ -21,7 +21,7 @@ function App() {
           <Item area={Grid.content} className="overflow-y-auto py-8">
             <Switch>
               <Route exact path="/product">
-                <Product />
+                <ProductX />
               </Route>
               <Route exact path="/products">
                 <Products />

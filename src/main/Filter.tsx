@@ -11,7 +11,6 @@ import { Cell, none, TableContainer } from './commons'
 import tw from 'twin.macro'
 import { evaluateExpression, LispExpression, Symbols } from './lisp'
 import { Vector } from 'prelude-ts'
-import { getVariableName, Variable } from './variables'
 import { Key, types } from './types'
 
 const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full min-w-max h-6 rounded-sm inline-block`

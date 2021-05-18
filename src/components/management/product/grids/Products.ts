@@ -12,7 +12,7 @@ export const layouts: { [index: string]: GridLayout } = {
         columnGap: '0rem',
         layout_mobile: {
             rows: Vector.of('6rem', '1fr'),
-            columns: Vector.of('1fr'),
+            columns: Vector.of('1fr', '1fr'),
             areas: Vector.of(
                 Vector.of(header, filter),
                 Vector.of(table, table)

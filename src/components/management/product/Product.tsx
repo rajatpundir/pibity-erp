@@ -1,91 +1,95 @@
 import React from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from "use-immer"
-import { isoVariableName } from '../../../main/variables'
-import { ProductVariable } from '../../../main/variables'
 import tw from 'twin.macro'
 import Switch from '@material-ui/core/Switch'
 import { Container, Item, none } from '../../../main/commons'
 import * as Grid from './grids/Product'
-import { Vector } from 'prelude-ts'
+import { HashSet, Vector } from 'prelude-ts'
 import { noDiff } from '../../../main/store'
 import { useStore } from '../../../main/useStore'
+import { Product, ProductVariable } from '../../../main/variables'
 
 type State = Immutable<{
     variable: ProductVariable
 }>
 
 export type Action =
-    | {
-        type: string
-        payload?: string | boolean
-    }
+    | ['reset']
+    | ['variable', 'variableName', string]
+    | ['variable', 'values', 'name', string]
+    | ['variable', 'values', 'orderable', boolean]
+    | ['variable', 'values', 'consumable', boolean]
+    | ['variable', 'values', 'producable', boolean]
 
 const initialState: State = {
-    variable: {
-        typeName: 'Product',
-        variableName: isoVariableName['Product'].wrap(''),
-        values: {
-            name: '',
-            orderable: true,
-            consumable: true,
-            producable: false
-        }
-    }
+    variable: new ProductVariable('', '', true, true, false)
 }
 
 function reducer(state: Draft<State>, action: Action) {
-    switch (action.type) {
+    switch (action[0]) {
         case 'reset':
             return initialState;
-        case 'variableName': {
-            if (action.payload != null) {
-                state.variable.variableName = isoVariableName['Product'].wrap(String(action.payload))
+        case 'variable': {
+            switch (action[1]) {
+                case 'variableName': {
+                    state.variable.variableName = new Product(action[2])
+                    return
+                }
+                case 'values': {
+                    switch (action[2]) {
+                        case 'name': {
+                            state.variable.values.name = action[3]
+                            return
+                        }
+                        case 'orderable': {
+                            state.variable.values.orderable = action[3]
+                            return
+                        }
+                        case 'consumable': {
+                            state.variable.values.consumable = action[3]
+                            return
+                        }
+                        case 'producable': {
+                            state.variable.values.producable = action[3]
+                            return
+                        }
+                    }
+                }
             }
-            return;
-        }
-        case 'sku': {
-            if (action.payload != null) {
-                state.variable.values.name = String(action.payload)
-            }
-            return;
-        }
-        case 'orderable': {
-            if (action.payload != null) {
-                state.variable.values.orderable = Boolean(action.payload)
-            }
-            return;
-        }
-        case 'consumable': {
-            if (action.payload != null) {
-                state.variable.values.consumable = !!action.payload
-            }
-            return;
-        }
-        case 'producable': {
-            if (action.payload != null) {
-                state.variable.values.producable = !!action.payload
-            }
-            return;
         }
     }
 }
 
-export default function Product() {
+export default function ProductX() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
     const addDiff = useStore(state => state.addDiff)
     const onInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        dispatch({
-            type: event.target.name,
-            payload: String(event.target.value)
-        })
+        switch (event.target.name) {
+            case 'variableName': {
+                dispatch(['variable', 'variableName', event.target.value])
+                break
+            }
+            default: {
+                switch (event.target.name) {
+                    case 'name': {
+                        dispatch(['variable', 'values', event.target.name, event.target.value])
+                        break
+                    }
+                }
+            }
+        }
     }
 
     const onSwitchChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        dispatch({
-            type: event.target.name,
-            payload: event.target.checked
-        })
+        switch (event.target.name) {
+            case 'orderable':
+            case 'consumable':
+            case 'producable': {
+                dispatch(['variable', 'values', event.target.name, event.target.checked])
+                break
+            }
+        }
     }
 
     const onSubmit = async (event: React.FormEvent<HTMLButtonElement>) => {
@@ -93,8 +97,8 @@ export default function Product() {
         addDiff({
             ...noDiff,
             Product: {
-                replace: Vector.of(state.variable),
-                remove: Vector.of()
+                replace: HashSet.of(state.variable),
+                remove: HashSet.of()
             }
         })
     }
@@ -110,7 +114,7 @@ export default function Product() {
             <Container area={Grid.details} layout={Grid.layouts.details}>
                 <Item>
                     <Label>SKU</Label>
-                    <Input type='text' onChange={onInputChange} value={isoVariableName['Product'].unwrap(state.variable.variableName)} name='variableName' />
+                    <Input type='text' onChange={onInputChange} value={state.variable.variableName.toString()} name='variableName' />
                 </Item>
                 <Item>
                     <Label>Product Name</Label>

@@ -1,7 +1,6 @@
 import { evaluateExpression, LispExpression, Symbols, SymbolValue } from "./lisp"
 import { getState } from "./store"
 import { PrimitiveType, NonPrimitiveType, types, Key } from './types'
-import { getVariableName, } from "./variables"
 
 type FunctionInput =
     | {
