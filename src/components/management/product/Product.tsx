@@ -27,31 +27,27 @@ const initialState: State = {
 }
 
 function reducer(state: Draft<State>, action: Action) {
+    console.log(action)
     switch (action[0]) {
         case 'reset':
             return initialState;
         case 'variable': {
             switch (action[1]) {
                 case 'variableName': {
-                    state.variable.variableName = new Product(action[2])
-                    return state
+                    state[action[0]][action[1]] = new Product(action[2])
+                    return
                 }
                 case 'values': {
+                    
                     switch (action[2]) {
                         case 'name': {
-                            state.variable.values.name = action[3]
+                            state[action[0]][action[1]][action[2]] = action[3]
                             return
                         }
-                        case 'orderable': {
-                            state.variable.values.orderable = action[3]
-                            return
-                        }
-                        case 'consumable': {
-                            state.variable.values.consumable = action[3]
-                            return
-                        }
+                        case 'orderable':
+                        case 'consumable': 
                         case 'producable': {
-                            state.variable.values.producable = action[3]
+                            state[action[0]][action[1]][action[2]] = action[3]
                             return
                         }
                     }
@@ -64,6 +60,7 @@ function reducer(state: Draft<State>, action: Action) {
 export default function ProductX() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
     const addDiff = useStore(state => state.addDiff)
+    
     const onInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         switch (event.target.name) {
             case 'variableName': {

@@ -1,3 +1,4 @@
+import { immerable } from 'immer'
 
 export type Text = string
 export type Number = bigint
@@ -8,34 +9,34 @@ export type Timestamp = bigint
 export type Time = bigint
 export type Formula = string
 
-export type Variable = 
-| ProductVariable
-| UOMVariable
-| IndentVariable
-| IndentItemVariable
-| SupplierVariable
-| SupplierProductVariable
-| QuotationVariable
-| QuotationItemVariable
-| PurchaseOrderVariable
-| PurchaseOrderItemVariable
-| PurchaseInvoiceVariable
-| PurchaseInvoiceItemVariable
-| MaterialApprovalSlipVariable
-| MaterialApprovalSlipItemVariable
-| MaterialRejectionSlipVariable
-| MaterialRejectionSlipItemVariable
-| MaterialReturnSlipVariable
-| MaterialReturnSlipItemVariable
-| MaterialRequistionSlipVariable
-| MaterialRequistionSlipItemVariable
-| BOMVariable
-| BOMItemVariable
-| ProductionPreparationSlipVariable
-| ProductionPreparationSlipItemVariable
-| ScrapMaterialSlipVariable
-| TransferMaterialSlipVariable
-| WarehouseAcceptanceSlipVariable
+export type Variable =
+    | ProductVariable
+    | UOMVariable
+    | IndentVariable
+    | IndentItemVariable
+    | SupplierVariable
+    | SupplierProductVariable
+    | QuotationVariable
+    | QuotationItemVariable
+    | PurchaseOrderVariable
+    | PurchaseOrderItemVariable
+    | PurchaseInvoiceVariable
+    | PurchaseInvoiceItemVariable
+    | MaterialApprovalSlipVariable
+    | MaterialApprovalSlipItemVariable
+    | MaterialRejectionSlipVariable
+    | MaterialRejectionSlipItemVariable
+    | MaterialReturnSlipVariable
+    | MaterialReturnSlipItemVariable
+    | MaterialRequistionSlipVariable
+    | MaterialRequistionSlipItemVariable
+    | BOMVariable
+    | BOMItemVariable
+    | ProductionPreparationSlipVariable
+    | ProductionPreparationSlipItemVariable
+    | ScrapMaterialSlipVariable
+    | TransferMaterialSlipVariable
+    | WarehouseAcceptanceSlipVariable
 
 // type VariableName =
 // | Product
@@ -86,6 +87,7 @@ export class Product {
 }
 
 export class ProductVariable {
+    [immerable] = true
     readonly typeName = 'Product'
     variableName: Product
     values: {
@@ -137,6 +139,7 @@ export class UOM {
 }
 
 export class UOMVariable {
+    [immerable] = true
     readonly typeName = 'UOM'
     variableName: UOM
     values: {
@@ -187,6 +190,7 @@ export class Indent {
 }
 
 export class IndentVariable {
+    [immerable] = true
     readonly typeName = 'Indent'
     variableName: Indent
     values: {
@@ -237,6 +241,7 @@ export class IndentItem {
 }
 
 export class IndentItemVariable {
+    [immerable] = true
     readonly typeName = 'IndentItem'
     variableName: IndentItem
     values: {
@@ -303,6 +308,7 @@ export class Supplier {
 }
 
 export class SupplierVariable {
+    [immerable] = true
     readonly typeName = 'Supplier'
     variableName: Supplier
     values: {}
@@ -348,6 +354,7 @@ export class SupplierProduct {
 }
 
 export class SupplierProductVariable {
+    [immerable] = true
     readonly typeName = 'SupplierProduct'
     variableName: SupplierProduct
     values: {
@@ -397,6 +404,7 @@ export class Quotation {
 }
 
 export class QuotationVariable {
+    [immerable] = true
     readonly typeName = 'Quotation'
     variableName: Quotation
     values: {
@@ -445,6 +453,7 @@ export class QuotationItem {
 }
 
 export class QuotationItemVariable {
+    [immerable] = true
     readonly typeName = 'QuotationItem'
     variableName: QuotationItem
     values: {
@@ -497,6 +506,7 @@ export class PurchaseOrder {
 }
 
 export class PurchaseOrderVariable {
+    [immerable] = true
     readonly typeName = 'PurchaseOrder'
     variableName: PurchaseOrder
     values: {
@@ -544,6 +554,7 @@ export class PurchaseOrderItem {
 }
 
 export class PurchaseOrderItemVariable {
+    [immerable] = true
     readonly typeName = 'PurchaseOrderItem'
     variableName: PurchaseOrderItem
     values: {
@@ -599,6 +610,7 @@ export class PurchaseInvoice {
 }
 
 export class PurchaseInvoiceVariable {
+    [immerable] = true
     readonly typeName = 'PurchaseInvoice'
     variableName: PurchaseInvoice
     values: {
@@ -646,6 +658,7 @@ export class PurchaseInvoiceItem {
 }
 
 export class PurchaseInvoiceItemVariable {
+    [immerable] = true
     readonly typeName = 'PurchaseInvoiceItem'
     variableName: PurchaseInvoiceItem
     values: {
@@ -701,6 +714,7 @@ export class MaterialApprovalSlip {
 }
 
 export class MaterialApprovalSlipVariable {
+    [immerable] = true
     readonly typeName = 'MaterialApprovalSlip'
     variableName: MaterialApprovalSlip
     values: {
@@ -748,6 +762,7 @@ export class MaterialApprovalSlipItem {
 }
 
 export class MaterialApprovalSlipItemVariable {
+    [immerable] = true
     readonly typeName = 'MaterialApprovalSlipItem'
     variableName: MaterialApprovalSlipItem
     values: {
@@ -802,6 +817,7 @@ export class MaterialRejectionSlip {
 }
 
 export class MaterialRejectionSlipVariable {
+    [immerable] = true
     readonly typeName = 'MaterialRejectionSlip'
     variableName: MaterialRejectionSlip
     values: {
@@ -849,6 +865,7 @@ export class MaterialRejectionSlipItem {
 }
 
 export class MaterialRejectionSlipItemVariable {
+    [immerable] = true
     readonly typeName = 'MaterialRejectionSlipItem'
     variableName: MaterialRejectionSlipItem
     values: {
@@ -903,6 +920,7 @@ export class MaterialReturnSlip {
 }
 
 export class MaterialReturnSlipVariable {
+    [immerable] = true
     readonly typeName = 'MaterialReturnSlip'
     variableName: MaterialReturnSlip
     values: {
@@ -950,6 +968,7 @@ export class MaterialReturnSlipItem {
 }
 
 export class MaterialReturnSlipItemVariable {
+    [immerable] = true
     readonly typeName = 'MaterialReturnSlipItem'
     variableName: MaterialReturnSlipItem
     values: {
@@ -1002,6 +1021,7 @@ export class MaterialRequistionSlip {
 }
 
 export class MaterialRequistionSlipVariable {
+    [immerable] = true
     readonly typeName = 'MaterialRequistionSlip'
     variableName: MaterialRequistionSlip
     values: {
@@ -1049,6 +1069,7 @@ export class MaterialRequistionSlipItem {
 }
 
 export class MaterialRequistionSlipItemVariable {
+    [immerable] = true
     readonly typeName = 'MaterialRequistionSlipItem'
     variableName: MaterialRequistionSlipItem
     values: {
@@ -1103,6 +1124,7 @@ export class BOM {
 }
 
 export class BOMVariable {
+    [immerable] = true
     readonly typeName = 'BOM'
     variableName: BOM
     values: {
@@ -1154,6 +1176,7 @@ export class BOMItem {
 }
 
 export class BOMItemVariable {
+    [immerable] = true
     readonly typeName = 'BOMItem'
     variableName: BOMItem
     values: {
@@ -1207,6 +1230,7 @@ export class ProductionPreparationSlip {
 }
 
 export class ProductionPreparationSlipVariable {
+    [immerable] = true
     readonly typeName = 'ProductionPreparationSlip'
     variableName: ProductionPreparationSlip
     values: {
@@ -1257,6 +1281,7 @@ export class ProductionPreparationSlipItem {
 }
 
 export class ProductionPreparationSlipItemVariable {
+    [immerable] = true
     readonly typeName = 'ProductionPreparationSlipItem'
     variableName: ProductionPreparationSlipItem
     values: {
@@ -1310,6 +1335,7 @@ export class ScrapMaterialSlip {
 }
 
 export class ScrapMaterialSlipVariable {
+    [immerable] = true
     readonly typeName = 'ScrapMaterialSlip'
     variableName: ScrapMaterialSlip
     values: {
@@ -1359,6 +1385,7 @@ export class TransferMaterialSlip {
 }
 
 export class TransferMaterialSlipVariable {
+    [immerable] = true
     readonly typeName = 'TransferMaterialSlip'
     variableName: TransferMaterialSlip
     values: {
@@ -1410,6 +1437,7 @@ export class WarehouseAcceptanceSlip {
 }
 
 export class WarehouseAcceptanceSlipVariable {
+    [immerable] = true
     readonly typeName = 'WarehouseAcceptanceSlip'
     variableName: WarehouseAcceptanceSlip
     values: {
