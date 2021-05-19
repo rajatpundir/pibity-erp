@@ -118,7 +118,7 @@ function getCells(variables: HashSet<Variable>, start: number, end: number): Vec
     variables.toArray().slice(start, end).forEach((variable, rowIndex) => {
         const keys: Array<string> = Object.keys(variable.values)
         if (rowIndex % 2 === 0) {
-            cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{variable.variableName}</Cell>)
+            cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{variable.variableName.toString()}</Cell>)
             counter += 1
             keys.slice(0, keys.length - 1).forEach((key, columnIndex) => {
                 const value = variable.values[key]
@@ -147,7 +147,7 @@ function getCells(variables: HashSet<Variable>, start: number, end: number): Vec
                 }
             }
         } else {
-            cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{variable.variableName}</Cell>)
+            cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{variable.variableName.toString()}</Cell>)
             counter += 1
             keys.slice(0, keys.length - 1).forEach((key, columnIndex) => {
                 const value = variable.values[key]
