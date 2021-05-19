@@ -1,8 +1,9 @@
+import { Immutable } from "immer"
 import { HashSet } from "prelude-ts"
 import { evaluateExpression, LispExpression, Symbols, SymbolValue } from "./lisp"
 import { getState } from "./store"
 import { PrimitiveType, NonPrimitiveType, types, Key } from './types'
-import { Indent, UOM, Var } from "./variables"
+import { Variable } from "./variables"
 
 type FunctionInput =
     | {
@@ -193,7 +194,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
     }
     if (symbolPaths.length !== 0) {
         symbolValue.values = {}
-        const unfilteredVariables: HashSet<Var> = getState().variables[typeName]
+        const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[typeName]
         const variables = unfilteredVariables.filter(x => x.toString() === variableName)
         if (variables.length() === 1) {
             Object.keys(type).forEach(keyName => {
@@ -354,7 +355,7 @@ export function executeFunction(fx: Function, args: object): object {
                                     break
                                 }
                                 default: {
-                                    const unfilteredVariables: HashSet<Var> = getState().variables[key.type]
+                                    const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[key.type]
                                     const variables = unfilteredVariables.filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                     if (variables.length() === 1) {
                                         variable.values[keyName] = variables[0].variableName.toString()
@@ -368,7 +369,7 @@ export function executeFunction(fx: Function, args: object): object {
                         break
                     }
                     case 'update': {
-                        const unfilteredVariables: HashSet<Var> = getState().variables[fo.type]
+                        const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[fo.type]
                         const variables = unfilteredVariables.filter(x => x.toString() === variableName)
                         if (variables.length() === 1) {
                             const variable = variables[0]
@@ -395,7 +396,7 @@ export function executeFunction(fx: Function, args: object): object {
                                         break
                                     }
                                     default: {
-                                        const unfilteredVariables: HashSet<Var> = getState().variables[key.type]
+                                        const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[key.type]
                                         const variables = unfilteredVariables.filter(x => x.toString() === String(evaluateExpression(fo.values[keyName], symbols)))
                                         if (variables.length() === 1) {
                                             variable.values[keyName] = variables[0].variableName.toString()
@@ -411,7 +412,7 @@ export function executeFunction(fx: Function, args: object): object {
                         break
                     }
                     case 'delete': {
-                        const unfilteredVariables: HashSet<Var> = getState().variables[fo.type]
+                        const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[fo.type]
                         const variables = unfilteredVariables.filter(x => x.toString() === String(evaluateExpression(fo.values[fo.type], symbols)))
                         if (variables.length() === 1) {
                             result[outputName] = variables[0]

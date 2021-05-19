@@ -47,15 +47,11 @@ export type Key = {
     type: KeyType
 }
 
-type Type = {
-    keys: {
-        [index: string]: Key
-    }
+export type Type = {
+    keys: Record<string, Key>
 }
 
-type Types = { [index: string]: Type }
-
-export const types: Types = {
+export const types: Record<string, Type> = {
     Product: {
         keys: {
             name: {
