@@ -1,4 +1,5 @@
 import { immerable } from 'immer'
+import { NonPrimitiveType } from './types'
 
 export type Text = string
 export type Number = bigint
@@ -67,6 +68,12 @@ export type Variable =
 // | TransferMaterialSlip
 // | WarehouseAcceptanceSlip
 
+export interface Var {
+    typeName: NonPrimitiveType
+    variableName: { toString: () => string }
+    values: object
+}
+
 export class Product {
     constructor(private variableName: string) { }
 
@@ -86,7 +93,7 @@ export class Product {
     }
 }
 
-export class ProductVariable {
+export class ProductVariable implements Var {
     [immerable] = true
     readonly typeName = 'Product'
     variableName: Product
@@ -138,7 +145,7 @@ export class UOM {
     }
 }
 
-export class UOMVariable {
+export class UOMVariable implements Var {
     [immerable] = true
     readonly typeName = 'UOM'
     variableName: UOM
@@ -189,7 +196,7 @@ export class Indent {
     }
 }
 
-export class IndentVariable {
+export class IndentVariable implements Var {
     [immerable] = true
     readonly typeName = 'Indent'
     variableName: Indent
@@ -240,7 +247,7 @@ export class IndentItem {
     }
 }
 
-export class IndentItemVariable {
+export class IndentItemVariable implements Var {
     [immerable] = true
     readonly typeName = 'IndentItem'
     variableName: IndentItem
@@ -307,7 +314,7 @@ export class Supplier {
     }
 }
 
-export class SupplierVariable {
+export class SupplierVariable implements Var {
     [immerable] = true
     readonly typeName = 'Supplier'
     variableName: Supplier
@@ -353,7 +360,7 @@ export class SupplierProduct {
     }
 }
 
-export class SupplierProductVariable {
+export class SupplierProductVariable implements Var {
     [immerable] = true
     readonly typeName = 'SupplierProduct'
     variableName: SupplierProduct
@@ -403,7 +410,7 @@ export class Quotation {
     }
 }
 
-export class QuotationVariable {
+export class QuotationVariable implements Var {
     [immerable] = true
     readonly typeName = 'Quotation'
     variableName: Quotation
@@ -452,7 +459,7 @@ export class QuotationItem {
     }
 }
 
-export class QuotationItemVariable {
+export class QuotationItemVariable implements Var {
     [immerable] = true
     readonly typeName = 'QuotationItem'
     variableName: QuotationItem
@@ -505,7 +512,7 @@ export class PurchaseOrder {
     }
 }
 
-export class PurchaseOrderVariable {
+export class PurchaseOrderVariable implements Var {
     [immerable] = true
     readonly typeName = 'PurchaseOrder'
     variableName: PurchaseOrder
@@ -553,7 +560,7 @@ export class PurchaseOrderItem {
     }
 }
 
-export class PurchaseOrderItemVariable {
+export class PurchaseOrderItemVariable implements Var {
     [immerable] = true
     readonly typeName = 'PurchaseOrderItem'
     variableName: PurchaseOrderItem
@@ -609,7 +616,7 @@ export class PurchaseInvoice {
     }
 }
 
-export class PurchaseInvoiceVariable {
+export class PurchaseInvoiceVariable implements Var {
     [immerable] = true
     readonly typeName = 'PurchaseInvoice'
     variableName: PurchaseInvoice
@@ -657,7 +664,7 @@ export class PurchaseInvoiceItem {
     }
 }
 
-export class PurchaseInvoiceItemVariable {
+export class PurchaseInvoiceItemVariable implements Var {
     [immerable] = true
     readonly typeName = 'PurchaseInvoiceItem'
     variableName: PurchaseInvoiceItem
@@ -713,7 +720,7 @@ export class MaterialApprovalSlip {
     }
 }
 
-export class MaterialApprovalSlipVariable {
+export class MaterialApprovalSlipVariable implements Var {
     [immerable] = true
     readonly typeName = 'MaterialApprovalSlip'
     variableName: MaterialApprovalSlip
@@ -761,7 +768,7 @@ export class MaterialApprovalSlipItem {
     }
 }
 
-export class MaterialApprovalSlipItemVariable {
+export class MaterialApprovalSlipItemVariable implements Var {
     [immerable] = true
     readonly typeName = 'MaterialApprovalSlipItem'
     variableName: MaterialApprovalSlipItem
@@ -816,7 +823,7 @@ export class MaterialRejectionSlip {
     }
 }
 
-export class MaterialRejectionSlipVariable {
+export class MaterialRejectionSlipVariable implements Var {
     [immerable] = true
     readonly typeName = 'MaterialRejectionSlip'
     variableName: MaterialRejectionSlip
@@ -864,7 +871,7 @@ export class MaterialRejectionSlipItem {
     }
 }
 
-export class MaterialRejectionSlipItemVariable {
+export class MaterialRejectionSlipItemVariable implements Var {
     [immerable] = true
     readonly typeName = 'MaterialRejectionSlipItem'
     variableName: MaterialRejectionSlipItem
@@ -919,7 +926,7 @@ export class MaterialReturnSlip {
     }
 }
 
-export class MaterialReturnSlipVariable {
+export class MaterialReturnSlipVariable implements Var {
     [immerable] = true
     readonly typeName = 'MaterialReturnSlip'
     variableName: MaterialReturnSlip
@@ -967,7 +974,7 @@ export class MaterialReturnSlipItem {
     }
 }
 
-export class MaterialReturnSlipItemVariable {
+export class MaterialReturnSlipItemVariable implements Var {
     [immerable] = true
     readonly typeName = 'MaterialReturnSlipItem'
     variableName: MaterialReturnSlipItem
@@ -1020,7 +1027,7 @@ export class MaterialRequistionSlip {
     }
 }
 
-export class MaterialRequistionSlipVariable {
+export class MaterialRequistionSlipVariable implements Var {
     [immerable] = true
     readonly typeName = 'MaterialRequistionSlip'
     variableName: MaterialRequistionSlip
@@ -1068,7 +1075,7 @@ export class MaterialRequistionSlipItem {
     }
 }
 
-export class MaterialRequistionSlipItemVariable {
+export class MaterialRequistionSlipItemVariable implements Var {
     [immerable] = true
     readonly typeName = 'MaterialRequistionSlipItem'
     variableName: MaterialRequistionSlipItem
@@ -1123,7 +1130,7 @@ export class BOM {
     }
 }
 
-export class BOMVariable {
+export class BOMVariable implements Var {
     [immerable] = true
     readonly typeName = 'BOM'
     variableName: BOM
@@ -1175,7 +1182,7 @@ export class BOMItem {
     }
 }
 
-export class BOMItemVariable {
+export class BOMItemVariable implements Var {
     [immerable] = true
     readonly typeName = 'BOMItem'
     variableName: BOMItem
@@ -1229,7 +1236,7 @@ export class ProductionPreparationSlip {
     }
 }
 
-export class ProductionPreparationSlipVariable {
+export class ProductionPreparationSlipVariable implements Var {
     [immerable] = true
     readonly typeName = 'ProductionPreparationSlip'
     variableName: ProductionPreparationSlip
@@ -1280,7 +1287,7 @@ export class ProductionPreparationSlipItem {
     }
 }
 
-export class ProductionPreparationSlipItemVariable {
+export class ProductionPreparationSlipItemVariable implements Var {
     [immerable] = true
     readonly typeName = 'ProductionPreparationSlipItem'
     variableName: ProductionPreparationSlipItem
@@ -1334,7 +1341,7 @@ export class ScrapMaterialSlip {
     }
 }
 
-export class ScrapMaterialSlipVariable {
+export class ScrapMaterialSlipVariable implements Var {
     [immerable] = true
     readonly typeName = 'ScrapMaterialSlip'
     variableName: ScrapMaterialSlip
@@ -1384,7 +1391,7 @@ export class TransferMaterialSlip {
     }
 }
 
-export class TransferMaterialSlipVariable {
+export class TransferMaterialSlipVariable implements Var {
     [immerable] = true
     readonly typeName = 'TransferMaterialSlip'
     variableName: TransferMaterialSlip
@@ -1436,7 +1443,7 @@ export class WarehouseAcceptanceSlip {
     }
 }
 
-export class WarehouseAcceptanceSlipVariable {
+export class WarehouseAcceptanceSlipVariable implements Var {
     [immerable] = true
     readonly typeName = 'WarehouseAcceptanceSlip'
     variableName: WarehouseAcceptanceSlip

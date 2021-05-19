@@ -16,7 +16,7 @@ type State = Immutable<{
 
 export type Action =
     | ['reset']
-    | ['variable', 'variableName', string]
+    | ['variable', 'variableName', Product]
     | ['variable', 'values', 'name', string]
     | ['variable', 'values', 'orderable', boolean]
     | ['variable', 'values', 'consumable', boolean]
@@ -27,25 +27,23 @@ const initialState: State = {
 }
 
 function reducer(state: Draft<State>, action: Action) {
-    console.log(action)
     switch (action[0]) {
         case 'reset':
             return initialState;
         case 'variable': {
             switch (action[1]) {
                 case 'variableName': {
-                    state[action[0]][action[1]] = new Product(action[2])
+                    state[action[0]][action[1]] = action[2]
                     return
                 }
                 case 'values': {
-                    
                     switch (action[2]) {
                         case 'name': {
                             state[action[0]][action[1]][action[2]] = action[3]
                             return
                         }
                         case 'orderable':
-                        case 'consumable': 
+                        case 'consumable':
                         case 'producable': {
                             state[action[0]][action[1]][action[2]] = action[3]
                             return
@@ -60,11 +58,11 @@ function reducer(state: Draft<State>, action: Action) {
 export default function ProductX() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
     const addDiff = useStore(state => state.addDiff)
-    
+
     const onInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         switch (event.target.name) {
             case 'variableName': {
-                dispatch(['variable', 'variableName', event.target.value])
+                dispatch(['variable', 'variableName', new Product(event.target.value)])
                 break
             }
             default: {
