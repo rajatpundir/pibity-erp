@@ -2,12 +2,12 @@ import { immerable } from 'immer'
 import { NonPrimitiveType } from './types'
 
 export type Text = string
-export type Number = bigint
+export type Number = number
 export type Decimal = number
 export type Boolean = boolean
-export type Date = bigint
-export type Timestamp = bigint
-export type Time = bigint
+export type Date = number
+export type Timestamp = number
+export type Time = number
 export type Formula = string
 
 export type Variable =
@@ -1458,7 +1458,7 @@ function replaceVariable(typeName: NonPrimitiveType, variableName: string, value
         }
         case 'Indent': {
             return new IndentVariable(variableName, {
-                timestamp: BigInt(String(values['timestamp'])),
+                timestamp: parseInt(String(values['timestamp'])),
                 approved: Boolean(values['approved']).valueOf()
             })
         }
@@ -1466,15 +1466,15 @@ function replaceVariable(typeName: NonPrimitiveType, variableName: string, value
             return new IndentItemVariable(variableName, {
                 indent: new Indent(values['indent']),
                 product: new Product(values['product']),
-                quantity: BigInt(String(values['quantity'])),
+                quantity: parseInt(String(values['quantity'])),
                 uom: new UOM(values['uom']),
-                ordered: BigInt(String(values['ordered'])),
-                received: BigInt(String(values['received'])),
-                approved: BigInt(String(values['approved'])),
-                rejected: BigInt(String(values['rejected'])),
-                returned: BigInt(String(values['returned'])),
-                requisted: BigInt(String(values['requisted'])),
-                consumed: BigInt(String(values['consumed']))
+                ordered: parseInt(String(values['ordered'])),
+                received: parseInt(String(values['received'])),
+                approved: parseInt(String(values['approved'])),
+                rejected: parseInt(String(values['rejected'])),
+                returned: parseInt(String(values['returned'])),
+                requisted: parseInt(String(values['requisted'])),
+                consumed: parseInt(String(values['consumed']))
             })
         }
         case 'Supplier': {
@@ -1496,7 +1496,7 @@ function replaceVariable(typeName: NonPrimitiveType, variableName: string, value
             return new QuotationItemVariable(variableName, {
                 quotation: new Quotation(values['quotation']),
                 indentItem: new IndentItem(values['indentItem']),
-                quantity: BigInt(String(values['quantity']))
+                quantity: parseInt(String(values['quantity']))
             })
         }
         case 'PurchaseOrder': {
@@ -1508,9 +1508,9 @@ function replaceVariable(typeName: NonPrimitiveType, variableName: string, value
             return new PurchaseOrderItemVariable(variableName, {
                 purchaseOrder: new PurchaseOrder(values['purchaseOrder']),
                 quotationItem: new QuotationItem(values['quotationItem']),
-                quantity: BigInt(String(values['quantity'])),
+                quantity: parseInt(String(values['quantity'])),
                 price: parseFloat(String(values['price'])),
-                received: BigInt(String(values['received']))
+                received: parseInt(String(values['received']))
             })
         }
         case 'PurchaseInvoice': {
@@ -1522,9 +1522,9 @@ function replaceVariable(typeName: NonPrimitiveType, variableName: string, value
             return new PurchaseInvoiceItemVariable(variableName, {
                 purchaseInvoice: new PurchaseInvoice(values['purchaseInvoice']),
                 purchaseOrderItem: new PurchaseOrderItem(values['purchaseOrderItem']),
-                quantity: BigInt(String(values['quantity'])),
-                approved: BigInt(String(values['approved'])),
-                rejected: BigInt(String(values['rejected']))
+                quantity: parseInt(String(values['quantity'])),
+                approved: parseInt(String(values['approved'])),
+                rejected: parseInt(String(values['rejected']))
             })
         }
         case 'MaterialApprovalSlip': {
@@ -1536,8 +1536,8 @@ function replaceVariable(typeName: NonPrimitiveType, variableName: string, value
             return new MaterialApprovalSlipItemVariable(variableName, {
                 materialApprovalSlip: new MaterialApprovalSlip(values['materialApprovalSlip']),
                 purchaseInvoiceItem: new PurchaseInvoiceItem(values['purchaseInvoiceItem']),
-                quantity: BigInt(String(values['quantity'])),
-                requisted: BigInt(String(values['requisted']))
+                quantity: parseInt(String(values['quantity'])),
+                requisted: parseInt(String(values['requisted']))
             })
         }
         case 'MaterialRejectionSlip': {
@@ -1549,8 +1549,8 @@ function replaceVariable(typeName: NonPrimitiveType, variableName: string, value
             return new MaterialRejectionSlipItemVariable(variableName, {
                 materialRejectionSlip: new MaterialRejectionSlip(values['materialRejectionSlip']),
                 purchaseInvoiceItem: new PurchaseInvoiceItem(values['purchaseInvoiceItem']),
-                quantity: BigInt(String(values['quantity'])),
-                returned: BigInt(String(values['returned']))
+                quantity: parseInt(String(values['quantity'])),
+                returned: parseInt(String(values['returned']))
             })
         }
         case 'MaterialRejectionSlip': {
@@ -1562,8 +1562,8 @@ function replaceVariable(typeName: NonPrimitiveType, variableName: string, value
             return new MaterialRejectionSlipItemVariable(variableName, {
                 materialRejectionSlip: new MaterialRejectionSlip(values['materialRejectionSlip']),
                 purchaseInvoiceItem: new PurchaseInvoiceItem(values['purchaseInvoiceItem']),
-                quantity: BigInt(String(values['quantity'])),
-                returned: BigInt(String(values['returned']))
+                quantity: parseInt(String(values['quantity'])),
+                returned: parseInt(String(values['returned']))
             })
         }
         case 'MaterialReturnSlip': {
@@ -1575,7 +1575,7 @@ function replaceVariable(typeName: NonPrimitiveType, variableName: string, value
             return new MaterialReturnSlipItemVariable(variableName, {
                 materialReturnSlip: new MaterialReturnSlip(values['materialReturnSlip']),
                 materialRejectionSlipItem: new MaterialRejectionSlipItem(values['materialRejectionSlipItem']),
-                quantity: BigInt(String(values['quantity']))
+                quantity: parseInt(String(values['quantity']))
             })
         }
         case 'MaterialRequistionSlip': {
@@ -1587,14 +1587,14 @@ function replaceVariable(typeName: NonPrimitiveType, variableName: string, value
             return new MaterialRequistionSlipItemVariable(variableName, {
                 materialRequistionSlip: new MaterialRequistionSlip(values['materialRequistionSlip']),
                 materialApprovalSlipItem: new MaterialApprovalSlipItem(values['materialApprovalSlipItem']),
-                quantity: BigInt(String(values['quantity'])),
-                consumed: BigInt(String(values['consumed']))
+                quantity: parseInt(String(values['quantity'])),
+                consumed: parseInt(String(values['consumed']))
             })
         }
         case 'BOM': {
             return new BOMVariable(variableName, {
                 product: new Product(values['product']),
-                quantity: BigInt(String(values['quantity'])),
+                quantity: parseInt(String(values['quantity'])),
                 uom: new UOM(values['uom'])
             })
         }
@@ -1602,15 +1602,15 @@ function replaceVariable(typeName: NonPrimitiveType, variableName: string, value
             return new BOMItemVariable(variableName, {
                 bom: new BOM(values['bom']),
                 product: new Product(values['product']),
-                quantity: BigInt(String(values['quantity'])),
+                quantity: parseInt(String(values['quantity'])),
                 uom: new UOM(values['uom'])
             })
         }
         case 'ProductionPreparationSlip': {
             return new ProductionPreparationSlipVariable(variableName, {
                 bom: new BOM(values['bom']),
-                approved: BigInt(String(values['approved'])),
-                scrapped: BigInt(String(values['scrapped']))
+                approved: parseInt(String(values['approved'])),
+                scrapped: parseInt(String(values['scrapped']))
             })
         }
         case 'ProductionPreparationSlipItem': {
@@ -1623,20 +1623,20 @@ function replaceVariable(typeName: NonPrimitiveType, variableName: string, value
         case 'ScrapMaterialSlip': {
             return new ScrapMaterialSlipVariable(variableName, {
                 productionPreparationSlip: new ProductionPreparationSlip(values['productionPreparationSlip']),
-                quantity: BigInt(String(values['quantity']))
+                quantity: parseInt(String(values['quantity']))
             })
         }
         case 'TransferMaterialSlip': {
             return new TransferMaterialSlipVariable(variableName, {
                 productionPreparationSlip: new ProductionPreparationSlip(values['productionPreparationSlip']),
-                quantity: BigInt(String(values['quantity'])),
-                transfered: BigInt(String(values['quatransferedntity']))
+                quantity: parseInt(String(values['quantity'])),
+                transfered: parseInt(String(values['quatransferedntity']))
             })
         }
         case 'WarehouseAcceptanceSlip': {
             return new WarehouseAcceptanceSlipVariable(variableName, {
                 transferMaterialSlip: new TransferMaterialSlip(values['transferMaterialSlip']),
-                quantity: BigInt(String(values['quantity']))
+                quantity: parseInt(String(values['quantity']))
             })
         }
     }
