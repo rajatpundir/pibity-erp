@@ -91,123 +91,6 @@ export class ProductVariable {
     }
 }
 
-function replaceVariable(typeName: NonPrimitiveType, variableName: string, values: object) {
-    switch (typeName) {
-        case 'Product': {
-            return new ProductVariable(variableName, {
-                name: 'name' in values ? String(values['nmae']) : '',
-                orderable: 'orderable' in values ? Boolean(values['orderable']).valueOf() : false,
-                consumable: 'consumable' in values ? Boolean(values['consumable']).valueOf() : false,
-                producable: 'producable' in values ? Boolean(values['producable']).valueOf() : false
-            })
-        }
-        case 'UOM': {
-
-            return
-        }
-        case 'Indent': {
-
-            return
-        }
-        case 'IndentItem': {
-
-            return
-        }
-        case 'Supplier': {
-
-            return
-        }
-        case 'SupplierProduct': {
-
-            return
-        }
-        case 'Quotation': {
-
-            return
-        }
-        case 'QuotationItem': {
-
-            return
-        }
-        case 'PurchaseOrder': {
-
-            return
-        }
-        case 'PurchaseOrderItem': {
-
-            return
-        }
-        case 'PurchaseInvoice': {
-
-            return
-        }
-        case 'PurchaseInvoiceItem': {
-
-            return
-        }
-        case 'MaterialApprovalSlip': {
-
-            return
-        }
-        case 'MaterialApprovalSlipItem': {
-
-            return
-        }
-        case 'MaterialRejectionSlip': {
-
-            return
-        }
-        case 'MaterialRejectionSlipItem': {
-
-            return
-        }
-        case 'MaterialReturnSlip': {
-
-            return
-        }
-        case 'MaterialReturnSlipItem': {
-
-            return
-        }
-        case 'MaterialRequistionSlip': {
-
-            return
-        }
-        case 'MaterialRequistionSlipItem': {
-
-            return
-        }
-        case 'BOM': {
-
-            return
-        }
-        case 'BOMItem': {
-
-            return
-        }
-        case 'ProductionPreparationSlip': {
-
-            return
-        }
-        case 'ProductionPreparationSlipItem': {
-
-            return
-        }
-        case 'ScrapMaterialSlip': {
-
-            return
-        }
-        case 'TransferMaterialSlip': {
-
-            return
-        }
-        case 'WarehouseAcceptanceSlip': {
-
-            return
-        }
-    }
-}
-
 export class UOM {
     constructor(private variableName: string) { }
 
@@ -1064,12 +947,12 @@ export class MaterialReturnSlipItemVariable {
         // UNQ(materialReturnSlip, materialRejectionSlipItem)
         materialReturnSlip: MaterialReturnSlip
         // assertion(materialReturnSlip.materialRejectionSlip == materialRejectionSlipItem.materialRejectionSlip)
-        materialRejectionSlipItem: MaterialReturnSlipItem
+        materialRejectionSlipItem: MaterialRejectionSlipItem
         // assertion(quantity <= materialRejectionSlipItem.quantity && quantity > 0)
         quantity: Number // { materialRejectionSlipItem.returned += quantity && materialRejectionSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.returned += quantity }
     }
 
-    constructor(variableName: string, values: { materialReturnSlip: MaterialReturnSlip, materialRejectionSlipItem: MaterialReturnSlipItem, quantity: Number }) {
+    constructor(variableName: string, values: { materialReturnSlip: MaterialReturnSlip, materialRejectionSlipItem: MaterialRejectionSlipItem, quantity: Number }) {
         this.variableName = new MaterialReturnSlipItem(variableName)
         this.values = values
     }
@@ -1553,5 +1436,208 @@ export class WarehouseAcceptanceSlipVariable {
 
     toString(): string {
         return `${JSON.stringify(this)}`;
+    }
+}
+
+function replaceVariable(typeName: NonPrimitiveType, variableName: string, values: object) {
+    switch (typeName) {
+        case 'Product': {
+            return new ProductVariable(variableName, {
+                name: String(values['name']),
+                orderable: Boolean(values['orderable']).valueOf(),
+                consumable: Boolean(values['consumable']).valueOf(),
+                producable: Boolean(values['producable']).valueOf()
+            })
+        }
+        case 'UOM': {
+            return new UOMVariable(variableName, {
+                product: new Product(values['product']),
+                name: String(values['name']),
+                conversionRate: parseFloat(String(values['conversionRate']))
+            })
+        }
+        case 'Indent': {
+            return new IndentVariable(variableName, {
+                timestamp: BigInt(String(values['timestamp'])),
+                approved: Boolean(values['approved']).valueOf()
+            })
+        }
+        case 'IndentItem': {
+            return new IndentItemVariable(variableName, {
+                indent: new Indent(values['indent']),
+                product: new Product(values['product']),
+                quantity: BigInt(String(values['quantity'])),
+                uom: new UOM(values['uom']),
+                ordered: BigInt(String(values['ordered'])),
+                received: BigInt(String(values['received'])),
+                approved: BigInt(String(values['approved'])),
+                rejected: BigInt(String(values['rejected'])),
+                returned: BigInt(String(values['returned'])),
+                requisted: BigInt(String(values['requisted'])),
+                consumed: BigInt(String(values['consumed']))
+            })
+        }
+        case 'Supplier': {
+            return new SupplierVariable(variableName)
+        }
+        case 'SupplierProduct': {
+            return new SupplierProductVariable(variableName, {
+                supplier: new Supplier(values['supplier']),
+                product: new Product(values['product'])
+            })
+        }
+        case 'Quotation': {
+            return new QuotationVariable(variableName, {
+                indent: new Indent(values['indent']),
+                supplier: new Supplier(values['supplier'])
+            })
+        }
+        case 'QuotationItem': {
+            return new QuotationItemVariable(variableName, {
+                quotation: new Quotation(values['quotation']),
+                indentItem: new IndentItem(values['indentItem']),
+                quantity: BigInt(String(values['quantity']))
+            })
+        }
+        case 'PurchaseOrder': {
+            return new PurchaseOrderVariable(variableName, {
+                quotation: new Quotation(values['quotation'])
+            })
+        }
+        case 'PurchaseOrderItem': {
+            return new PurchaseOrderItemVariable(variableName, {
+                purchaseOrder: new PurchaseOrder(values['purchaseOrder']),
+                quotationItem: new QuotationItem(values['quotationItem']),
+                quantity: BigInt(String(values['quantity'])),
+                price: parseFloat(String(values['price'])),
+                received: BigInt(String(values['received']))
+            })
+        }
+        case 'PurchaseInvoice': {
+            return new PurchaseInvoiceVariable(variableName, {
+                purchaseOrder: new PurchaseOrder(values['purchaseOrder'])
+            })
+        }
+        case 'PurchaseInvoiceItem': {
+            return new PurchaseInvoiceItemVariable(variableName, {
+                purchaseInvoice: new PurchaseInvoice(values['purchaseInvoice']),
+                purchaseOrderItem: new PurchaseOrderItem(values['purchaseOrderItem']),
+                quantity: BigInt(String(values['quantity'])),
+                approved: BigInt(String(values['approved'])),
+                rejected: BigInt(String(values['rejected']))
+            })
+        }
+        case 'MaterialApprovalSlip': {
+            return new MaterialApprovalSlipVariable(variableName, {
+                purchaseInvoice: new PurchaseInvoice(values['purchaseInvoice'])
+            })
+        }
+        case 'MaterialApprovalSlipItem': {
+            return new MaterialApprovalSlipItemVariable(variableName, {
+                materialApprovalSlip: new MaterialApprovalSlip(values['materialApprovalSlip']),
+                purchaseInvoiceItem: new PurchaseInvoiceItem(values['purchaseInvoiceItem']),
+                quantity: BigInt(String(values['quantity'])),
+                requisted: BigInt(String(values['requisted']))
+            })
+        }
+        case 'MaterialRejectionSlip': {
+            return new MaterialRejectionSlipVariable(variableName, {
+                purchaseInvoice: new PurchaseInvoice(values['purchaseInvoice'])
+            })
+        }
+        case 'MaterialRejectionSlipItem': {
+            return new MaterialRejectionSlipItemVariable(variableName, {
+                materialRejectionSlip: new MaterialRejectionSlip(values['materialRejectionSlip']),
+                purchaseInvoiceItem: new PurchaseInvoiceItem(values['purchaseInvoiceItem']),
+                quantity: BigInt(String(values['quantity'])),
+                returned: BigInt(String(values['returned']))
+            })
+        }
+        case 'MaterialRejectionSlip': {
+            return new MaterialRejectionSlipVariable(variableName, {
+                purchaseInvoice: new PurchaseInvoice(values['purchaseInvoice'])
+            })
+        }
+        case 'MaterialRejectionSlipItem': {
+            return new MaterialRejectionSlipItemVariable(variableName, {
+                materialRejectionSlip: new MaterialRejectionSlip(values['materialRejectionSlip']),
+                purchaseInvoiceItem: new PurchaseInvoiceItem(values['purchaseInvoiceItem']),
+                quantity: BigInt(String(values['quantity'])),
+                returned: BigInt(String(values['returned']))
+            })
+        }
+        case 'MaterialReturnSlip': {
+            return new MaterialReturnSlipVariable(variableName, {
+                materialRejectionSlip: new MaterialRejectionSlip(values['materialRejectionSlip'])
+            })
+        }
+        case 'MaterialReturnSlipItem': {
+            return new MaterialReturnSlipItemVariable(variableName, {
+                materialReturnSlip: new MaterialReturnSlip(values['materialReturnSlip']),
+                materialRejectionSlipItem: new MaterialRejectionSlipItem(values['materialRejectionSlipItem']),
+                quantity: BigInt(String(values['quantity']))
+            })
+        }
+        case 'MaterialRequistionSlip': {
+            return new MaterialRequistionSlipVariable(variableName, {
+                materialApprovalSlip: new MaterialApprovalSlip(values['materialApprovalSlip'])
+            })
+        }
+        case 'MaterialRequistionSlipItem': {
+            return new MaterialRequistionSlipItemVariable(variableName, {
+                materialRequistionSlip: new MaterialRequistionSlip(values['materialRequistionSlip']),
+                materialApprovalSlipItem: new MaterialApprovalSlipItem(values['materialApprovalSlipItem']),
+                quantity: BigInt(String(values['quantity'])),
+                consumed: BigInt(String(values['consumed']))
+            })
+        }
+        case 'BOM': {
+            return new BOMVariable(variableName, {
+                product: new Product(values['product']),
+                quantity: BigInt(String(values['quantity'])),
+                uom: new UOM(values['uom'])
+            })
+        }
+        case 'BOMItem': {
+            return new BOMItemVariable(variableName, {
+                bom: new BOM(values['bom']),
+                product: new Product(values['product']),
+                quantity: BigInt(String(values['quantity'])),
+                uom: new UOM(values['uom'])
+            })
+        }
+        case 'ProductionPreparationSlip': {
+            return new ProductionPreparationSlipVariable(variableName, {
+                bom: new BOM(values['bom']),
+                approved: BigInt(String(values['approved'])),
+                scrapped: BigInt(String(values['scrapped']))
+            })
+        }
+        case 'ProductionPreparationSlipItem': {
+            return new ProductionPreparationSlipItemVariable(variableName, {
+                productionPreparationSlip: new ProductionPreparationSlip(values['productionPreparationSlip']),
+                bomItem: String(values['bomItem']),
+                materialRequistionSlipItem: new MaterialRequistionSlipItem(values['materialRequistionSlipItem'])
+            })
+        }
+        case 'ScrapMaterialSlip': {
+            return new ScrapMaterialSlipVariable(variableName, {
+                productionPreparationSlip: new ProductionPreparationSlip(values['productionPreparationSlip']),
+                quantity: BigInt(String(values['quantity']))
+            })
+        }
+        case 'TransferMaterialSlip': {
+            return new TransferMaterialSlipVariable(variableName, {
+                productionPreparationSlip: new ProductionPreparationSlip(values['productionPreparationSlip']),
+                quantity: BigInt(String(values['quantity'])),
+                transfered: BigInt(String(values['quatransferedntity']))
+            })
+        }
+        case 'WarehouseAcceptanceSlip': {
+            return new WarehouseAcceptanceSlipVariable(variableName, {
+                transferMaterialSlip: new TransferMaterialSlip(values['transferMaterialSlip']),
+                quantity: BigInt(String(values['quantity']))
+            })
+        }
     }
 }
