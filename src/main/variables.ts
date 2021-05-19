@@ -1,4 +1,4 @@
-import { immerable } from 'immer'
+import { immerable, Immutable } from 'immer'
 import { NonPrimitiveType } from './types'
 
 export type Text = string
@@ -1439,7 +1439,7 @@ export class WarehouseAcceptanceSlipVariable {
     }
 }
 
-function replaceVariable(typeName: NonPrimitiveType, variableName: string, values: object) {
+export function replaceVariable(typeName: NonPrimitiveType, variableName: string, values: object): Immutable<Variable> {
     switch (typeName) {
         case 'Product': {
             return new ProductVariable(variableName, {

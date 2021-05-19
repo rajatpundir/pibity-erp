@@ -4,7 +4,7 @@ import { Diff, noDiff } from "./layers"
 import { evaluateExpression, LispExpression, Symbols, SymbolValue } from "./lisp"
 import { getState } from "./store"
 import { PrimitiveType, NonPrimitiveType, types, Key } from './types'
-import { Variable } from "./variables"
+import { replaceVariable, Variable } from "./variables"
 
 type FunctionInput =
     | {
@@ -309,6 +309,7 @@ function getSymbolsForFunction(fx: Function, args: object): [Symbols, boolean] {
 export function executeFunction(fx: Function, args: object): [object, boolean] {
     const [symbols, symbolFlag] = getSymbolsForFunction(fx, args)
     const result = {}
+    const diff: Diff = { ...noDiff }
     if (symbolFlag) {
         Object.keys(fx.outputs).forEach(outputName => {
             const fo = fx.outputs[outputName]
@@ -382,12 +383,11 @@ export function executeFunction(fx: Function, args: object): [object, boolean] {
                             })
                             result[outputName] = variable
                             // Note. Generate Diff in Zustand Store to create variable
-                            const diff: Diff = { ...noDiff }
-                            // diff[variable.typeName] = {
-                            //     replace: HashSet.of(variable),
-                            //     remove: HashSet.of()
+                            // const replacedVariable = replaceVariable(variable.typeName, variable.variableName, variable.values)
+                            // if(replacedVariable.typeName === variable.typeName) {
+                            //     diff[variable.typeName].replace.add(replacedVariable)
                             // }
-                            getState().addDiff(diff)
+                            // getState().addDiff(diff)
                             break
                         }
                         case 'update': {
