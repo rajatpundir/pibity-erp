@@ -1,4 +1,5 @@
 import { immerable } from 'immer'
+import { NonPrimitiveType } from './types'
 
 export type Text = string
 export type Number = bigint
@@ -69,9 +70,9 @@ export class ProductVariable {
         producable: Boolean
     }
 
-    constructor(variableName: string, name: Text, orderable: Boolean, consumable: Boolean, producable: Boolean) {
+    constructor(variableName: string, values: { name: Text, orderable: Boolean, consumable: Boolean, producable: Boolean }) {
         this.variableName = new Product(variableName)
-        this.values = { name, orderable, consumable, producable }
+        this.values = values
     }
 
     equals(other: ProductVariable): boolean {
@@ -87,6 +88,123 @@ export class ProductVariable {
 
     toString(): string {
         return `${JSON.stringify(this)}`;
+    }
+}
+
+function replaceVariable(typeName: NonPrimitiveType, variableName: string, values: object) {
+    switch (typeName) {
+        case 'Product': {
+            return new ProductVariable(variableName, {
+                name: 'name' in values ? String(values['nmae']) : '',
+                orderable: 'orderable' in values ? Boolean(values['orderable']).valueOf() : false,
+                consumable: 'consumable' in values ? Boolean(values['consumable']).valueOf() : false,
+                producable: 'producable' in values ? Boolean(values['producable']).valueOf() : false
+            })
+        }
+        case 'UOM': {
+
+            return
+        }
+        case 'Indent': {
+
+            return
+        }
+        case 'IndentItem': {
+
+            return
+        }
+        case 'Supplier': {
+
+            return
+        }
+        case 'SupplierProduct': {
+
+            return
+        }
+        case 'Quotation': {
+
+            return
+        }
+        case 'QuotationItem': {
+
+            return
+        }
+        case 'PurchaseOrder': {
+
+            return
+        }
+        case 'PurchaseOrderItem': {
+
+            return
+        }
+        case 'PurchaseInvoice': {
+
+            return
+        }
+        case 'PurchaseInvoiceItem': {
+
+            return
+        }
+        case 'MaterialApprovalSlip': {
+
+            return
+        }
+        case 'MaterialApprovalSlipItem': {
+
+            return
+        }
+        case 'MaterialRejectionSlip': {
+
+            return
+        }
+        case 'MaterialRejectionSlipItem': {
+
+            return
+        }
+        case 'MaterialReturnSlip': {
+
+            return
+        }
+        case 'MaterialReturnSlipItem': {
+
+            return
+        }
+        case 'MaterialRequistionSlip': {
+
+            return
+        }
+        case 'MaterialRequistionSlipItem': {
+
+            return
+        }
+        case 'BOM': {
+
+            return
+        }
+        case 'BOMItem': {
+
+            return
+        }
+        case 'ProductionPreparationSlip': {
+
+            return
+        }
+        case 'ProductionPreparationSlipItem': {
+
+            return
+        }
+        case 'ScrapMaterialSlip': {
+
+            return
+        }
+        case 'TransferMaterialSlip': {
+
+            return
+        }
+        case 'WarehouseAcceptanceSlip': {
+
+            return
+        }
     }
 }
 
@@ -120,9 +238,9 @@ export class UOMVariable {
         conversionRate: Decimal
     }
 
-    constructor(variableName: string, product: Product, name: Text, conversionRate: Decimal) {
+    constructor(variableName: string, values: { product: Product, name: Text, conversionRate: Decimal }) {
         this.variableName = new UOM(variableName)
-        this.values = { product, name, conversionRate }
+        this.values = values
     }
 
     equals(other: UOMVariable): boolean {
@@ -171,9 +289,9 @@ export class IndentVariable {
         approved: Boolean
     }
 
-    constructor(variableName: string, timestamp: Timestamp, approved: Boolean) {
+    constructor(variableName: string, values: { timestamp: Timestamp, approved: Boolean }) {
         this.variableName = new Indent(variableName)
-        this.values = { timestamp, approved }
+        this.values = values
     }
 
     equals(other: IndentVariable): boolean {
@@ -238,9 +356,9 @@ export class IndentItemVariable {
         consumed: Number
     }
 
-    constructor(variableName: string, indent: Indent, product: Product, quantity: Number, uom: UOM, ordered: Number, received: Number, approved: Number, rejected: Number, returned: Number, requisted: Number, consumed: Number) {
+    constructor(variableName: string, values: { indent: Indent, product: Product, quantity: Number, uom: UOM, ordered: Number, received: Number, approved: Number, rejected: Number, returned: Number, requisted: Number, consumed: Number }) {
         this.variableName = new IndentItem(variableName)
-        this.values = { indent, product, quantity, uom, ordered, received, approved, rejected, returned, requisted, consumed }
+        this.values = values
     }
 
     equals(other: IndentItemVariable): boolean {
@@ -334,9 +452,9 @@ export class SupplierProductVariable {
         product: Product
     }
 
-    constructor(variableName: string, supplier: Supplier, product: Product) {
+    constructor(variableName: string, values: { supplier: Supplier, product: Product }) {
         this.variableName = new SupplierProduct(variableName)
-        this.values = { supplier, product }
+        this.values = values
     }
 
     equals(other: SupplierProductVariable): boolean {
@@ -383,9 +501,9 @@ export class QuotationVariable {
         supplier: Supplier
     }
 
-    constructor(variableName: string, indent: Indent, supplier: Supplier) {
+    constructor(variableName: string, values: { indent: Indent, supplier: Supplier }) {
         this.variableName = new Quotation(variableName)
-        this.values = { indent, supplier }
+        this.values = values
     }
 
     equals(other: QuotationVariable): boolean {
@@ -436,9 +554,9 @@ export class QuotationItemVariable {
         quantity: Number
     }
 
-    constructor(variableName: string, quotation: Quotation, indentItem: IndentItem, quantity: Number) {
+    constructor(variableName: string, values: { quotation: Quotation, indentItem: IndentItem, quantity: Number }) {
         this.variableName = new QuotationItem(variableName)
-        this.values = { quotation, indentItem, quantity }
+        this.values = values
     }
 
     equals(other: QuotationItemVariable): boolean {
@@ -484,9 +602,9 @@ export class PurchaseOrderVariable {
         quotation: Quotation
     }
 
-    constructor(variableName: string, quotation: Quotation) {
+    constructor(variableName: string, values: { quotation: Quotation }) {
         this.variableName = new PurchaseOrder(variableName)
-        this.values = { quotation }
+        this.values = values
     }
 
     equals(other: PurchaseOrderVariable): boolean {
@@ -540,9 +658,9 @@ export class PurchaseOrderItemVariable {
         received: Number
     }
 
-    constructor(variableName: string, purchaseOrder: PurchaseOrder, quotationItem: QuotationItem, quantity: Number, price: Decimal, received: Number) {
+    constructor(variableName: string, values: { purchaseOrder: PurchaseOrder, quotationItem: QuotationItem, quantity: Number, price: Decimal, received: Number }) {
         this.variableName = new PurchaseOrderItem(variableName)
-        this.values = { purchaseOrder, quotationItem, quantity, price, received }
+        this.values = values
     }
 
     equals(other: PurchaseOrderItemVariable): boolean {
@@ -588,9 +706,9 @@ export class PurchaseInvoiceVariable {
         purchaseOrder: PurchaseOrder
     }
 
-    constructor(variableName: string, purchaseOrder: PurchaseOrder) {
+    constructor(variableName: string, values: { purchaseOrder: PurchaseOrder }) {
         this.variableName = new PurchaseInvoice(variableName)
-        this.values = { purchaseOrder }
+        this.values = values
     }
 
     equals(other: PurchaseInvoiceVariable): boolean {
@@ -644,9 +762,9 @@ export class PurchaseInvoiceItemVariable {
         rejected: Number
     }
 
-    constructor(variableName: string, purchaseInvoice: PurchaseInvoice, purchaseOrderItem: PurchaseOrderItem, quantity: Number, approved: Number, rejected: Number) {
+    constructor(variableName: string, values: { purchaseInvoice: PurchaseInvoice, purchaseOrderItem: PurchaseOrderItem, quantity: Number, approved: Number, rejected: Number }) {
         this.variableName = new PurchaseInvoiceItem(variableName)
-        this.values = { purchaseInvoice, purchaseOrderItem, quantity, approved, rejected }
+        this.values = values
     }
 
     equals(other: PurchaseInvoiceItemVariable): boolean {
@@ -692,9 +810,9 @@ export class MaterialApprovalSlipVariable {
         purchaseInvoice: PurchaseInvoice
     }
 
-    constructor(variableName: string, purchaseInvoice: PurchaseInvoice) {
+    constructor(variableName: string, values: { purchaseInvoice: PurchaseInvoice }) {
         this.variableName = new MaterialApprovalSlip(variableName)
-        this.values = { purchaseInvoice }
+        this.values = values
     }
 
     equals(other: MaterialApprovalSlipVariable): boolean {
@@ -747,9 +865,9 @@ export class MaterialApprovalSlipItemVariable {
         requisted: Number
     }
 
-    constructor(variableName: string, materialApprovalSlip: MaterialApprovalSlip, purchaseInvoiceItem: PurchaseInvoiceItem, quantity: Number, requisted: Number) {
+    constructor(variableName: string, values: { materialApprovalSlip: MaterialApprovalSlip, purchaseInvoiceItem: PurchaseInvoiceItem, quantity: Number, requisted: Number }) {
         this.variableName = new MaterialApprovalSlipItem(variableName)
-        this.values = { materialApprovalSlip, purchaseInvoiceItem, quantity, requisted }
+        this.values = values
     }
 
     equals(other: MaterialApprovalSlipItemVariable): boolean {
@@ -795,9 +913,9 @@ export class MaterialRejectionSlipVariable {
         purchaseInvoice: PurchaseInvoice
     }
 
-    constructor(variableName: string, purchaseInvoice: PurchaseInvoice) {
+    constructor(variableName: string, values: { purchaseInvoice: PurchaseInvoice }) {
         this.variableName = new MaterialRejectionSlip(variableName)
-        this.values = { purchaseInvoice }
+        this.values = values
     }
 
     equals(other: MaterialRejectionSlipVariable): boolean {
@@ -850,9 +968,9 @@ export class MaterialRejectionSlipItemVariable {
         returned: Number
     }
 
-    constructor(variableName: string, materialRejectionSlip: MaterialRejectionSlip, purchaseInvoiceItem: PurchaseInvoiceItem, quantity: Number, returned: Number) {
+    constructor(variableName: string, values: { materialRejectionSlip: MaterialRejectionSlip, purchaseInvoiceItem: PurchaseInvoiceItem, quantity: Number, returned: Number }) {
         this.variableName = new MaterialRejectionSlipItem(variableName)
-        this.values = { materialRejectionSlip, purchaseInvoiceItem, quantity, returned }
+        this.values = values
     }
 
     equals(other: MaterialRejectionSlipItemVariable): boolean {
@@ -898,9 +1016,9 @@ export class MaterialReturnSlipVariable {
         materialRejectionSlip: MaterialRejectionSlip
     }
 
-    constructor(variableName: string, materialRejectionSlip: MaterialRejectionSlip) {
+    constructor(variableName: string, values: { materialRejectionSlip: MaterialRejectionSlip }) {
         this.variableName = new MaterialReturnSlip(variableName)
-        this.values = { materialRejectionSlip }
+        this.values = values
     }
 
     equals(other: MaterialReturnSlipVariable): boolean {
@@ -951,9 +1069,9 @@ export class MaterialReturnSlipItemVariable {
         quantity: Number // { materialRejectionSlipItem.returned += quantity && materialRejectionSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.returned += quantity }
     }
 
-    constructor(variableName: string, materialReturnSlip: MaterialReturnSlip, materialRejectionSlipItem: MaterialReturnSlipItem, quantity: Number) {
+    constructor(variableName: string, values: { materialReturnSlip: MaterialReturnSlip, materialRejectionSlipItem: MaterialReturnSlipItem, quantity: Number }) {
         this.variableName = new MaterialReturnSlipItem(variableName)
-        this.values = { materialReturnSlip, materialRejectionSlipItem, quantity }
+        this.values = values
     }
 
     equals(other: MaterialReturnSlipItemVariable): boolean {
@@ -999,9 +1117,9 @@ export class MaterialRequistionSlipVariable {
         materialApprovalSlip: MaterialApprovalSlip
     }
 
-    constructor(variableName: string, materialApprovalSlip: MaterialApprovalSlip) {
+    constructor(variableName: string, values: { materialApprovalSlip: MaterialApprovalSlip }) {
         this.variableName = new MaterialRequistionSlip(variableName)
-        this.values = { materialApprovalSlip }
+        this.values = values
     }
 
     equals(other: MaterialRequistionSlipVariable): boolean {
@@ -1054,9 +1172,9 @@ export class MaterialRequistionSlipItemVariable {
         consumed: Number
     }
 
-    constructor(variableName: string, materialRequistionSlip: MaterialRequistionSlip, materialApprovalSlipItem: MaterialApprovalSlipItem, quantity: Number, consumed: Number) {
+    constructor(variableName: string, values: { materialRequistionSlip: MaterialRequistionSlip, materialApprovalSlipItem: MaterialApprovalSlipItem, quantity: Number, consumed: Number }) {
         this.variableName = new MaterialRequistionSlipItem(variableName)
-        this.values = { materialRequistionSlip, materialApprovalSlipItem, quantity, consumed }
+        this.values = values
     }
 
     equals(other: MaterialRequistionSlipItemVariable): boolean {
@@ -1106,9 +1224,9 @@ export class BOMVariable {
         uom: UOM
     }
 
-    constructor(variableName: string, product: Product, quantity: Number, uom: UOM) {
+    constructor(variableName: string, values: { product: Product, quantity: Number, uom: UOM }) {
         this.variableName = new BOM(variableName)
-        this.values = { product, quantity, uom }
+        this.values = values
     }
 
     equals(other: BOMVariable): boolean {
@@ -1160,9 +1278,9 @@ export class BOMItemVariable {
         uom: UOM
     }
 
-    constructor(variableName: string, bom: BOM, product: Product, quantity: Number, uom: UOM) {
+    constructor(variableName: string, values: { bom: BOM, product: Product, quantity: Number, uom: UOM }) {
         this.variableName = new BOMItem(variableName)
-        this.values = { bom, product, quantity, uom }
+        this.values = values
     }
 
     equals(other: BOMItemVariable): boolean {
@@ -1211,9 +1329,9 @@ export class ProductionPreparationSlipVariable {
         scrapped: Number
     }
 
-    constructor(variableName: string, bom: BOM, approved: Number, scrapped: Number) {
+    constructor(variableName: string, values: { bom: BOM, approved: Number, scrapped: Number }) {
         this.variableName = new ProductionPreparationSlip(variableName)
-        this.values = { bom, approved, scrapped }
+        this.values = values
     }
 
     equals(other: ProductionPreparationSlipVariable): boolean {
@@ -1265,9 +1383,9 @@ export class ProductionPreparationSlipItemVariable {
         // { materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.consumed += bomItem.quantity * materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.uom.conversionRate / bomItem.product.uom.conversionRate }
     }
 
-    constructor(variableName: string, productionPreparationSlip: ProductionPreparationSlip, bomItem: string, materialRequistionSlipItem: MaterialRequistionSlipItem) {
+    constructor(variableName: string, values: { productionPreparationSlip: ProductionPreparationSlip, bomItem: string, materialRequistionSlipItem: MaterialRequistionSlipItem }) {
         this.variableName = new ProductionPreparationSlipItem(variableName)
-        this.values = { productionPreparationSlip, bomItem, materialRequistionSlipItem }
+        this.values = values
     }
 
     equals(other: ProductionPreparationSlipItemVariable): boolean {
@@ -1315,9 +1433,9 @@ export class ScrapMaterialSlipVariable {
         quantity: Number // { productionPreparationSlip.scrapped += quantity }
     }
 
-    constructor(variableName: string, productionPreparationSlip: ProductionPreparationSlip, quantity: Number) {
+    constructor(variableName: string, values: { productionPreparationSlip: ProductionPreparationSlip, quantity: Number }) {
         this.variableName = new ScrapMaterialSlip(variableName)
-        this.values = { productionPreparationSlip, quantity }
+        this.values = values
     }
 
     equals(other: ScrapMaterialSlipVariable): boolean {
@@ -1367,9 +1485,9 @@ export class TransferMaterialSlipVariable {
         transfered: Number
     }
 
-    constructor(variableName: string, productionPreparationSlip: ProductionPreparationSlip, quantity: Number, transfered: Number) {
+    constructor(variableName: string, values: { productionPreparationSlip: ProductionPreparationSlip, quantity: Number, transfered: Number }) {
         this.variableName = new TransferMaterialSlip(variableName)
-        this.values = { productionPreparationSlip, quantity, transfered }
+        this.values = values
     }
 
     equals(other: TransferMaterialSlipVariable): boolean {
@@ -1417,9 +1535,9 @@ export class WarehouseAcceptanceSlipVariable {
         quantity: Number // { transferMaterialSlip.transfered += quantity }
     }
 
-    constructor(variableName: string, transferMaterialSlip: TransferMaterialSlip, quantity: Number) {
+    constructor(variableName: string, values: { transferMaterialSlip: TransferMaterialSlip, quantity: Number }) {
         this.variableName = new WarehouseAcceptanceSlip(variableName)
-        this.values = { transferMaterialSlip, quantity }
+        this.values = values
     }
 
     equals(other: WarehouseAcceptanceSlipVariable): boolean {

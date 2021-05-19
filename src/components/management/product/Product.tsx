@@ -23,7 +23,7 @@ export type Action =
     | ['variable', 'values', 'producable', boolean]
 
 const initialState: State = {
-    variable: new ProductVariable('', '', true, true, false)
+    variable: new ProductVariable('', { name: '', orderable: true, consumable: true, producable: false })
 }
 
 function reducer(state: Draft<State>, action: Action) {
