@@ -1,6 +1,6 @@
 import { HashSet } from 'prelude-ts'
 import { Immutable } from 'immer'
-import { ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, SupplierProduct, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialReturnSlipItem, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, BOMItem, ProductionPreparationSlip, ProductionPreparationSlipItem, ScrapMaterialSlip, TransferMaterialSlip, WarehouseAcceptanceSlip } from './variables'
+import { ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, SupplierProduct, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialReturnSlipItem, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, BOMItem, ProductionPreparationSlip, ProductionPreparationSlipItem, ScrapMaterialSlip, TransferMaterialSlip, WarehouseAcceptanceSlip, Variable } from './variables'
 
 export type Layer = {
     Product: HashSet<Immutable<ProductVariable>>
@@ -149,36 +149,10 @@ export function applyDiff(layer: Readonly<Layer>, diff: Diff): Layer {
     if (diff.active === false)
         return layer
     else {
-        const result: Layer = {
-            Product: layer.Product.filter(x => !diff.Product.remove.contains(x.variableName)).addAll(diff.Product.replace),
-            UOM: layer.UOM.filter(x => !diff.UOM.remove.contains(x.variableName)).addAll(diff.UOM.replace),
-            Indent: layer.Indent.filter(x => !diff.Indent.remove.contains(x.variableName)).addAll(diff.Indent.replace),
-            IndentItem: layer.IndentItem.filter(x => !diff.IndentItem.remove.contains(x.variableName)).addAll(diff.IndentItem.replace),
-            Supplier: layer.Supplier.filter(x => !diff.Supplier.remove.contains(x.variableName)).addAll(diff.Supplier.replace),
-            SupplierProduct: layer.SupplierProduct.filter(x => !diff.SupplierProduct.remove.contains(x.variableName)).addAll(diff.SupplierProduct.replace),
-            Quotation: layer.Quotation.filter(x => !diff.Quotation.remove.contains(x.variableName)).addAll(diff.Quotation.replace),
-            QuotationItem: layer.QuotationItem.filter(x => !diff.QuotationItem.remove.contains(x.variableName)).addAll(diff.QuotationItem.replace),
-            PurchaseOrder: layer.PurchaseOrder.filter(x => !diff.PurchaseOrder.remove.contains(x.variableName)).addAll(diff.PurchaseOrder.replace),
-            PurchaseOrderItem: layer.PurchaseOrderItem.filter(x => !diff.PurchaseOrderItem.remove.contains(x.variableName)).addAll(diff.PurchaseOrderItem.replace),
-            PurchaseInvoice: layer.PurchaseInvoice.filter(x => !diff.PurchaseInvoice.remove.contains(x.variableName)).addAll(diff.PurchaseInvoice.replace),
-            PurchaseInvoiceItem: layer.PurchaseInvoiceItem.filter(x => !diff.PurchaseInvoiceItem.remove.contains(x.variableName)).addAll(diff.PurchaseInvoiceItem.replace),
-            MaterialApprovalSlip: layer.MaterialApprovalSlip.filter(x => !diff.MaterialApprovalSlip.remove.contains(x.variableName)).addAll(diff.MaterialApprovalSlip.replace),
-            MaterialApprovalSlipItem: layer.MaterialApprovalSlipItem.filter(x => !diff.MaterialApprovalSlipItem.remove.contains(x.variableName)).addAll(diff.MaterialApprovalSlipItem.replace),
-            MaterialRejectionSlip: layer.MaterialRejectionSlip.filter(x => !diff.MaterialRejectionSlip.remove.contains(x.variableName)).addAll(diff.MaterialRejectionSlip.replace),
-            MaterialRejectionSlipItem: layer.MaterialRejectionSlipItem.filter(x => !diff.MaterialRejectionSlipItem.remove.contains(x.variableName)).addAll(diff.MaterialRejectionSlipItem.replace),
-            MaterialReturnSlip: layer.MaterialReturnSlip.filter(x => !diff.MaterialReturnSlip.remove.contains(x.variableName)).addAll(diff.MaterialReturnSlip.replace),
-            MaterialReturnSlipItem: layer.MaterialReturnSlipItem.filter(x => !diff.MaterialReturnSlipItem.remove.contains(x.variableName)).addAll(diff.MaterialReturnSlipItem.replace),
-            MaterialRequistionSlip: layer.MaterialRequistionSlip.filter(x => !diff.MaterialRequistionSlip.remove.contains(x.variableName)).addAll(diff.MaterialRequistionSlip.replace),
-            MaterialRequistionSlipItem: layer.MaterialRequistionSlipItem.filter(x => !diff.MaterialRequistionSlipItem.remove.contains(x.variableName)).addAll(diff.MaterialRequistionSlipItem.replace),
-            BOM: layer.BOM.filter(x => !diff.BOM.remove.contains(x.variableName)).addAll(diff.BOM.replace),
-            BOMItem: layer.BOMItem.filter(x => !diff.BOMItem.remove.contains(x.variableName)).addAll(diff.BOMItem.replace),
-            ProductionPreparationSlip: layer.ProductionPreparationSlip.filter(x => !diff.ProductionPreparationSlip.remove.contains(x.variableName)).addAll(diff.ProductionPreparationSlip.replace),
-            ProductionPreparationSlipItem: layer.ProductionPreparationSlipItem.filter(x => !diff.ProductionPreparationSlipItem.remove.contains(x.variableName)).addAll(diff.ProductionPreparationSlipItem.replace),
-            ScrapMaterialSlip: layer.ScrapMaterialSlip.filter(x => !diff.ScrapMaterialSlip.remove.contains(x.variableName)).addAll(diff.ScrapMaterialSlip.replace),
-            TransferMaterialSlip: layer.TransferMaterialSlip.filter(x => !diff.TransferMaterialSlip.remove.contains(x.variableName)).addAll(diff.TransferMaterialSlip.replace),
-            WarehouseAcceptanceSlip: layer.WarehouseAcceptanceSlip.filter(x => !diff.WarehouseAcceptanceSlip.remove.contains(x.variableName)).addAll(diff.WarehouseAcceptanceSlip.replace)
-        }
-        return result
+        return Object.keys(layer).reduce((acc, typeName) => {
+            acc[typeName] = layer[typeName].filter((x: Immutable<Variable>) => !diff[typeName].remove.contains(x.variableName)).addAll(diff[typeName].replace)
+            return acc
+        }, { ...layer })
     }
 }
 
