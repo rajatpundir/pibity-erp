@@ -38,60 +38,9 @@ type FunctionOutput =
         values: { [index: string]: LispExpression }
     }
 
-type Function = {
+export type Function = {
     inputs: Record<string, FunctionInput>
     outputs: Record<string, FunctionOutput>
-}
-
-export const functions: Record<string, Function> = {
-    add: {
-        inputs: {
-            a: {
-                type: 'Number',
-                default: 2
-            },
-            b: {
-                type: 'Decimal',
-                default: 3.14
-            }
-        },
-        outputs: {
-            c: {
-                type: 'Number',
-                value: {
-                    expectedReturnType: 'Number',
-                    op: '+',
-                    types: ['Number', 'Decimal'],
-                    args: [{
-                        op: '.',
-                        types: [],
-                        args: ['a']
-                    }, {
-                        op: '.',
-                        types: [],
-                        args: ['b']
-                    }]
-                }
-            },
-            d: {
-                type: 'Decimal',
-                value: {
-                    expectedReturnType: 'Decimal',
-                    op: '*',
-                    types: ['Number', 'Decimal'],
-                    args: [{
-                        op: '.',
-                        types: [],
-                        args: ['a']
-                    }, {
-                        op: '.',
-                        types: [],
-                        args: ['b']
-                    }]
-                }
-            }
-        }
-    }
 }
 
 function getSymbolPaths(expression: LispExpression): Array<ReadonlyArray<string>> {
@@ -463,7 +412,7 @@ export function executeFunction(fx: Function, args: object): [object, boolean] {
             }
         })
     }
-    if(symbolFlag) {
+    if (symbolFlag) {
         getState().addDiff(mergeDiffs(diffs))
     }
     return [result, symbolFlag]

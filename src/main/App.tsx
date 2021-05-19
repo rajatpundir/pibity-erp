@@ -2,7 +2,8 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import ProductX from '../components/management/product/Product'
 import Products from '../components/management/product/Products'
 import { Container, Item, none } from './commons';
-import { functions, executeFunction } from "./function";
+import { executeFunction } from "./function";
+import { functions } from "./functions";
 import * as Grid from './grids'
 import Navbar from './Navbar'
 

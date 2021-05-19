@@ -298,111 +298,111 @@ export function getReplaceVariableDiff(variable: Immutable<Variable>): Diff {
     const diff: Diff = { ...noDiff }
     switch (variable.typeName) {
         case 'Product': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'UOM': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'Indent': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'IndentItem': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'Supplier': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'SupplierProduct': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'Quotation': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'QuotationItem': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'PurchaseOrder': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'PurchaseOrderItem': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'PurchaseInvoice': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'PurchaseInvoiceItem': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'MaterialApprovalSlip': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'MaterialApprovalSlipItem': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'MaterialRejectionSlip': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'MaterialRejectionSlipItem': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'MaterialReturnSlip': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'MaterialReturnSlipItem': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'MaterialRequistionSlip': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'MaterialRequistionSlipItem': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'BOM': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'BOMItem': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'ProductionPreparationSlip': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'ProductionPreparationSlipItem': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'ScrapMaterialSlip': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'TransferMaterialSlip': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
         case 'WarehouseAcceptanceSlip': {
-            diff.variables[variable.typeName].replace.add(variable)
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
     }
@@ -413,111 +413,111 @@ export function getRemoveVariableDiff(typeName: NonPrimitiveType, variableName: 
     const diff: Diff = { ...noDiff }
     switch (typeName) {
         case 'Product': {
-            diff.variables[typeName].remove.add(new Product(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Product(variableName))
             break
         }
         case 'UOM': {
-            diff.variables[typeName].remove.add(new UOM(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new UOM(variableName))
             break
         }
         case 'Indent': {
-            diff.variables[typeName].remove.add(new Indent(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Indent(variableName))
             break
         }
         case 'IndentItem': {
-            diff.variables[typeName].remove.add(new IndentItem(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new IndentItem(variableName))
             break
         }
         case 'Supplier': {
-            diff.variables[typeName].remove.add(new Supplier(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Supplier(variableName))
             break
         }
         case 'SupplierProduct': {
-            diff.variables[typeName].remove.add(new SupplierProduct(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new SupplierProduct(variableName))
             break
         }
         case 'Quotation': {
-            diff.variables[typeName].remove.add(new Quotation(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Quotation(variableName))
             break
         }
         case 'QuotationItem': {
-            diff.variables[typeName].remove.add(new QuotationItem(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new QuotationItem(variableName))
             break
         }
         case 'PurchaseOrder': {
-            diff.variables[typeName].remove.add(new PurchaseOrder(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new PurchaseOrder(variableName))
             break
         }
         case 'PurchaseOrderItem': {
-            diff.variables[typeName].remove.add(new PurchaseOrderItem(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new PurchaseOrderItem(variableName))
             break
         }
         case 'PurchaseInvoice': {
-            diff.variables[typeName].remove.add(new PurchaseInvoice(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new PurchaseInvoice(variableName))
             break
         }
         case 'PurchaseInvoiceItem': {
-            diff.variables[typeName].remove.add(new PurchaseInvoiceItem(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new PurchaseInvoiceItem(variableName))
             break
         }
         case 'MaterialApprovalSlip': {
-            diff.variables[typeName].remove.add(new MaterialApprovalSlip(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialApprovalSlip(variableName))
             break
         }
         case 'MaterialApprovalSlipItem': {
-            diff.variables[typeName].remove.add(new MaterialApprovalSlipItem(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialApprovalSlipItem(variableName))
             break
         }
         case 'MaterialRejectionSlip': {
-            diff.variables[typeName].remove.add(new MaterialRejectionSlip(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialRejectionSlip(variableName))
             break
         }
         case 'MaterialRejectionSlipItem': {
-            diff.variables[typeName].remove.add(new MaterialRejectionSlipItem(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialRejectionSlipItem(variableName))
             break
         }
         case 'MaterialReturnSlip': {
-            diff.variables[typeName].remove.add(new MaterialReturnSlip(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialReturnSlip(variableName))
             break
         }
         case 'MaterialReturnSlipItem': {
-            diff.variables[typeName].remove.add(new MaterialReturnSlipItem(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialReturnSlipItem(variableName))
             break
         }
         case 'MaterialRequistionSlip': {
-            diff.variables[typeName].remove.add(new MaterialRequistionSlip(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialRequistionSlip(variableName))
             break
         }
         case 'MaterialRequistionSlipItem': {
-            diff.variables[typeName].remove.add(new MaterialRequistionSlipItem(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialRequistionSlipItem(variableName))
             break
         }
         case 'BOM': {
-            diff.variables[typeName].remove.add(new BOM(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new BOM(variableName))
             break
         }
         case 'BOMItem': {
-            diff.variables[typeName].remove.add(new BOMItem(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new BOMItem(variableName))
             break
         }
         case 'ProductionPreparationSlip': {
-            diff.variables[typeName].remove.add(new ProductionPreparationSlip(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ProductionPreparationSlip(variableName))
             break
         }
         case 'ProductionPreparationSlipItem': {
-            diff.variables[typeName].remove.add(new ProductionPreparationSlipItem(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ProductionPreparationSlipItem(variableName))
             break
         }
         case 'ScrapMaterialSlip': {
-            diff.variables[typeName].remove.add(new ScrapMaterialSlip(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ScrapMaterialSlip(variableName))
             break
         }
         case 'TransferMaterialSlip': {
-            diff.variables[typeName].remove.add(new TransferMaterialSlip(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new TransferMaterialSlip(variableName))
             break
         }
         case 'WarehouseAcceptanceSlip': {
-            diff.variables[typeName].remove.add(new WarehouseAcceptanceSlip(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new WarehouseAcceptanceSlip(variableName))
             break
         }
     }
