@@ -1,13 +1,28 @@
 import styled from '@emotion/styled'
 import { Vector } from 'prelude-ts'
-import { Newtype, iso } from 'newtype-ts'
 
-export interface Area extends Newtype<{ readonly Area: unique symbol }, string> { }
-export const isoArea = iso<Area>()
+export class Area {
+    constructor(private name: string) { }
 
-export const none: Area = isoArea.wrap('.')
+    equals(other: Area): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.name === other.name
+    }
 
-const breakpoints: { [index: string]: number } = {
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return `${this.name}`;
+    }
+}
+
+export const none = new Area('.')
+
+const breakpoints: Record<string, number> = {
     sm: 640,
     md: 768,
     lg: 1024,
@@ -23,7 +38,7 @@ function getTemplateColumns(layout: Layout): string {
 }
 
 function getTemplateAreas(layout: Layout): string {
-    return isoArea.unwrap(layout.areas.map(row => row.fold(isoArea.wrap(''), (acc, x) => isoArea.wrap(`${isoArea.unwrap(acc)} ${isoArea.unwrap(x)}`))).fold(isoArea.wrap(''), (acc, x) => isoArea.wrap(`${isoArea.unwrap(acc)}"${isoArea.unwrap(x)}" `)))
+    return (layout.areas.map(row => row.fold(new Area(''), (acc, x) => new Area(`${acc.toString()} ${x.toString()}`))).fold(new Area(''), (acc, x) => new Area(`${acc.toString()}"${x.toString()}" `))).toString()
 }
 
 export function validateLayout(layout: GridLayout): GridLayout {
@@ -62,7 +77,7 @@ type GridContainer = {
 }
 
 export const Container = styled.div<GridContainer>`
-    grid-area: ${props => isoArea.unwrap(props.area)};
+    grid-area: ${props => props.area.toString()};
     margin: ${props => props.layout.margin ? props.layout.margin + 'rem' : '0rem'};
     display: grid;
     grid-template-rows: ${props => getTemplateRows(props.layout.layout_mobile)};
@@ -105,7 +120,7 @@ export type GridItem = {
 }
 
 export const Item = styled.div<GridItem>`
-    grid-area: ${props => props.area ? isoArea.unwrap(props.area) : '.'};
+    grid-area: ${props => props.area ? props.area.toString() : '.'};
     justify-self: ${props => props.justify ? props.justify : 'stretch'};
     align-self: ${props => props.align ? props.align : 'stretch'};
     /* background-color: aquamarine; */
@@ -122,7 +137,7 @@ type TableContainerProps = {
 }
 
 export const TableContainer = styled.div<TableContainerProps>`
-    grid-area: ${props => isoArea.unwrap(props.area)};
+    grid-area: ${props => props.area.toString()};
     margin: ${props => props.margin ? props.margin + 'rem' : '0rem'};
     display: grid;
     gap: ${props => props.columnGap ? props.columnGap : '0rem'} ${props => props.rowGap ? props.rowGap : '0rem'};

@@ -6,7 +6,7 @@ import Switch from '@material-ui/core/Switch'
 import { Container, Item, none } from '../../../main/commons'
 import * as Grid from './grids/Product'
 import { HashSet } from 'prelude-ts'
-import { noDiff } from '../../../main/store'
+import { noDiff } from '../../../main/layers'
 import { useStore } from '../../../main/useStore'
 import { Product, ProductVariable } from '../../../main/variables'
 

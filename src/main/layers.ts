@@ -145,12 +145,157 @@ export type Diff = {
     }
 }
 
+export const base: Layer = {
+    Product: HashSet.of(),
+    UOM: HashSet.of(),
+    Indent: HashSet.of(),
+    IndentItem: HashSet.of(),
+    Supplier: HashSet.of(),
+    SupplierProduct: HashSet.of(),
+    Quotation: HashSet.of(),
+    QuotationItem: HashSet.of(),
+    PurchaseOrder: HashSet.of(),
+    PurchaseOrderItem: HashSet.of(),
+    PurchaseInvoice: HashSet.of(),
+    PurchaseInvoiceItem: HashSet.of(),
+    MaterialApprovalSlip: HashSet.of(),
+    MaterialApprovalSlipItem: HashSet.of(),
+    MaterialRejectionSlip: HashSet.of(),
+    MaterialRejectionSlipItem: HashSet.of(),
+    MaterialReturnSlip: HashSet.of(),
+    MaterialReturnSlipItem: HashSet.of(),
+    MaterialRequistionSlip: HashSet.of(),
+    MaterialRequistionSlipItem: HashSet.of(),
+    BOM: HashSet.of(),
+    BOMItem: HashSet.of(),
+    ProductionPreparationSlip: HashSet.of(),
+    ProductionPreparationSlipItem: HashSet.of(),
+    ScrapMaterialSlip: HashSet.of(),
+    TransferMaterialSlip: HashSet.of(),
+    WarehouseAcceptanceSlip: HashSet.of()
+}
+
+export const noDiff: Diff = {
+    id: -1,
+    active: true,
+    Product: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    UOM: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    Indent: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    IndentItem: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    Supplier: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    SupplierProduct: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    Quotation: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    QuotationItem: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    PurchaseOrder: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    PurchaseOrderItem: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    PurchaseInvoice: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    PurchaseInvoiceItem: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    MaterialApprovalSlip: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    MaterialApprovalSlipItem: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    MaterialRejectionSlip: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    MaterialRejectionSlipItem: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    MaterialReturnSlip: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    MaterialReturnSlipItem: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    MaterialRequistionSlip: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    MaterialRequistionSlipItem: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    BOM: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    BOMItem: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    ProductionPreparationSlip: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    ProductionPreparationSlipItem: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    ScrapMaterialSlip: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    TransferMaterialSlip: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    },
+    WarehouseAcceptanceSlip: {
+        replace: HashSet.of(),
+        remove: HashSet.of()
+    }
+}
+
 export function applyDiff(layer: Readonly<Layer>, diff: Diff): Layer {
     if (diff.active === false)
         return layer
     else {
         return Object.keys(layer).reduce((acc, typeName) => {
-            acc[typeName] = layer[typeName].filter((x: Immutable<Variable>) => !diff[typeName].remove.contains(x.variableName)).addAll(diff[typeName].replace)
+            if (typeName in base) {
+                acc[typeName] = layer[typeName].filter((x: Immutable<Variable>) => !diff[typeName].remove.contains(x.variableName)).addAll(diff[typeName].replace)
+            }
             return acc
         }, { ...layer })
     }

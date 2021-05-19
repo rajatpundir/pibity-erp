@@ -38,13 +38,11 @@ type FunctionOutput =
     }
 
 type Function = {
-    inputs: { [index: string]: FunctionInput }
-    outputs: { [index: string]: FunctionOutput }
+    inputs: Record<string, FunctionInput>
+    outputs: Record<string, FunctionOutput>
 }
 
-type Functions = { [index: string]: Function }
-
-export const functions: Functions = {
+export const functions: Record<string, Function> = {
     add: {
         inputs: {
             a: {

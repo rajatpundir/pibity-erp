@@ -1,9 +1,9 @@
 import { Vector } from 'prelude-ts'
-import { GridLayout, Area, isoArea, none, validateLayout } from '../../../../main/commons'
+import { GridLayout, Area, none, validateLayout } from '../../../../main/commons'
 
-export const header: Area = isoArea.wrap('header')
-export const filter: Area = isoArea.wrap('filter')
-export const table: Area = isoArea.wrap('table')
+export const header: Area = new Area('header')
+export const filter: Area = new Area('filter')
+export const table: Area = new Area('table')
 
 export const layouts: { [index: string]: GridLayout } = {
     main: validateLayout({

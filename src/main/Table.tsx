@@ -1,11 +1,11 @@
 import { HashSet, Vector } from 'prelude-ts'
 import { Immutable } from 'immer'
 import tw from 'twin.macro'
-import { Container, Item, TableContainer, Cell, validateLayout, Area, isoArea, GridLayout } from './commons'
+import { Container, Item, TableContainer, Cell, validateLayout, Area, GridLayout } from './commons'
 import { Variable } from './variables'
 
-const body: Area = isoArea.wrap('body')
-const footer: Area = isoArea.wrap('footer')
+const body: Area = new Area('body')
+const footer: Area = new Area('footer')
 
 const layouts: { [index: string]: GridLayout } = {
     table: validateLayout({
