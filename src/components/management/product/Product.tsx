@@ -5,8 +5,7 @@ import tw from 'twin.macro'
 import Switch from '@material-ui/core/Switch'
 import { Container, Item, none } from '../../../main/commons'
 import * as Grid from './grids/Product'
-import { HashSet } from 'prelude-ts'
-import { noDiff } from '../../../main/layers'
+import { getReplaceVariableDiff } from '../../../main/layers'
 import { useStore } from '../../../main/useStore'
 import { Product, ProductVariable } from '../../../main/variables'
 
@@ -89,13 +88,7 @@ export default function ProductX() {
 
     const onSubmit = async (event: React.FormEvent<HTMLButtonElement>) => {
         event.preventDefault()
-        addDiff({
-            ...noDiff,
-            Product: {
-                replace: HashSet.of(state.variable),
-                remove: HashSet.of()
-            }
-        })
+        addDiff(getReplaceVariableDiff(state.variable))
     }
 
     return (

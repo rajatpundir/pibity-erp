@@ -1,4 +1,4 @@
-import { immerable, Immutable } from 'immer'
+import { immerable } from 'immer'
 import { NonPrimitiveType } from './types'
 
 export type Text = string
@@ -1439,7 +1439,7 @@ export class WarehouseAcceptanceSlipVariable {
     }
 }
 
-export function replaceVariable(typeName: NonPrimitiveType, variableName: string, values: object): Immutable<Variable> {
+export function replaceVariable(typeName: NonPrimitiveType, variableName: string, values: object) {
     switch (typeName) {
         case 'Product': {
             return new ProductVariable(variableName, {
@@ -1538,19 +1538,6 @@ export function replaceVariable(typeName: NonPrimitiveType, variableName: string
                 purchaseInvoiceItem: new PurchaseInvoiceItem(values['purchaseInvoiceItem']),
                 quantity: parseInt(String(values['quantity'])),
                 requisted: parseInt(String(values['requisted']))
-            })
-        }
-        case 'MaterialRejectionSlip': {
-            return new MaterialRejectionSlipVariable(variableName, {
-                purchaseInvoice: new PurchaseInvoice(values['purchaseInvoice'])
-            })
-        }
-        case 'MaterialRejectionSlipItem': {
-            return new MaterialRejectionSlipItemVariable(variableName, {
-                materialRejectionSlip: new MaterialRejectionSlip(values['materialRejectionSlip']),
-                purchaseInvoiceItem: new PurchaseInvoiceItem(values['purchaseInvoiceItem']),
-                quantity: parseInt(String(values['quantity'])),
-                returned: parseInt(String(values['returned']))
             })
         }
         case 'MaterialRejectionSlip': {

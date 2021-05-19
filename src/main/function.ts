@@ -1,6 +1,6 @@
 import { Immutable } from "immer"
 import { HashSet } from "prelude-ts"
-import { Diff, noDiff } from "./layers"
+import { Diff, getReplaceVariableDiff, getRemoveVariableDiff, mergeDiffs } from "./layers"
 import { evaluateExpression, LispExpression, Symbols, SymbolValue } from "./lisp"
 import { getState } from "./store"
 import { PrimitiveType, NonPrimitiveType, types, Key } from './types'
@@ -309,7 +309,7 @@ function getSymbolsForFunction(fx: Function, args: object): [Symbols, boolean] {
 export function executeFunction(fx: Function, args: object): [object, boolean] {
     const [symbols, symbolFlag] = getSymbolsForFunction(fx, args)
     const result = {}
-    const diff: Diff = { ...noDiff }
+    const diffs: Array<Diff> = []
     if (symbolFlag) {
         Object.keys(fx.outputs).forEach(outputName => {
             const fo = fx.outputs[outputName]
@@ -383,11 +383,8 @@ export function executeFunction(fx: Function, args: object): [object, boolean] {
                             })
                             result[outputName] = variable
                             // Note. Generate Diff in Zustand Store to create variable
-                            // const replacedVariable = replaceVariable(variable.typeName, variable.variableName, variable.values)
-                            // if(replacedVariable.typeName === variable.typeName) {
-                            //     diff[variable.typeName].replace.add(replacedVariable)
-                            // }
-                            // getState().addDiff(diff)
+                            const replacedVariable = replaceVariable(variable.typeName, variable.variableName, variable.values)
+                            diffs.push(getReplaceVariableDiff(replacedVariable))
                             break
                         }
                         case 'update': {
@@ -444,6 +441,8 @@ export function executeFunction(fx: Function, args: object): [object, boolean] {
                                     values: variable.values
                                 }
                                 // Note. Generate Diff in Zustand Store to update variable
+                                const replacedVariable = replaceVariable(variable.typeName, variable.variableName.toString(), variable.values)
+                                diffs.push(getReplaceVariableDiff(replacedVariable))
                             } else {
                                 // Note: Variable not found in Zustand Store (Base + Diff)
                                 // Resolution: 
@@ -456,12 +455,16 @@ export function executeFunction(fx: Function, args: object): [object, boolean] {
                         case 'delete': {
                             // Note: Care must be taken to not refer the the FunctionOutput in Circuit which is deleted.
                             // Note. Generate Diff in Zustand Store to update variable
+                            diffs.push(getRemoveVariableDiff(fo.type, variableName))
                             break
                         }
                     }
                 }
             }
         })
+    }
+    if(symbolFlag) {
+        getState().addDiff(mergeDiffs(diffs))
     }
     return [result, symbolFlag]
 }
