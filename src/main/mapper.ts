@@ -1,10 +1,12 @@
 import { Immutable } from "immer"
-import { HashSet } from "prelude-ts"
+import { HashSet, Vector } from "prelude-ts"
 import { FunctionName, functions } from "./functions"
 import { getState } from "./store"
 import { NonPrimitiveType, types } from "./types"
 import { Variable } from "./variables"
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from './Filter'
+import { executeFunction } from "./function"
+import { Diff, mergeDiffs } from "./layers"
 
 export type Mapper = {
     query: boolean
@@ -31,9 +33,11 @@ function isNonPrimitive(typeName: string): typeName is NonPrimitiveType {
     return Object.keys(types.keys).includes(typeName)
 }
 
-function executeMapper(mapper: Mapper, args: MapperArgs) {
+function executeMapper(mapper: Mapper, args: MapperArgs): [Array<object>, boolean, Diff] {
     const fx = functions[mapper.functionName]
     const fi = fx.inputs[mapper.functionInput]
+    var result: Vector<object> = Vector.of()
+    var diffs: Vector<Diff> = Vector.of()
     if (isNonPrimitive(fi.type)) {
         if (mapper.query) {
             const query: Query = getQuery(fi.type)
@@ -71,10 +75,36 @@ function executeMapper(mapper: Mapper, args: MapperArgs) {
             const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[fi.type]
             const variables: Array<Immutable<Variable>> = unfilteredVariables.filter(variable => applyFilter(query, variable)).toArray()
             variables.forEach((variable, index) => {
-                
+                if (index < args.args.length) {
+                    const functionArgs = { ...variable.values }
+                    functionArgs[mapper.functionInput] = String(args.args[index])
+                    const [functionResult, executionFlag, diff] = executeFunction(fx, functionArgs)
+                    if (!executionFlag) {
+                        return [result, false, mergeDiffs(diffs.toArray())]
+                    }
+                    result = result.append(functionResult)
+                    diffs = diffs.append(diff)
+                } else {
+                    const functionArgs = { ...variable.values }
+                    functionArgs[mapper.functionInput] = String(args.args[args.args.length - 1])
+                    const [functionResult, executionFlag, diff] = executeFunction(fx, functionArgs)
+                    if (!executionFlag) {
+                        return [result, false, mergeDiffs(diffs.toArray())]
+                    }
+                    result = result.append(functionResult)
+                    diffs = diffs.append(diff)
+                }
             })
         } else {
-
+            args.args.forEach(arg => {
+                const [functionResult, executionFlag, diff] = executeFunction(fx, arg)
+                if (!executionFlag) {
+                    return [result, false, mergeDiffs(diffs.toArray())]
+                }
+                result = result.append(functionResult)
+                diffs = diffs.append(diff)
+            })
         }
     }
+    return [result.toArray(), true, mergeDiffs(diffs.toArray())]
 }

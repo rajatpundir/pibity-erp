@@ -258,7 +258,7 @@ function getSymbolsForFunction(fx: Function, args: object): [Symbols, boolean] {
     return [symbols, symbolFlag]
 }
 
-export function executeFunction(fx: Function, args: object): [object, boolean] {
+export function executeFunction(fx: Function, args: object): [object, boolean, Diff] {
     const [symbols, symbolFlag] = getSymbolsForFunction(fx, args)
     const result = {}
     var diffs: Vector<Diff> = Vector.of()
@@ -328,7 +328,7 @@ export function executeFunction(fx: Function, args: object): [object, boolean] {
                                             // 1. Check Dexie for variable and load into Zustand Store
                                             // 2. Information is not present, return with symbolFlag as false
                                             result[outputName] = createdVariable
-                                            return ([result, false])
+                                            return ([result, false, mergeDiffs(diffs.toArray())])
                                         }
                                     }
                                 }
@@ -390,7 +390,7 @@ export function executeFunction(fx: Function, args: object): [object, boolean] {
                                                     variableName: updatedVariable.variableName.toString(),
                                                     values: updatedVariable.values
                                                 }
-                                                return [result, false]
+                                                return [result, false, mergeDiffs(diffs.toArray())]
                                             }
                                         }
                                     }
@@ -423,8 +423,5 @@ export function executeFunction(fx: Function, args: object): [object, boolean] {
             }
         })
     }
-    if (symbolFlag) {
-        getState().addDiff(mergeDiffs(diffs.toArray()))
-    }
-    return [result, symbolFlag]
+    return [result, symbolFlag, mergeDiffs(diffs.toArray())]
 }
