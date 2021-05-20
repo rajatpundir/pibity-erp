@@ -2,6 +2,7 @@ import { HashSet } from 'prelude-ts'
 import { Immutable } from 'immer'
 import { Variable, VariableName, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, SupplierProduct, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialReturnSlipItem, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, BOMItem, ProductionPreparationSlip, ProductionPreparationSlipItem, ScrapMaterialSlip, TransferMaterialSlip, WarehouseAcceptanceSlip } from './variables'
 import { NonPrimitiveType } from './types'
+import { cloneDeep } from 'lodash'
 
 export type Layer = {
     Product: HashSet<Immutable<ProductVariable>>
@@ -294,7 +295,7 @@ export const noDiff: Diff = {
 }
 
 export function getReplaceVariableDiff(variable: Immutable<Variable>): Diff {
-    const diff: Diff = { ...noDiff }
+    const diff: Diff = cloneDeep(noDiff)
     switch (variable.typeName) {
         case 'Product': {
             diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
@@ -409,7 +410,7 @@ export function getReplaceVariableDiff(variable: Immutable<Variable>): Diff {
 }
 
 export function getRemoveVariableDiff(typeName: NonPrimitiveType, variableName: string): Diff {
-    const diff: Diff = { ...noDiff }
+    const diff: Diff = cloneDeep(noDiff)
     switch (typeName) {
         case 'Product': {
             diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Product(variableName))
@@ -532,7 +533,7 @@ export function applyDiff(layer: Readonly<Layer>, diff: Diff): Layer {
                 acc[typeName] = layer[typeName].filter((x: Immutable<Variable>) => !diff.variables[typeName].remove.contains(x.variableName)).addAll(diff.variables[typeName].replace)
             }
             return acc
-        }, { ...layer })
+        }, cloneDeep(layer))
     }
 }
 
@@ -545,11 +546,12 @@ export function compose(base: Readonly<Layer>, diffs: Array<Diff>) {
 }
 
 export function mergeDiffs(diffs: ReadonlyArray<Diff>): Diff {
-    return diffs.reduce((acc, diff) => {
+    const result = diffs.reduce((acc, diff) => {
         Object.keys(diff.variables).forEach(typeName => {
-            acc.variables[typeName].replace = acc.variables[typeName].replace.filter((x: VariableName) => !diff.variables[typeName].remove.contains(x)).addAll(diff.variables[typeName].replace)
-            acc.variables[typeName].remove = acc.variables[typeName].remove.filter((x: Variable) => !diff.variables[typeName].replace.contains(x.variableName)).addAll(diff.variables[typeName].remove)
+            acc.variables[typeName].replace = acc.variables[typeName].replace.filter((x: Variable) => !diff.variables[typeName].remove.anyMatch(y => x.variableName.equals(y))).addAll(diff.variables[typeName].replace)
+            acc.variables[typeName].remove = acc.variables[typeName].remove.filter((x: VariableName) => !diff.variables[typeName].replace.anyMatch(y => x.equals(y.variableName))).addAll(diff.variables[typeName].remove)
         })
         return acc
-    }, { ...noDiff })
+    }, cloneDeep(noDiff))
+    return result
 }

@@ -20,6 +20,7 @@
     "date-fns": "^2.21.3",
     "dexie": "^3.0.3",
     "immer": "^9.0.1",
+    "lodash": "^4.17.21",
     "postcss": "^8.2.12",
     "postcss-nested": "^5.0.5",
     "prelude-ts": "^1.0.2",
