@@ -1,6 +1,13 @@
 import { Function } from './function'
 
-export const functions: Record<string, Function> = {
+export type FunctionName =
+    | 'add'
+    | 'createProduct'
+    | 'updateProduct'
+    | 'deleteProduct'
+    | 'mapProduct'
+
+export const functions: Record<FunctionName, Function> = {
     add: {
         inputs: {
             a: {
@@ -178,6 +185,26 @@ export const functions: Record<string, Function> = {
                     op: '.',
                     types: [],
                     args: ['sku']
+                },
+                values: {}
+            }
+        }
+    },
+    mapProduct: {
+        inputs: {
+            product: {
+                type: 'Product'
+            }
+        },
+        outputs: {
+            supplier: {
+                type: 'Supplier',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['product']
                 },
                 values: {}
             }

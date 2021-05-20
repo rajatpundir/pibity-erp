@@ -8,13 +8,13 @@ import * as Grid from './grids'
 import Navbar from './Navbar'
 
 function App() {
-  console.log(executeFunction(functions['add'], {
+  console.log(executeFunction(functions.add, {
     a: 2.88,
     b: 3.99
   }))
-  console.log(executeFunction(functions['createProduct'], {
+  console.log(executeFunction(functions.createProduct, {
     sku: 'SKU12341238',
-    name: 'ppp',
+    name: 'ooooooooo',
     x: true,
     y: false,
     z: true

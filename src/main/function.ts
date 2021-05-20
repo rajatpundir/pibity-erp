@@ -137,7 +137,6 @@ function getSymbolPathsForFunction(fx: Function): Array<ReadonlyArray<string>> {
     return symbolPaths
 }
 
-
 function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveType, variableName: string): [SymbolValue, boolean] {
     const type = types[typeName]
     const symbolValue: SymbolValue = {
