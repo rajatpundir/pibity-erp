@@ -48,5 +48,62 @@ export const functions: Record<string, Function> = {
                 }
             }
         }
+    },
+    createProduct: {
+        inputs: {
+            sku: {
+                type: 'Text'
+            },
+            name: {
+                type: 'Text'
+            },
+            x: {
+                type: 'Boolean'
+            },
+            y: {
+                type: 'Boolean'
+            },
+            z: {
+                type: 'Boolean'
+            }
+        },
+        outputs: {
+            product: {
+                type: 'Product',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['sku']
+                },
+                values: {
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    },
+                    orderable: {
+                        expectedReturnType: 'Boolean',
+                        op: '.',
+                        types: [],
+                        args: ['x']
+                    },
+                    consumable: {
+                        expectedReturnType: 'Boolean',
+                        op: '.',
+                        types: [],
+                        args: ['y']
+                    },
+                    producable: {
+                        expectedReturnType: 'Boolean',
+                        op: '.',
+                        types: [],
+                        args: ['z']
+                    },
+                }
+            }
+        }
     }
 }

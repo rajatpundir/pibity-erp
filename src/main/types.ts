@@ -69,26 +69,6 @@ export const types: Record<string, Type> = {
             producable: {
                 order: 3,
                 type: 'Boolean'
-            },
-            number: {
-                order: 1,
-                type: 'Number'
-            },
-            decimal: {
-                order: 1,
-                type: 'Decimal'
-            },
-            date: {
-                order: 1,
-                type: 'Date'
-            },
-            time: {
-                order: 3,
-                type: 'Time'
-            },
-            timestamp: {
-                order: 2,
-                type: 'Timestamp'
             }
         }
     },

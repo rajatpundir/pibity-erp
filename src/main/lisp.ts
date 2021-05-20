@@ -33,7 +33,7 @@ export type LispExpression = {
 } | {
     expectedReturnType?: 'Number' | 'Decimal' | 'Boolean' | 'Text'
     op: 'id'
-    types: Array<ControlFlowType>
+    types: [ControlFlowType]
     args: [string | number | boolean]
 } | {
     expectedReturnType?: 'Text'

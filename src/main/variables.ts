@@ -39,6 +39,35 @@ export type Variable =
     | TransferMaterialSlipVariable
     | WarehouseAcceptanceSlipVariable
 
+export type VariableName =
+    | Product
+    | UOM
+    | Indent
+    | IndentItem
+    | Supplier
+    | SupplierProduct
+    | Quotation
+    | QuotationItem
+    | PurchaseOrder
+    | PurchaseOrderItem
+    | PurchaseInvoice
+    | PurchaseInvoiceItem
+    | MaterialApprovalSlip
+    | MaterialApprovalSlipItem
+    | MaterialRejectionSlip
+    | MaterialRejectionSlipItem
+    | MaterialReturnSlip
+    | MaterialReturnSlipItem
+    | MaterialRequistionSlip
+    | MaterialRequistionSlipItem
+    | BOM
+    | BOMItem
+    | ProductionPreparationSlip
+    | ProductionPreparationSlipItem
+    | ScrapMaterialSlip
+    | TransferMaterialSlip
+    | WarehouseAcceptanceSlip
+
 export class Product {
     constructor(private variableName: string) { }
 
@@ -79,7 +108,7 @@ export class ProductVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -130,7 +159,7 @@ export class UOMVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -181,7 +210,7 @@ export class IndentVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -248,7 +277,7 @@ export class IndentItemVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -285,16 +314,16 @@ export class SupplierVariable {
     variableName: Supplier
     values: {}
 
-    constructor(variableName: string) {
+    constructor(variableName: string, values: {}) {
         this.variableName = new Supplier(variableName)
-        this.values = {}
+        this.values = values
     }
 
     equals(other: SupplierVariable): boolean {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -344,7 +373,7 @@ export class SupplierProductVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -393,7 +422,7 @@ export class QuotationVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -446,7 +475,7 @@ export class QuotationItemVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -494,7 +523,7 @@ export class PurchaseOrderVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -550,7 +579,7 @@ export class PurchaseOrderItemVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -598,7 +627,7 @@ export class PurchaseInvoiceVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -654,7 +683,7 @@ export class PurchaseInvoiceItemVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -702,7 +731,7 @@ export class MaterialApprovalSlipVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -757,7 +786,7 @@ export class MaterialApprovalSlipItemVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -805,7 +834,7 @@ export class MaterialRejectionSlipVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -860,7 +889,7 @@ export class MaterialRejectionSlipItemVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -908,7 +937,7 @@ export class MaterialReturnSlipVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -961,7 +990,7 @@ export class MaterialReturnSlipItemVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -1009,7 +1038,7 @@ export class MaterialRequistionSlipVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -1064,7 +1093,7 @@ export class MaterialRequistionSlipItemVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -1116,7 +1145,7 @@ export class BOMVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -1170,7 +1199,7 @@ export class BOMItemVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -1221,7 +1250,7 @@ export class ProductionPreparationSlipVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -1275,7 +1304,7 @@ export class ProductionPreparationSlipItemVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -1325,7 +1354,7 @@ export class ScrapMaterialSlipVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -1377,7 +1406,7 @@ export class TransferMaterialSlipVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -1427,7 +1456,7 @@ export class WarehouseAcceptanceSlipVariable {
         if (!other) {
             return false;
         }
-        return this.variableName === other.variableName
+        return this.variableName.equals(other.variableName)
     }
 
     hashCode(): number {
@@ -1478,7 +1507,7 @@ export function replaceVariable(typeName: NonPrimitiveType, variableName: string
             })
         }
         case 'Supplier': {
-            return new SupplierVariable(variableName)
+            return new SupplierVariable(variableName, {})
         }
         case 'SupplierProduct': {
             return new SupplierProductVariable(variableName, {

@@ -12,6 +12,13 @@ function App() {
     a: 2.88,
     b: 3.99
   }))
+  console.log(executeFunction(functions['createProduct'], {
+    sku: 'SKU12341238',
+    name: 'Product Y',
+    x: true,
+    y: true,
+    z: true
+  }))
   return (
     <div className="App font-nunito bg-gray-100">
       <BrowserRouter>

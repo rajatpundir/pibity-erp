@@ -45,17 +45,21 @@ export type Function = {
 
 function getSymbolPaths(expression: LispExpression): Array<ReadonlyArray<string>> {
     var symbolPaths: Array<ReadonlyArray<string>> = []
-    expression.args.forEach(arg => {
-        if (typeof arg === 'object') {
-            if (arg.op === '.') {
-                symbolPaths.push(arg.args)
-            } else {
-                getSymbolPaths(arg).forEach(x => {
-                    symbolPaths.push(x)
-                })
+    if(expression.op === '.') {
+        symbolPaths.push(expression.args)
+    } else {
+        expression.args.forEach(arg => {
+            if (typeof arg === 'object') {
+                if (arg.op === '.') {
+                    symbolPaths.push(arg.args)
+                } else {
+                    getSymbolPaths(arg).forEach(x => {
+                        symbolPaths.push(x)
+                    })
+                }
             }
-        }
-    })
+        })
+    }
     return symbolPaths
 }
 
@@ -76,7 +80,7 @@ function getSymbolPathsForFunctionInput(fi: FunctionInput): Array<ReadonlyArray<
                 getSymbolPaths(fi.variableName).forEach(x => symbolPaths.push(x))
             }
             const type = types[fi.type]
-            Object.keys(type).forEach(keyName => {
+            Object.keys(type.keys).forEach(keyName => {
                 if (fi.values !== undefined) {
                     if (keyName in fi.values) {
                         const valueExpression = fi.values[keyName]
@@ -106,7 +110,7 @@ function getSymbolPathsForFunctionOutput(fo: FunctionOutput): Array<ReadonlyArra
         default: {
             getSymbolPaths(fo.variableName).forEach(x => symbolPaths.push(x))
             const type = types[fo.type]
-            Object.keys(type).forEach(keyName => {
+            Object.keys(type.keys).forEach(keyName => {
                 if (fo.values !== undefined) {
                     if (keyName in fo.values) {
                         const valueExpression = fo.values[keyName]
@@ -291,8 +295,8 @@ export function executeFunction(fx: Function, args: object): [object, boolean] {
                                 variableName: variableName,
                                 values: {}
                             }
-                            Object.keys(fo.type).forEach(keyName => {
-                                const key: Key = fo.type[keyName]
+                            Object.keys(types[fo.type].keys).forEach(keyName => {
+                                const key: Key = types[fo.type].keys[keyName]
                                 switch (key.type) {
                                     case 'Text': {
                                         variable.values[keyName] = String(evaluateExpression(fo.values[keyName], symbols))

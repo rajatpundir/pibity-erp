@@ -1,6 +1,6 @@
 import { HashSet } from 'prelude-ts'
 import { Immutable } from 'immer'
-import { ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, SupplierProduct, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialReturnSlipItem, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, BOMItem, ProductionPreparationSlip, ProductionPreparationSlipItem, ScrapMaterialSlip, TransferMaterialSlip, WarehouseAcceptanceSlip, Variable } from './variables'
+import { Variable, VariableName, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, SupplierProduct, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialReturnSlipItem, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, BOMItem, ProductionPreparationSlip, ProductionPreparationSlipItem, ScrapMaterialSlip, TransferMaterialSlip, WarehouseAcceptanceSlip } from './variables'
 import { NonPrimitiveType } from './types'
 
 export type Layer = {
@@ -293,7 +293,6 @@ export const noDiff: Diff = {
     }
 }
 
-
 export function getReplaceVariableDiff(variable: Immutable<Variable>): Diff {
     const diff: Diff = { ...noDiff }
     switch (variable.typeName) {
@@ -548,8 +547,8 @@ export function compose(base: Readonly<Layer>, diffs: Array<Diff>) {
 export function mergeDiffs(diffs: ReadonlyArray<Diff>): Diff {
     return diffs.reduce((acc, diff) => {
         Object.keys(diff.variables).forEach(typeName => {
-            acc.variables[typeName].replace = acc.variables[typeName].replace.addAll(diff.variables[typeName].replace)
-            acc.variables[typeName].remove = acc.variables[typeName].remove.addAll(diff.variables[typeName].remove)
+            acc.variables[typeName].replace = acc.variables[typeName].replace.filter((x: VariableName) => !diff.variables[typeName].remove.contains(x)).addAll(diff.variables[typeName].replace)
+            acc.variables[typeName].remove = acc.variables[typeName].remove.filter((x: Variable) => !diff.variables[typeName].replace.contains(x.variableName)).addAll(diff.variables[typeName].remove)
         })
         return acc
     }, { ...noDiff })
