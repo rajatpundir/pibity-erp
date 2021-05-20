@@ -436,12 +436,12 @@ export function executeFunction(fx: Function, args: object): [object, boolean, D
                     if (fi.variableName !== undefined || fi.values !== undefined) {
                         const updatedVariable = {
                             typeName: fi.type,
-                            variableName: symbols[inputName].value,
+                            variableName: String(symbols[inputName].value),
                             values: {}
                         }
                         if (fi.variableName !== undefined) {
                             updatedVariable.variableName = String(evaluateExpression(fi.variableName, symbols))
-                            diffs = diffs.append(getRemoveVariableDiff(fi.type, inputName))
+                            diffs = diffs.append(getRemoveVariableDiff(fi.type, String(symbols[inputName].value)))
                         }
                         const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[fi.type]
                         const variables: HashSet<Immutable<Variable>> = unfilteredVariables.filter(x => x.variableName.toString() === symbols[inputName].value)

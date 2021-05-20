@@ -198,6 +198,17 @@ export const functions: Record<FunctionName, Function> = {
             },
             product: {
                 type: 'Product',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '++',
+                    types :['Text'],
+                    args: [{
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types :[],
+                        args: ['product']
+                    }, '+']
+                },
                 values: {
                     name: {
                         expectedReturnType: 'Text',
