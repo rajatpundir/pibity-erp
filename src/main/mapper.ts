@@ -1,10 +1,10 @@
 import { Immutable } from "immer"
-import { HashSet, Vector } from "prelude-ts"
+import { HashSet, Vector } from 'prelude-ts'
 import { FunctionName, functions } from "./functions"
 import { getState } from "./store"
 import { NonPrimitiveType, types } from "./types"
 import { Variable } from "./variables"
-import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from './Filter'
+import { Query, getQuery, applyFilter } from './Filter'
 import { executeFunction } from "./function"
 import { Diff, mergeDiffs } from "./layers"
 
@@ -15,7 +15,10 @@ export type Mapper = {
     functionInput: string
 }
 
-export const mappers: Record<string, Mapper> = {
+type MapperName =
+    | 'mapper1'
+
+export const mappers: Record<MapperName, Mapper> = {
     mapper1: {
         query: true,
         queryParams: ['orderable'],
@@ -29,15 +32,15 @@ type MapperArgs = {
     args: Array<object>
 }
 
-function isNonPrimitive(typeName: string): typeName is NonPrimitiveType {
-    return Object.keys(types.keys).includes(typeName)
+export function isNonPrimitive(typeName: string): typeName is NonPrimitiveType {
+    return Object.keys(types).includes(typeName)
 }
 
-function executeMapper(mapper: Mapper, args: MapperArgs): [Array<object>, boolean, Diff] {
+export function executeMapper(mapper: Mapper, args: MapperArgs): [Array<object>, boolean, Diff] {
     const fx = functions[mapper.functionName]
     const fi = fx.inputs[mapper.functionInput]
-    var result: Vector<object> = Vector.of()
-    var diffs: Vector<Diff> = Vector.of()
+    var result = Vector.of<object>()
+    var diffs = Vector.of<Diff>()
     if (isNonPrimitive(fi.type)) {
         if (mapper.query) {
             const query: Query = getQuery(fi.type)
@@ -76,8 +79,8 @@ function executeMapper(mapper: Mapper, args: MapperArgs): [Array<object>, boolea
             const variables: Array<Immutable<Variable>> = unfilteredVariables.filter(variable => applyFilter(query, variable)).toArray()
             variables.forEach((variable, index) => {
                 if (index < args.args.length) {
-                    const functionArgs = { ...variable.values }
-                    functionArgs[mapper.functionInput] = String(args.args[index])
+                    const functionArgs = args.args[index]
+                    functionArgs[mapper.functionInput] = variable.variableName.toString()
                     const [functionResult, executionFlag, diff] = executeFunction(fx, functionArgs)
                     if (!executionFlag) {
                         return [result, false, mergeDiffs(diffs.toArray())]
@@ -85,8 +88,8 @@ function executeMapper(mapper: Mapper, args: MapperArgs): [Array<object>, boolea
                     result = result.append(functionResult)
                     diffs = diffs.append(diff)
                 } else {
-                    const functionArgs = { ...variable.values }
-                    functionArgs[mapper.functionInput] = String(args.args[args.args.length - 1])
+                    const functionArgs = args.args[args.args.length - 1]
+                    functionArgs[mapper.functionInput] = variable.variableName.toString()
                     const [functionResult, executionFlag, diff] = executeFunction(fx, functionArgs)
                     if (!executionFlag) {
                         return [result, false, mergeDiffs(diffs.toArray())]

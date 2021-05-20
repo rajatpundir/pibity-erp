@@ -120,59 +120,63 @@ function getCells(variables: HashSet<Variable>, start: number, end: number): Vec
         if (rowIndex % 2 === 0) {
             cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{variable.variableName.toString()}</Cell>)
             counter += 1
-            keys.slice(0, keys.length - 1).forEach((key, columnIndex) => {
-                const value = variable.values[key]
+            if(keys.length !== 0) {
+                keys.slice(0, keys.length - 1).forEach((key, columnIndex) => {
+                    const value = variable.values[key]
+                    switch (typeof value) {
+                        case 'boolean': {
+                            cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{value ? 'Yes' : 'No'}</Cell>)
+                            counter += 1
+                            return
+                        }
+                        default: {
+                            cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{value}</Cell>)
+                            counter += 1
+                        }
+                    }
+                })
+                const value = variable.values[keys[keys.length - 1]]
                 switch (typeof value) {
                     case 'boolean': {
-                        cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{value ? 'Yes' : 'No'}</Cell>)
+                        cells = cells.append(<Cell key={counter} className="pr-2 pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${keys.length + 1}/${keys.length + 2}`}>{value ? 'Yes' : 'No'}</Cell>)
                         counter += 1
                         return
                     }
                     default: {
-                        cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{value}</Cell>)
+                        cells = cells.append(<Cell key={counter} className="pr-2 pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${keys.length + 1}/${keys.length + 2}`}>{value}</Cell>)
                         counter += 1
                     }
-                }
-            })
-            const value = variable.values[keys[keys.length - 1]]
-            switch (typeof value) {
-                case 'boolean': {
-                    cells = cells.append(<Cell key={counter} className="pr-2 pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${keys.length + 1}/${keys.length + 2}`}>{value ? 'Yes' : 'No'}</Cell>)
-                    counter += 1
-                    return
-                }
-                default: {
-                    cells = cells.append(<Cell key={counter} className="pr-2 pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${keys.length + 1}/${keys.length + 2}`}>{value}</Cell>)
-                    counter += 1
                 }
             }
         } else {
             cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{variable.variableName.toString()}</Cell>)
             counter += 1
-            keys.slice(0, keys.length - 1).forEach((key, columnIndex) => {
-                const value = variable.values[key]
+            if(keys.length !== 0) {
+                keys.slice(0, keys.length - 1).forEach((key, columnIndex) => {
+                    const value = variable.values[key]
+                    switch (typeof value) {
+                        case 'boolean': {
+                            cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{value ? 'Yes' : 'No'}</Cell>)
+                            counter += 1
+                            return
+                        }
+                        default: {
+                            cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{value}</Cell>)
+                            counter += 1
+                        }
+                    }
+                })
+                const value = variable.values[keys[keys.length - 1]]
                 switch (typeof value) {
                     case 'boolean': {
-                        cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{value ? 'Yes' : 'No'}</Cell>)
+                        cells = cells.append(<Cell key={counter} className="pr-2 pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${keys.length + 1}/${keys.length + 2}`}>{value ? 'Yes' : 'No'}</Cell>)
                         counter += 1
                         return
                     }
                     default: {
-                        cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{value}</Cell>)
+                        cells = cells.append(<Cell key={counter} className="pr-2 pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${keys.length + 1}/${keys.length + 2}`}>{value}</Cell>)
                         counter += 1
                     }
-                }
-            })
-            const value = variable.values[keys[keys.length - 1]]
-            switch (typeof value) {
-                case 'boolean': {
-                    cells = cells.append(<Cell key={counter} className="pr-2 pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${keys.length + 1}/${keys.length + 2}`}>{value ? 'Yes' : 'No'}</Cell>)
-                    counter += 1
-                    return
-                }
-                default: {
-                    cells = cells.append(<Cell key={counter} className="pr-2 pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${keys.length + 1}/${keys.length + 2}`}>{value}</Cell>)
-                    counter += 1
                 }
             }
         }

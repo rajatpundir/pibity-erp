@@ -192,8 +192,20 @@ export const functions: Record<FunctionName, Function> = {
     },
     mapProduct: {
         inputs: {
+            abc: {
+                type: 'Text',
+                default: 'whatever'
+            },
             product: {
-                type: 'Product'
+                type: 'Product',
+                values: {
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types :[],
+                        args: ['abc']
+                    }
+                }
             }
         },
         outputs: {

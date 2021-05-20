@@ -45,7 +45,7 @@ export type Function = {
 
 function getSymbolPaths(expression: LispExpression): Array<ReadonlyArray<string>> {
     var symbolPaths: Array<ReadonlyArray<string>> = []
-    if(expression.op === '.') {
+    if (expression.op === '.') {
         symbolPaths.push(expression.args)
     } else {
         expression.args.forEach(arg => {
@@ -144,7 +144,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
         value: variableName
     }
     var symbolFlag = true
-    if (symbolPaths.length !== 0) {
+    if (symbolPaths.length !== 0 && symbolPaths.filter(x => x.length !== 0).length !== 0) {
         symbolValue.values = {}
         const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[typeName]
         const variables = unfilteredVariables.filter(x => x.toString() === variableName)
@@ -417,6 +417,89 @@ export function executeFunction(fx: Function, args: object): [object, boolean, D
                             // Note. Generate Diff in Zustand Store to update variable
                             diffs = diffs.append(getRemoveVariableDiff(fo.type, variableName))
                             break
+                        }
+                    }
+                }
+            }
+        })
+        Object.keys(fx.inputs).forEach(inputName => {
+            const fi = fx.inputs[inputName]
+            switch (fi.type) {
+                case 'Text':
+                case 'Number':
+                case 'Decimal':
+                case 'Boolean':
+                case 'Date':
+                case 'Timestamp':
+                case 'Time': { break }
+                default: {
+                    if (fi.variableName !== undefined || fi.values !== undefined) {
+                        const updatedVariable = {
+                            typeName: fi.type,
+                            variableName: symbols[inputName].value,
+                            values: {}
+                        }
+                        if (fi.variableName !== undefined) {
+                            updatedVariable.variableName = String(evaluateExpression(fi.variableName, symbols))
+                            diffs = diffs.append(getRemoveVariableDiff(fi.type, inputName))
+                        }
+                        const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[fi.type]
+                        const variables: HashSet<Immutable<Variable>> = unfilteredVariables.filter(x => x.variableName.toString() === symbols[inputName].value)
+                        if (variables.length() === 1) {
+                            const variable: Immutable<Variable> = variables.toArray()[0]
+                            Object.keys(variable.values).forEach(keyName => {
+                                updatedVariable.values[keyName] = variable.values[keyName]
+                            })
+                            if(fi.values !== undefined) {
+                                Object.keys(fi.values).forEach(keyName => {
+                                    const key: Key = types[fi.type].keys[keyName]
+                                    if (fi.values !== undefined) {
+                                        switch (key.type) {
+                                            case 'Text': {
+                                                updatedVariable.values[keyName] = String(evaluateExpression(fi.values[keyName], symbols))
+                                                break
+                                            }
+                                            case 'Number':
+                                            case 'Date':
+                                            case 'Timestamp':
+                                            case 'Time': {
+                                                updatedVariable.values[keyName] = parseInt(String(evaluateExpression(fi.values[keyName], symbols)))
+                                                break
+                                            }
+                                            case 'Decimal': {
+                                                updatedVariable.values[keyName] = parseFloat(String(evaluateExpression(fi.values[keyName], symbols)))
+                                                break
+                                            }
+                                            case 'Boolean': {
+                                                updatedVariable.values[keyName] = Boolean(evaluateExpression(fi.values[keyName], symbols)).valueOf()
+                                                break
+                                            }
+                                            default: {
+                                                const referencedVariableName = String(evaluateExpression(fi.values[keyName], symbols))
+                                                const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[key.type]
+                                                const variables = unfilteredVariables.filter(x => x.toString() === referencedVariableName)
+                                                if (variables.length() === 1) {
+                                                    updatedVariable.values[keyName] = variables[0].variableName.toString()
+                                                } else {
+                                                    // Note: Referenced variable not found in Zustand Store (Base + Diff)
+                                                    // Resolution: 
+                                                    // 1. Check Dexie for variable and load into Zustand Store
+                                                    // 2. Information is not present, return with symbolFlag as false
+                                                    return [result, false, mergeDiffs(diffs.toArray())]
+                                                }
+                                            }
+                                        }
+                                    }
+                                })
+                            }
+                            const replacedVariable = replaceVariable(updatedVariable.typeName, updatedVariable.variableName.toString(), updatedVariable.values)
+                            diffs = diffs.append(getReplaceVariableDiff(replacedVariable))
+                        } else {
+                            // Note: Variable not found in Zustand Store (Base + Diff)
+                            // Resolution: 
+                            // 1. Check Dexie for variable and load into Zustand Store
+                            // 2. If Information is not present in Dexie, then no issue since user did not had the variable in first place.
+                            // 3. Care must be taken to not refer the the FunctionOutput in Circuit which has an update operation since it may not have been actually performed due to lack of information.
                         }
                     }
                 }

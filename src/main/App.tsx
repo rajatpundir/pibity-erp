@@ -1,24 +1,31 @@
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import ProductX from '../components/management/product/Product'
 import Products from '../components/management/product/Products'
+import Suppliers from '../components/management/supplier/Suppliers'
 import { Container, Item, none } from './commons';
 import { executeFunction } from "./function";
 import { functions } from "./functions";
 import * as Grid from './grids'
+import { executeMapper, mappers } from "./mapper";
 import Navbar from './Navbar'
+import { getState } from "./store";
 
 function App() {
-  console.log(executeFunction(functions.add, {
-    a: 2.88,
-    b: 3.99
-  }))
-  console.log(executeFunction(functions.createProduct, {
-    sku: 'SKU12341238',
-    name: 'ooooooooo',
+  const [ ,  , z] = executeFunction(functions.createProduct, {
+    sku: 'SKU12349238BA',
+    name: 'hkkjkjn',
     x: true,
     y: false,
     z: true
-  }))
+  })
+  getState().addDiff(z)
+  const [ ,  , c] = executeMapper(mappers.mapper1, {
+    queryParams: {
+      orederable: true
+    },
+    args: [{}]
+  })
+  getState().addDiff(c)
   return (
     <div className="App font-nunito bg-gray-100">
       <BrowserRouter>
@@ -34,6 +41,9 @@ function App() {
               <Route exact path="/products">
                 <Products />
               </Route>
+              <Route exact path="/suppliers">
+                <Suppliers />
+              </Route>
             </Switch>
           </Item>
         </Container>
@@ -43,3 +53,4 @@ function App() {
 }
 
 export default App;
+    
