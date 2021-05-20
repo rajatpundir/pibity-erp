@@ -42,7 +42,7 @@ function executeMapper(mapper: Mapper, args: MapperArgs): [Array<object>, boolea
         if (mapper.query) {
             const query: Query = getQuery(fi.type)
             Object.keys(args.queryParams).forEach(queryParam => {
-                if (queryParam in query.values) {
+                if (queryParam in mapper.queryParams && queryParam in query.values) {
                     const value = query.values[queryParam]
                     value.checked = true
                     if ('operator' in value) {
