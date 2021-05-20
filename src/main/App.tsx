@@ -12,9 +12,9 @@ function App() {
     a: 2.88,
     b: 3.99
   }))
-  console.log(executeFunction(functions['createProduct'], {
+  console.log(executeFunction(functions['updateProduct'], {
     sku: 'SKU12341238',
-    name: 'Product Y',
+    name: 'Produckhkkkkkjh ',
     x: true,
     y: true,
     z: true

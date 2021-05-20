@@ -342,13 +342,19 @@ export function executeFunction(fx: Function, args: object): [object, boolean] {
                         }
                         case 'update': {
                             const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[fo.type]
-                            const variables = unfilteredVariables.filter(x => x.toString() === variableName)
+                            const variables = unfilteredVariables.filter(x => x.variableName.toString() === variableName)
                             if (variables.length() === 1) {
                                 const variable: Immutable<Variable> = variables[0]
                                 Object.keys(fo.values).forEach(keyName => {
-                                    const key: Key = fo.type[keyName]
+                                    console.log(keyName)
+                                    console.log(types[fo.type])
+                                    const key: Key = types[fo.type].keys[keyName]
+                                    console.log('key', key, key.type, fo.values)
                                     switch (key.type) {
                                         case 'Text': {
+                                            console.log('-----------')
+                                            console.log(fo.values[keyName], symbols)
+                                            console.log(fo)
                                             variable.values[keyName] = String(evaluateExpression(fo.values[keyName], symbols))
                                             break
                                         }
