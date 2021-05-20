@@ -162,5 +162,25 @@ export const functions: Record<string, Function> = {
                 }
             }
         }
+    },
+    deleteProduct: {
+        inputs: {
+            sku: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            product: {
+                type: 'Product',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['sku']
+                },
+                values: {}
+            }
+        }
     }
 }

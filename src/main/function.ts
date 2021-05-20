@@ -290,7 +290,7 @@ export function executeFunction(fx: Function, args: object): [object, boolean] {
                     const variableName = String(evaluateExpression(fo.variableName, symbols))
                     switch (fo.op) {
                         case 'create': {
-                            const variable = {
+                            const createdVariable = {
                                 typeName: fo.type,
                                 variableName: variableName,
                                 values: {}
@@ -299,22 +299,22 @@ export function executeFunction(fx: Function, args: object): [object, boolean] {
                                 const key: Key = types[fo.type].keys[keyName]
                                 switch (key.type) {
                                     case 'Text': {
-                                        variable.values[keyName] = String(evaluateExpression(fo.values[keyName], symbols))
+                                        createdVariable.values[keyName] = String(evaluateExpression(fo.values[keyName], symbols))
                                         break
                                     }
                                     case 'Number':
                                     case 'Date':
                                     case 'Timestamp':
                                     case 'Time': {
-                                        variable.values[keyName] = parseInt(String(evaluateExpression(fo.values[keyName], symbols)))
+                                        createdVariable.values[keyName] = parseInt(String(evaluateExpression(fo.values[keyName], symbols)))
                                         break
                                     }
                                     case 'Decimal': {
-                                        variable.values[keyName] = parseFloat(String(evaluateExpression(fo.values[keyName], symbols)))
+                                        createdVariable.values[keyName] = parseFloat(String(evaluateExpression(fo.values[keyName], symbols)))
                                         break
                                     }
                                     case 'Boolean': {
-                                        variable.values[keyName] = Boolean(evaluateExpression(fo.values[keyName], symbols)).valueOf()
+                                        createdVariable.values[keyName] = Boolean(evaluateExpression(fo.values[keyName], symbols)).valueOf()
                                         break
                                     }
                                     default: {
@@ -322,55 +322,57 @@ export function executeFunction(fx: Function, args: object): [object, boolean] {
                                         const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[key.type]
                                         const variables = unfilteredVariables.filter(x => x.toString() === referencedVariableName)
                                         if (variables.length() === 1) {
-                                            variable.values[keyName] = variables[0].variableName.toString()
+                                            createdVariable.values[keyName] = variables[0].variableName.toString()
                                         } else {
                                             // Note: Variable not found in Zustand Store (Base + Diff)
                                             // Resolution: 
                                             // 1. Check Dexie for variable and load into Zustand Store
                                             // 2. Information is not present, return with symbolFlag as false
-                                            result[outputName] = variable
+                                            result[outputName] = createdVariable
                                             return ([result, false])
                                         }
                                     }
                                 }
                             })
-                            result[outputName] = variable
+                            result[outputName] = createdVariable
                             // Note. Generate Diff in Zustand Store to create variable
-                            const replacedVariable = replaceVariable(variable.typeName, variable.variableName, variable.values)
+                            const replacedVariable = replaceVariable(createdVariable.typeName, createdVariable.variableName, createdVariable.values)
                             diffs.push(getReplaceVariableDiff(replacedVariable))
                             break
                         }
                         case 'update': {
+                            const updatedVariable = {
+                                typeName: fo.type,
+                                variableName: variableName,
+                                values: {}
+                            }
                             const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[fo.type]
-                            const variables = unfilteredVariables.filter(x => x.variableName.toString() === variableName)
+                            const variables: HashSet<Immutable<Variable>> = unfilteredVariables.filter(x => x.variableName.toString() === variableName)
                             if (variables.length() === 1) {
-                                const variable: Immutable<Variable> = variables[0]
+                                const variable: Immutable<Variable> = variables.toArray()[0]
+                                Object.keys(variable.values).forEach(keyName => {
+                                    updatedVariable.values[keyName] = variable.values[keyName]
+                                })
                                 Object.keys(fo.values).forEach(keyName => {
-                                    console.log(keyName)
-                                    console.log(types[fo.type])
                                     const key: Key = types[fo.type].keys[keyName]
-                                    console.log('key', key, key.type, fo.values)
                                     switch (key.type) {
                                         case 'Text': {
-                                            console.log('-----------')
-                                            console.log(fo.values[keyName], symbols)
-                                            console.log(fo)
-                                            variable.values[keyName] = String(evaluateExpression(fo.values[keyName], symbols))
+                                            updatedVariable.values[keyName] = String(evaluateExpression(fo.values[keyName], symbols))
                                             break
                                         }
                                         case 'Number':
                                         case 'Date':
                                         case 'Timestamp':
                                         case 'Time': {
-                                            variable.values[keyName] = parseInt(String(evaluateExpression(fo.values[keyName], symbols)))
+                                            updatedVariable.values[keyName] = parseInt(String(evaluateExpression(fo.values[keyName], symbols)))
                                             break
                                         }
                                         case 'Decimal': {
-                                            variable.values[keyName] = parseFloat(String(evaluateExpression(fo.values[keyName], symbols)))
+                                            updatedVariable.values[keyName] = parseFloat(String(evaluateExpression(fo.values[keyName], symbols)))
                                             break
                                         }
                                         case 'Boolean': {
-                                            variable.values[keyName] = Boolean(evaluateExpression(fo.values[keyName], symbols)).valueOf()
+                                            updatedVariable.values[keyName] = Boolean(evaluateExpression(fo.values[keyName], symbols)).valueOf()
                                             break
                                         }
                                         default: {
@@ -378,16 +380,16 @@ export function executeFunction(fx: Function, args: object): [object, boolean] {
                                             const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[key.type]
                                             const variables = unfilteredVariables.filter(x => x.toString() === referencedVariableName)
                                             if (variables.length() === 1) {
-                                                variable.values[keyName] = variables[0].variableName.toString()
+                                                updatedVariable.values[keyName] = variables[0].variableName.toString()
                                             } else {
                                                 // Note: Referenced variable not found in Zustand Store (Base + Diff)
                                                 // Resolution: 
                                                 // 1. Check Dexie for variable and load into Zustand Store
                                                 // 2. Information is not present, return with symbolFlag as false
                                                 result[outputName] = {
-                                                    typeName: variable.typeName,
-                                                    variableName: variable.variableName.toString(),
-                                                    values: variable.values
+                                                    typeName: updatedVariable.typeName,
+                                                    variableName: updatedVariable.variableName.toString(),
+                                                    values: updatedVariable.values
                                                 }
                                                 return [result, false]
                                             }
@@ -395,12 +397,12 @@ export function executeFunction(fx: Function, args: object): [object, boolean] {
                                     }
                                 })
                                 result[outputName] = {
-                                    typeName: variable.typeName,
-                                    variableName: variable.variableName.toString(),
-                                    values: variable.values
+                                    typeName: updatedVariable.typeName,
+                                    variableName: updatedVariable.variableName.toString(),
+                                    values: updatedVariable.values
                                 }
                                 // Note. Generate Diff in Zustand Store to update variable
-                                const replacedVariable = replaceVariable(variable.typeName, variable.variableName.toString(), variable.values)
+                                const replacedVariable = replaceVariable(updatedVariable.typeName, updatedVariable.variableName.toString(), updatedVariable.values)
                                 diffs.push(getReplaceVariableDiff(replacedVariable))
                             } else {
                                 // Note: Variable not found in Zustand Store (Base + Diff)

@@ -12,11 +12,11 @@ function App() {
     a: 2.88,
     b: 3.99
   }))
-  console.log(executeFunction(functions['updateProduct'], {
+  console.log(executeFunction(functions['deleteProduct'], {
     sku: 'SKU12341238',
-    name: 'Produckhkkkkkjh ',
-    x: true,
-    y: true,
+    name: 'kkkkkkkkkkkk',
+    x: false,
+    y: false,
     z: true
   }))
   return (

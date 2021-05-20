@@ -69,8 +69,6 @@ export type SymbolValue = {
 export type Symbols = { [index: string]: SymbolValue }
 
 export function evaluateExpression(expression: LispExpression, symbols: Symbols): string | number | boolean {
-    console.log('#########')
-    console.log(expression, symbols)
     switch (expression.op) {
         case '+': return add(expression, symbols)
         case '*': return multiply(expression, symbols)
