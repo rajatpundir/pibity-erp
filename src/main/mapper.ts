@@ -45,7 +45,7 @@ export function executeMapper(mapper: Mapper, args: MapperArgs): [Array<object>,
         if (mapper.query) {
             const query: Query = getQuery(fi.type)
             Object.keys(args.queryParams).forEach(queryParam => {
-                if (queryParam in mapper.queryParams && queryParam in query.values) {
+                if (mapper.queryParams.includes(queryParam) && Object.keys(query.values).includes(queryParam)) {
                     const value = query.values[queryParam]
                     value.checked = true
                     if ('operator' in value) {
@@ -73,6 +73,7 @@ export function executeMapper(mapper: Mapper, args: MapperArgs): [Array<object>,
                     } else {
                         value.value.variableName.value = String(args.queryParams[queryParam])
                     }
+                    query[queryParam] = value
                 }
             })
             const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[fi.type]

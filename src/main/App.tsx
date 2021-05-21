@@ -11,19 +11,27 @@ import Navbar from './Navbar'
 import { getState } from "./store";
 
 function App() {
-  const [ ,  , z] = executeFunction(functions.createProduct, {
+  const [, , z] = executeFunction(functions.createProduct, {
     sku: 'SKU12349238BA',
     name: 'hkkjkjn',
     x: true,
-    y: false,
+    y: true,
     z: true
   })
   getState().addDiff(z)
-  const [ ,  , c] = executeMapper(mappers.mapper1, {
+  const [, , t] = executeFunction(functions.createProduct, {
+    sku: 'SKU12349238BB',
+    name: 'hkkjkjn',
+    x: false,
+    y: false,
+    z: false
+  })
+  getState().addDiff(t)
+  const [, , c] = executeMapper(mappers.mapper1, {
     queryParams: {
-      orederable: true
+      orderable: true
     },
-    args: [{}]
+    args: [{abc: 'www'}, {abc: 'ww1'}]
   })
   getState().addDiff(c)
   return (
@@ -49,8 +57,7 @@ function App() {
         </Container>
       </BrowserRouter>
     </div>
-  );
+  )
 }
 
 export default App;
-    
