@@ -1,57 +1,260 @@
 import { Function } from './function'
 
 export type FunctionName =
-    | 'add'
     | 'createProduct'
     | 'updateProduct'
     | 'deleteProduct'
     | 'mapProduct'
+    | 'fun1'
+    | 'fun2'
+    | 'fun3'
+    | 'fun4'
 
 export const functions: Record<FunctionName, Function> = {
-    add: {
+    fun1: {
         inputs: {
             a: {
-                type: 'Number',
-                default: 2
+                type: 'Number'
             },
             b: {
-                type: 'Decimal',
-                default: 3.14
+                type: 'Number'
             }
         },
         outputs: {
-            c: {
+            f1o1: {
                 type: 'Number',
                 value: {
                     expectedReturnType: 'Number',
                     op: '+',
-                    types: ['Number', 'Decimal'],
-                    args: [{
-                        op: '.',
-                        types: [],
-                        args: ['a']
-                    }, {
-                        op: '.',
-                        types: [],
-                        args: ['b']
-                    }]
+                    types: ['Number'],
+                    args: [
+                        {
+                            op: '.',
+                            types: [],
+                            args: [ 'a']
+                        },
+                        {
+                            op: '.',
+                            types: [],
+                            args: ['b']
+                        }
+                    ]
                 }
             },
-            d: {
-                type: 'Decimal',
+            f1o2: {
+                type: 'Number',
                 value: {
-                    expectedReturnType: 'Decimal',
+                    expectedReturnType: 'Number',
                     op: '*',
-                    types: ['Number', 'Decimal'],
-                    args: [{
-                        op: '.',
-                        types: [],
-                        args: ['a']
-                    }, {
-                        op: '.',
-                        types: [],
-                        args: ['b']
-                    }]
+                    types: ['Number'],
+                    args: [
+                        {
+                            op: '.',
+                            types: [],
+                            args: [ 'a']
+                        },
+                        {
+                            op: '.',
+                            types: [],
+                            args: ['b']
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    fun2: {
+        inputs: {
+            c: {
+                type: 'Number'
+            },
+            d: {
+                type: 'Number'
+            },
+            e: {
+                type: 'Number'
+            }
+        },
+        outputs: {
+            f2o1: {
+                type: 'Number',
+                value: {
+                    expectedReturnType: 'Number',
+                    op: '*',
+                    types: ['Number'],
+                    args: [
+                        {
+                            op: '.',
+                            types: [],
+                            args: [ 'c']
+                        },
+                        {
+                            op: '.',
+                            types: [],
+                            args: ['d']
+                        },
+                        {
+                            op: '.',
+                            types: [],
+                            args: ['e']
+                        }
+                    ]
+                }
+            },
+            f2o2: {
+                type: 'Number',
+                value: {
+                    expectedReturnType: 'Number',
+                    op: '*',
+                    types: ['Number'],
+                    args: [
+                        {
+                            op: '.',
+                            types: [],
+                            args: [ 'c']
+                        },
+                        {
+                            op: '.',
+                            types: [],
+                            args: ['d']
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    fun3: {
+        inputs: {
+            p: {
+                type: 'Number'
+            },
+            x: {
+                type: 'Number'
+            },
+            y: {
+                type: 'Number'
+            },
+            z: {
+                type: 'Number'
+            }
+        },
+        outputs: {
+            f3o1: {
+                type: 'Number',
+                value: {
+                    expectedReturnType: 'Number',
+                    op: '*',
+                    types: ['Number'],
+                    args: [
+                        {
+                            op: '.',
+                            types: [],
+                            args: [ 'x']
+                        },
+                        {
+                            op: '.',
+                            types: [],
+                            args: ['p']
+                        }
+                    ]
+                }
+            },
+            f3o2: {
+                type: 'Number',
+                value: {
+                    expectedReturnType: 'Number',
+                    op: '+',
+                    types: ['Number'],
+                    args: [
+                        {
+                            op: '.',
+                            types: [],
+                            args: [ 'p']
+                        },
+                        {
+                            op: '.',
+                            types: [],
+                            args: ['x']
+                        },
+                        {
+                            op: '.',
+                            types: [],
+                            args: ['y']
+                        },
+                        {
+                            op: '.',
+                            types: [],
+                            args: ['z']
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    fun4: {
+        inputs: {
+            m: {
+                type: 'Number'
+            },
+            n: {
+                type: 'Number'
+            },
+            o: {
+                type: 'Number'
+            },
+            p: {
+                type: 'Number'
+            }
+        },
+        outputs: {
+            f4o1: {
+                type: 'Number',
+                value: {
+                    expectedReturnType: 'Number',
+                    op: '+',
+                    types: ['Number'],
+                    args: [
+                        {
+                            op: '.',
+                            types: [],
+                            args: [ 'm']
+                        },
+                        {
+                            op: '.',
+                            types: [],
+                            args: ['n']
+                        },
+                        {
+                            op: '.',
+                            types: [],
+                            args: ['o']
+                        }
+                    ]
+                }
+            },
+            f4o2: {
+                type: 'Number',
+                value: {
+                    expectedReturnType: 'Number',
+                    op: '+',
+                    types: ['Number'],
+                    args: [
+                        {
+                            op: '.',
+                            types: [],
+                            args: [ 'o']
+                        },
+                        {
+                            op: '.',
+                            types: [],
+                            args: ['n']
+                        },
+                        {
+                            op: '.',
+                            types: [],
+                            args: ['o']
+                        }
+                    ]
                 }
             }
         }
@@ -201,11 +404,11 @@ export const functions: Record<FunctionName, Function> = {
                 variableName: {
                     expectedReturnType: 'Text',
                     op: '++',
-                    types :['Text'],
+                    types: ['Text'],
                     args: [{
                         expectedReturnType: 'Text',
                         op: '.',
-                        types :[],
+                        types: [],
                         args: ['product']
                     }, '+']
                 },
@@ -213,7 +416,7 @@ export const functions: Record<FunctionName, Function> = {
                     name: {
                         expectedReturnType: 'Text',
                         op: '.',
-                        types :[],
+                        types: [],
                         args: ['abc']
                     }
                 }
