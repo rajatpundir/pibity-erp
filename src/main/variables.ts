@@ -83,7 +83,7 @@ export class Product {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -116,7 +116,7 @@ export class ProductVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -135,7 +135,7 @@ export class UOM {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -167,7 +167,7 @@ export class UOMVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -186,7 +186,7 @@ export class Indent {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -218,7 +218,7 @@ export class IndentVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -237,7 +237,7 @@ export class IndentItem {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -285,7 +285,7 @@ export class IndentItemVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -304,7 +304,7 @@ export class Supplier {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -331,7 +331,7 @@ export class SupplierVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -350,7 +350,7 @@ export class SupplierProduct {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -381,7 +381,7 @@ export class SupplierProductVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -400,7 +400,7 @@ export class Quotation {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -430,7 +430,7 @@ export class QuotationVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -449,7 +449,7 @@ export class QuotationItem {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -483,7 +483,7 @@ export class QuotationItemVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -502,7 +502,7 @@ export class PurchaseOrder {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -531,7 +531,7 @@ export class PurchaseOrderVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -550,7 +550,7 @@ export class PurchaseOrderItem {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -587,7 +587,7 @@ export class PurchaseOrderItemVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -606,7 +606,7 @@ export class PurchaseInvoice {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -635,7 +635,7 @@ export class PurchaseInvoiceVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -654,7 +654,7 @@ export class PurchaseInvoiceItem {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -691,7 +691,7 @@ export class PurchaseInvoiceItemVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -710,7 +710,7 @@ export class MaterialApprovalSlip {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -739,7 +739,7 @@ export class MaterialApprovalSlipVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -758,7 +758,7 @@ export class MaterialApprovalSlipItem {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -794,7 +794,7 @@ export class MaterialApprovalSlipItemVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -813,7 +813,7 @@ export class MaterialRejectionSlip {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -842,7 +842,7 @@ export class MaterialRejectionSlipVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -861,7 +861,7 @@ export class MaterialRejectionSlipItem {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -897,7 +897,7 @@ export class MaterialRejectionSlipItemVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -916,7 +916,7 @@ export class MaterialReturnSlip {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -945,7 +945,7 @@ export class MaterialReturnSlipVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -964,7 +964,7 @@ export class MaterialReturnSlipItem {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -998,7 +998,7 @@ export class MaterialReturnSlipItemVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -1017,7 +1017,7 @@ export class MaterialRequistionSlip {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -1046,7 +1046,7 @@ export class MaterialRequistionSlipVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -1065,7 +1065,7 @@ export class MaterialRequistionSlipItem {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -1101,7 +1101,7 @@ export class MaterialRequistionSlipItemVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -1120,7 +1120,7 @@ export class BOM {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -1153,7 +1153,7 @@ export class BOMVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -1172,7 +1172,7 @@ export class BOMItem {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -1207,7 +1207,7 @@ export class BOMItemVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -1226,7 +1226,7 @@ export class ProductionPreparationSlip {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -1258,7 +1258,7 @@ export class ProductionPreparationSlipVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -1277,7 +1277,7 @@ export class ProductionPreparationSlipItem {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -1312,7 +1312,7 @@ export class ProductionPreparationSlipItemVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -1331,7 +1331,7 @@ export class ScrapMaterialSlip {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -1362,7 +1362,7 @@ export class ScrapMaterialSlipVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -1381,7 +1381,7 @@ export class TransferMaterialSlip {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -1414,7 +1414,7 @@ export class TransferMaterialSlipVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 
@@ -1433,7 +1433,7 @@ export class WarehouseAcceptanceSlip {
     }
 
     toString(): string {
-        return `${this.variableName}`;
+        return this.variableName
     }
 }
 
@@ -1464,7 +1464,7 @@ export class WarehouseAcceptanceSlipVariable {
     }
 
     toString(): string {
-        return `${JSON.stringify(this)}`;
+        return JSON.stringify(this, null, 2)
     }
 }
 

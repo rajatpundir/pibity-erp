@@ -51,7 +51,7 @@ export type Type = {
     keys: Record<string, Key>
 }
 
-export const types: Record<string, Type> = {
+export const types: Record<NonPrimitiveType, Type> = {
     Product: {
         keys: {
             name: {
@@ -419,7 +419,7 @@ export const types: Record<string, Type> = {
             }
         }
     },
-    ScarpMaterialSlip: {
+    ScrapMaterialSlip: {
         keys: {
             productionPreparationSlip: {
                 order: 0,

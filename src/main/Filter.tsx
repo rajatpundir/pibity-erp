@@ -214,7 +214,7 @@ type FilterProps = {
 
 export function Filter(props: FilterProps) {
     return (<>
-        <div className="bg-gray-300 font-nunito h-screen max-w-min overflow-y-scroll">
+        <div className="bg-gray-300 font-nunito h-screen overflow-y-scroll" style={{maxWidth: '90vw'}}>
             <div className="font-bold text-4xl text-gray-700 pt-8 px-6">Filter</div>
             <TableContainer area={none} className="p-6 w-auto">
                 <FilterRows query={props.query} dispatch={props.dispatch} startRow={0} startColumn={0} />

@@ -1,4 +1,4 @@
-import { Immutable } from "immer"
+import { Immutable } from 'immer'
 import { HashSet, Vector } from 'prelude-ts'
 import { FunctionName, functions } from "./functions"
 import { getState } from "./store"
@@ -15,7 +15,7 @@ export type Mapper = {
     functionInput: string
 }
 
-type MapperName =
+export type MapperName =
     | 'mapper1'
 
 export const mappers: Record<MapperName, Mapper> = {
@@ -82,8 +82,8 @@ export function executeMapper(mapper: Mapper, args: MapperArgs): [Array<object>,
                 if (index < args.args.length) {
                     const functionArgs = args.args[index]
                     functionArgs[mapper.functionInput] = variable.variableName.toString()
-                    const [functionResult, executionFlag, diff] = executeFunction(fx, functionArgs)
-                    if (!executionFlag) {
+                    const [functionResult, symbolFlag, diff] = executeFunction(fx, functionArgs)
+                    if (!symbolFlag) {
                         return [result, false, mergeDiffs(diffs.toArray())]
                     }
                     result = result.append(functionResult)
