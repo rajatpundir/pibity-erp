@@ -91,8 +91,8 @@ export function executeMapper(mapper: Mapper, args: MapperArgs): [Array<object>,
                 } else {
                     const functionArgs = args.args[args.args.length - 1]
                     functionArgs[mapper.functionInput] = variable.variableName.toString()
-                    const [functionResult, executionFlag, diff] = executeFunction(fx, functionArgs)
-                    if (!executionFlag) {
+                    const [functionResult, symbolFlag, diff] = executeFunction(fx, functionArgs)
+                    if (!symbolFlag) {
                         return [result, false, mergeDiffs(diffs.toArray())]
                     }
                     result = result.append(functionResult)
@@ -101,8 +101,8 @@ export function executeMapper(mapper: Mapper, args: MapperArgs): [Array<object>,
             })
         } else {
             args.args.forEach(arg => {
-                const [functionResult, executionFlag, diff] = executeFunction(fx, arg)
-                if (!executionFlag) {
+                const [functionResult, symbolFlag, diff] = executeFunction(fx, arg)
+                if (!symbolFlag) {
                     return [result, false, mergeDiffs(diffs.toArray())]
                 }
                 result = result.append(functionResult)
