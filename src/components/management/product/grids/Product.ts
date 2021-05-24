@@ -54,7 +54,7 @@ export const layouts: { [index: string]: GridLayout } = {
             areas: Vector.of(
                 Vector.of(none, header, header, none, button, none),
                 Vector.of(none, details, details, details, details, none),
-                Vector.of(none, uom, uom, none, none, none)
+                Vector.of(none, uom, uom, uom, uom, none)
             )
         }
     }),
@@ -85,6 +85,36 @@ export const layouts: { [index: string]: GridLayout } = {
         layout_xl: {
             rows: Vector.of('auto'),
             columns: Vector.of('1fr', '1fr', '1fr', '1fr', '1fr', '1fr'),
+            areas: Vector.of()
+        }
+    }),
+    query: validateLayout({
+        margin: 0,
+        rowGap: '1rem',
+        columnGap: '0rem',
+        layout_mobile: {
+            rows: Vector.of('1fr'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of()
+        },
+        layout_sm: {
+            rows: Vector.of('1fr'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of()
+        },
+        layout_md: {
+            rows: Vector.of('1fr'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of()
+        },
+        layout_lg: {
+            rows: Vector.of('1fr'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of()
+        },
+        layout_xl: {
+            rows: Vector.of('1fr'),
+            columns: Vector.of('1fr'),
             areas: Vector.of()
         }
     })
