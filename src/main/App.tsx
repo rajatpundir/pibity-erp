@@ -42,7 +42,6 @@ function App() {
     d: 7,
     e: 11
   })
-  console.log(d, e, f)
   return (
     <div className="App font-nunito bg-gray-100">
       <BrowserRouter>

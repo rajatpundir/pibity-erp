@@ -120,65 +120,37 @@ function getCells(variables: HashSet<Variable>, start: number, end: number): Vec
         if (rowIndex % 2 === 0) {
             cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{variable.variableName.toString()}</Cell>)
             counter += 1
-            if(keys.length !== 0) {
-                keys.slice(0, keys.length - 1).forEach((key, columnIndex) => {
-                    const value = variable.values[key]
-                    switch (typeof value) {
-                        case 'boolean': {
-                            cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{value ? 'Yes' : 'No'}</Cell>)
-                            counter += 1
-                            return
-                        }
-                        default: {
-                            cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{value}</Cell>)
-                            counter += 1
-                        }
-                    }
-                })
-                const value = variable.values[keys[keys.length - 1]]
+            keys.slice(0, keys.length).forEach((key, columnIndex) => {
+                const value = variable.values[key]
                 switch (typeof value) {
                     case 'boolean': {
-                        cells = cells.append(<Cell key={counter} className="pr-2 pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${keys.length + 1}/${keys.length + 2}`}>{value ? 'Yes' : 'No'}</Cell>)
+                        cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{value ? 'Yes' : 'No'}</Cell>)
                         counter += 1
                         return
                     }
                     default: {
-                        cells = cells.append(<Cell key={counter} className="pr-2 pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${keys.length + 1}/${keys.length + 2}`}>{value}</Cell>)
+                        cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{value}</Cell>)
                         counter += 1
                     }
                 }
-            }
+            })
         } else {
             cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{variable.variableName.toString()}</Cell>)
             counter += 1
-            if(keys.length !== 0) {
-                keys.slice(0, keys.length - 1).forEach((key, columnIndex) => {
-                    const value = variable.values[key]
-                    switch (typeof value) {
-                        case 'boolean': {
-                            cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{value ? 'Yes' : 'No'}</Cell>)
-                            counter += 1
-                            return
-                        }
-                        default: {
-                            cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{value}</Cell>)
-                            counter += 1
-                        }
-                    }
-                })
-                const value = variable.values[keys[keys.length - 1]]
+            keys.slice(0, keys.length).forEach((key, columnIndex) => {
+                const value = variable.values[key]
                 switch (typeof value) {
                     case 'boolean': {
-                        cells = cells.append(<Cell key={counter} className="pr-2 pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${keys.length + 1}/${keys.length + 2}`}>{value ? 'Yes' : 'No'}</Cell>)
+                        cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{value ? 'Yes' : 'No'}</Cell>)
                         counter += 1
                         return
                     }
                     default: {
-                        cells = cells.append(<Cell key={counter} className="pr-2 pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${keys.length + 1}/${keys.length + 2}`}>{value}</Cell>)
+                        cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{value}</Cell>)
                         counter += 1
                     }
                 }
-            }
+            })
         }
     })
     return cells
@@ -258,7 +230,7 @@ export function Table(props: TableProps) {
             payload: props.state.limit - 5
         })
     }
-
+    
     return (<Container area={props.area} layout={layouts.table} >
         <TableContainer area={body} className="border-l-2 border-r-2 border-t-2 rounded-tl-xl rounded-tr-xl border-gray-300">
             <Cell row="1/2" column="1/2" className="bg-gray-800 rounded-tl-lg pl-4">
@@ -277,11 +249,11 @@ export function Table(props: TableProps) {
             {
                 props.variables.length() !== 0 && start < props.variables.length()
                     ? getCells(props.variables, start, end)
-                    : <Cell className="pt-4 pb-4 border-b-2 w-full font-bold text-center bg-gray-50" row="2/3" column="1/6">No records found at specified page.</Cell>
+                    : <Cell className="pt-4 pb-4 border-b-2 w-full font-bold text-center bg-gray-50" row="2/3" column={`1/${props.columns.length()}`}>No records found at specified page.</Cell>
             }
         </TableContainer>
         <Container area={footer} layout={layouts.footer} className="bg-gray-100 border-l-2 border-r-2 border-b-2 border-gray-300">
-            <Item align='center' className="mx-6">
+            <Item align='center' className="mx-6 whitespace-nowrap">
                 <span className="mx-2">
                     Page: <Input type='number' onChange={changePage} value={props.state.page} /> / {Math.ceil(props.variables.length() / props.state.limit)}
                     <button onClick={setPage} className="align-text-bottom focus:outline-none">

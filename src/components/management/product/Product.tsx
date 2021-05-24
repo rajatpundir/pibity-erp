@@ -5,6 +5,7 @@ import tw from 'twin.macro'
 import Switch from '@material-ui/core/Switch'
 import { Container, Item, none } from '../../../main/commons'
 import * as Grid from './grids/Product'
+import * as Grid2 from './grids/Products'
 import { getReplaceVariableDiff } from '../../../main/layers'
 import { useStore } from '../../../main/useStore'
 import { Product, ProductVariable, UOMVariable } from '../../../main/variables'
@@ -15,7 +16,6 @@ import { Drawer } from '@material-ui/core'
 
 type State = Immutable<{
     variable: ProductVariable
-    // variable1: UOMVariable
     uom: {
         typeName: 'UOM'
         query: Query
@@ -45,7 +45,6 @@ export type uomAction =
 
 const initialState: State = {
     variable: new ProductVariable('', { name: '', orderable: true, consumable: true, producable: false }),
-    // variable1: new UOMVariable('', { product: , name: 'uuu', conversionRate: 12.2 }),
     uom: {
         typeName: 'UOM',
         query: getQuery('UOM'),
@@ -119,9 +118,9 @@ function uomReducer(state: Draft<State['uom']>, action: uomAction) {
 export default function ProductX() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
     const [uomState, uomDispatch] = useImmerReducer<State['uom'], uomAction>(uomReducer, initialState.uom)
-    const columns: Vector<string> = Vector.of("UOM", "Product Name", "Conversion Name", "Converion unit")
-    const uomVariables: HashSet<Immutable<UOMVariable>> = HashSet.empty<UOMVariable>()
-    const [open, setOpen] = useState(false)
+    const columns: Vector<string> = Vector.of("UOM ID", "Product Name", "UOM", "Converion Rate")
+    const uomVariables: HashSet<Immutable<UOMVariable>> = HashSet.of()
+    const [uomFilter, toggleUOMFilter] = useState(false)
     const addDiff = useStore(state => state.addDiff)
 
     const onInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -188,26 +187,25 @@ export default function ProductX() {
                         <Switch color='primary' onChange={onSwitchChange} checked={state.variable.values.producable} name='producable' />
                     </Item>
                 </Container>
-                {/* <Table area={Grid.uom} state={uomState} dispatch={uomDispatch} variables={uomVariables} columns={columns} /> */}
+                <Container area={Grid.uom} layout={Grid2.layouts.main}>
+                    <Item area={Grid2.header}>
+                        <Title>Unit of Measures</Title>
+                    </Item>
+                    <Item area={Grid2.filter} justify='end' align='center' className="flex">
+                        <Button onClick={() => toggleUOMFilter(true)}>Add</Button>
+                        <Button onClick={() => toggleUOMFilter(true)}>Filter</Button>
+                        <Drawer open={uomFilter} onClose={() => toggleUOMFilter(false)} anchor={'right'}>
+                            <Filter query={state.uom.query} dispatch={uomDispatch} />
+                        </Drawer>
+                    </Item>
+                    <Table area={Grid2.table} state={uomState} dispatch={uomDispatch} variables={uomVariables} columns={columns} />
+                </Container >
             </Container>
-            {/* ................................................................................................... */}
-            <Container area={none} layout={Grid.layouts.main}>
-            <Item area={Grid.header}>
-                <Title>UOM</Title>
-            </Item>
-            <Item area={Grid.button} justify='end' align='center'>
-                <Button onClick={() => setOpen(true)}>Filter</Button>
-                <Drawer open={open} onClose={() => setOpen(false)} anchor={'right'}>
-                    <Filter query={state.uom.query} dispatch={uomDispatch} />
-                </Drawer>
-            </Item>
-            <Table area={Grid.uom} state={uomState} dispatch={uomDispatch} variables={uomVariables} columns={columns} />
-            </Container >
         </>
     )
 }
 
-const Title = tw.div`py-8 text-4xl text-gray-800 font-bold mx-1`
+const Title = tw.div`py-8 text-4xl text-gray-800 font-bold mx-1 whitespace-nowrap`
 
 const Label = tw.label`w-1/2 whitespace-nowrap`
 
@@ -215,4 +213,4 @@ const InlineLabel = tw.label`inline-block w-1/2 mx-2`
 
 const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full rounded-sm`
 
-const Button = tw.button`bg-gray-900 text-white text-center font-bold p-2 mx-1 uppercase w-40 h-full max-w-sm rounded-lg focus:outline-none`
+const Button = tw.button`bg-gray-900 text-white text-center font-bold p-2 mx-1 uppercase w-40 h-full max-w-sm rounded-lg focus:outline-none inline-block`

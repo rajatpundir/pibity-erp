@@ -141,7 +141,6 @@ export function executeCircuit(circuit: Circuit, args: object): [object, boolean
                 const fx = functions[computation.exec]
                 const functionArgs = {}
                 Object.keys(fx.inputs).forEach(inputName => {
-                    console.log(fx, inputName, computation.connect)
                     const connection = computation.connect[inputName]
                     switch(connection[0]) {
                         case 'input': {

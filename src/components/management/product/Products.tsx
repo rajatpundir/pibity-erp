@@ -74,7 +74,7 @@ export default function Products() {
     const columns: Vector<string> = Vector.of("SKU", "Name", "Orderable", "Consumable", "Producable")
     const [open, setOpen] = useState(false)
     return (
-        <Container area={none} layout={Grid.layouts.main}>
+        <Container area={none} layout={Grid.layouts.main} className="p-10">
             <Item area={Grid.filter} justify='end' align='center'>
                 <Button onClick={() => setOpen(true)}>Filter</Button>
                 <Drawer open={open} onClose={() => setOpen(false)} anchor={'right'}>
