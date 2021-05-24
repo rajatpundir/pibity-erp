@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from "use-immer"
 import tw from 'twin.macro'
@@ -7,10 +7,22 @@ import { Container, Item, none } from '../../../main/commons'
 import * as Grid from './grids/Product'
 import { getReplaceVariableDiff } from '../../../main/layers'
 import { useStore } from '../../../main/useStore'
-import { Product, ProductVariable } from '../../../main/variables'
+import { Product, ProductVariable, UOMVariable } from '../../../main/variables'
+import { Table } from '../../../main/Table'
+import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
+import { HashSet, Vector } from 'prelude-ts'
+import { Drawer } from '@material-ui/core'
 
 type State = Immutable<{
     variable: ProductVariable
+    // variable1: UOMVariable
+    uom: {
+        typeName: 'UOM'
+        query: Query
+        limit: number
+        offset: number
+        page: number
+    }
 }>
 
 export type Action =
@@ -21,8 +33,26 @@ export type Action =
     | ['variable', 'values', 'consumable', boolean]
     | ['variable', 'values', 'producable', boolean]
 
+export type uomAction =
+    | {
+        type: 'reset' | 'limit' | 'offset' | 'page'
+        payload: number
+    }
+    | {
+        type: 'query'
+        payload: Args
+    }
+
 const initialState: State = {
-    variable: new ProductVariable('', { name: '', orderable: true, consumable: true, producable: false })
+    variable: new ProductVariable('', { name: '', orderable: true, consumable: true, producable: false }),
+    // variable1: new UOMVariable('', { product: , name: 'uuu', conversionRate: 12.2 }),
+    uom: {
+        typeName: 'UOM',
+        query: getQuery('UOM'),
+        limit: 5,
+        offset: 0,
+        page: 1
+    }
 }
 
 function reducer(state: Draft<State>, action: Action) {
@@ -54,8 +84,44 @@ function reducer(state: Draft<State>, action: Action) {
     }
 }
 
+function uomReducer(state: Draft<State['uom']>, action: uomAction) {
+    switch (action.type) {
+        case 'reset':
+            return initialState.uom;
+        case 'query': {
+            if (typeof action.payload === 'object') {
+                updateQuery(state.query, action.payload)
+            }
+            return;
+        }
+        case 'limit': {
+            if (typeof action.payload === 'number') {
+                state.limit = Math.max(initialState.uom.limit, action.payload)
+            }
+            return;
+        }
+        case 'offset': {
+            if (typeof action.payload === 'number') {
+                state.offset = Math.max(0, action.payload)
+                state.page = Math.max(0, action.payload) + 1
+            }
+            return;
+        }
+        case 'page': {
+            if (typeof action.payload === 'number') {
+                state.page = action.payload
+            }
+            return;
+        }
+    }
+}
+
 export default function ProductX() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
+    const [uomState, uomDispatch] = useImmerReducer<State['uom'], uomAction>(uomReducer, initialState.uom)
+    const columns: Vector<string> = Vector.of("UOM", "Product Name", "Conversion Name", "Converion unit")
+    const uomVariables: HashSet<Immutable<UOMVariable>> = HashSet.empty<UOMVariable>()
+    const [open, setOpen] = useState(false)
     const addDiff = useStore(state => state.addDiff)
 
     const onInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,36 +158,52 @@ export default function ProductX() {
     }
 
     return (
-        <Container area={none} layout={Grid.layouts.main}>
+        <>
+            <Container area={none} layout={Grid.layouts.main}>
+                <Item area={Grid.header}>
+                    <Title>Create Product</Title>
+                </Item>
+                <Item area={Grid.button} justify='end' align='center'>
+                    <Button onClick={onSubmit}>Save</Button>
+                </Item>
+                <Container area={Grid.details} layout={Grid.layouts.details}>
+                    <Item>
+                        <Label>SKU</Label>
+                        <Input type='text' onChange={onInputChange} value={state.variable.variableName.toString()} name='variableName' />
+                    </Item>
+                    <Item>
+                        <Label>Product Name</Label>
+                        <Input type='text' onChange={onInputChange} value={state.variable.values.name} name='name' />
+                    </Item>
+                    <Item>
+                        <InlineLabel>Orderable</InlineLabel>
+                        <Switch color='primary' onChange={onSwitchChange} checked={state.variable.values.orderable} name='orderable' />
+                    </Item>
+                    <Item>
+                        <InlineLabel>Consumable</InlineLabel>
+                        <Switch color='primary' onChange={onSwitchChange} checked={state.variable.values.consumable} name='consumable' />
+                    </Item>
+                    <Item>
+                        <InlineLabel>Producable</InlineLabel>
+                        <Switch color='primary' onChange={onSwitchChange} checked={state.variable.values.producable} name='producable' />
+                    </Item>
+                </Container>
+                {/* <Table area={Grid.uom} state={uomState} dispatch={uomDispatch} variables={uomVariables} columns={columns} /> */}
+            </Container>
+            {/* ................................................................................................... */}
+            <Container area={none} layout={Grid.layouts.main}>
             <Item area={Grid.header}>
-                <Title>Create Product</Title>
+                <Title>UOM</Title>
             </Item>
             <Item area={Grid.button} justify='end' align='center'>
-                <Button onClick={onSubmit}>Save</Button>
+                <Button onClick={() => setOpen(true)}>Filter</Button>
+                <Drawer open={open} onClose={() => setOpen(false)} anchor={'right'}>
+                    <Filter query={state.uom.query} dispatch={uomDispatch} />
+                </Drawer>
             </Item>
-            <Container area={Grid.details} layout={Grid.layouts.details}>
-                <Item>
-                    <Label>SKU</Label>
-                    <Input type='text' onChange={onInputChange} value={state.variable.variableName.toString()} name='variableName' />
-                </Item>
-                <Item>
-                    <Label>Product Name</Label>
-                    <Input type='text' onChange={onInputChange} value={state.variable.values.name} name='name' />
-                </Item>
-                <Item>
-                    <InlineLabel>Orderable</InlineLabel>
-                    <Switch color='primary' onChange={onSwitchChange} checked={state.variable.values.orderable} name='orderable' />
-                </Item>
-                <Item>
-                    <InlineLabel>Consumable</InlineLabel>
-                    <Switch color='primary' onChange={onSwitchChange} checked={state.variable.values.consumable} name='consumable' />
-                </Item>
-                <Item>
-                    <InlineLabel>Producable</InlineLabel>
-                    <Switch color='primary' onChange={onSwitchChange} checked={state.variable.values.producable} name='producable' />
-                </Item>
-            </Container>
-        </Container>
+            <Table area={Grid.uom} state={uomState} dispatch={uomDispatch} variables={uomVariables} columns={columns} />
+            </Container >
+        </>
     )
 }
 
