@@ -71,7 +71,7 @@ function reducer(state: Draft<State>, action: Action) {
 export default function Products() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
     const variables = useStore(state => state.variables.Product).filter(variable => applyFilter(state.query, variable))
-    const columns: Vector<string> = Vector.of("SKU", "Name", "Orderable", "Consumable", "Producable")
+    const columns: Vector<string> = Vector.of("name", "orderable", "consumable", "producable")
     const [open, setOpen] = useState(false)
     return (
         <Container area={none} layout={Grid.layouts.main} className="p-10">
@@ -84,7 +84,7 @@ export default function Products() {
             <Item area={Grid.header}>
                 <Title>Products</Title>
             </Item>
-            <Table area={Grid.table} state={state} dispatch={dispatch} variables={variables} columns={columns} />
+            <Table area={Grid.table} state={state} dispatch={dispatch} variables={variables} showVariableName={true} columns={columns} />
         </Container>
     )
 }

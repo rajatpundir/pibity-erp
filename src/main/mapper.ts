@@ -100,7 +100,6 @@ export function executeMapper(mapper: Mapper, args: MapperArgs): [Array<object>,
                 }
             })
         } else {
-            console.log(args.args)
             args.args.forEach(arg => {
                 const [functionResult, symbolFlag, diff] = executeFunction(fx, arg)
                 if (!symbolFlag) {

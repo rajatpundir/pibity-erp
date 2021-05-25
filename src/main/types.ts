@@ -50,12 +50,14 @@ export type Key = {
 
 export type Type = {
     name: string
+    autoId: boolean
     keys: Record<string, Key>
 }
 
 export const types: Record<NonPrimitiveType, Type> = {
     Product: {
-        name: 'Product',
+        name: 'SKU',
+        autoId: false,
         keys: {
             name: {
                 order: 0,
@@ -81,6 +83,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     UOM: {
         name: 'Unit of Measure',
+        autoId: true,
         keys: {
             product: {
                 order: 0,
@@ -101,6 +104,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     Indent: {
         name: 'Indent',
+        autoId: true,
         keys: {
             approved: {
                 order: 0,
@@ -111,6 +115,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     IndentItem: {
         name: 'Indent Item',
+        autoId: true,
         keys: {
             indent: {
                 order: 0,
@@ -166,10 +171,12 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     Supplier: {
         name: 'Supplier',
+        autoId: false,
         keys: {}
     },
     SupplierProduct: {
         name: 'Supplier Product',
+        autoId: true,
         keys: {
             supplier: {
                 order: 0,
@@ -185,6 +192,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     Quotation: {
         name: 'Quotation',
+        autoId: true,
         keys: {
             indent: {
                 order: 0,
@@ -200,6 +208,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     QuotationItem: {
         name: 'Quotation Item',
+        autoId: true,
         keys: {
             quotation: {
                 order: 0,
@@ -220,6 +229,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     PurchaseOrder: {
         name: 'Purchase Order',
+        autoId: true,
         keys: {
             quotation: {
                 order: 0,
@@ -230,6 +240,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     PurchaseOrderItem: {
         name: 'Purchase Order Item',
+        autoId: true,
         keys: {
             purchaseOrder: {
                 order: 0,
@@ -260,6 +271,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     PurchaseInvoice: {
         name: 'Purchase Invoice',
+        autoId: true,
         keys: {
             purchaseOrder: {
                 order: 0,
@@ -270,6 +282,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     PurchaseInvoiceItem: {
         name: 'Purchase Invoice Item',
+        autoId: true,
         keys: {
             purchaseInvoice: {
                 order: 0,
@@ -295,6 +308,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     MaterialApprovalSlip: {
         name: 'Material Approval Slip',
+        autoId: true,
         keys: {
             purchaseInvoice: {
                 order: 0,
@@ -305,6 +319,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     MaterialApprovalSlipItem: {
         name: 'Material Approval Slip Item',
+        autoId: true,
         keys: {
             materialApprovalSlip: {
                 order: 0,
@@ -330,6 +345,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     MaterialRejectionSlip: {
         name: 'Material Rejection Slip',
+        autoId: true,
         keys: {
             purchaseInvoice: {
                 order: 0,
@@ -340,6 +356,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     MaterialRejectionSlipItem: {
         name: 'Material Rejection Slip Item',
+        autoId: true,
         keys: {
             materialRejectionSlip: {
                 order: 0,
@@ -365,6 +382,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     MaterialReturnSlip: {
         name: 'Material Return Slip',
+        autoId: true,
         keys: {
             materialRejectionSlip: {
                 order: 0,
@@ -375,6 +393,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     MaterialReturnSlipItem: {
         name: 'Material Return Slip Item',
+        autoId: true,
         keys: {
             materialReturnSlip: {
                 order: 0,
@@ -395,6 +414,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     MaterialRequistionSlip: {
         name: 'Material Requistion Slip',
+        autoId: true,
         keys: {
             materialApprovalSlip: {
                 order: 0,
@@ -405,6 +425,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     MaterialRequistionSlipItem: {
         name: 'Material Requistion Slip Item',
+        autoId: true,
         keys: {
             materialRequistionSlip: {
                 order: 0,
@@ -430,6 +451,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     BOM: {
         name: 'BOM',
+        autoId: false,
         keys: {
             product: {
                 order: 0,
@@ -450,6 +472,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     BOMItem: {
         name: 'BOM Item',
+        autoId: true,
         keys: {
             bom: {
                 order: 0,
@@ -475,6 +498,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     ProductionPreparationSlip: {
         name: 'Production Preparation Slip',
+        autoId: true,
         keys: {
             bom: {
                 order: 0,
@@ -495,6 +519,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     ProductionPreparationSlipItem: {
         name: 'Production Preparation SlipItem',
+        autoId: true,
         keys: {
             productionPreparationSlip: {
                 order: 0,
@@ -515,6 +540,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     ScrapMaterialSlip: {
         name: 'Scrap Material Slip',
+        autoId: true,
         keys: {
             productionPreparationSlip: {
                 order: 0,
@@ -530,6 +556,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     TransferMaterialSlip: {
         name: 'TransferMaterialSlip',
+        autoId: true,
         keys: {
             productionPreparationSlip: {
                 order: 0,
@@ -550,6 +577,7 @@ export const types: Record<NonPrimitiveType, Type> = {
     },
     WarehouseAcceptanceSlip: {
         name: 'Warehouse Acceptance Slip',
+        autoId: true,
         keys: {
             transferMaterialSlip: {
                 order: 0,

@@ -3,6 +3,7 @@ import { Immutable } from 'immer'
 import tw from 'twin.macro'
 import { Container, Item, TableContainer, Cell, validateLayout, Area, GridLayout } from './commons'
 import { Variable } from './variables'
+import { NonPrimitiveType, types } from './types'
 
 const body: Area = new Area('body')
 const footer: Area = new Area('footer')
@@ -112,43 +113,76 @@ const layouts: { [index: string]: GridLayout } = {
     })
 }
 
-function getCells(variables: Immutable<HashSet<Variable>>, start: number, end: number): Vector<unknown> {
+function getCells(columns: Array<string>, showVariableName: boolean, variables: Immutable<HashSet<Variable>>, start: number, end: number): Vector<unknown> {
     var counter = 0
     var cells = Vector.of()
     variables.toArray().slice(start, end).forEach((variable, rowIndex) => {
         const keys: Array<string> = Object.keys(variable.values)
         if (rowIndex % 2 === 0) {
-            cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{variable.variableName.toString()}</Cell>)
-            counter += 1
-            keys.slice(0, keys.length).forEach((key, columnIndex) => {
+            if (showVariableName) {
+                cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{variable.variableName.toString()}</Cell>)
+                counter += 1
+            }
+            columns.forEach((key, columnIndex) => {
                 const value = variable.values[key]
-                switch (typeof value) {
-                    case 'boolean': {
-                        cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{value ? 'Yes' : 'No'}</Cell>)
-                        counter += 1
-                        return
+                if (!showVariableName && columnIndex == 0) {
+                    switch (typeof value) {
+                        case 'boolean': {
+                            cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{value ? 'Yes' : 'No'}</Cell>)
+                            counter += 1
+                            return
+                        }
+                        default: {
+                            cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{typeof value === 'object' ? value.toString() : value}</Cell>)
+                            counter += 1
+                        }
                     }
-                    default: {
-                        cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{typeof value === 'object' ? value.toString() : value}</Cell>)
-                        counter += 1
+                } else {
+                    switch (typeof value) {
+                        case 'boolean': {
+                            cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{value ? 'Yes' : 'No'}</Cell>)
+                            counter += 1
+                            return
+                        }
+                        default: {
+                            cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{typeof value === 'object' ? value.toString() : value}</Cell>)
+                            counter += 1
+                        }
                     }
                 }
             })
         } else {
-            cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{variable.variableName.toString()}</Cell>)
-            counter += 1
-            keys.slice(0, keys.length).forEach((key, columnIndex) => {
+            if (showVariableName) {
+                cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{variable.variableName.toString()}</Cell>)
+                counter += 1
+            }
+            columns.forEach((key, columnIndex) => {
                 const value = variable.values[key]
-                switch (typeof value) {
-                    case 'boolean': {
-                        cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{value ? 'Yes' : 'No'}</Cell>)
-                        counter += 1
-                        return
+                if (!showVariableName && columnIndex == 0) {
+                    switch (typeof value) {
+                        case 'boolean': {
+                            cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{value ? 'Yes' : 'No'}</Cell>)
+                            counter += 1
+                            return
+                        }
+                        default: {
+                            cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{typeof value === 'object' ? value.toString() : value}</Cell>)
+                            counter += 1
+                        }
                     }
-                    default: {
-                        cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{typeof value === 'object' ? value.toString() : value}</Cell>)
-                        counter += 1
+                } else {
+                    switch (typeof value) {
+                        case 'boolean': {
+                            cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{value ? 'Yes' : 'No'}</Cell>)
+                            counter += 1
+                            return
+                        }
+                        default: {
+                            cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{typeof value === 'object' ? value.toString() : value}</Cell>)
+                            counter += 1
+                        }
                     }
+
                 }
             })
         }
@@ -158,7 +192,9 @@ function getCells(variables: Immutable<HashSet<Variable>>, start: number, end: n
 
 type TableProps = {
     area: Area
+    showVariableName: boolean
     state: Immutable<{
+        typeName: NonPrimitiveType
         limit: number
         offset: number
         page: number
@@ -174,6 +210,8 @@ type TableProps = {
 export function Table(props: TableProps) {
     const start = Math.min(props.state.limit * props.state.offset, props.variables.length())
     const end = Math.min(start + props.state.limit, props.variables.length())
+    const type = types[props.state.typeName]
+    const keys = Object.keys(type.keys).filter(keyName => props.columns.contains(keyName))
 
     const firstPage = async (event: React.MouseEvent<HTMLButtonElement>) => {
         props.dispatch({
@@ -230,26 +268,38 @@ export function Table(props: TableProps) {
             payload: props.state.limit - 5
         })
     }
-    
+
     return (<Container area={props.area} layout={layouts.table} >
         <TableContainer area={body} className="border-l-2 border-r-2 border-t-2 rounded-tl-xl rounded-tr-xl border-gray-300">
-            <Cell row="1/2" column="1/2" className="bg-gray-800 rounded-tl-lg pl-4">
-                <Column>{props.columns.toArray()[0]}</Column>
-            </Cell>
             {
-                props.columns.toArray().slice(1, props.columns.length() - 1).map((columnName, index) => {
-                    return (<Cell key={columnName} row="1/2" column={`${index + 2}/${index + 3}`} className="bg-gray-800 -mx-1">
-                        <Column>{columnName}</Column>
-                    </Cell>)
+                props.showVariableName ? (<Cell row="1/2" column="1/2" className="bg-gray-800 rounded-tl-lg pl-4">
+                    <Column>{type.name}</Column>
+                </Cell>) : undefined
+            }
+            {
+                keys.slice(0, keys.length - 1).map((keyName, index) => {
+                    if (!props.showVariableName && index == 0) {
+                        return (<Cell key={keyName} row="1/2" column={`${index + 2 - (props.showVariableName ? 0 : 1)}/${index + 3 - (props.showVariableName ? 0 : 1)}`} className="bg-gray-800 rounded-tl-lg pl-4">
+                            <Column>{type.keys[keyName].name}</Column>
+                        </Cell>)
+
+                    } else {
+                        return (<Cell key={keyName} row="1/2" column={`${index + 2 - (props.showVariableName ? 0 : 1)}/${index + 3 - (props.showVariableName ? 0 : 1)}`} className="bg-gray-800 -mx-1">
+                            <Column>{type.keys[keyName].name}</Column>
+                        </Cell>)
+
+                    }
                 })
             }
-            <Cell row="1/2" column={`${props.columns.length()}/${props.columns.length() + 1}`} className="bg-gray-800 rounded-tr-lg">
-                <Column>{props.columns.toArray()[props.columns.length() - 1]}</Column>
-            </Cell>
+            {
+                keys.length !== 0 ? (<Cell row="1/2" column={`${keys.length + 1 - (props.showVariableName ? 0 : 1)}/${keys.length + 2 - (props.showVariableName ? 0 : 1)}`} className="bg-gray-800 rounded-tr-lg">
+                    <Column>{type.keys[keys[keys.length - 1]].name}</Column>
+                </Cell>) : undefined
+            }
             {
                 props.variables.length() !== 0 && start < props.variables.length()
-                    ? getCells(props.variables, start, end)
-                    : <Cell className="pt-4 pb-4 border-b-2 w-full font-bold text-center bg-gray-50" row="2/3" column={`1/${props.columns.length()}`}>No records found at specified page.</Cell>
+                    ? getCells(keys, props.showVariableName, props.variables, start, end)
+                    : <Cell className="pt-4 pb-4 border-b-2 w-full font-bold text-center bg-gray-50" row="2/3" column={`1/${keys.length + 2 - (props.showVariableName ? 0 : 1)}`}>No records found at specified page.</Cell>
             }
         </TableContainer>
         <Container area={footer} layout={layouts.footer} className="bg-gray-100 border-l-2 border-r-2 border-b-2 border-gray-300">
@@ -279,7 +329,7 @@ export function Table(props: TableProps) {
                     </button>
                 </span>
             </Item>
-            <Item justify='end' align='center' className="mx-8">
+            <Item justify='end' align='center' className="mx-8 whitespace-nowrap">
                 <button onClick={firstPage} className="focus:outline-none">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline-block mx-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
