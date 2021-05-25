@@ -11,8 +11,9 @@ import { Cell, none, TableContainer } from './commons'
 import tw from 'twin.macro'
 import { evaluateExpression, LispExpression, Symbols } from './lisp'
 import { Vector } from 'prelude-ts'
-import { Key, types } from './types'
+import { Key, NonPrimitiveType, types } from './types'
 import { Variable } from './variables'
+import { isNonPrimitive } from './mapper'
 
 const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full min-w-max h-6 rounded-sm inline-block`
 
@@ -208,6 +209,7 @@ type Action =
     }
 
 type FilterProps = {
+    typeName: NonPrimitiveType
     query: Immutable<Query>
     dispatch: React.Dispatch<Action>
 }
@@ -217,13 +219,14 @@ export function Filter(props: FilterProps) {
         <div className="bg-gray-300 font-nunito h-screen overflow-y-scroll" style={{maxWidth: '90vw'}}>
             <div className="font-bold text-4xl text-gray-700 pt-8 px-6">Filter</div>
             <TableContainer area={none} className="p-6 w-auto">
-                <FilterRows query={props.query} dispatch={props.dispatch} startRow={0} startColumn={0} />
+                <FilterRows typeName={props.typeName} query={props.query} dispatch={props.dispatch} startRow={0} startColumn={0} />
             </TableContainer>
         </div>
     </>)
 }
 
 type FilterRowsProps = {
+    typeName: NonPrimitiveType
     query: Immutable<Query>
     dispatch: React.Dispatch<Action>
     startRow: number
@@ -234,6 +237,7 @@ type FilterRowsProps = {
 function FilterRows(props: FilterRowsProps) {
     var startRow: number = props.startRow
     var startColumn: number = props.startColumn
+    const type = types[props.typeName]
     return (<>
         <Cell justify='center' className="px-1" row={`${startRow + 1}/${startRow + 2}`} column={`${startColumn + 1}/${startColumn + 2}`}>
             <Checkbox className="w-2"
@@ -248,7 +252,7 @@ function FilterRows(props: FilterRowsProps) {
                 }}
             />
         </Cell>
-        <Cell className="px-1" row={`${startRow + 1}/${startRow + 2}`} column={`${startColumn + 2}/${startColumn + 3}`}>ID</Cell>
+        <Cell className="px-1" row={`${startRow + 1}/${startRow + 2}`} column={`${startColumn + 2}/${startColumn + 3}`}>{type.name}</Cell>
         <Cell className="px-1" row={`${startRow + 1}/${startRow + 2}`} column={`${startColumn + 3}/${startColumn + 4}`}>
             {
                 props.query.variableName.checked ? <select value={props.query.variableName.operator}
@@ -420,7 +424,7 @@ function FilterRows(props: FilterRowsProps) {
                                         }}
                                     />
                                 </Cell>
-                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 2}/${startColumn + 3}`}>{keyName}</Cell>
+                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 2}/${startColumn + 3}`}>{type.keys[keyName].name}</Cell>
                                 <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 3}/${startColumn + 4}`}>
                                     {
                                         value.checked ? <select value={value.operator}
@@ -584,7 +588,7 @@ function FilterRows(props: FilterRowsProps) {
                                         }}
                                     />
                                 </Cell>
-                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 2}/${startColumn + 3}`}>{keyName}</Cell>
+                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 2}/${startColumn + 3}`}>{type.keys[keyName].name}</Cell>
                                 <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 3}/${startColumn + 4}`}>
                                     {
                                         value.checked ? <select value={value.operator}
@@ -757,7 +761,7 @@ function FilterRows(props: FilterRowsProps) {
                                         }}
                                     />
                                 </Cell>
-                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 2}/${startColumn + 3}`}>{keyName}</Cell>
+                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 2}/${startColumn + 3}`}>{type.keys[keyName].name}</Cell>
                                 <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 3}/${startColumn + 4}`}>
                                     {
                                         value.checked ? <select value={value.operator}
@@ -930,7 +934,7 @@ function FilterRows(props: FilterRowsProps) {
                                         }}
                                     />
                                 </Cell>
-                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 2}/${startColumn + 3}`}>{keyName}</Cell>
+                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 2}/${startColumn + 3}`}>{type.keys[keyName].name}</Cell>
                                 <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 3}/${startColumn + 4}`}>
                                     {
                                         value.checked ? <select defaultValue={value.operator}>
@@ -966,7 +970,7 @@ function FilterRows(props: FilterRowsProps) {
                                         }}
                                     />
                                 </Cell>
-                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 2}/${startColumn + 3}`}>{keyName}</Cell>
+                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 2}/${startColumn + 3}`}>{type.keys[keyName].name}</Cell>
                                 <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 3}/${startColumn + 4}`}>
                                     {
                                         value.checked ? <select value={value.operator}
@@ -1145,7 +1149,7 @@ function FilterRows(props: FilterRowsProps) {
                                         }}
                                     />
                                 </Cell>
-                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 2}/${startColumn + 3}`}>{keyName}</Cell>
+                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 2}/${startColumn + 3}`}>{type.keys[keyName].name}</Cell>
                                 <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 3}/${startColumn + 4}`}>
                                     {
                                         value.checked ? <select value={value.operator}
@@ -1324,7 +1328,7 @@ function FilterRows(props: FilterRowsProps) {
                                         }}
                                     />
                                 </Cell>
-                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 2}/${startColumn + 3}`}>{keyName}</Cell>
+                                <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 2}/${startColumn + 3}`}>{type.keys[keyName].name}</Cell>
                                 <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 3}/${startColumn + 4}`}>
                                     {
                                         value.checked ? <select value={value.operator}
@@ -1490,29 +1494,32 @@ function FilterRows(props: FilterRowsProps) {
                         }
                     }
                 } else {
-                    return (<>
-                        <Cell justify='center' className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 1}/${startColumn + 2}`}>
-                            <Checkbox className="w-2"
-                                checked={value.checked}
-                                color='primary'
-                                inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                    props.dispatch({
-                                        type: 'query',
-                                        payload: Y(['values', keyName, 'checked', event.target.checked], props.parent)
-                                    })
-                                }}
-                            />
-                        </Cell>
-                        <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 2}/${startColumn + 3}`}>{keyName}</Cell>
-                        {
-                            value.checked ? (() => {
-                                const x = <FilterRows query={value.value} dispatch={props.dispatch} startRow={startRow + index + 1} startColumn={startColumn + 2} parent={props.parent ? T(props.parent, keyName) : ['values', keyName, undefined]} />
-                                startRow += getNestedRowCount(value.value)
-                                return x
-                            })() : undefined
-                        }
-                    </>)
+                    const keyTypeName = type.keys[keyName].type
+                    if(isNonPrimitive(keyTypeName)) {
+                        return (<>
+                            <Cell justify='center' className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 1}/${startColumn + 2}`}>
+                                <Checkbox className="w-2"
+                                    checked={value.checked}
+                                    color='primary'
+                                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                    onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        props.dispatch({
+                                            type: 'query',
+                                            payload: Y(['values', keyName, 'checked', event.target.checked], props.parent)
+                                        })
+                                    }}
+                                />
+                            </Cell>
+                            <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 2}/${startColumn + 3}`}>{type.keys[keyName].name}</Cell>
+                            {
+                                value.checked ? (() => {
+                                    const x = <FilterRows typeName={keyTypeName} query={value.value} dispatch={props.dispatch} startRow={startRow + index + 1} startColumn={startColumn + 2} parent={props.parent ? T(props.parent, keyName) : ['values', keyName, undefined]} />
+                                    startRow += getNestedRowCount(value.value)
+                                    return x
+                                })() : undefined
+                            }
+                        </>)
+                    }
                 }
                 return []
             })

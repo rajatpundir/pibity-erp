@@ -255,7 +255,7 @@ export default function ProductX() {
                         </Drawer>
                         <Button onClick={() => toggleUOMFilter(true)}>Filter</Button>
                         <Drawer open={uomFilter} onClose={() => toggleUOMFilter(false)} anchor={'right'}>
-                            <Filter query={uomState.query} dispatch={uomDispatch} />
+                            <Filter typeName='UOM' query={uomState.query} dispatch={uomDispatch} />
                         </Drawer>
                     </Item>
                     <Table area={Grid2.table} state={uomState} dispatch={uomDispatch} variables={state.uoms.variables.filter(variable => applyFilter(uomState.query, variable))} showVariableName={false} columns={columns} />

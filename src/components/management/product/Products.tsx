@@ -78,7 +78,7 @@ export default function Products() {
             <Item area={Grid.filter} justify='end' align='center'>
                 <Button onClick={() => setOpen(true)}>Filter</Button>
                 <Drawer open={open} onClose={() => setOpen(false)} anchor={'right'}>
-                    <Filter query={state.query} dispatch={dispatch} />
+                    <Filter typeName={state.typeName} query={state.query} dispatch={dispatch} />
                 </Drawer>
             </Item>
             <Item area={Grid.header}>

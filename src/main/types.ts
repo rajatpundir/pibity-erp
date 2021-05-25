@@ -465,7 +465,7 @@ export const types: Record<NonPrimitiveType, Type> = {
             },
             uom: {
                 order: 2,
-                name: 'uom',
+                name: 'UOM',
                 type: 'UOM'
             }
         }
