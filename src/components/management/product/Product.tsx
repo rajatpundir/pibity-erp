@@ -13,6 +13,7 @@ import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
 import { HashSet, Vector } from 'prelude-ts'
 import { Drawer } from '@material-ui/core'
+import { circuits, executeCircuit } from '../../../main/circuit'
 
 type State = Immutable<{
     variable: ProductVariable
@@ -180,7 +181,24 @@ export default function ProductX() {
 
     const onSubmit = async (event: React.FormEvent<HTMLButtonElement>) => {
         event.preventDefault()
-        addDiff(getReplaceVariableDiff(state.variable))
+        const [result, symbolFlag, diff] = executeCircuit(circuits.createProduct, {
+            sku: state.variable.variableName.toString(),
+            name: state.variable.values.name,
+            orderable: state.variable.values.orderable,
+            consumable: state.variable.values.consumable,
+            producable: state.variable.values.producable,
+            uoms: state.uoms.toArray().map(uom => {
+                return {
+                    prouct: 'xyz',
+                    name: uom.values.name,
+                    conversionRate: uom.values.conversionRate
+                }
+            })
+        })
+        console.log(result, symbolFlag)
+        if(symbolFlag) {
+            addDiff(diff)
+        }
     }
 
     return (

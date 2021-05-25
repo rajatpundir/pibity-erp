@@ -16,13 +16,13 @@ export type Mapper = {
 }
 
 export type MapperName =
-    | 'mapper1'
+    | 'createUOMs'
 
 export const mappers: Record<MapperName, Mapper> = {
-    mapper1: {
-        query: true,
-        queryParams: ['orderable'],
-        functionName: 'mapProduct',
+    createUOMs: {
+        query: false,
+        queryParams: [],
+        functionName: 'createUOM',
         functionInput: 'product'
     }
 }

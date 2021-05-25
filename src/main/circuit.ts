@@ -6,76 +6,56 @@ import { executeMapper, MapperName, mappers } from './mapper'
 import { NonPrimitiveType } from './types'
 
 type CircuitName = 
-| 'circuit1'
+| 'createProduct'
 
 export const circuits: Record<string, Circuit> = {
-    circuit1: {
+    createProduct: {
         inputs: {
-            a: {
-                type: 'Number'
+            sku: {
+                type: 'Text'
             },
-            b: {
-                type: 'Number'
+            name: {
+                type: 'Text'
             },
-            c: {
-                type: 'Number'
+            orderable: {
+                type: 'Boolean'
             },
-            d: {
-                type: 'Number'
+            consumable: {
+                type: 'Boolean'
             },
-            e: {
-                type: 'Number'
+            producable: {
+                type: 'Boolean'
+            },
+            uoms: {
+                type: []
             }
         },
         computations: {
             c1: {
                 order: 1,
                 type: 'function',
-                exec: 'fun1',
+                exec: 'createProduct',
                 connect: {
-                    a: ['input', 'a'],
-                    b: ['input', 'b']
+                    variableName: ['input', 'sku'],
+                    name: ['input', 'name'],
+                    orderable: ['input', 'orderable'],
+                    consumable: ['input', 'consumable'],
+                    producable: ['input', 'producable']
                 }
             },
             c2: {
                 order: 2,
-                type: 'function',
-                exec: 'fun2',
+                type: 'mapper',
+                exec: 'createUOMs',
                 connect: {
-                    c: ['input', 'c'],
-                    d: ['input', 'd'],
-                    e: ['computation', 'c1', 'f1o2']
-                }
-            },
-            c3: {
-                order: 3,
-                type: 'function',
-                exec: 'fun3',
-                connect: {
-                    p: ['input', 'e'],
-                    x: ['computation', 'c1', 'f1o1'],
-                    y: ['computation', 'c1', 'f1o2'],
-                    z: ['computation', 'c2', 'f2o1']
-                }
-            },
-            c4: {
-                order: 3,
-                type: 'function',
-                exec: 'fun4',
-                connect: {
-                    m: ['computation', 'c3', 'f3o1'],
-                    n: ['computation', 'c3', 'f3o2'],
-                    o: ['computation', 'c2', 'f2o1'],
-                    p: ['computation', 'c2', 'f2o2']
+                    queryParams: {},
+                    args: ['input', 'uoms']
                 }
             }
         },
         outputs: {
-            m: ['c1', 'f1o2'],
-            n: ['c2', 'f2o1'],
-            o: ['c3', 'f3o2'],
-            p: ['c4', 'f4o1'],
-            q: ['c4', 'f4o2']
+            product: ['c1', 'product'],
+            uoms: ['c2', 'uom']
         }
     }
 }
