@@ -87,5 +87,35 @@ export const layouts: { [index: string]: GridLayout } = {
             columns: Vector.of('1fr', '1fr', '1fr', '1fr', '1fr', '1fr'),
             areas: Vector.of()
         }
+    }),
+    uom: validateLayout({
+        margin: 1,
+        rowGap: '1rem',
+        columnGap: '2rem',
+        layout_mobile: {
+            rows: Vector.of('auto'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of()
+        },
+        layout_sm: {
+            rows: Vector.of('auto'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of()
+        },
+        layout_md: {
+            rows: Vector.of('auto'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of()
+        },
+        layout_lg: {
+            rows: Vector.of('auto'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of()
+        },
+        layout_xl: {
+            rows: Vector.of('auto'),
+            columns: Vector.of('1fr'),
+            areas: Vector.of()
+        }
     })
 }

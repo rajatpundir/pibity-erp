@@ -112,7 +112,7 @@ const layouts: { [index: string]: GridLayout } = {
     })
 }
 
-function getCells(variables: HashSet<Variable>, start: number, end: number): Vector<unknown> {
+function getCells(variables: Immutable<HashSet<Variable>>, start: number, end: number): Vector<unknown> {
     var counter = 0
     var cells = Vector.of()
     variables.toArray().slice(start, end).forEach((variable, rowIndex) => {
@@ -167,7 +167,7 @@ type TableProps = {
         type: 'limit' | 'offset' | 'page'
         payload: number
     }>
-    variables: HashSet<any>
+    variables: Immutable<HashSet<any>>
     columns: Vector<string>
 }
 

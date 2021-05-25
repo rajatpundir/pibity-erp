@@ -1632,12 +1632,10 @@ export function getQuery(typeName: string): Query {
 }
 
 export function updateQuery(query: Query, args: Args) {
-    console.log(query, args)
     switch (args[0]) {
         case 'variableName': {
             switch (args[1]) {
                 case 'checked': {
-                    console.log('checked---------')
                     query.variableName.checked = args[2]
                     return
                 }

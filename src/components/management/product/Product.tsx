@@ -16,6 +16,8 @@ import { Drawer } from '@material-ui/core'
 
 type State = Immutable<{
     variable: ProductVariable
+    uoms: HashSet<UOMVariable>
+    uomVariable: UOMVariable
     uom: {
         typeName: 'UOM'
         query: Query
@@ -32,6 +34,9 @@ export type Action =
     | ['variable', 'values', 'orderable', boolean]
     | ['variable', 'values', 'consumable', boolean]
     | ['variable', 'values', 'producable', boolean]
+    | ['uomVariable', 'values', 'name', string]
+    | ['uomVariable', 'values', 'conversionRate', number]
+    | ['addUOMVariable']
 
 export type uomAction =
     | {
@@ -45,6 +50,8 @@ export type uomAction =
 
 const initialState: State = {
     variable: new ProductVariable('', { name: '', orderable: true, consumable: true, producable: false }),
+    uomVariable: new UOMVariable('', {product: new Product(''), name: '', conversionRate: 0}),
+    uoms: HashSet.of(),
     uom: {
         typeName: 'UOM',
         query: getQuery('UOM'),
@@ -55,6 +62,7 @@ const initialState: State = {
 }
 
 function reducer(state: Draft<State>, action: Action) {
+    console.log(action)
     switch (action[0]) {
         case 'reset':
             return initialState;
@@ -79,6 +87,25 @@ function reducer(state: Draft<State>, action: Action) {
                     }
                 }
             }
+        }
+        case 'uomVariable': {
+            switch(action[2]) {
+                case 'name': {
+                    state[action[0]][action[1]][action[2]] = action[3]
+                    return
+                }
+                case 'conversionRate': {
+                    state[action[0]][action[1]][action[2]] = action[3]
+                    return
+                }
+            }
+        }
+        case 'addUOMVariable': {
+            console.log(state.uoms.length())
+            state.uoms = state.uoms.add(new UOMVariable(state.uomVariable.values.name, {product: new Product(''), name: state.uomVariable.values.name, conversionRate: state.uomVariable.values.conversionRate}))
+            state.uomVariable = initialState.uomVariable
+            console.log(state.uoms.length())
+            return
         }
     }
 }
@@ -118,8 +145,8 @@ function uomReducer(state: Draft<State['uom']>, action: uomAction) {
 export default function ProductX() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
     const [uomState, uomDispatch] = useImmerReducer<State['uom'], uomAction>(uomReducer, initialState.uom)
-    const columns: Vector<string> = Vector.of("UOM ID", "Product Name", "UOM", "Converion Rate")
-    const uomVariables: HashSet<Immutable<UOMVariable>> = HashSet.of()
+    const columns: Vector<string> = Vector.of("UOM ID", "Product Name", "UOM", "Conversion Rate")
+    const [addUOMFilter, toggleAddUOMFilter] = useState(false)
     const [uomFilter, toggleUOMFilter] = useState(false)
     const addDiff = useStore(state => state.addDiff)
 
@@ -192,13 +219,31 @@ export default function ProductX() {
                         <Title>Unit of Measures</Title>
                     </Item>
                     <Item area={Grid2.filter} justify='end' align='center' className="flex">
-                        <Button onClick={() => toggleUOMFilter(true)}>Add</Button>
+                        <Button onClick={() => toggleAddUOMFilter(true)}>Add</Button>
+                        <Drawer open={addUOMFilter} onClose={() => toggleAddUOMFilter(false)} anchor={'right'}>
+                            <div className="bg-gray-300 font-nunito h-screen overflow-y-scroll" style={{ maxWidth: '90vw' }}>
+                                <div className="font-bold text-4xl text-gray-700 pt-8 px-6">Add UOM</div>
+                                <Container area={none} layout={Grid.layouts.uom} className="">
+                                    <Item>
+                                        <Label>UOM</Label>
+                                        <Input type='text' onChange={e => dispatch(['uomVariable', 'values', 'name', e.target.value])} value={state.uomVariable.values.name} name='name' />
+                                    </Item>
+                                    <Item>
+                                        <Label>Conversion Rate</Label>
+                                        <Input type='text' onChange={e => dispatch(['uomVariable', 'values', 'conversionRate', parseFloat(e.target.value) ])} value={state.uomVariable.values.conversionRate} name='conversionRate' />
+                                    </Item>
+                                    <Item justify='center' align='center'>
+                                        <Button onClick={() => dispatch(['addUOMVariable'])}>Add</Button>
+                                    </Item>
+                                </Container>
+                            </div>
+                        </Drawer>
                         <Button onClick={() => toggleUOMFilter(true)}>Filter</Button>
                         <Drawer open={uomFilter} onClose={() => toggleUOMFilter(false)} anchor={'right'}>
-                            <Filter query={state.uom.query} dispatch={uomDispatch} />
+                            <Filter query={uomState.query} dispatch={uomDispatch} />
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={uomState} dispatch={uomDispatch} variables={uomVariables} columns={columns} />
+                    <Table area={Grid2.table} state={uomState} dispatch={uomDispatch} variables={state.uoms} columns={columns} />
                 </Container >
             </Container>
         </>
