@@ -16,14 +16,14 @@ import { circuits, executeCircuit } from '../../../main/circuit'
 
 type State = Immutable<{
     variable: ProductVariable
-    uoms: HashSet<UOMVariable>
-    uomVariable: UOMVariable
-    uom: {
+    uoms: {
         typeName: 'UOM'
         query: Query
         limit: number
         offset: number
         page: number
+        variable: UOMVariable
+        variables: HashSet<UOMVariable>
     }
 }>
 
@@ -34,8 +34,8 @@ export type Action =
     | ['variable', 'values', 'orderable', boolean]
     | ['variable', 'values', 'consumable', boolean]
     | ['variable', 'values', 'producable', boolean]
-    | ['uomVariable', 'values', 'name', string]
-    | ['uomVariable', 'values', 'conversionRate', number]
+    | ['uoms', 'variable','values', 'name', string]
+    | ['uoms', 'variable', 'values', 'conversionRate', number]
     | ['addUOMVariable']
 
 export type uomAction =
@@ -50,14 +50,14 @@ export type uomAction =
 
 const initialState: State = {
     variable: new ProductVariable('', { name: '', orderable: true, consumable: true, producable: false }),
-    uomVariable: new UOMVariable('', {product: new Product(''), name: '', conversionRate: 0}),
-    uoms: HashSet.of(),
-    uom: {
+    uoms: {
         typeName: 'UOM',
         query: getQuery('UOM'),
         limit: 5,
         offset: 0,
-        page: 1
+        page: 1,
+        variable: new UOMVariable('', {product: new Product(''), name: '', conversionRate: 0}),
+        variables: HashSet.of()
     }
 }
 
@@ -69,50 +69,50 @@ function reducer(state: Draft<State>, action: Action) {
             switch (action[1]) {
                 case 'variableName': {
                     state[action[0]][action[1]] = action[2]
-                    return
+                    break
                 }
                 case 'values': {
                     switch (action[2]) {
                         case 'name': {
                             state[action[0]][action[1]][action[2]] = action[3]
-                            return
+                            break
                         }
                         case 'orderable':
                         case 'consumable':
                         case 'producable': {
                             state[action[0]][action[1]][action[2]] = action[3]
-                            return
+                            break
                         }
                     }
                 }
             }
             return
         }
-        case 'uomVariable': {
-            switch(action[2]) {
+        case 'uoms': {
+            switch(action[3]) {
                 case 'name': {
-                    state[action[0]][action[1]][action[2]] = action[3]
-                    return
+                    state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                    break
                 }
                 case 'conversionRate': {
-                    state[action[0]][action[1]][action[2]] = action[3]
-                    return
+                    state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                    break
                 }
             }
             return
         }
         case 'addUOMVariable': {
-            state.uoms = state.uoms.add(new UOMVariable('', {product: new Product(''), name: state.uomVariable.values.name, conversionRate: state.uomVariable.values.conversionRate}))
-            state.uomVariable = initialState.uomVariable
+            state.uoms.variables = state.uoms.variables.add(new UOMVariable('', {product: new Product(''), name: state.uoms.variable.values.name, conversionRate: state.uoms.variable.values.conversionRate}))
+            state.uoms.variable = initialState.uoms.variable
             return
         }
     }
 }
 
-function uomReducer(state: Draft<State['uom']>, action: uomAction) {
+function uomReducer(state: Draft<State['uoms']>, action: uomAction) {
     switch (action.type) {
         case 'reset':
-            return initialState.uom;
+            return initialState.uoms;
         case 'query': {
             if (typeof action.payload === 'object') {
                 updateQuery(state.query, action.payload)
@@ -121,7 +121,7 @@ function uomReducer(state: Draft<State['uom']>, action: uomAction) {
         }
         case 'limit': {
             if (typeof action.payload === 'number') {
-                state.limit = Math.max(initialState.uom.limit, action.payload)
+                state.limit = Math.max(initialState.uoms.limit, action.payload)
             }
             return;
         }
@@ -143,7 +143,7 @@ function uomReducer(state: Draft<State['uom']>, action: uomAction) {
 
 export default function ProductX() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const [uomState, uomDispatch] = useImmerReducer<State['uom'], uomAction>(uomReducer, initialState.uom)
+    const [uomState, uomDispatch] = useImmerReducer<State['uoms'], uomAction>(uomReducer, initialState.uoms)
     const columns: Vector<string> = Vector.of("name", "conversionRate")
     const [addUOMFilter, toggleAddUOMFilter] = useState(false)
     const [uomFilter, toggleUOMFilter] = useState(false)
@@ -185,13 +185,14 @@ export default function ProductX() {
             orderable: state.variable.values.orderable,
             consumable: state.variable.values.consumable,
             producable: state.variable.values.producable,
-            uoms: state.uoms.toArray().map(uom => {
+            uoms: state.uoms.variables.toArray().map(uom => {
                 return {
                     name: uom.values.name,
                     conversionRate: uom.values.conversionRate
                 }
             })
         })
+        console.log(result, symbolFlag)
         if(symbolFlag) {
             addDiff(diff)
         }
@@ -240,11 +241,11 @@ export default function ProductX() {
                                 <Container area={none} layout={Grid.layouts.uom} className="">
                                     <Item>
                                         <Label>UOM</Label>
-                                        <Input type='text' onChange={e => dispatch(['uomVariable', 'values', 'name', e.target.value])} value={state.uomVariable.values.name} name='name' />
+                                        <Input type='text' onChange={e => dispatch(['uoms', 'variable', 'values', 'name', e.target.value])} value={state.uoms.variable.values.name} name='name' />
                                     </Item>
                                     <Item>
                                         <Label>Conversion Rate</Label>
-                                        <Input type='text' onChange={e => dispatch(['uomVariable', 'values', 'conversionRate', parseFloat(e.target.value) ])} value={state.uomVariable.values.conversionRate} name='conversionRate' />
+                                        <Input type='text' onChange={e => dispatch(['uoms', 'variable', 'values', 'conversionRate', parseFloat(e.target.value) ])} value={state.uoms.variable.values.conversionRate} name='conversionRate' />
                                     </Item>
                                     <Item justify='center' align='center'>
                                         <Button onClick={() => dispatch(['addUOMVariable'])}>Add</Button>
@@ -257,7 +258,7 @@ export default function ProductX() {
                             <Filter query={uomState.query} dispatch={uomDispatch} />
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={uomState} dispatch={uomDispatch} variables={state.uoms.filter(variable => applyFilter(uomState.query, variable))} showVariableName={false} columns={columns} />
+                    <Table area={Grid2.table} state={uomState} dispatch={uomDispatch} variables={state.uoms.variables.filter(variable => applyFilter(uomState.query, variable))} showVariableName={false} columns={columns} />
                 </Container >
             </Container>
         </>

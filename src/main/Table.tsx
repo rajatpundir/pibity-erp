@@ -117,7 +117,6 @@ function getCells(columns: Array<string>, showVariableName: boolean, variables: 
     var counter = 0
     var cells = Vector.of()
     variables.toArray().slice(start, end).forEach((variable, rowIndex) => {
-        const keys: Array<string> = Object.keys(variable.values)
         if (rowIndex % 2 === 0) {
             if (showVariableName) {
                 cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{variable.variableName.toString()}</Cell>)
@@ -125,7 +124,7 @@ function getCells(columns: Array<string>, showVariableName: boolean, variables: 
             }
             columns.forEach((key, columnIndex) => {
                 const value = variable.values[key]
-                if (!showVariableName && columnIndex == 0) {
+                if (!showVariableName && columnIndex === 0) {
                     switch (typeof value) {
                         case 'boolean': {
                             cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{value ? 'Yes' : 'No'}</Cell>)
@@ -158,7 +157,7 @@ function getCells(columns: Array<string>, showVariableName: boolean, variables: 
             }
             columns.forEach((key, columnIndex) => {
                 const value = variable.values[key]
-                if (!showVariableName && columnIndex == 0) {
+                if (!showVariableName && columnIndex === 0) {
                     switch (typeof value) {
                         case 'boolean': {
                             cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{value ? 'Yes' : 'No'}</Cell>)
@@ -278,7 +277,7 @@ export function Table(props: TableProps) {
             }
             {
                 keys.slice(0, keys.length - 1).map((keyName, index) => {
-                    if (!props.showVariableName && index == 0) {
+                    if (!props.showVariableName && index === 0) {
                         return (<Cell key={keyName} row="1/2" column={`${index + 2 - (props.showVariableName ? 0 : 1)}/${index + 3 - (props.showVariableName ? 0 : 1)}`} className="bg-gray-800 rounded-tl-lg pl-4">
                             <Column>{type.keys[keyName].name}</Column>
                         </Cell>)
