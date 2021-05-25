@@ -6,7 +6,6 @@ import Switch from '@material-ui/core/Switch'
 import { Container, Item, none } from '../../../main/commons'
 import * as Grid from './grids/Product'
 import * as Grid2 from './grids/Products'
-import { getReplaceVariableDiff } from '../../../main/layers'
 import { useStore } from '../../../main/useStore'
 import { Product, ProductVariable, UOMVariable } from '../../../main/variables'
 import { Table } from '../../../main/Table'
@@ -63,7 +62,6 @@ const initialState: State = {
 }
 
 function reducer(state: Draft<State>, action: Action) {
-    console.log(action)
     switch (action[0]) {
         case 'reset':
             return initialState;
@@ -88,6 +86,7 @@ function reducer(state: Draft<State>, action: Action) {
                     }
                 }
             }
+            return
         }
         case 'uomVariable': {
             switch(action[2]) {
@@ -100,12 +99,11 @@ function reducer(state: Draft<State>, action: Action) {
                     return
                 }
             }
+            return
         }
         case 'addUOMVariable': {
-            console.log(state.uoms.length())
             state.uoms = state.uoms.add(new UOMVariable(state.uomVariable.values.name, {product: new Product(''), name: state.uomVariable.values.name, conversionRate: state.uomVariable.values.conversionRate}))
             state.uomVariable = initialState.uomVariable
-            console.log(state.uoms.length())
             return
         }
     }
@@ -189,7 +187,7 @@ export default function ProductX() {
             producable: state.variable.values.producable,
             uoms: state.uoms.toArray().map(uom => {
                 return {
-                    prouct: 'xyz',
+                    product: 'xyzkjkj',
                     name: uom.values.name,
                     conversionRate: uom.values.conversionRate
                 }
@@ -261,7 +259,7 @@ export default function ProductX() {
                             <Filter query={uomState.query} dispatch={uomDispatch} />
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={uomState} dispatch={uomDispatch} variables={state.uoms} columns={columns} />
+                    <Table area={Grid2.table} state={uomState} dispatch={uomDispatch} variables={state.uoms.filter(variable => applyFilter(uomState.query, variable))} columns={columns} />
                 </Container >
             </Container>
         </>

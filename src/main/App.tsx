@@ -5,11 +5,6 @@ import Suppliers from '../components/management/supplier/Suppliers'
 import Navbar from './Navbar'
 import { Container, Item, none } from './commons'
 import * as Grid from './grids'
-import { circuits, executeCircuit } from './circuit'
-import { executeFunction } from './function'
-import { functions } from './functions'
-import { executeMapper, mappers } from './mapper'
-import { getState } from './store'
 
 function App() {
   return (
