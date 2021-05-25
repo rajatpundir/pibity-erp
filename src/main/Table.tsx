@@ -129,7 +129,7 @@ function getCells(variables: Immutable<HashSet<Variable>>, start: number, end: n
                         return
                     }
                     default: {
-                        cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{value}</Cell>)
+                        cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{typeof value === 'object' ? value.toString() : value}</Cell>)
                         counter += 1
                     }
                 }
@@ -146,7 +146,7 @@ function getCells(variables: Immutable<HashSet<Variable>>, start: number, end: n
                         return
                     }
                     default: {
-                        cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{value}</Cell>)
+                        cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2}/${columnIndex + 3}`}>{typeof value === 'object' ? value.toString() : value}</Cell>)
                         counter += 1
                     }
                 }
