@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Immutable, Draft } from 'immer'
-import { useImmerReducer } from "use-immer"
+import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
 import Switch from '@material-ui/core/Switch'
 import { Container, Item, none } from '../../../main/commons'
@@ -13,6 +13,7 @@ import { HashSet, Vector } from 'prelude-ts'
 import { Drawer } from '@material-ui/core'
 import { circuits, executeCircuit } from '../../../main/circuit'
 import { getState } from '../../../main/store'
+import { types } from '../../../main/types'
 
 type State = Immutable<{
     variable: ProductVariable
@@ -54,7 +55,7 @@ const initialState: State = {
         limit: 5,
         offset: 0,
         page: 1,
-        columns: Vector.of("name", "conversionRate"),
+        columns: Vector.of('name', 'conversionRate'),
         variable: new UOMVariable('', { product: new Product(''), name: '', conversionRate: 0 }),
         variables: HashSet.of()
     }
@@ -62,8 +63,9 @@ const initialState: State = {
 
 function reducer(state: Draft<State>, action: Action) {
     switch (action[0]) {
-        case 'resetVariable':
-            return initialState;
+        case 'resetVariable': {
+            return initialState
+        }
         case 'saveVariable': {
             const [result, symbolFlag, diff] = executeCircuit(circuits.createProduct, {
                 sku: state.variable.variableName.toString(),
@@ -152,6 +154,10 @@ function reducer(state: Draft<State>, action: Action) {
 
 export default function ProductX() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
+
+    const product = types['Product']
+    const uom = types['UOM']
+
     const [addUOMDrawer, toggleAddUOMDrawer] = useState(false)
     const [uomFilter, toggleUOMFilter] = useState(false)
 
@@ -225,42 +231,42 @@ export default function ProductX() {
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>
                     <Item>
-                        <Label>SKU</Label>
+                        <Label>{product.name}</Label>
                         <Input type='text' onChange={onVariableInputChange} value={state.variable.variableName.toString()} name='variableName' />
                     </Item>
                     <Item>
-                        <Label>Product Name</Label>
+                        <Label>{product.keys.name.name}</Label>
                         <Input type='text' onChange={onVariableInputChange} value={state.variable.values.name} name='name' />
                     </Item>
                     <Item>
-                        <InlineLabel>Orderable</InlineLabel>
+                        <InlineLabel>{product.keys.orderable.name}</InlineLabel>
                         <Switch color='primary' onChange={onVariableSwitchChange} checked={state.variable.values.orderable} name='orderable' />
                     </Item>
                     <Item>
-                        <InlineLabel>Consumable</InlineLabel>
+                        <InlineLabel>{product.keys.consumable.name}</InlineLabel>
                         <Switch color='primary' onChange={onVariableSwitchChange} checked={state.variable.values.consumable} name='consumable' />
                     </Item>
                     <Item>
-                        <InlineLabel>Producable</InlineLabel>
+                        <InlineLabel>{product.keys.producable.name}</InlineLabel>
                         <Switch color='primary' onChange={onVariableSwitchChange} checked={state.variable.values.producable} name='producable' />
                     </Item>
                 </Container>
                 <Container area={Grid.uom} layout={Grid2.layouts.main}>
                     <Item area={Grid2.header}>
-                        <Title>Unit of Measures</Title>
+                        <Title>{uom.name}s</Title>
                     </Item>
-                    <Item area={Grid2.filter} justify='end' align='center' className="flex">
+                    <Item area={Grid2.filter} justify='end' align='center' className='flex'>
                         <Button onClick={() => toggleAddUOMDrawer(true)}>Add</Button>
                         <Drawer open={addUOMDrawer} onClose={() => toggleAddUOMDrawer(false)} anchor={'right'}>
-                            <div className="bg-gray-300 font-nunito h-screen overflow-y-scroll" style={{ maxWidth: '90vw' }}>
-                                <div className="font-bold text-4xl text-gray-700 pt-8 px-6">Add UOM</div>
-                                <Container area={none} layout={Grid.layouts.uom} className="">
+                            <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
+                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add UOM</div>
+                                <Container area={none} layout={Grid.layouts.uom} className=''>
                                     <Item>
-                                        <Label>UOM</Label>
+                                        <Label>{uom.keys.name.name}</Label>
                                         <Input type='text' onChange={onUOMInputChange} name='name' />
                                     </Item>
                                     <Item>
-                                        <Label>Conversion Rate</Label>
+                                        <Label>{uom.keys.conversionRate.name}</Label>
                                         <Input type='text' onChange={onUOMInputChange} value={state.uoms.variable.values.conversionRate} name='conversionRate' />
                                     </Item>
                                     <Item justify='center' align='center'>

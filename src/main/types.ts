@@ -54,7 +54,7 @@ export type Type = {
     keys: Record<string, Key>
 }
 
-export const types: Record<NonPrimitiveType, Type> = {
+export const types = {
     Product: {
         name: 'SKU',
         autoId: false,
