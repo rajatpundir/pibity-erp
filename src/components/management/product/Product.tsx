@@ -41,8 +41,7 @@ export type Action =
     | ['uoms', 'query', Args]
     | ['uoms', 'variable', 'values', 'name', string]
     | ['uoms', 'variable', 'values', 'conversionRate', number]
-
-    | ['addUOMVariable']
+    | ['uoms', 'addVariable']
 
 const initialState: State = {
     variable: new ProductVariable('', { name: '', orderable: true, consumable: true, producable: false }),
@@ -116,12 +115,12 @@ function reducer(state: Draft<State>, action: Action) {
                     }
                     break
                 }
+                case 'addVariable': {
+                    state.uoms.variables = state.uoms.variables.add(new UOMVariable('', { product: new Product(''), name: state.uoms.variable.values.name, conversionRate: state.uoms.variable.values.conversionRate }))
+                    state.uoms.variable = initialState.uoms.variable
+                    break
+                }
             }
-            break
-        }
-        case 'addUOMVariable': {
-            state.uoms.variables = state.uoms.variables.add(new UOMVariable('', { product: new Product(''), name: state.uoms.variable.values.name, conversionRate: state.uoms.variable.values.conversionRate }))
-            state.uoms.variable = initialState.uoms.variable
             break
         }
     }
@@ -247,7 +246,7 @@ export default function ProductX() {
                                         <Input type='text' onChange={e => dispatch(['uoms', 'variable', 'values', 'conversionRate', parseFloat(e.target.value)])} value={state.uoms.variable.values.conversionRate} name='conversionRate' />
                                     </Item>
                                     <Item justify='center' align='center'>
-                                        <Button onClick={() => dispatch(['addUOMVariable'])}>Add</Button>
+                                        <Button onClick={() => dispatch(['uoms', 'addVariable'])}>Add</Button>
                                     </Item>
                                 </Container>
                             </div>
