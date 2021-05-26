@@ -591,5 +591,4 @@ export const types: Record<NonPrimitiveType, Type> = {
             }
         }
     }
-
 }

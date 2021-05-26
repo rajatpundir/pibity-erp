@@ -34,7 +34,11 @@ export type Action =
     | ['variable', 'values', 'orderable', boolean]
     | ['variable', 'values', 'consumable', boolean]
     | ['variable', 'values', 'producable', boolean]
-    | ['uoms', 'variable','values', 'name', string]
+    | ['uoms', 'limit', number]
+    | ['uoms', 'offset', number]
+    | ['uoms', 'page', number]
+    | ['uoms', 'query', Args]
+    | ['uoms', 'variable', 'values', 'name', string]
     | ['uoms', 'variable', 'values', 'conversionRate', number]
     | ['addUOMVariable']
 
@@ -56,7 +60,7 @@ const initialState: State = {
         limit: 5,
         offset: 0,
         page: 1,
-        variable: new UOMVariable('', {product: new Product(''), name: '', conversionRate: 0}),
+        variable: new UOMVariable('', { product: new Product(''), name: '', conversionRate: 0 }),
         variables: HashSet.of()
     }
 }
@@ -86,25 +90,47 @@ function reducer(state: Draft<State>, action: Action) {
                     }
                 }
             }
-            return
+            break
         }
         case 'uoms': {
-            switch(action[3]) {
-                case 'name': {
-                    state[action[0]][action[1]][action[2]][action[3]] = action[4]
+            switch (action[1]) {
+                case 'limit': {
+                    state[action[0]].limit = Math.max(initialState.uoms.limit, action[2])
                     break
                 }
-                case 'conversionRate': {
-                    state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                case 'offset': {
+                    state[action[0]].offset = Math.max(0, action[2])
+                    state[action[0]].page = Math.max(0, action[2]) + 1
+                    break
+                }
+                case 'page': {
+                    state[action[0]].page = action[2]
+                    break
+                }
+                case 'query': {
+                    updateQuery(state[action[0]].query, action[2])
+                    break
+                }
+                case 'variable': {
+                    switch (action[3]) {
+                        case 'name': {
+                            state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                            break
+                        }
+                        case 'conversionRate': {
+                            state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                            break
+                        }
+                    }
                     break
                 }
             }
-            return
+            break
         }
         case 'addUOMVariable': {
-            state.uoms.variables = state.uoms.variables.add(new UOMVariable('', {product: new Product(''), name: state.uoms.variable.values.name, conversionRate: state.uoms.variable.values.conversionRate}))
+            state.uoms.variables = state.uoms.variables.add(new UOMVariable('', { product: new Product(''), name: state.uoms.variable.values.name, conversionRate: state.uoms.variable.values.conversionRate }))
             state.uoms.variable = initialState.uoms.variable
-            return
+            break
         }
     }
 }
@@ -193,7 +219,7 @@ export default function ProductX() {
             })
         })
         console.log(result, symbolFlag)
-        if(symbolFlag) {
+        if (symbolFlag) {
             addDiff(diff)
         }
     }
@@ -245,7 +271,7 @@ export default function ProductX() {
                                     </Item>
                                     <Item>
                                         <Label>Conversion Rate</Label>
-                                        <Input type='text' onChange={e => dispatch(['uoms', 'variable', 'values', 'conversionRate', parseFloat(e.target.value) ])} value={state.uoms.variable.values.conversionRate} name='conversionRate' />
+                                        <Input type='text' onChange={e => dispatch(['uoms', 'variable', 'values', 'conversionRate', parseFloat(e.target.value)])} value={state.uoms.variable.values.conversionRate} name='conversionRate' />
                                     </Item>
                                     <Item justify='center' align='center'>
                                         <Button onClick={() => dispatch(['addUOMVariable'])}>Add</Button>

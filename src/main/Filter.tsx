@@ -216,7 +216,7 @@ type FilterProps = {
 
 export function Filter(props: FilterProps) {
     return (<>
-        <div className="bg-gray-300 font-nunito h-screen overflow-y-scroll" style={{maxWidth: '90vw'}}>
+        <div className="bg-gray-300 font-nunito h-screen overflow-y-scroll" style={{ maxWidth: '90vw' }}>
             <div className="font-bold text-4xl text-gray-700 pt-8 px-6">Filter</div>
             <TableContainer area={none} className="p-6 w-auto">
                 <FilterRows typeName={props.typeName} query={props.query} dispatch={props.dispatch} startRow={0} startColumn={0} />
@@ -1495,7 +1495,7 @@ function FilterRows(props: FilterRowsProps) {
                     }
                 } else {
                     const keyTypeName = type.keys[keyName].type
-                    if(isNonPrimitive(keyTypeName)) {
+                    if (isNonPrimitive(keyTypeName)) {
                         return (<>
                             <Cell justify='center' className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 1}/${startColumn + 2}`}>
                                 <Checkbox className="w-2"
