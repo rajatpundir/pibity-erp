@@ -183,12 +183,18 @@ export default function ProductX() {
         }
     }
 
-    const updateUOMQuery = (args: Args) => {
-        dispatch(['uoms', 'query', args])
+    const updateQuery = (list: 'uoms') => {
+        const fx = (args: Args) => {
+            dispatch([list, 'query', args])
+        }
+        return fx
     }
 
-    const updateUOMPage = (args: ['limit', number] | ['offset', number] | ['page', number]) => {
-        dispatch(['uoms', args[0], args[1]])
+    const updatePage = (list: 'uoms') => {
+        const fx = (args: ['limit', number] | ['offset', number] | ['page', number]) => {
+            dispatch([list, args[0], args[1]])
+        }
+        return fx
     }
 
     return (
@@ -248,10 +254,10 @@ export default function ProductX() {
                         </Drawer>
                         <Button onClick={() => toggleUOMFilter(true)}>Filter</Button>
                         <Drawer open={uomFilter} onClose={() => toggleUOMFilter(false)} anchor={'right'}>
-                            <Filter typeName='UOM' query={state['uoms'].query} updateQuery={updateUOMQuery} />
+                            <Filter typeName='UOM' query={state['uoms'].query} updateQuery={updateQuery('uoms')} />
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={state['uoms']} updatePage={updateUOMPage} variables={state.uoms.variables.filter(variable => applyFilter(state['uoms'].query, variable))} showVariableName={false} columns={columns} />
+                    <Table area={Grid2.table} state={state['uoms']} updatePage={updatePage('uoms')} variables={state.uoms.variables.filter(variable => applyFilter(state['uoms'].query, variable))} showVariableName={false} columns={columns} />
                 </Container >
             </Container>
         </>
