@@ -200,7 +200,7 @@ type TableProps = {
     }>
     updatePage: (args: ['limit', number] | ['offset', number] | ['page', number]) => void
     variables: Immutable<HashSet<any>>
-    columns: Vector<string>
+    columns: Readonly<Vector<string>>
 }
 
 export function Table(props: TableProps) {
