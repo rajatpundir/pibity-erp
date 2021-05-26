@@ -19,14 +19,10 @@ type State = Immutable<{
 }>
 
 export type Action =
-    | {
-        type: 'reset' | 'limit' | 'offset' | 'page'
-        payload: number
-    }
-    | {
-        type: 'query'
-        payload: Args
-    }
+    | ['limit', number]
+    | ['offset', number]
+    | ['page', number]
+    | ['query', Args]
 
 const initialState: State = {
     typeName: 'Supplier',
@@ -37,32 +33,22 @@ const initialState: State = {
 }
 
 function reducer(state: Draft<State>, action: Action) {
-    switch (action.type) {
-        case 'reset':
-            return initialState;
+    switch (action[0]) {
         case 'query': {
-            if (typeof action.payload === 'object') {
-                updateQuery(state.query, action.payload)
-            }
-            return;
+            updateQuery(state.query, action[1])
+            break
         }
         case 'limit': {
-            if (typeof action.payload === 'number') {
-                state.limit = Math.max(initialState.limit, action.payload)
-            }
+            state.limit = Math.max(initialState.limit, action[1])
             return;
         }
         case 'offset': {
-            if (typeof action.payload === 'number') {
-                state.offset = Math.max(0, action.payload)
-                state.page = Math.max(0, action.payload) + 1
-            }
+            state.offset = Math.max(0, action[1])
+                state.page = Math.max(0, action[1]) + 1
             return;
         }
         case 'page': {
-            if (typeof action.payload === 'number') {
-                state.page = action.payload
-            }
+            state.page = action[1]
             return;
         }
     }
@@ -73,18 +59,27 @@ export default function Suppliers() {
     const variables = useStore(state => state.variables.Supplier).filter(variable => applyFilter(state.query, variable))
     const columns: Vector<string> = Vector.of()
     const [open, setOpen] = useState(false)
+
+    const updateQuery = (args: Args) => {
+        dispatch(['query', args])
+    }
+
+    const updatePage = (args: ['limit', number] | ['offset', number] | ['page', number]) => {
+        dispatch([args[0], args[1]])
+    }
+
     return (
         <Container area={none} layout={Grid.layouts.main}>
             <Item area={Grid.filter} justify='end' align='center'>
                 <Button onClick={() => setOpen(true)}>Filter</Button>
                 <Drawer open={open} onClose={() => setOpen(false)} anchor={'right'}>
-                    <Filter typeName={state.typeName} query={state.query} dispatch={dispatch} />
+                    <Filter typeName={state.typeName} query={state.query} updateQuery={updateQuery} />
                 </Drawer>
             </Item>
             <Item area={Grid.header}>
                 <Title>Suppliers</Title>
             </Item>
-            <Table area={Grid.table} state={state} dispatch={dispatch} variables={variables} showVariableName={true} columns={columns} />
+            <Table area={Grid.table} state={state} updatePage={updatePage} variables={variables} showVariableName={true} columns={columns} />
         </Container>
     )
 }

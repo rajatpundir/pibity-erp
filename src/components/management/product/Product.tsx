@@ -34,23 +34,15 @@ export type Action =
     | ['variable', 'values', 'orderable', boolean]
     | ['variable', 'values', 'consumable', boolean]
     | ['variable', 'values', 'producable', boolean]
+
     | ['uoms', 'limit', number]
     | ['uoms', 'offset', number]
     | ['uoms', 'page', number]
     | ['uoms', 'query', Args]
     | ['uoms', 'variable', 'values', 'name', string]
     | ['uoms', 'variable', 'values', 'conversionRate', number]
-    | ['addUOMVariable']
 
-export type uomAction =
-    | {
-        type: 'reset' | 'limit' | 'offset' | 'page'
-        payload: number
-    }
-    | {
-        type: 'query'
-        payload: Args
-    }
+    | ['addUOMVariable']
 
 const initialState: State = {
     variable: new ProductVariable('', { name: '', orderable: true, consumable: true, producable: false }),
@@ -135,41 +127,8 @@ function reducer(state: Draft<State>, action: Action) {
     }
 }
 
-function uomReducer(state: Draft<State['uoms']>, action: uomAction) {
-    switch (action.type) {
-        case 'reset':
-            return initialState.uoms;
-        case 'query': {
-            if (typeof action.payload === 'object') {
-                updateQuery(state.query, action.payload)
-            }
-            return;
-        }
-        case 'limit': {
-            if (typeof action.payload === 'number') {
-                state.limit = Math.max(initialState.uoms.limit, action.payload)
-            }
-            return;
-        }
-        case 'offset': {
-            if (typeof action.payload === 'number') {
-                state.offset = Math.max(0, action.payload)
-                state.page = Math.max(0, action.payload) + 1
-            }
-            return;
-        }
-        case 'page': {
-            if (typeof action.payload === 'number') {
-                state.page = action.payload
-            }
-            return;
-        }
-    }
-}
-
 export default function ProductX() {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const [uomState, uomDispatch] = useImmerReducer<State['uoms'], uomAction>(uomReducer, initialState.uoms)
     const columns: Vector<string> = Vector.of("name", "conversionRate")
     const [addUOMFilter, toggleAddUOMFilter] = useState(false)
     const [uomFilter, toggleUOMFilter] = useState(false)
@@ -222,6 +181,14 @@ export default function ProductX() {
         if (symbolFlag) {
             addDiff(diff)
         }
+    }
+
+    const updateUOMQuery = (args: Args) => {
+        dispatch(['uoms', 'query', args])
+    }
+
+    const updateUOMPage = (args: ['limit', number] | ['offset', number] | ['page', number]) => {
+        dispatch(['uoms', args[0], args[1]])
     }
 
     return (
@@ -281,10 +248,10 @@ export default function ProductX() {
                         </Drawer>
                         <Button onClick={() => toggleUOMFilter(true)}>Filter</Button>
                         <Drawer open={uomFilter} onClose={() => toggleUOMFilter(false)} anchor={'right'}>
-                            <Filter typeName='UOM' query={uomState.query} dispatch={uomDispatch} />
+                            <Filter typeName='UOM' query={state['uoms'].query} updateQuery={updateUOMQuery} />
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={uomState} dispatch={uomDispatch} variables={state.uoms.variables.filter(variable => applyFilter(uomState.query, variable))} showVariableName={false} columns={columns} />
+                    <Table area={Grid2.table} state={state['uoms']} updatePage={updateUOMPage} variables={state.uoms.variables.filter(variable => applyFilter(state['uoms'].query, variable))} showVariableName={false} columns={columns} />
                 </Container >
             </Container>
         </>

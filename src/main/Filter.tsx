@@ -202,16 +202,10 @@ function Y(args: Args, parent?: S): Args {
     return (parent ? R(parent, args) : args)
 }
 
-type Action =
-    | {
-        type: 'query'
-        payload: Args
-    }
-
 type FilterProps = {
     typeName: NonPrimitiveType
     query: Immutable<Query>
-    dispatch: React.Dispatch<Action>
+    updateQuery: (args: Args) => void
 }
 
 export function Filter(props: FilterProps) {
@@ -219,7 +213,7 @@ export function Filter(props: FilterProps) {
         <div className="bg-gray-300 font-nunito h-screen overflow-y-scroll" style={{ maxWidth: '90vw' }}>
             <div className="font-bold text-4xl text-gray-700 pt-8 px-6">Filter</div>
             <TableContainer area={none} className="p-6 w-auto">
-                <FilterRows typeName={props.typeName} query={props.query} dispatch={props.dispatch} startRow={0} startColumn={0} />
+                <FilterRows typeName={props.typeName} query={props.query} updateQuery={props.updateQuery} startRow={0} startColumn={0} />
             </TableContainer>
         </div>
     </>)
@@ -228,7 +222,7 @@ export function Filter(props: FilterProps) {
 type FilterRowsProps = {
     typeName: NonPrimitiveType
     query: Immutable<Query>
-    dispatch: React.Dispatch<Action>
+    updateQuery: (args: Args) => void
     startRow: number
     startColumn: number
     parent?: S
@@ -244,12 +238,7 @@ function FilterRows(props: FilterRowsProps) {
                 checked={props.query.variableName.checked}
                 color='primary'
                 inputProps={{ 'aria-label': 'secondary checkbox' }}
-                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                    props.dispatch({
-                        type: 'query',
-                        payload: Y(['variableName', 'checked', event.target.checked], props.parent)
-                    })
-                }}
+                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => props.updateQuery(Y(['variableName', 'checked', event.target.checked], props.parent))}
             />
         </Cell>
         <Cell className="px-1" row={`${startRow + 1}/${startRow + 2}`} column={`${startColumn + 2}/${startColumn + 3}`}>{type.name}</Cell>
@@ -260,25 +249,16 @@ function FilterRows(props: FilterRowsProps) {
                         switch (event.target.value) {
                             case 'equals':
                             case 'like': {
-                                props.dispatch({
-                                    type: 'query',
-                                    payload: Y(['variableName', 'operator', event.target.value, ''], props.parent)
-                                })
+                                props.updateQuery(Y(['variableName', 'operator', event.target.value, ''], props.parent))
                                 return
                             }
                             case 'between':
                             case 'notBetween': {
-                                props.dispatch({
-                                    type: 'query',
-                                    payload: Y(['variableName', 'operator', event.target.value, ['', '']], props.parent)
-                                })
+                                props.updateQuery(Y(['variableName', 'operator', event.target.value, ['', '']], props.parent))
                                 return
                             }
                             case 'in': {
-                                props.dispatch({
-                                    type: 'query',
-                                    payload: Y(['variableName', 'operator', event.target.value, ['']], props.parent)
-                                })
+                                props.updateQuery(Y(['variableName', 'operator', event.target.value, ['']], props.parent))
                                 return
                             }
                         }
@@ -301,12 +281,7 @@ function FilterRows(props: FilterRowsProps) {
                             case 'equals':
                             case 'like': {
                                 return (<Input className="m-1" value={props.query.variableName.value}
-                                    onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                        props.dispatch({
-                                            type: 'query',
-                                            payload: Y(['variableName', operator, event.target.value], props.parent)
-                                        })
-                                    }} />)
+                                    onChange={async (event: React.ChangeEvent<HTMLInputElement>) => props.updateQuery(Y(['variableName', operator, event.target.value], props.parent))} />)
                             }
                             case 'between':
                             case 'notBetween': {
@@ -314,20 +289,10 @@ function FilterRows(props: FilterRowsProps) {
                                     <div className="flex">
                                         <Input className="m-1"
                                             value={props.query.variableName.value[0]}
-                                            onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                props.dispatch({
-                                                    type: 'query',
-                                                    payload: Y(['variableName', operator, [event.target.value, props.query.variableName.value[1]]], props.parent)
-                                                })
-                                            }} />
+                                            onChange={async (event: React.ChangeEvent<HTMLInputElement>) => props.updateQuery(Y(['variableName', operator, [event.target.value, props.query.variableName.value[1]]], props.parent))} />
                                         <Input className="m-1"
                                             value={props.query.variableName.value[1]}
-                                            onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                props.dispatch({
-                                                    type: 'query',
-                                                    payload: Y(['variableName', operator, [props.query.variableName.value[0], event.target.value]], props.parent)
-                                                })
-                                            }} />
+                                            onChange={async (event: React.ChangeEvent<HTMLInputElement>) => props.updateQuery(Y(['variableName', operator, [props.query.variableName.value[0], event.target.value]], props.parent))} />
                                     </div>
                                 )
                             }
@@ -342,42 +307,28 @@ function FilterRows(props: FilterRowsProps) {
                                                         value={props.query.variableName.value[index]}
                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                             if (index === 0) {
-                                                                props.dispatch({
-                                                                    type: 'query',
-                                                                    payload: Y(['variableName', operator,
-                                                                        [
-                                                                            event.target.value,
-                                                                            ...values.slice(index + 1, props.query.variableName.value.length)
-                                                                        ]], props.parent)
-                                                                })
-                                                            } else if (index === values.length - 1) {
-                                                                props.dispatch({
-                                                                    type: 'query',
-                                                                    payload: Y(['variableName', operator,
-                                                                        [...values.slice(0, index),
-                                                                        event.target.value
-                                                                        ]], props.parent)
-                                                                })
-                                                            } else {
-                                                                props.dispatch({
-                                                                    type: 'query',
-                                                                    payload: Y(['variableName', operator,
-                                                                        [...values.slice(0, index),
+                                                                props.updateQuery(Y(['variableName', operator,
+                                                                    [
                                                                         event.target.value,
                                                                         ...values.slice(index + 1, props.query.variableName.value.length)
-                                                                        ]], props.parent)
-                                                                })
+                                                                    ]], props.parent))
+                                                            } else if (index === values.length - 1) {
+                                                                props.updateQuery(Y(['variableName', operator,
+                                                                    [...values.slice(0, index),
+                                                                    event.target.value
+                                                                    ]], props.parent))
+                                                            } else {
+                                                                props.updateQuery(Y(['variableName', operator,
+                                                                    [...values.slice(0, index),
+                                                                    event.target.value,
+                                                                    ...values.slice(index + 1, props.query.variableName.value.length)
+                                                                    ]], props.parent))
                                                             }
                                                         }} />
                                                 )
                                             })
                                         }
-                                        <button onClick={async () => {
-                                            props.dispatch({
-                                                type: 'query',
-                                                payload: Y(['variableName', operator, [...values, '']], props.parent)
-                                            })
-                                        }}
+                                        <button onClick={async () => props.updateQuery(Y(['variableName', operator, [...values, '']], props.parent))}
                                             className="focus:outline-none">
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
@@ -385,10 +336,7 @@ function FilterRows(props: FilterRowsProps) {
                                         </button>
                                         <button onClick={async () => {
                                             if (values.length !== 1) {
-                                                props.dispatch({
-                                                    type: 'query',
-                                                    payload: Y(['variableName', operator, [...values.slice(0, values.length - 1)]], props.parent)
-                                                })
+                                                props.updateQuery(Y(['variableName', operator, [...values.slice(0, values.length - 1)]], props.parent))
                                             }
                                         }} className="focus:outline-none">
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -416,12 +364,7 @@ function FilterRows(props: FilterRowsProps) {
                                         checked={value.checked}
                                         color='primary'
                                         inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                        onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                            props.dispatch({
-                                                type: 'query',
-                                                payload: Y(['values', keyName, 'checked', event.target.checked], props.parent)
-                                            })
-                                        }}
+                                        onChange={async (event: React.ChangeEvent<HTMLInputElement>) => props.updateQuery(Y(['values', keyName, 'checked', event.target.checked], props.parent))}
                                     />
                                 </Cell>
                                 <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 2}/${startColumn + 3}`}>{type.keys[keyName].name}</Cell>
@@ -432,25 +375,16 @@ function FilterRows(props: FilterRowsProps) {
                                                 switch (event.target.value) {
                                                     case 'equals':
                                                     case 'like': {
-                                                        props.dispatch({
-                                                            type: 'query',
-                                                            payload: Y(['values', keyName, 'operator', event.target.value, ''], props.parent)
-                                                        })
+                                                        props.updateQuery(Y(['values', keyName, 'operator', event.target.value, ''], props.parent))
                                                         return
                                                     }
                                                     case 'between':
                                                     case 'notBetween': {
-                                                        props.dispatch({
-                                                            type: 'query',
-                                                            payload: Y(['values', keyName, 'operator', event.target.value, ['', '']], props.parent)
-                                                        })
+                                                        props.updateQuery(Y(['values', keyName, 'operator', event.target.value, ['', '']], props.parent))
                                                         return
                                                     }
                                                     case 'in': {
-                                                        props.dispatch({
-                                                            type: 'query',
-                                                            payload: Y(['values', keyName, 'operator', event.target.value, ['']], props.parent)
-                                                        })
+                                                        props.updateQuery(Y(['values', keyName, 'operator', event.target.value, ['']], props.parent))
                                                         return
                                                     }
                                                 }
@@ -473,10 +407,7 @@ function FilterRows(props: FilterRowsProps) {
                                                 case 'like': {
                                                     return (<Input className="m-1" value={value.value}
                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                            props.dispatch({
-                                                                type: 'query',
-                                                                payload: Y(['values', keyName, operator, event.target.value], props.parent)
-                                                            })
+                                                            props.updateQuery(Y(['values', keyName, operator, event.target.value], props.parent))
                                                         }} />)
                                                 }
                                                 case 'between':
@@ -484,19 +415,9 @@ function FilterRows(props: FilterRowsProps) {
                                                     return (
                                                         <div className="flex">
                                                             <Input className="m-1" value={value.value[0]}
-                                                                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                                    props.dispatch({
-                                                                        type: 'query',
-                                                                        payload: Y(['values', keyName, operator, [event.target.value, value.value[1]]], props.parent)
-                                                                    })
-                                                                }} />
+                                                                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => props.updateQuery(Y(['values', keyName, operator, [event.target.value, value.value[1]]], props.parent))} />
                                                             <Input className="m-1" value={value.value[1]}
-                                                                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                                    props.dispatch({
-                                                                        type: 'query',
-                                                                        payload: Y(['values', keyName, operator, [value.value[0], event.target.value]], props.parent)
-                                                                    })
-                                                                }} />
+                                                                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => props.updateQuery(Y(['values', keyName, operator, [value.value[0], event.target.value]], props.parent))} />
                                                         </div>
                                                     )
                                                 }
@@ -510,42 +431,28 @@ function FilterRows(props: FilterRowsProps) {
                                                                         <Input className="m-1" value={values[index]}
                                                                             onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                                 if (index === 0) {
-                                                                                    props.dispatch({
-                                                                                        type: 'query',
-                                                                                        payload: Y(['values', keyName, operator,
-                                                                                            [
-                                                                                                event.target.value,
-                                                                                                ...values.slice(index + 1, values.length)
-                                                                                            ]], props.parent)
-                                                                                    })
-                                                                                } else if (index === values.length - 1) {
-                                                                                    props.dispatch({
-                                                                                        type: 'query',
-                                                                                        payload: Y(['values', keyName, operator,
-                                                                                            [...values.slice(0, index),
-                                                                                            event.target.value
-                                                                                            ]], props.parent)
-                                                                                    })
-                                                                                } else {
-                                                                                    props.dispatch({
-                                                                                        type: 'query',
-                                                                                        payload: Y(['values', keyName, operator,
-                                                                                            [...values.slice(0, index),
+                                                                                    props.updateQuery(Y(['values', keyName, operator,
+                                                                                        [
                                                                                             event.target.value,
                                                                                             ...values.slice(index + 1, values.length)
-                                                                                            ]], props.parent)
-                                                                                    })
+                                                                                        ]], props.parent))
+                                                                                } else if (index === values.length - 1) {
+                                                                                    props.updateQuery(Y(['values', keyName, operator,
+                                                                                        [...values.slice(0, index),
+                                                                                        event.target.value
+                                                                                        ]], props.parent))
+                                                                                } else {
+                                                                                    props.updateQuery(Y(['values', keyName, operator,
+                                                                                        [...values.slice(0, index),
+                                                                                        event.target.value,
+                                                                                        ...values.slice(index + 1, values.length)
+                                                                                        ]], props.parent))
                                                                                 }
                                                                             }} />
                                                                     )
                                                                 })
                                                             }
-                                                            <button onClick={async () => {
-                                                                props.dispatch({
-                                                                    type: 'query',
-                                                                    payload: Y(['values', keyName, operator, [...values, '']], props.parent)
-                                                                })
-                                                            }}
+                                                            <button onClick={async () => props.updateQuery(Y(['values', keyName, operator, [...values, '']], props.parent))}
                                                                 className="focus:outline-none">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
@@ -553,12 +460,10 @@ function FilterRows(props: FilterRowsProps) {
                                                             </button>
                                                             <button onClick={async () => {
                                                                 if (values.length !== 1) {
-                                                                    props.dispatch({
-                                                                        type: 'query',
-                                                                        payload: Y(['values', keyName, operator, [...values.slice(0, values.length - 1)]], props.parent)
-                                                                    })
+                                                                    props.updateQuery(Y(['values', keyName, operator, [...values.slice(0, values.length - 1)]], props.parent))
                                                                 }
-                                                            }} className="focus:outline-none">
+                                                            }
+                                                            } className="focus:outline-none" >
                                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
                                                                 </svg>
@@ -580,12 +485,7 @@ function FilterRows(props: FilterRowsProps) {
                                         checked={value.checked}
                                         color='primary'
                                         inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                        onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                            props.dispatch({
-                                                type: 'query',
-                                                payload: Y(['values', keyName, 'checked', event.target.checked], props.parent)
-                                            })
-                                        }}
+                                        onChange={async (event: React.ChangeEvent<HTMLInputElement>) => props.updateQuery(Y(['values', keyName, 'checked', event.target.checked], props.parent))}
                                     />
                                 </Cell>
                                 <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 2}/${startColumn + 3}`}>{type.keys[keyName].name}</Cell>
@@ -599,25 +499,16 @@ function FilterRows(props: FilterRowsProps) {
                                                     case 'equals':
                                                     case 'greaterThanEquals':
                                                     case 'greaterThan': {
-                                                        props.dispatch({
-                                                            type: 'query',
-                                                            payload: Y(['values', keyName, 'operator', event.target.value, 0], props.parent)
-                                                        })
+                                                        props.updateQuery(Y(['values', keyName, 'operator', event.target.value, 0], props.parent))
                                                         return
                                                     }
                                                     case 'between':
                                                     case 'notBetween': {
-                                                        props.dispatch({
-                                                            type: 'query',
-                                                            payload: Y(['values', keyName, 'operator', event.target.value, [0, 0]], props.parent)
-                                                        })
+                                                        props.updateQuery(Y(['values', keyName, 'operator', event.target.value, [0, 0]], props.parent))
                                                         return
                                                     }
                                                     case 'in': {
-                                                        props.dispatch({
-                                                            type: 'query',
-                                                            payload: Y(['values', keyName, 'operator', event.target.value, [0]], props.parent)
-                                                        })
+                                                        props.updateQuery(Y(['values', keyName, 'operator', event.target.value, [0]], props.parent))
                                                         return
                                                     }
                                                 }
@@ -646,10 +537,7 @@ function FilterRows(props: FilterRowsProps) {
                                                 case 'greaterThan': {
                                                     return (<Input className="m-1" type='number' value={value.value as number}
                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                            props.dispatch({
-                                                                type: 'query',
-                                                                payload: Y(['values', keyName, operator, parseInt(event.target.value)], props.parent)
-                                                            })
+                                                            props.updateQuery(Y(['values', keyName, operator, parseInt(event.target.value)], props.parent))
                                                         }} />)
                                                 }
                                                 case 'between':
@@ -658,17 +546,11 @@ function FilterRows(props: FilterRowsProps) {
                                                         <div className="flex">
                                                             <Input className="m-1" type='number' value={value.value[0]}
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                                    props.dispatch({
-                                                                        type: 'query',
-                                                                        payload: Y(['values', keyName, operator, [parseInt(event.target.value), value.value[1]]], props.parent)
-                                                                    })
+                                                                    props.updateQuery(Y(['values', keyName, operator, [parseInt(event.target.value), value.value[1]]], props.parent))
                                                                 }} />
                                                             <Input className="m-1" type='number' value={value.value[1]}
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                                    props.dispatch({
-                                                                        type: 'query',
-                                                                        payload: Y(['values', keyName, operator, [value.value[0], parseInt(event.target.value)]], props.parent)
-                                                                    })
+                                                                    props.updateQuery(Y(['values', keyName, operator, [value.value[0], parseInt(event.target.value)]], props.parent))
                                                                 }} />
                                                         </div>
                                                     )
@@ -683,41 +565,29 @@ function FilterRows(props: FilterRowsProps) {
                                                                         <Input className="m-1" type='number' value={values[index]}
                                                                             onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                                 if (index === 0) {
-                                                                                    props.dispatch({
-                                                                                        type: 'query',
-                                                                                        payload: Y(['values', keyName, operator,
-                                                                                            [
-                                                                                                parseInt(event.target.value),
-                                                                                                ...values.slice(index + 1, values.length)
-                                                                                            ]], props.parent)
-                                                                                    })
-                                                                                } else if (index === values.length - 1) {
-                                                                                    props.dispatch({
-                                                                                        type: 'query',
-                                                                                        payload: Y(['values', keyName, operator,
-                                                                                            [...values.slice(0, index),
-                                                                                            parseInt(event.target.value)
-                                                                                            ]], props.parent)
-                                                                                    })
-                                                                                } else {
-                                                                                    props.dispatch({
-                                                                                        type: 'query',
-                                                                                        payload: Y(['values', keyName, operator,
-                                                                                            [...values.slice(0, index),
+                                                                                    props.updateQuery(Y(['values', keyName, operator,
+                                                                                        [
                                                                                             parseInt(event.target.value),
                                                                                             ...values.slice(index + 1, values.length)
-                                                                                            ]], props.parent)
-                                                                                    })
+                                                                                        ]], props.parent))
+                                                                                } else if (index === values.length - 1) {
+                                                                                    props.updateQuery(Y(['values', keyName, operator,
+                                                                                        [...values.slice(0, index),
+                                                                                        parseInt(event.target.value)
+                                                                                        ]], props.parent))
+                                                                                } else {
+                                                                                    props.updateQuery(Y(['values', keyName, operator,
+                                                                                        [...values.slice(0, index),
+                                                                                        parseInt(event.target.value),
+                                                                                        ...values.slice(index + 1, values.length)
+                                                                                        ]], props.parent))
                                                                                 }
                                                                             }} />
                                                                     )
                                                                 })
                                                             }
                                                             <button onClick={async () => {
-                                                                props.dispatch({
-                                                                    type: 'query',
-                                                                    payload: Y(['values', keyName, operator, [...values, 0]], props.parent)
-                                                                })
+                                                                props.updateQuery(Y(['values', keyName, operator, [...values, 0]], props.parent))
                                                             }}
                                                                 className="focus:outline-none">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -726,24 +596,21 @@ function FilterRows(props: FilterRowsProps) {
                                                             </button>
                                                             <button onClick={async () => {
                                                                 if (values.length !== 1) {
-                                                                    props.dispatch({
-                                                                        type: 'query',
-                                                                        payload: Y(['values', keyName, operator, [...values.slice(0, values.length - 1)]], props.parent)
-                                                                    })
+                                                                    props.updateQuery(Y(['values', keyName, operator, [...values.slice(0, values.length - 1)]], props.parent))
                                                                 }
                                                             }} className="focus:outline-none">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
                                                                 </svg>
                                                             </button>
-                                                        </div>)
+                                                        </div >)
                                                     }
                                                     return
                                                 }
                                             }
                                         })() : undefined
                                     }
-                                </Cell>
+                                </Cell >
                             </>)
                         }
                         case 'Decimal': {
@@ -754,10 +621,7 @@ function FilterRows(props: FilterRowsProps) {
                                         color='primary'
                                         inputProps={{ 'aria-label': 'secondary checkbox' }}
                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                            props.dispatch({
-                                                type: 'query',
-                                                payload: Y(['values', keyName, 'checked', event.target.checked], props.parent)
-                                            })
+                                            props.updateQuery(Y(['values', keyName, 'checked', event.target.checked], props.parent))
                                         }}
                                     />
                                 </Cell>
@@ -772,25 +636,16 @@ function FilterRows(props: FilterRowsProps) {
                                                     case 'equals':
                                                     case 'greaterThanEquals':
                                                     case 'greaterThan': {
-                                                        props.dispatch({
-                                                            type: 'query',
-                                                            payload: Y(['values', keyName, 'operator', event.target.value, 0], props.parent)
-                                                        })
+                                                        props.updateQuery(Y(['values', keyName, 'operator', event.target.value, 0], props.parent))
                                                         return
                                                     }
                                                     case 'between':
                                                     case 'notBetween': {
-                                                        props.dispatch({
-                                                            type: 'query',
-                                                            payload: Y(['values', keyName, 'operator', event.target.value, [0, 0]], props.parent)
-                                                        })
+                                                        props.updateQuery(Y(['values', keyName, 'operator', event.target.value, [0, 0]], props.parent))
                                                         return
                                                     }
                                                     case 'in': {
-                                                        props.dispatch({
-                                                            type: 'query',
-                                                            payload: Y(['values', keyName, 'operator', event.target.value, [0]], props.parent)
-                                                        })
+                                                        props.updateQuery(Y(['values', keyName, 'operator', event.target.value, [0]], props.parent))
                                                         return
                                                     }
                                                 }
@@ -819,10 +674,7 @@ function FilterRows(props: FilterRowsProps) {
                                                 case 'greaterThan': {
                                                     return (<Input className="m-1" type='number' value={value.value as number}
                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                            props.dispatch({
-                                                                type: 'query',
-                                                                payload: Y(['values', keyName, operator, parseFloat(event.target.value)], props.parent)
-                                                            })
+                                                            props.updateQuery(Y(['values', keyName, operator, parseFloat(event.target.value)], props.parent))
                                                         }} />)
                                                 }
                                                 case 'between':
@@ -831,17 +683,11 @@ function FilterRows(props: FilterRowsProps) {
                                                         <div className="flex">
                                                             <Input className="m-1" type='number' value={value.value[0]}
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                                    props.dispatch({
-                                                                        type: 'query',
-                                                                        payload: Y(['values', keyName, operator, [parseFloat(event.target.value), value.value[1]]], props.parent)
-                                                                    })
+                                                                    props.updateQuery(Y(['values', keyName, operator, [parseFloat(event.target.value), value.value[1]]], props.parent))
                                                                 }} />
                                                             <Input className="m-1" type='number' value={value.value[1]}
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                                    props.dispatch({
-                                                                        type: 'query',
-                                                                        payload: Y(['values', keyName, operator, [value.value[0], parseFloat(event.target.value)]], props.parent)
-                                                                    })
+                                                                    props.updateQuery(Y(['values', keyName, operator, [value.value[0], parseFloat(event.target.value)]], props.parent))
                                                                 }} />
                                                         </div>
                                                     )
@@ -856,41 +702,29 @@ function FilterRows(props: FilterRowsProps) {
                                                                         <Input className="m-1" type='number' value={values[index]}
                                                                             onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                                 if (index === 0) {
-                                                                                    props.dispatch({
-                                                                                        type: 'query',
-                                                                                        payload: Y(['values', keyName, operator,
-                                                                                            [
-                                                                                                parseFloat(event.target.value),
-                                                                                                ...values.slice(index + 1, values.length)
-                                                                                            ]], props.parent)
-                                                                                    })
-                                                                                } else if (index === values.length - 1) {
-                                                                                    props.dispatch({
-                                                                                        type: 'query',
-                                                                                        payload: Y(['values', keyName, operator,
-                                                                                            [...values.slice(0, index),
-                                                                                            Number(event.target.value)
-                                                                                            ]], props.parent)
-                                                                                    })
-                                                                                } else {
-                                                                                    props.dispatch({
-                                                                                        type: 'query',
-                                                                                        payload: Y(['values', keyName, operator,
-                                                                                            [...values.slice(0, index),
-                                                                                            Number(event.target.value),
+                                                                                    props.updateQuery(Y(['values', keyName, operator,
+                                                                                        [
+                                                                                            parseFloat(event.target.value),
                                                                                             ...values.slice(index + 1, values.length)
-                                                                                            ]], props.parent)
-                                                                                    })
+                                                                                        ]], props.parent))
+                                                                                } else if (index === values.length - 1) {
+                                                                                    props.updateQuery(Y(['values', keyName, operator,
+                                                                                        [...values.slice(0, index),
+                                                                                        Number(event.target.value)
+                                                                                        ]], props.parent))
+                                                                                } else {
+                                                                                    props.updateQuery(Y(['values', keyName, operator,
+                                                                                        [...values.slice(0, index),
+                                                                                        Number(event.target.value),
+                                                                                        ...values.slice(index + 1, values.length)
+                                                                                        ]], props.parent))
                                                                                 }
                                                                             }} />
                                                                     )
                                                                 })
                                                             }
                                                             <button onClick={async () => {
-                                                                props.dispatch({
-                                                                    type: 'query',
-                                                                    payload: Y(['values', keyName, operator, [...values, 0]], props.parent)
-                                                                })
+                                                                props.updateQuery(Y(['values', keyName, operator, [...values, 0]], props.parent))
                                                             }}
                                                                 className="focus:outline-none">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -899,24 +733,21 @@ function FilterRows(props: FilterRowsProps) {
                                                             </button>
                                                             <button onClick={async () => {
                                                                 if (values.length !== 1) {
-                                                                    props.dispatch({
-                                                                        type: 'query',
-                                                                        payload: Y(['values', keyName, operator, [...values.slice(0, values.length - 1)]], props.parent)
-                                                                    })
+                                                                    props.updateQuery(Y(['values', keyName, operator, [...values.slice(0, values.length - 1)]], props.parent))
                                                                 }
                                                             }} className="focus:outline-none">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
                                                                 </svg>
                                                             </button>
-                                                        </div>)
+                                                        </div >)
                                                     }
                                                     return
                                                 }
                                             }
                                         })() : undefined
                                     }
-                                </Cell>
+                                </Cell >
                             </>)
                         }
                         case 'Boolean': {
@@ -926,12 +757,7 @@ function FilterRows(props: FilterRowsProps) {
                                         checked={value.checked}
                                         color='primary'
                                         inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                        onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                            props.dispatch({
-                                                type: 'query',
-                                                payload: Y(['values', keyName, 'checked', event.target.checked], props.parent)
-                                            })
-                                        }}
+                                        onChange={async (event: React.ChangeEvent<HTMLInputElement>) => props.updateQuery(Y(['values', keyName, 'checked', event.target.checked], props.parent))}
                                     />
                                 </Cell>
                                 <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 2}/${startColumn + 3}`}>{type.keys[keyName].name}</Cell>
@@ -946,10 +772,7 @@ function FilterRows(props: FilterRowsProps) {
                                     {
                                         value.checked ? <Switch color='primary' checked={value.value} name='producable'
                                             onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                props.dispatch({
-                                                    type: 'query',
-                                                    payload: Y(['values', keyName, 'equals', event.target.checked], props.parent)
-                                                })
+                                                props.updateQuery(Y(['values', keyName, 'equals', event.target.checked], props.parent))
                                             }} /> : undefined
                                     }
                                 </Cell>
@@ -963,10 +786,7 @@ function FilterRows(props: FilterRowsProps) {
                                         color='primary'
                                         inputProps={{ 'aria-label': 'secondary checkbox' }}
                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                            props.dispatch({
-                                                type: 'query',
-                                                payload: Y(['values', keyName, 'checked', event.target.checked], props.parent)
-                                            })
+                                            props.updateQuery(Y(['values', keyName, 'checked', event.target.checked], props.parent))
                                         }}
                                     />
                                 </Cell>
@@ -981,26 +801,17 @@ function FilterRows(props: FilterRowsProps) {
                                                     case 'equals':
                                                     case 'greaterThanEquals':
                                                     case 'greaterThan': {
-                                                        props.dispatch({
-                                                            type: 'query',
-                                                            payload: Y(['values', keyName, 'operator', event.target.value, Date.now()], props.parent)
-                                                        })
+                                                        props.updateQuery(Y(['values', keyName, 'operator', event.target.value, Date.now()], props.parent))
                                                         return
                                                     }
                                                     case 'between':
                                                     case 'notBetween': {
-                                                        props.dispatch({
-                                                            type: 'query',
-                                                            payload: Y(['values', keyName, 'operator', event.target.value,
-                                                                [new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() === 6 ? 5 : (new Date().getDay() === 0 ? 6 : (new Date().getDay() === 1 ? 7 : 1))))).setHours(0, 0, 0), Date.now()]])
-                                                        })
+                                                        props.updateQuery(Y(['values', keyName, 'operator', event.target.value,
+                                                            [new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() === 6 ? 5 : (new Date().getDay() === 0 ? 6 : (new Date().getDay() === 1 ? 7 : 1))))).setHours(0, 0, 0), Date.now()]]))
                                                         return
                                                     }
                                                     case 'in': {
-                                                        props.dispatch({
-                                                            type: 'query',
-                                                            payload: Y(['values', keyName, 'operator', event.target.value, [Date.now()]], props.parent)
-                                                        })
+                                                        props.updateQuery(Y(['values', keyName, 'operator', event.target.value, [Date.now()]], props.parent))
                                                         return
                                                     }
                                                 }
@@ -1030,10 +841,7 @@ function FilterRows(props: FilterRowsProps) {
                                                     return (<Input className="m-1" type="date"
                                                         value={formatISO(toDate(value.value as number)).substr(0, 10)}
                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                            props.dispatch({
-                                                                type: 'query',
-                                                                payload: Y(['values', keyName, operator, getTime(parseISO(event.target.value))], props.parent)
-                                                            })
+                                                            props.updateQuery(Y(['values', keyName, operator, getTime(parseISO(event.target.value))], props.parent))
                                                         }}
                                                     />)
                                                 }
@@ -1044,18 +852,12 @@ function FilterRows(props: FilterRowsProps) {
                                                             <Input className="m-1" type="date"
                                                                 value={formatISO(toDate(value.value[0])).substr(0, 10)}
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                                    props.dispatch({
-                                                                        type: 'query',
-                                                                        payload: Y(['values', keyName, operator, [getTime(parseISO(event.target.value)), value.value[1]]], props.parent)
-                                                                    })
+                                                                    props.updateQuery(Y(['values', keyName, operator, [getTime(parseISO(event.target.value)), value.value[1]]], props.parent))
                                                                 }} />
                                                             <Input className="m-1" type="date"
                                                                 value={formatISO(toDate(value.value[1])).substr(0, 10)}
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                                    props.dispatch({
-                                                                        type: 'query',
-                                                                        payload: Y(['values', keyName, operator, [value.value[0], getTime(parseISO(event.target.value))]], props.parent)
-                                                                    })
+                                                                    props.updateQuery(Y(['values', keyName, operator, [value.value[0], getTime(parseISO(event.target.value))]], props.parent))
                                                                 }} />
                                                         </div>
                                                     )
@@ -1071,41 +873,29 @@ function FilterRows(props: FilterRowsProps) {
                                                                             value={formatISO(toDate(values[index])).substr(0, 10)}
                                                                             onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                                 if (index === 0) {
-                                                                                    props.dispatch({
-                                                                                        type: 'query',
-                                                                                        payload: Y(['values', keyName, operator,
-                                                                                            [
-                                                                                                getTime(parseISO(event.target.value)),
-                                                                                                ...values.slice(index + 1, values.length)
-                                                                                            ]], props.parent)
-                                                                                    })
-                                                                                } else if (index === values.length - 1) {
-                                                                                    props.dispatch({
-                                                                                        type: 'query',
-                                                                                        payload: Y(['values', keyName, operator,
-                                                                                            [...values.slice(0, index),
-                                                                                            getTime(parseISO(event.target.value))
-                                                                                            ]], props.parent)
-                                                                                    })
-                                                                                } else {
-                                                                                    props.dispatch({
-                                                                                        type: 'query',
-                                                                                        payload: Y(['values', keyName, operator,
-                                                                                            [...values.slice(0, index),
+                                                                                    props.updateQuery(Y(['values', keyName, operator,
+                                                                                        [
                                                                                             getTime(parseISO(event.target.value)),
                                                                                             ...values.slice(index + 1, values.length)
-                                                                                            ]], props.parent)
-                                                                                    })
+                                                                                        ]], props.parent))
+                                                                                } else if (index === values.length - 1) {
+                                                                                    props.updateQuery(Y(['values', keyName, operator,
+                                                                                        [...values.slice(0, index),
+                                                                                        getTime(parseISO(event.target.value))
+                                                                                        ]], props.parent))
+                                                                                } else {
+                                                                                    props.updateQuery(Y(['values', keyName, operator,
+                                                                                        [...values.slice(0, index),
+                                                                                        getTime(parseISO(event.target.value)),
+                                                                                        ...values.slice(index + 1, values.length)
+                                                                                        ]], props.parent))
                                                                                 }
                                                                             }} />
                                                                     )
                                                                 })
                                                             }
                                                             <button onClick={async () => {
-                                                                props.dispatch({
-                                                                    type: 'query',
-                                                                    payload: Y(['values', keyName, operator, [...values, getTime(new Date())]], props.parent)
-                                                                })
+                                                                props.updateQuery(Y(['values', keyName, operator, [...values, getTime(new Date())]], props.parent))
                                                             }}
                                                                 className="focus:outline-none">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1114,24 +904,21 @@ function FilterRows(props: FilterRowsProps) {
                                                             </button>
                                                             <button onClick={async () => {
                                                                 if (values.length !== 1) {
-                                                                    props.dispatch({
-                                                                        type: 'query',
-                                                                        payload: Y(['values', keyName, operator, [...values.slice(0, values.length - 1)]], props.parent)
-                                                                    })
+                                                                    props.updateQuery(Y(['values', keyName, operator, [...values.slice(0, values.length - 1)]], props.parent))
                                                                 }
                                                             }} className="focus:outline-none">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
                                                                 </svg>
                                                             </button>
-                                                        </div>)
+                                                        </div >)
                                                     }
                                                     return
                                                 }
                                             }
                                         })() : undefined
                                     }
-                                </Cell>
+                                </Cell >
                             </>)
                         }
                         case 'Timestamp': {
@@ -1142,10 +929,7 @@ function FilterRows(props: FilterRowsProps) {
                                         color='primary'
                                         inputProps={{ 'aria-label': 'secondary checkbox' }}
                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                            props.dispatch({
-                                                type: 'query',
-                                                payload: Y(['values', keyName, 'checked', event.target.checked], props.parent)
-                                            })
+                                            props.updateQuery(Y(['values', keyName, 'checked', event.target.checked], props.parent))
                                         }}
                                     />
                                 </Cell>
@@ -1160,26 +944,17 @@ function FilterRows(props: FilterRowsProps) {
                                                     case 'equals':
                                                     case 'greaterThanEquals':
                                                     case 'greaterThan': {
-                                                        props.dispatch({
-                                                            type: 'query',
-                                                            payload: Y(['values', keyName, 'operator', event.target.value, Date.now()], props.parent)
-                                                        })
+                                                        props.updateQuery(Y(['values', keyName, 'operator', event.target.value, Date.now()], props.parent))
                                                         return
                                                     }
                                                     case 'between':
                                                     case 'notBetween': {
-                                                        props.dispatch({
-                                                            type: 'query',
-                                                            payload: Y(['values', keyName, 'operator', event.target.value,
-                                                                [new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() === 6 ? 5 : (new Date().getDay() === 0 ? 6 : (new Date().getDay() === 1 ? 7 : 1))))).setHours(0, 0, 0), Date.now()]])
-                                                        })
+                                                        props.updateQuery(Y(['values', keyName, 'operator', event.target.value,
+                                                            [new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() === 6 ? 5 : (new Date().getDay() === 0 ? 6 : (new Date().getDay() === 1 ? 7 : 1))))).setHours(0, 0, 0), Date.now()]]))
                                                         return
                                                     }
                                                     case 'in': {
-                                                        props.dispatch({
-                                                            type: 'query',
-                                                            payload: Y(['values', keyName, 'operator', event.target.value, [Date.now()]], props.parent)
-                                                        })
+                                                        props.updateQuery(Y(['values', keyName, 'operator', event.target.value, [Date.now()]], props.parent))
                                                         return
                                                     }
                                                 }
@@ -1209,10 +984,7 @@ function FilterRows(props: FilterRowsProps) {
                                                     return (<Input className="m-1" type="datetime-local"
                                                         value={formatISO(toDate(value.value as number)).substr(0, 16)}
                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                            props.dispatch({
-                                                                type: 'query',
-                                                                payload: Y(['values', keyName, operator, getTime(parseISO(event.target.value))], props.parent)
-                                                            })
+                                                            props.updateQuery(Y(['values', keyName, operator, getTime(parseISO(event.target.value))], props.parent))
                                                         }}
                                                     />)
                                                 }
@@ -1223,18 +995,12 @@ function FilterRows(props: FilterRowsProps) {
                                                             <Input className="m-1" type="datetime-local"
                                                                 value={formatISO(toDate(value.value[0])).substr(0, 16)}
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                                    props.dispatch({
-                                                                        type: 'query',
-                                                                        payload: Y(['values', keyName, operator, [getTime(parseISO(event.target.value)), value.value[1]]], props.parent)
-                                                                    })
+                                                                    props.updateQuery(Y(['values', keyName, operator, [getTime(parseISO(event.target.value)), value.value[1]]], props.parent))
                                                                 }} />
                                                             <Input className="m-1" type="datetime-local"
                                                                 value={formatISO(toDate(value.value[1])).substr(0, 16)}
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                                    props.dispatch({
-                                                                        type: 'query',
-                                                                        payload: Y(['values', keyName, operator, [value.value[0], getTime(parseISO(event.target.value))]], props.parent)
-                                                                    })
+                                                                    props.updateQuery(Y(['values', keyName, operator, [value.value[0], getTime(parseISO(event.target.value))]], props.parent))
                                                                 }} />
                                                         </div>
                                                     )
@@ -1250,41 +1016,29 @@ function FilterRows(props: FilterRowsProps) {
                                                                             value={formatISO(toDate(values[index])).substr(0, 16)}
                                                                             onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                                 if (index === 0) {
-                                                                                    props.dispatch({
-                                                                                        type: 'query',
-                                                                                        payload: Y(['values', keyName, operator,
-                                                                                            [
-                                                                                                getTime(parseISO(event.target.value)),
-                                                                                                ...values.slice(index + 1, values.length)
-                                                                                            ]], props.parent)
-                                                                                    })
-                                                                                } else if (index === values.length - 1) {
-                                                                                    props.dispatch({
-                                                                                        type: 'query',
-                                                                                        payload: Y(['values', keyName, operator,
-                                                                                            [...values.slice(0, index),
-                                                                                            getTime(parseISO(event.target.value))
-                                                                                            ]], props.parent)
-                                                                                    })
-                                                                                } else {
-                                                                                    props.dispatch({
-                                                                                        type: 'query',
-                                                                                        payload: Y(['values', keyName, operator,
-                                                                                            [...values.slice(0, index),
+                                                                                    props.updateQuery(Y(['values', keyName, operator,
+                                                                                        [
                                                                                             getTime(parseISO(event.target.value)),
                                                                                             ...values.slice(index + 1, values.length)
-                                                                                            ]], props.parent)
-                                                                                    })
+                                                                                        ]], props.parent))
+                                                                                } else if (index === values.length - 1) {
+                                                                                    props.updateQuery(Y(['values', keyName, operator,
+                                                                                        [...values.slice(0, index),
+                                                                                        getTime(parseISO(event.target.value))
+                                                                                        ]], props.parent))
+                                                                                } else {
+                                                                                    props.updateQuery(Y(['values', keyName, operator,
+                                                                                        [...values.slice(0, index),
+                                                                                        getTime(parseISO(event.target.value)),
+                                                                                        ...values.slice(index + 1, values.length)
+                                                                                        ]], props.parent))
                                                                                 }
                                                                             }} />
                                                                     )
                                                                 })
                                                             }
                                                             <button onClick={async () => {
-                                                                props.dispatch({
-                                                                    type: 'query',
-                                                                    payload: Y(['values', keyName, operator, [...values, getTime(new Date())]], props.parent)
-                                                                })
+                                                                props.updateQuery(Y(['values', keyName, operator, [...values, getTime(new Date())]], props.parent))
                                                             }}
                                                                 className="focus:outline-none">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1293,24 +1047,21 @@ function FilterRows(props: FilterRowsProps) {
                                                             </button>
                                                             <button onClick={async () => {
                                                                 if (values.length !== 1) {
-                                                                    props.dispatch({
-                                                                        type: 'query',
-                                                                        payload: Y(['values', keyName, operator, [...values.slice(0, values.length - 1)]], props.parent)
-                                                                    })
+                                                                    props.updateQuery(Y(['values', keyName, operator, [...values.slice(0, values.length - 1)]], props.parent))
                                                                 }
                                                             }} className="focus:outline-none">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
                                                                 </svg>
                                                             </button>
-                                                        </div>)
+                                                        </div >)
                                                     }
                                                     return
                                                 }
                                             }
                                         })() : undefined
                                     }
-                                </Cell>
+                                </Cell >
                             </>)
                         }
                         case 'Time': {
@@ -1321,10 +1072,7 @@ function FilterRows(props: FilterRowsProps) {
                                         color='primary'
                                         inputProps={{ 'aria-label': 'secondary checkbox' }}
                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                            props.dispatch({
-                                                type: 'query',
-                                                payload: Y(['values', keyName, 'checked', event.target.checked], props.parent)
-                                            })
+                                            props.updateQuery(Y(['values', keyName, 'checked', event.target.checked], props.parent))
                                         }}
                                     />
                                 </Cell>
@@ -1339,26 +1087,17 @@ function FilterRows(props: FilterRowsProps) {
                                                     case 'equals':
                                                     case 'greaterThanEquals':
                                                     case 'greaterThan': {
-                                                        props.dispatch({
-                                                            type: 'query',
-                                                            payload: Y(['values', keyName, 'operator', event.target.value, Date.now()], props.parent)
-                                                        })
+                                                        props.updateQuery(Y(['values', keyName, 'operator', event.target.value, Date.now()], props.parent))
                                                         return
                                                     }
                                                     case 'between':
                                                     case 'notBetween': {
-                                                        props.dispatch({
-                                                            type: 'query',
-                                                            payload: Y(['values', keyName, 'operator', event.target.value,
-                                                                [new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() === 6 ? 5 : (new Date().getDay() === 0 ? 6 : (new Date().getDay() === 1 ? 7 : 1))))).setHours(0, 0, 0), Date.now()]])
-                                                        })
+                                                        props.updateQuery(Y(['values', keyName, 'operator', event.target.value,
+                                                            [new Date(new Date().setDate(new Date().getDate() - (new Date().getDay() === 6 ? 5 : (new Date().getDay() === 0 ? 6 : (new Date().getDay() === 1 ? 7 : 1))))).setHours(0, 0, 0), Date.now()]]))
                                                         return
                                                     }
                                                     case 'in': {
-                                                        props.dispatch({
-                                                            type: 'query',
-                                                            payload: Y(['values', keyName, 'operator', event.target.value, [Date.now()]], props.parent)
-                                                        })
+                                                        props.updateQuery(Y(['values', keyName, 'operator', event.target.value, [Date.now()]], props.parent))
                                                         return
                                                     }
                                                 }
@@ -1388,10 +1127,7 @@ function FilterRows(props: FilterRowsProps) {
                                                     return (<Input className="m-1" type="time"
                                                         value={formatISO(toDate(value.value as number)).substr(11, 5)}
                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                            props.dispatch({
-                                                                type: 'query',
-                                                                payload: Y(['values', keyName, operator, getTime(parse(event.target.value, 'HH:mm', new Date()))], props.parent)
-                                                            })
+                                                            props.updateQuery(Y(['values', keyName, operator, getTime(parse(event.target.value, 'HH:mm', new Date()))], props.parent))
                                                         }}
                                                     />)
                                                 }
@@ -1402,18 +1138,12 @@ function FilterRows(props: FilterRowsProps) {
                                                             <Input className="m-1" type="time"
                                                                 value={formatISO(toDate(value.value[0])).substr(11, 5)}
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                                    props.dispatch({
-                                                                        type: 'query',
-                                                                        payload: Y(['values', keyName, operator, [getTime(parse(event.target.value, 'HH:mm', new Date())), value.value[1]]], props.parent)
-                                                                    })
+                                                                    props.updateQuery(Y(['values', keyName, operator, [getTime(parse(event.target.value, 'HH:mm', new Date())), value.value[1]]], props.parent))
                                                                 }} />
                                                             <Input className="m-1" type="time"
                                                                 value={formatISO(toDate(value.value[1])).substr(11, 5)}
                                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                                    props.dispatch({
-                                                                        type: 'query',
-                                                                        payload: Y(['values', keyName, operator, [value.value[0], getTime(parse(event.target.value, 'HH:mm', new Date()))]], props.parent)
-                                                                    })
+                                                                    props.updateQuery(Y(['values', keyName, operator, [value.value[0], getTime(parse(event.target.value, 'HH:mm', new Date()))]], props.parent))
                                                                 }} />
                                                         </div>
                                                     )
@@ -1429,41 +1159,29 @@ function FilterRows(props: FilterRowsProps) {
                                                                             value={formatISO(toDate(values[index])).substr(11, 5)}
                                                                             onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                                                 if (index === 0) {
-                                                                                    props.dispatch({
-                                                                                        type: 'query',
-                                                                                        payload: Y(['values', keyName, operator,
-                                                                                            [
-                                                                                                getTime(parse(event.target.value, 'HH:mm', new Date())),
-                                                                                                ...values.slice(index + 1, values.length)
-                                                                                            ]], props.parent)
-                                                                                    })
-                                                                                } else if (index === values.length - 1) {
-                                                                                    props.dispatch({
-                                                                                        type: 'query',
-                                                                                        payload: Y(['values', keyName, operator,
-                                                                                            [...values.slice(0, index),
-                                                                                            getTime(parse(event.target.value, 'HH:mm', new Date()))
-                                                                                            ]], props.parent)
-                                                                                    })
-                                                                                } else {
-                                                                                    props.dispatch({
-                                                                                        type: 'query',
-                                                                                        payload: Y(['values', keyName, operator,
-                                                                                            [...values.slice(0, index),
+                                                                                    props.updateQuery(Y(['values', keyName, operator,
+                                                                                        [
                                                                                             getTime(parse(event.target.value, 'HH:mm', new Date())),
                                                                                             ...values.slice(index + 1, values.length)
-                                                                                            ]], props.parent)
-                                                                                    })
+                                                                                        ]], props.parent))
+                                                                                } else if (index === values.length - 1) {
+                                                                                    props.updateQuery(Y(['values', keyName, operator,
+                                                                                        [...values.slice(0, index),
+                                                                                        getTime(parse(event.target.value, 'HH:mm', new Date()))
+                                                                                        ]], props.parent))
+                                                                                } else {
+                                                                                    props.updateQuery(Y(['values', keyName, operator,
+                                                                                        [...values.slice(0, index),
+                                                                                        getTime(parse(event.target.value, 'HH:mm', new Date())),
+                                                                                        ...values.slice(index + 1, values.length)
+                                                                                        ]], props.parent))
                                                                                 }
                                                                             }} />
                                                                     )
                                                                 })
                                                             }
                                                             <button onClick={async () => {
-                                                                props.dispatch({
-                                                                    type: 'query',
-                                                                    payload: Y(['values', keyName, operator, [...values, getTime(new Date())]], props.parent)
-                                                                })
+                                                                props.updateQuery(Y(['values', keyName, operator, [...values, getTime(new Date())]], props.parent))
                                                             }}
                                                                 className="focus:outline-none">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1472,24 +1190,21 @@ function FilterRows(props: FilterRowsProps) {
                                                             </button>
                                                             <button onClick={async () => {
                                                                 if (values.length !== 1) {
-                                                                    props.dispatch({
-                                                                        type: 'query',
-                                                                        payload: Y(['values', keyName, operator, [...values.slice(0, values.length - 1)]], props.parent)
-                                                                    })
+                                                                    props.updateQuery(Y(['values', keyName, operator, [...values.slice(0, values.length - 1)]], props.parent))
                                                                 }
                                                             }} className="focus:outline-none">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
                                                                 </svg>
                                                             </button>
-                                                        </div>)
+                                                        </div >)
                                                     }
                                                     return
                                                 }
                                             }
                                         })() : undefined
                                     }
-                                </Cell>
+                                </Cell >
                             </>)
                         }
                     }
@@ -1503,17 +1218,14 @@ function FilterRows(props: FilterRowsProps) {
                                     color='primary'
                                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                                     onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                        props.dispatch({
-                                            type: 'query',
-                                            payload: Y(['values', keyName, 'checked', event.target.checked], props.parent)
-                                        })
+                                        props.updateQuery(Y(['values', keyName, 'checked', event.target.checked], props.parent))
                                     }}
                                 />
                             </Cell>
                             <Cell className="px-1" row={`${startRow + index + 2}/${startRow + index + 3}`} column={`${startColumn + 2}/${startColumn + 3}`}>{type.keys[keyName].name}</Cell>
                             {
                                 value.checked ? (() => {
-                                    const x = <FilterRows typeName={keyTypeName} query={value.value} dispatch={props.dispatch} startRow={startRow + index + 1} startColumn={startColumn + 2} parent={props.parent ? T(props.parent, keyName) : ['values', keyName, undefined]} />
+                                    const x = <FilterRows typeName={keyTypeName} query={value.value} updateQuery={props.updateQuery} startRow={startRow + index + 1} startColumn={startColumn + 2} parent={props.parent ? T(props.parent, keyName) : ['values', keyName, undefined]} />
                                     startRow += getNestedRowCount(value.value)
                                     return x
                                 })() : undefined

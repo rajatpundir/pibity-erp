@@ -198,10 +198,7 @@ type TableProps = {
         offset: number
         page: number
     }>
-    dispatch: React.Dispatch<{
-        type: 'limit' | 'offset' | 'page'
-        payload: number
-    }>
+    updatePage: (args: ['limit', number] | ['offset', number] | ['page', number]) => void
     variables: Immutable<HashSet<any>>
     columns: Vector<string>
 }
@@ -213,59 +210,35 @@ export function Table(props: TableProps) {
     const keys = Object.keys(type.keys).filter(keyName => props.columns.contains(keyName))
 
     const firstPage = async (event: React.MouseEvent<HTMLButtonElement>) => {
-        props.dispatch({
-            type: 'offset',
-            payload: 0
-        })
+        props.updatePage(['offset', 0])
     }
 
     const prevPage = async (event: React.MouseEvent<HTMLButtonElement>) => {
-        props.dispatch({
-            type: 'offset',
-            payload: props.state.offset - 1
-        })
+        props.updatePage(['offset', props.state.offset - 1])
     }
 
     const nextPage = async (event: React.MouseEvent<HTMLButtonElement>) => {
-        props.dispatch({
-            type: 'offset',
-            payload: Math.min(Math.ceil(props.variables.length() / props.state.limit) - 1, props.state.offset + 1)
-        })
+        props.updatePage(['offset', Math.min(Math.ceil(props.variables.length() / props.state.limit) - 1, props.state.offset + 1)])
     }
 
     const lastPage = async (event: React.MouseEvent<HTMLButtonElement>) => {
-        props.dispatch({
-            type: 'offset',
-            payload: Math.ceil(props.variables.length() / props.state.limit) - 1
-        })
+        props.updatePage(['offset', Math.ceil(props.variables.length() / props.state.limit) - 1])
     }
 
     const changePage = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        props.dispatch({
-            type: 'page',
-            payload: parseInt(event.target.value)
-        })
+        props.updatePage(['page', parseInt(event.target.value)])
     }
 
     const setPage = async (event: React.MouseEvent<HTMLButtonElement>) => {
-        props.dispatch({
-            type: 'offset',
-            payload: Math.min(Math.ceil(props.variables.length() / props.state.limit) - 1, parseInt(String(props.state.page)) - 1)
-        })
+        props.updatePage(['offset', Math.min(Math.ceil(props.variables.length() / props.state.limit) - 1, parseInt(String(props.state.page)) - 1)])
     }
 
     const rowUp = async (event: React.MouseEvent<HTMLButtonElement>) => {
-        props.dispatch({
-            type: 'limit',
-            payload: props.state.limit + 5
-        })
+        props.updatePage(['limit', props.state.limit + 5])
     }
 
     const rowDown = async (event: React.MouseEvent<HTMLButtonElement>) => {
-        props.dispatch({
-            type: 'limit',
-            payload: props.state.limit - 5
-        })
+        props.updatePage(['limit', props.state.limit - 5])
     }
 
     return (<Container area={props.area} layout={layouts.table} >
