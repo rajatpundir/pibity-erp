@@ -3,6 +3,8 @@ import { Function } from './function'
 export type FunctionName =
     | 'createProduct'
     | 'createUOM'
+    | 'createIndent'
+    | 'createIndentItem'
 
 export const functions: Record<FunctionName, Function> = {
     createProduct: {
@@ -102,6 +104,76 @@ export const functions: Record<FunctionName, Function> = {
                         op: '.',
                         types: [],
                         args: ['conversionRate']
+                    }
+                }
+            }
+        }
+    },
+    createIndent: {
+        inputs: {},
+        outputs: {
+            product: {
+                type: 'Indent',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: 'id',
+                    types: ['Text'],
+                    args: ['']
+                },
+                values: {}
+            }
+        }
+    },
+    createIndentItem: {
+        inputs: {
+            indent: {
+                type: 'Indent'
+            },
+            product: {
+                type: 'Product'
+            },
+            quantity: {
+                type: 'Decimal'
+            },
+            uom: {
+                type: 'UOM'
+            }
+        },
+        outputs: {
+            uom: {
+                type: 'IndentItem',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['']
+                },
+                values: {
+                    indent: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['indent']
+                    },
+                    product: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['product']
+                    },
+                    quantity: {
+                        expectedReturnType: 'Decimal',
+                        op: '.',
+                        types: [],
+                        args: ['quantity']
+                    },
+                    uom: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['uom']
                     }
                 }
             }

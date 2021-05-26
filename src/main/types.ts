@@ -129,7 +129,7 @@ export const types = {
             },
             quantity: {
                 order: 2,
-                name: 'Quality',
+                name: 'Quantity',
                 type: 'Number'
             },
             uom: {

@@ -5,8 +5,9 @@ import { Diff, mergeDiffs } from './layers'
 import { executeMapper, MapperName, mappers } from './mapper'
 import { NonPrimitiveType } from './types'
 
-type CircuitName = 
-| 'createProduct'
+type CircuitName =
+    | 'createProduct'
+    | 'createIndent'
 
 export const circuits: Record<string, Circuit> = {
     createProduct: {
@@ -60,51 +61,82 @@ export const circuits: Record<string, Circuit> = {
             product: ['c1', 'product'],
             uoms: ['c2', 'uom']
         }
+    },
+    createIndent: {
+        inputs: {
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'createIndent',
+                connect: {}
+            },
+            c2: {
+                order: 2,
+                type: 'mapper',
+                exec: 'createIndentItems',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'items'],
+                    overrides: {
+                        indent: ['computation', 'c1', 'indent']
+                    }
+                }
+            }
+        },
+        outputs: {
+            indent: ['c1', 'indent'],
+            items: ['c2', 'item']
+        }
     }
 }
 
 type CircuitInput = {
     type: []
 }
-| {
-    type: 'Text'
-    default?: string
-}
-| {
-    type: 'Number' | 'Decimal' | 'Date' | 'Timestamp' | 'Time'
-    default?: number
-}
-| {
-    type: 'Boolean'
-    default?: boolean
-}
-| {
-    type: NonPrimitiveType
-    default?: string
-}
+    | {
+        type: 'Text'
+        default?: string
+    }
+    | {
+        type: 'Number' | 'Decimal' | 'Date' | 'Timestamp' | 'Time'
+        default?: number
+    }
+    | {
+        type: 'Boolean'
+        default?: boolean
+    }
+    | {
+        type: NonPrimitiveType
+        default?: string
+    }
 
 type CircuitComputation = {
     order: number
     type: 'function'
     exec: FunctionName
-    connect: Record<string, ['input', string] | ['computation', string, string] >
+    connect: Record<string, ['input', string] | ['computation', string, string]>
 }
-| {
-    order: number
-    type: 'circuit'
-    exec: CircuitName
-    connect: Record<string, ['input', string] | ['computation', string, string] >
-}
-| {
-    order: number
-    type: 'mapper'
-    exec: MapperName
-    connect: {
-        queryParams: Record<string, ['input', string] | ['computation', string, string]>
-        args: ['input' | 'computation', string]
-        overrides: Record<string, ['input', string] | ['computation', string, string]>
+    | {
+        order: number
+        type: 'circuit'
+        exec: CircuitName
+        connect: Record<string, ['input', string] | ['computation', string, string]>
     }
-}
+    | {
+        order: number
+        type: 'mapper'
+        exec: MapperName
+        connect: {
+            queryParams: Record<string, ['input', string] | ['computation', string, string]>
+            args: ['input' | 'computation', string]
+            overrides: Record<string, ['input', string] | ['computation', string, string]>
+        }
+    }
 
 type CircuitOutput = [string, string]
 
@@ -120,13 +152,13 @@ export function executeCircuit(circuit: Circuit, args: object): [object, boolean
     var diffs = Vector.of<Diff>()
     Object.keys(circuit.computations).forEach(computationName => {
         const computation = circuit.computations[computationName]
-        switch(computation.type) {
+        switch (computation.type) {
             case 'function': {
                 const fx = functions[computation.exec]
                 const functionArgs = {}
                 Object.keys(fx.inputs).forEach(inputName => {
                     const connection = computation.connect[inputName]
-                    switch(connection[0]) {
+                    switch (connection[0]) {
                         case 'input': {
                             functionArgs[inputName] = args[connection[1]]
                             break
@@ -150,7 +182,7 @@ export function executeCircuit(circuit: Circuit, args: object): [object, boolean
                 const circuitArgs = {}
                 Object.keys(computationCircuit.inputs).forEach(inputName => {
                     const connection = computation.connect[inputName]
-                    switch(connection[0]) {
+                    switch (connection[0]) {
                         case 'input': {
                             circuitArgs[inputName] = args[connection[1]]
                             break
@@ -175,7 +207,7 @@ export function executeCircuit(circuit: Circuit, args: object): [object, boolean
                 const queryParamsConnections = computation.connect.queryParams
                 Object.keys(mapper.queryParams).forEach(queryParam => {
                     const connection = queryParamsConnections[queryParam]
-                    switch(connection[0]) {
+                    switch (connection[0]) {
                         case 'input': {
                             queryParams[queryParam] = args[connection[1]]
                             break
@@ -188,12 +220,12 @@ export function executeCircuit(circuit: Circuit, args: object): [object, boolean
                 })
                 var mapperArgs: Array<object> = []
                 const argsConnections = computation.connect.args
-                switch(argsConnections[0]) {
+                switch (argsConnections[0]) {
                     case 'input': {
                         mapperArgs = args[argsConnections[1]].map((x: object) => {
                             Object.keys(computation.connect.overrides).forEach(y => {
                                 const z = computation.connect.overrides[y]
-                                switch(z[0]) {
+                                switch (z[0]) {
                                     case 'input': {
                                         x[y] = args[z[1]]
                                         break
@@ -212,7 +244,7 @@ export function executeCircuit(circuit: Circuit, args: object): [object, boolean
                         mapperArgs = computationResults[argsConnections[1]].map((x: object) => {
                             Object.keys(computation.connect.overrides).forEach(y => {
                                 const z = computation.connect.overrides[y]
-                                switch(z[0]) {
+                                switch (z[0]) {
                                     case 'input': {
                                         x[y] = args[z[1]]
                                         break
@@ -228,7 +260,7 @@ export function executeCircuit(circuit: Circuit, args: object): [object, boolean
                         break
                     }
                 }
-                const [result, symbolFlag, diff] = executeMapper(mapper, {queryParams: queryParams, args: mapperArgs})
+                const [result, symbolFlag, diff] = executeMapper(mapper, { queryParams: queryParams, args: mapperArgs })
                 if (!symbolFlag) {
                     return [outputs, false, mergeDiffs(diffs.toArray())]
                 }
@@ -240,7 +272,7 @@ export function executeCircuit(circuit: Circuit, args: object): [object, boolean
     })
     Object.keys(circuit.outputs).forEach(outputName => {
         const output = circuit.outputs[outputName]
-        if(!Array.isArray(computationResults[output[0]])) {
+        if (!Array.isArray(computationResults[output[0]])) {
             outputs[outputName] = computationResults[output[0]][output[1]]
         } else {
             outputs[outputName] = computationResults[output[0]]

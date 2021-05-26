@@ -17,6 +17,7 @@ export type Mapper = {
 
 export type MapperName =
     | 'createUOMs'
+    | 'createIndentItems'
 
 export const mappers: Record<MapperName, Mapper> = {
     createUOMs: {
@@ -24,6 +25,12 @@ export const mappers: Record<MapperName, Mapper> = {
         queryParams: [],
         functionName: 'createUOM',
         functionInput: 'product'
+    },
+    createIndentItems: {
+        query: false,
+        queryParams: [],
+        functionName: 'createIndentItem',
+        functionInput: 'indent'
     }
 }
 

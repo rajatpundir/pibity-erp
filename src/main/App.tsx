@@ -1,10 +1,12 @@
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
-import ProductX from '../components/management/product/Product'
-import Products from '../components/management/product/Products'
-import Suppliers from '../components/management/supplier/Suppliers'
 import Navbar from './Navbar'
 import { Container, Item, none } from './commons'
 import * as Grid from './grids'
+import Product from '../components/management/product/Product'
+import Products from '../components/management/product/Products'
+import Suppliers from '../components/management/supplier/Suppliers'
+import Indent from '../components/production/indent/Indent'
+import Indents from '../components/production/indent/Indents'
 
 function App() {
   return (
@@ -17,13 +19,19 @@ function App() {
           <Item area={Grid.content} className='overflow-y-auto py-8'>
             <Switch>
               <Route exact path='/product'>
-                <ProductX />
+                <Product />
               </Route>
               <Route exact path='/products'>
                 <Products />
               </Route>
               <Route exact path='/suppliers'>
                 <Suppliers />
+              </Route>
+              <Route exact path='/indent'>
+                <Indent />
+              </Route>
+              <Route exact path='/indents'>
+                <Indent />
               </Route>
             </Switch>
           </Item>

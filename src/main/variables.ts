@@ -194,13 +194,13 @@ export class IndentVariable {
     readonly typeName = 'Indent'
     variableName: Indent
     values: {
-        timestamp: Timestamp // redundant field
+        // timestamp: Timestamp // redundant field
         // subspace: Subspace
         // approver: Subspace
-        approved: Boolean
+        // approved: Boolean
     }
 
-    constructor(variableName: string, values: { timestamp: Timestamp, approved: Boolean }) {
+    constructor(variableName: string, values: {}) {
         this.variableName = new Indent(variableName)
         this.values = values
     }
