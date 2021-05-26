@@ -221,7 +221,7 @@ export default function ProductX() {
                     <Title>Create Product</Title>
                 </Item>
                 <Item area={Grid.button} justify='end' align='center'>
-                    <Button onClick={dispatch['saveVariable']}>Save</Button>
+                    <Button onClick={() => dispatch(['saveVariable'])}>Save</Button>
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>
                     <Item>
