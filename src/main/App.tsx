@@ -7,6 +7,16 @@ import Products from '../components/management/product/Products'
 import Suppliers from '../components/management/supplier/Suppliers'
 import Indent from '../components/production/indent/Indent'
 import Indents from '../components/production/indent/Indents'
+import Quotation from '../components/production/quotation/Quotations'
+import Quotations from '../components/production/quotation/Quotation'
+import PurchaseOrder from '../components/production/purchaseOrder/PurchaseOrder'
+import PurchaseOrders from '../components/production/purchaseOrder/PurchaseOrders'
+import PurchaseInvoice from '../components/production/purchaseInvoice/PurchaseInvoice'
+import PurchaseInvoices from '../components/production/purchaseInvoice/PurchaseInvoices'
+import MaterialAccepted from '../components/production/materialAccepted/MaterialAccepted'
+import MaterialAccepteds from '../components/production/materialAccepted/MaterialAccepteds'
+import MaterialRejected from '../components/production/materialRejected/MaterialRejected'
+import MaterialRejecteds from '../components/production/materialRejected/MaterialRejecteds'
 
 function App() {
   return (
@@ -32,6 +42,36 @@ function App() {
               </Route>
               <Route exact path='/indents'>
                 <Indent />
+              </Route>
+              <Route exact path='/quotation'>
+                <Quotation />
+              </Route>
+              <Route exact path='/quotations'>
+                <Quotations />
+              </Route>
+              <Route exact path='/orders'>
+                <PurchaseOrder />
+              </Route>
+              <Route exact path='/orders'>
+                <PurchaseOrders />
+              </Route>
+              <Route exact path='/invoices'>
+                <PurchaseInvoice />
+              </Route>
+              <Route exact path='/invoices'>
+                <PurchaseInvoices />
+              </Route>
+              <Route exact path='/materials-aceepted'>
+                <MaterialAccepted />
+              </Route>
+              <Route exact path='/materials-aceepted'>
+                <MaterialAccepteds />
+              </Route>
+              <Route exact path='/materials-rejected'>
+                <MaterialRejected />
+              </Route>
+              <Route exact path='/materials-rejected'>
+                <MaterialRejecteds />
               </Route>
             </Switch>
           </Item>

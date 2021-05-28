@@ -18,6 +18,9 @@ export type Mapper = {
 export type MapperName =
     | 'createUOMs'
     | 'createIndentItems'
+    | 'createQuotationItem'
+    | 'createPurchaseOrderItem'
+    | 'createPurchaseInvoiceItem'
 
 export const mappers: Record<MapperName, Mapper> = {
     createUOMs: {
@@ -31,6 +34,24 @@ export const mappers: Record<MapperName, Mapper> = {
         queryParams: [],
         functionName: 'createIndentItem',
         functionInput: 'indent'
+    },
+    createQuotationItem: {
+        query: false,
+        queryParams: [],
+        functionName: 'createQuotationItem',
+        functionInput: 'quotation'
+    },
+    createPurchaseOrderItem: {
+        query: false,
+        queryParams: [],
+        functionName: 'createPurchaseOrderItem',
+        functionInput: 'purchaseOrder'
+    },
+    createPurchaseInvoiceItem: {
+        query: false,
+        queryParams: [],
+        functionName: 'createPurchaseInvoiceItem',
+        functionInput: 'purchaseInvoice'
     }
 }
 

@@ -294,13 +294,18 @@ export const types = {
                 name: 'Purchase Order Item',
                 type: 'PurchaseOrderItem'
             },
-            approved: {
+            quantity: {
                 order: 2,
+                name: 'Quantity',
+                type: 'Number'
+            },
+            approved: {
+                order: 3,
                 name: 'Approved',
                 type: 'Number'
             },
             rejected: {
-                order: 3,
+                order: 4,
                 name: 'Rejected',
                 type: 'Number'
             }
