@@ -2,21 +2,21 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import Navbar from './Navbar'
 import { Container, Item, none } from './commons'
 import * as Grid from './grids'
-import Product from '../components/management/product/Product'
-import Products from '../components/management/product/Products'
-import Suppliers from '../components/management/supplier/Suppliers'
-import Indent from '../components/production/indent/Indent'
-import Indents from '../components/production/indent/Indents'
-import Quotation from '../components/production/quotation/Quotations'
-import Quotations from '../components/production/quotation/Quotation'
-import PurchaseOrder from '../components/production/purchaseOrder/PurchaseOrder'
-import PurchaseOrders from '../components/production/purchaseOrder/PurchaseOrders'
-import PurchaseInvoice from '../components/production/purchaseInvoice/PurchaseInvoice'
-import PurchaseInvoices from '../components/production/purchaseInvoice/PurchaseInvoices'
-import MaterialAccepted from '../components/production/materialAccepted/MaterialAccepted'
-import MaterialAccepteds from '../components/production/materialAccepted/MaterialAccepteds'
-import MaterialRejected from '../components/production/materialRejected/MaterialRejected'
-import MaterialRejecteds from '../components/production/materialRejected/MaterialRejecteds'
+import CreateProduct from '../components/IT/Product/Create'
+import ListProduct from '../components/IT/Product/List'
+import ListSupplier from '../components/IT/Supplier/List'
+import CreateIndent from '../components/Production/Indent/Create'
+import ListIndent from '../components/Production/Indent/List'
+import CreateQuotation from '../components/Purchase/Quotation/Create'
+import ListQuotation from '../components/Purchase/Quotation/List'
+import CreatePurchaseOrder from '../components/Purchase/PurchaseOrder/Create'
+import ListPurchaseOrder from '../components/Purchase/PurchaseOrder/List'
+import CreatePurchaseInvoice from '../components/Store/PurchaseInvoice/Create'
+import ListPurchaseInvoice from '../components/Store/PurchaseInvoice/List'
+import CreateMaterialApproved from '../components/Quality/MaterialApproved/Create'
+import ListMaterialApproved from '../components/Quality/MaterialApproved/List'
+import CreateMaterialRejected from '../components/Quality/MaterialRejected/Create'
+import ListMaterialRejected from '../components/Quality/MaterialRejected/List'
 
 function App() {
   return (
@@ -28,51 +28,21 @@ function App() {
           </Item>
           <Item area={Grid.content} className='overflow-y-auto py-8'>
             <Switch>
-              <Route exact path='/product'>
-                <Product />
-              </Route>
-              <Route exact path='/products'>
-                <Products />
-              </Route>
-              <Route exact path='/suppliers'>
-                <Suppliers />
-              </Route>
-              <Route exact path='/indent'>
-                <Indent />
-              </Route>
-              <Route exact path='/indents'>
-                <Indent />
-              </Route>
-              <Route exact path='/quotation'>
-                <Quotation />
-              </Route>
-              <Route exact path='/quotations'>
-                <Quotations />
-              </Route>
-              <Route exact path='/orders'>
-                <PurchaseOrder />
-              </Route>
-              <Route exact path='/orders'>
-                <PurchaseOrders />
-              </Route>
-              <Route exact path='/invoices'>
-                <PurchaseInvoice />
-              </Route>
-              <Route exact path='/invoices'>
-                <PurchaseInvoices />
-              </Route>
-              <Route exact path='/materials-aceepted'>
-                <MaterialAccepted />
-              </Route>
-              <Route exact path='/materials-aceepted'>
-                <MaterialAccepteds />
-              </Route>
-              <Route exact path='/materials-rejected'>
-                <MaterialRejected />
-              </Route>
-              <Route exact path='/materials-rejected'>
-                <MaterialRejecteds />
-              </Route>
+              <Route exact path='/product'><CreateProduct /></Route>
+              <Route exact path='/products'><ListProduct /></Route>
+              <Route exact path='/suppliers'><ListSupplier /></Route>
+              <Route exact path='/indent'><CreateIndent /></Route>
+              <Route exact path='/indents'><ListIndent /></Route>
+              <Route exact path='/quotation'><CreateQuotation /></Route>
+              <Route exact path='/quotations'><ListQuotation /></Route>
+              <Route exact path='/purchase-order'><CreatePurchaseOrder /></Route>
+              <Route exact path='/purchase-orders'><ListPurchaseOrder /></Route>
+              <Route exact path='/purchase-invoice'><CreatePurchaseInvoice /></Route>
+              <Route exact path='/purchase-invoices'><ListPurchaseInvoice /></Route>
+              <Route exact path='/material-approved'><CreateMaterialApproved /></Route>
+              <Route exact path='/materials-approved'><ListMaterialApproved /></Route>
+              <Route exact path='/material-rejected'><CreateMaterialRejected /></Route>
+              <Route exact path='/materials-rejected'><ListMaterialRejected /></Route>
             </Switch>
           </Item>
         </Container>

@@ -2,7 +2,6 @@ import { NavLink } from 'react-router-dom'
 
 const navbar: { [index: string]: { [index: string]: string } } = {
     'IT': {
-        'Product': '/product',
         'Products': '/products',
         'Suppliers': '/suppliers'
     },
@@ -15,16 +14,16 @@ const navbar: { [index: string]: { [index: string]: string } } = {
     },
     'Purchase': {
         'Quotations': '/quotations',
-        'Purchase Orders': '/orders',
-        'Purchase Invoices': 'invoices',
+        'Purchase Orders': '/purchase-orders',
+        'Purchase Invoices': '/purchase-invoices',
         'Material Return Notes': '/returns'
     },
     'Store': {
-        'Purchase Invoices': '/invoices',
+        'Purchase Invoices': '/purchase-invoices',
         'Material Requistions': '/requistions'
     },
     'Quality': {
-        'Materials Accepted': '/materials-aceepted',
+        'Materials Accepted': '/materials-approved',
         'Materials Rejected': '/materials-rejected',
         'Transfers': '/transfers'
     },
