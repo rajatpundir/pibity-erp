@@ -8,22 +8,22 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { Decimal, PurchaseOrder, PurchaseOrderItemVariable, PurchaseOrderVariable, Quotation, QuotationItem } from '../../../main/variables'
+import { MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialReturnSlipItemVariable, MaterialReturnSlipVariable } from '../../../main/variables'
 import * as Grid from './grids/Create'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
 
 type State = Immutable<{
-    variable: PurchaseOrderVariable
+    variable: MaterialReturnSlipVariable
     items: {
-        typeName: 'PurchaseOrderItem'
+        typeName: 'MaterialReturnSlipItem'
         query: Query
         limit: number
         offset: number
         page: number
         columns: Vector<string>
-        variable: PurchaseOrderItemVariable
-        variables: HashSet<PurchaseOrderItemVariable>
+        variable: MaterialReturnSlipItemVariable
+        variables: HashSet<MaterialReturnSlipItemVariable>
     }
 }>
 
@@ -31,27 +31,24 @@ export type Action =
     | ['resetVariable']
     | ['saveVariable']
 
-    | ['variable', 'values', 'quotation', Quotation]
-
     | ['items', 'limit', number]
     | ['items', 'offset', number]
     | ['items', 'page', number]
     | ['items', 'query', Args]
-    | ['items', 'variable', 'values', 'quotationItem', QuotationItem]
+    | ['items', 'variable', 'values', 'materialRejectionSlipItem', MaterialRejectionSlipItem]
     | ['items', 'variable', 'values', 'quantity', number]
-    | ['items', 'variable', 'values', 'price', Decimal]
     | ['items', 'addVariable']
 
 const initialState: State = {
-    variable: new PurchaseOrderVariable('', { quotation: new Quotation('') }),
+    variable: new MaterialReturnSlipVariable('', {materialRejectionSlip: new MaterialRejectionSlip('')}),
     items: {
-        typeName: 'PurchaseOrderItem',
-        query: getQuery('PurchaseOrderItem'),
+        typeName: 'MaterialReturnSlipItem',
+        query: getQuery('MaterialReturnSlipItem'),
         limit: 5,
         offset: 0,
         page: 1,
-        columns: Vector.of('quotationItem', 'quantity', 'price', 'received'),
-        variable: new PurchaseOrderItemVariable('', { purchaseOrder: new PurchaseOrder(''), quotationItem: new QuotationItem(''), quantity: 0, price: 0, received: 0 }),
+        columns: Vector.of('materialRejectionSlipItem', 'quantity'),
+        variable: new MaterialReturnSlipItemVariable('', { materialReturnSlip: new MaterialReturnSlip(''), materialRejectionSlipItem: new MaterialRejectionSlipItem(''), quantity: 0 }),
         variables: HashSet.of()
     }
 }
@@ -61,33 +58,20 @@ function reducer(state: Draft<State>, action: Action) {
         case 'resetVariable': {
             return initialState
         }
-        // case 'saveVariable': {
-        //     const [result, symbolFlag, diff] = executeCircuit(circuits.createIndent, {
-        //         items: state.items.variables.toArray().map(item => {
-        //             return {
-        //                 product: item.values.product.toString(),
-        //                 quantity: item.values.quantity,
-        //                 uom: item.values.uom.toString()
-        //             }
-        //         })
-        //     })
-        //     console.log(result, symbolFlag)
-        //     if (symbolFlag) {
-        //         getState().addDiff(diff)
-        //     }
-        //     break
-        // }
-        case 'variable': {
-            switch (action[1]) {
-                case 'values': {
-                    switch (action[2]) {
-                        case 'quotation': {
-                            state[action[0]][action[1]][action[2]] = action[3]
-                            break
-                        }
-                    }
-                }
-            }
+        case 'saveVariable': {
+            // const [result, symbolFlag, diff] = executeCircuit(circuits.createIndent, {
+            //     items: state.items.variables.toArray().map(item => {
+            //         return {
+            //             product: item.values.product.toString(),
+            //             quantity: item.values.quantity,
+            //             uom: item.values.uom.toString()
+            //         }
+            //     })
+            // })
+            // console.log(result, symbolFlag)
+            // if (symbolFlag) {
+            //     getState().addDiff(diff)
+            // }
             break
         }
         case 'items': {
@@ -111,7 +95,7 @@ function reducer(state: Draft<State>, action: Action) {
                 }
                 case 'variable': {
                     switch (action[3]) {
-                        case 'quotationItem': {
+                        case 'materialRejectionSlipItem': {
                             state[action[0]][action[1]][action[2]][action[3]] = action[4]
                             break
                         }
@@ -119,15 +103,11 @@ function reducer(state: Draft<State>, action: Action) {
                             state[action[0]][action[1]][action[2]][action[3]] = action[4]
                             break
                         }
-                        case 'price': {
-                            state[action[0]][action[1]][action[2]][action[3]] = action[4]
-                            break
-                        }
                     }
                     break
                 }
                 case 'addVariable': {
-                    state.items.variables = state.items.variables.add(new PurchaseOrderItemVariable('', { purchaseOrder: new PurchaseOrder(state.items.variable.values.purchaseOrder.toString()), quotationItem: new QuotationItem(state.items.variable.values.quotationItem.toString()), quantity: 0, price: 0, received: 0 }))
+                    state.items.variables = state.items.variables.add(new MaterialReturnSlipItemVariable('', { materialReturnSlip: new MaterialReturnSlip(''), materialRejectionSlipItem: new MaterialRejectionSlipItem(state.items.variable.values.materialRejectionSlipItem.toString()), quantity: state.items.variable.values.quantity }))
                     state.items.variable = initialState.items.variable
                     break
                 }
@@ -140,39 +120,22 @@ function reducer(state: Draft<State>, action: Action) {
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const purchaseOrder = types['PurchaseOrder']
-    const item = types['PurchaseOrderItem']
+    const materialReturnSlip = types['MaterialReturnSlip']
+    const item = types['MaterialReturnSlipItem']
 
     const [addItemDrawer, toggleAddItemDrawer] = useState(false)
     const [itemFilter, toggleItemFilter] = useState(false)
-
-    const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        switch (event.target.name) {
-            default: {
-                switch (event.target.name) {
-                    case 'quotation': {
-                        dispatch(['variable', 'values', event.target.name, new Quotation(event.target.value)])
-                        break
-                    }
-                }
-            }
-        }
-    }
 
     const onItemInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         switch (event.target.name) {
             default: {
                 switch (event.target.name) {
-                    case 'quotationItem': {
-                        dispatch(['items', 'variable', 'values', event.target.name, new QuotationItem(event.target.value)])
+                    case 'materialRejectionSlipItem': {
+                        dispatch(['items', 'variable', 'values', event.target.name, new MaterialRejectionSlipItem(event.target.value)])
                         break
                     }
                     case 'quantity': {
                         dispatch(['items', 'variable', 'values', event.target.name, parseInt(event.target.value)])
-                        break
-                    }
-                    case 'price': {
-                        dispatch(['items', 'variable', 'values', event.target.name, parseFloat(event.target.value)])
                         break
                     }
                 }
@@ -198,20 +161,14 @@ function Component(props) {
         <>
             <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
-                    <Title>Create {purchaseOrder.name}</Title>
+                    <Title>Create {materialReturnSlip.name}</Title>
                 </Item>
                 <Item area={Grid.button} justify='end' align='center'>
                     <Button onClick={async () => {
                         await dispatch(['saveVariable'])
-                        props.history.push('/purchase-orders')
+                        props.history.push('/returns')
                     }}>Save</Button>
                 </Item>
-                <Container area={Grid.details} layout={Grid.layouts.details}>
-                <Item>
-                        <Label>{purchaseOrder.keys.quotation.name}</Label>
-                        <Input type='text' onChange={onVariableInputChange} value={state.variable.values.quotation.toString()} name='quotation' />
-                    </Item>
-                </Container>
                 <Container area={Grid.uom} layout={Grid2.layouts.main}>
                     <Item area={Grid2.header}>
                         <Title>Items</Title>
@@ -223,16 +180,12 @@ function Component(props) {
                                 <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
                                 <Container area={none} layout={Grid.layouts.uom} className=''>
                                     <Item>
-                                        <Label>{item.keys.quotationItem.name}</Label>
-                                        <Input type='text' onChange={onItemInputChange} name='quotationItem' />
+                                        <Label>{item.keys.materialRejectionSlipItem.name}</Label>
+                                        <Input type='text' onChange={onItemInputChange} name='materialRejectionSlipItem' />
                                     </Item>
                                     <Item>
                                         <Label>{item.keys.quantity.name}</Label>
                                         <Input type='number' onChange={onItemInputChange} name='quantity' />
-                                    </Item>
-                                    <Item>
-                                        <Label>{item.keys.price.name}</Label>
-                                        <Input type='text' onChange={onItemInputChange} name='price' />
                                     </Item>
                                     <Item justify='center' align='center'>
                                         <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>
@@ -242,7 +195,7 @@ function Component(props) {
                         </Drawer>
                         <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
                         <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
-                            <Filter typeName='PurchaseOrderItem' query={state['items'].query} updateQuery={updateQuery('items')} />
+                            <Filter typeName='MaterialReturnSlipItem' query={state['items'].query} updateQuery={updateQuery('items')} />
                         </Drawer>
                     </Item>
                     <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} showVariableName={false} columns={state['items'].columns} />

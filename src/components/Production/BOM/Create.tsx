@@ -8,22 +8,22 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { Decimal, PurchaseOrder, PurchaseOrderItemVariable, PurchaseOrderVariable, Quotation, QuotationItem } from '../../../main/variables'
+import { BOM, BOMItemVariable, BOMVariable, Product, UOM } from '../../../main/variables'
 import * as Grid from './grids/Create'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
 
 type State = Immutable<{
-    variable: PurchaseOrderVariable
+    variable: BOMVariable
     items: {
-        typeName: 'PurchaseOrderItem'
+        typeName: 'BOMItem'
         query: Query
         limit: number
         offset: number
         page: number
         columns: Vector<string>
-        variable: PurchaseOrderItemVariable
-        variables: HashSet<PurchaseOrderItemVariable>
+        variable: BOMItemVariable
+        variables: HashSet<BOMItemVariable>
     }
 }>
 
@@ -31,27 +31,25 @@ export type Action =
     | ['resetVariable']
     | ['saveVariable']
 
-    | ['variable', 'values', 'quotation', Quotation]
-
     | ['items', 'limit', number]
     | ['items', 'offset', number]
     | ['items', 'page', number]
     | ['items', 'query', Args]
-    | ['items', 'variable', 'values', 'quotationItem', QuotationItem]
+    | ['items', 'variable', 'values', 'product', Product]
     | ['items', 'variable', 'values', 'quantity', number]
-    | ['items', 'variable', 'values', 'price', Decimal]
+    | ['items', 'variable', 'values', 'uom', UOM]
     | ['items', 'addVariable']
 
 const initialState: State = {
-    variable: new PurchaseOrderVariable('', { quotation: new Quotation('') }),
+    variable: new BOMVariable('', {}),
     items: {
-        typeName: 'PurchaseOrderItem',
-        query: getQuery('PurchaseOrderItem'),
+        typeName: 'BOMItem',
+        query: getQuery('BOMItem'),
         limit: 5,
         offset: 0,
         page: 1,
-        columns: Vector.of('quotationItem', 'quantity', 'price', 'received'),
-        variable: new PurchaseOrderItemVariable('', { purchaseOrder: new PurchaseOrder(''), quotationItem: new QuotationItem(''), quantity: 0, price: 0, received: 0 }),
+        columns: Vector.of('product', 'quantity', 'uom', 'ordered', 'received', 'approved', 'rejected', 'returned', 'requisted', 'consumed'),
+        variable: new BOMItemVariable('', { bom: new BOM(''), product: new Product(''), quantity: 0, uom: new UOM('') }),
         variables: HashSet.of()
     }
 }
@@ -61,33 +59,20 @@ function reducer(state: Draft<State>, action: Action) {
         case 'resetVariable': {
             return initialState
         }
-        // case 'saveVariable': {
-        //     const [result, symbolFlag, diff] = executeCircuit(circuits.createIndent, {
-        //         items: state.items.variables.toArray().map(item => {
-        //             return {
-        //                 product: item.values.product.toString(),
-        //                 quantity: item.values.quantity,
-        //                 uom: item.values.uom.toString()
-        //             }
-        //         })
-        //     })
-        //     console.log(result, symbolFlag)
-        //     if (symbolFlag) {
-        //         getState().addDiff(diff)
-        //     }
-        //     break
-        // }
-        case 'variable': {
-            switch (action[1]) {
-                case 'values': {
-                    switch (action[2]) {
-                        case 'quotation': {
-                            state[action[0]][action[1]][action[2]] = action[3]
-                            break
-                        }
-                    }
-                }
-            }
+        case 'saveVariable': {
+            // const [result, symbolFlag, diff] = executeCircuit(circuits.createBOM, {
+            //     items: state.items.variables.toArray().map(item => {
+            //         return {
+            //             product: item.values.product.toString(),
+            //             quantity: item.values.quantity,
+            //             uom: item.values.uom.toString()
+            //         }
+            //     })
+            // })
+            // console.log(result, symbolFlag)
+            // if (symbolFlag) {
+            //     getState().addDiff(diff)
+            // }
             break
         }
         case 'items': {
@@ -111,7 +96,7 @@ function reducer(state: Draft<State>, action: Action) {
                 }
                 case 'variable': {
                     switch (action[3]) {
-                        case 'quotationItem': {
+                        case 'product': {
                             state[action[0]][action[1]][action[2]][action[3]] = action[4]
                             break
                         }
@@ -119,7 +104,7 @@ function reducer(state: Draft<State>, action: Action) {
                             state[action[0]][action[1]][action[2]][action[3]] = action[4]
                             break
                         }
-                        case 'price': {
+                        case 'uom': {
                             state[action[0]][action[1]][action[2]][action[3]] = action[4]
                             break
                         }
@@ -127,7 +112,7 @@ function reducer(state: Draft<State>, action: Action) {
                     break
                 }
                 case 'addVariable': {
-                    state.items.variables = state.items.variables.add(new PurchaseOrderItemVariable('', { purchaseOrder: new PurchaseOrder(state.items.variable.values.purchaseOrder.toString()), quotationItem: new QuotationItem(state.items.variable.values.quotationItem.toString()), quantity: 0, price: 0, received: 0 }))
+                    state.items.variables = state.items.variables.add(new BOMItemVariable('', { bom: new BOM(state.items.variable.values.bom.toString()), product: new Product(state.items.variable.values.product.toString()), quantity: state.items.variable.values.quantity, uom: new UOM(state.items.variable.values.uom.toString()) }))
                     state.items.variable = initialState.items.variable
                     break
                 }
@@ -140,39 +125,26 @@ function reducer(state: Draft<State>, action: Action) {
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const purchaseOrder = types['PurchaseOrder']
-    const item = types['PurchaseOrderItem']
+    const bom = types['BOM']
+    const item = types['BOMItem']
 
     const [addItemDrawer, toggleAddItemDrawer] = useState(false)
     const [itemFilter, toggleItemFilter] = useState(false)
-
-    const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        switch (event.target.name) {
-            default: {
-                switch (event.target.name) {
-                    case 'quotation': {
-                        dispatch(['variable', 'values', event.target.name, new Quotation(event.target.value)])
-                        break
-                    }
-                }
-            }
-        }
-    }
 
     const onItemInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         switch (event.target.name) {
             default: {
                 switch (event.target.name) {
-                    case 'quotationItem': {
-                        dispatch(['items', 'variable', 'values', event.target.name, new QuotationItem(event.target.value)])
+                    case 'product': {
+                        dispatch(['items', 'variable', 'values', event.target.name, new Product(event.target.value)])
                         break
                     }
                     case 'quantity': {
                         dispatch(['items', 'variable', 'values', event.target.name, parseInt(event.target.value)])
                         break
                     }
-                    case 'price': {
-                        dispatch(['items', 'variable', 'values', event.target.name, parseFloat(event.target.value)])
+                    case 'uom': {
+                        dispatch(['items', 'variable', 'values', event.target.name, new UOM(event.target.value)])
                         break
                     }
                 }
@@ -198,20 +170,14 @@ function Component(props) {
         <>
             <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
-                    <Title>Create {purchaseOrder.name}</Title>
+                    <Title>Create {bom.name}</Title>
                 </Item>
                 <Item area={Grid.button} justify='end' align='center'>
                     <Button onClick={async () => {
                         await dispatch(['saveVariable'])
-                        props.history.push('/purchase-orders')
+                        props.history.push('/boms')
                     }}>Save</Button>
                 </Item>
-                <Container area={Grid.details} layout={Grid.layouts.details}>
-                <Item>
-                        <Label>{purchaseOrder.keys.quotation.name}</Label>
-                        <Input type='text' onChange={onVariableInputChange} value={state.variable.values.quotation.toString()} name='quotation' />
-                    </Item>
-                </Container>
                 <Container area={Grid.uom} layout={Grid2.layouts.main}>
                     <Item area={Grid2.header}>
                         <Title>Items</Title>
@@ -223,16 +189,16 @@ function Component(props) {
                                 <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
                                 <Container area={none} layout={Grid.layouts.uom} className=''>
                                     <Item>
-                                        <Label>{item.keys.quotationItem.name}</Label>
-                                        <Input type='text' onChange={onItemInputChange} name='quotationItem' />
+                                        <Label>{item.keys.product.name}</Label>
+                                        <Input type='text' onChange={onItemInputChange} name='product' />
                                     </Item>
                                     <Item>
                                         <Label>{item.keys.quantity.name}</Label>
                                         <Input type='number' onChange={onItemInputChange} name='quantity' />
                                     </Item>
                                     <Item>
-                                        <Label>{item.keys.price.name}</Label>
-                                        <Input type='text' onChange={onItemInputChange} name='price' />
+                                        <Label>{item.keys.uom.name}</Label>
+                                        <Input type='text' onChange={onItemInputChange} name='uom' />
                                     </Item>
                                     <Item justify='center' align='center'>
                                         <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>
@@ -242,7 +208,7 @@ function Component(props) {
                         </Drawer>
                         <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
                         <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
-                            <Filter typeName='PurchaseOrderItem' query={state['items'].query} updateQuery={updateQuery('items')} />
+                            <Filter typeName='BOMItem' query={state['items'].query} updateQuery={updateQuery('items')} />
                         </Drawer>
                     </Item>
                     <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} showVariableName={false} columns={state['items'].columns} />

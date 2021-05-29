@@ -6,29 +6,27 @@ const navbar: { [index: string]: { [index: string]: string } } = {
         'Suppliers': '/suppliers'
     },
     'Production': {
+        'BOMs': '/boms',
         'Indents': '/indents',
         'Material Requistions': '/requistions',
-        'BOMs': '/boms',
-        'Declarations': '/declarations',
-        'Transfers': '/transfers'
+        'Production Declarations': '/production-declarations'
     },
     'Purchase': {
         'Quotations': '/quotations',
         'Purchase Orders': '/purchase-orders',
-        'Purchase Invoices': '/purchase-invoices',
         'Material Return Notes': '/returns'
     },
     'Store': {
-        'Purchase Invoices': '/purchase-invoices',
-        'Material Requistions': '/requistions'
+        'Purchase Invoices': '/purchase-invoices'
     },
     'Quality': {
-        'Materials Accepted': '/materials-approved',
+        'Materials Approved': '/materials-approved',
         'Materials Rejected': '/materials-rejected',
-        'Transfers': '/transfers'
+        'Materials Transferred': '/materials-transferred',
+        'Materials Scrapped': '/materials-scrapped'
     },
     'Warehouse': {
-        'Transfers': '/transfers'
+        'Receipts': '/warehouse-receipts'
     }
 }
 

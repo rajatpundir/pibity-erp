@@ -13,7 +13,7 @@ import { types } from '../../../main/types'
 import { withRouter } from 'react-router-dom'
 
 type State = Immutable<{
-    typeName: 'Quotation'
+    typeName: 'BOM'
     query: Query
     limit: number
     offset: number
@@ -28,12 +28,12 @@ export type Action =
     | ['query', Args]
 
 const initialState: State = {
-    typeName: 'Quotation',
-    query: getQuery('Quotation'),
+    typeName: 'BOM',
+    query: getQuery('BOM'),
     limit: 5,
     offset: 0,
     page: 1,
-    columns: Vector.of<string>('indent')
+    columns: Vector.of<string>()
 }
 
 function reducer(state: Draft<State>, action: Action) {
@@ -76,7 +76,7 @@ function Component(props) {
         <Container area={none} layout={Grid.layouts.main} className='p-10'>
             <Item area={Grid.header} align='center' className='flex'>
                 <Title>{type.name}s</Title>
-                <button onClick={() => { props.history.push('/quotation') }} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2'>+</button>
+                <button onClick={() => { props.history.push('/bom') }} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2'>+</button>
             </Item>
             <Item area={Grid.filter} justify='end' align='center'>
                 <Button onClick={() => setOpen(true)}>Filter</Button>

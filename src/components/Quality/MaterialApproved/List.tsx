@@ -33,7 +33,7 @@ const initialState: State = {
     limit: 5,
     offset: 0,
     page: 1,
-    columns: Vector.of<string>()
+    columns: Vector.of<string>('purchaseInvoice')
 }
 
 function reducer(state: Draft<State>, action: Action) {

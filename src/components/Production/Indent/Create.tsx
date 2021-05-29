@@ -4,8 +4,6 @@ import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
 import { HashSet, Vector } from 'prelude-ts'
 import { Drawer } from '@material-ui/core'
-import { circuits, executeCircuit } from '../../../main/circuit'
-import { getState } from '../../../main/store'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
@@ -37,7 +35,6 @@ export type Action =
     | ['items', 'offset', number]
     | ['items', 'page', number]
     | ['items', 'query', Args]
-    | ['items', 'variable', 'values', 'indent', Indent]
     | ['items', 'variable', 'values', 'product', Product]
     | ['items', 'variable', 'values', 'quantity', number]
     | ['items', 'variable', 'values', 'uom', UOM]
@@ -51,7 +48,7 @@ const initialState: State = {
         limit: 5,
         offset: 0,
         page: 1,
-        columns: Vector.of('indent', 'product', 'quantity', 'uom', 'ordered', 'received', 'approved', 'rejected', 'returned', 'requisted', 'consumed'),
+        columns: Vector.of('product', 'quantity', 'uom', 'ordered', 'received', 'approved', 'rejected', 'returned', 'requisted', 'consumed'),
         variable: new IndentItemVariable('', { indent: new Indent(''), product: new Product(''), quantity: 0, uom: new UOM(''), ordered: 0, received: 0, approved: 0, rejected: 0, returned: 0, requisted: 0, consumed: 0 }),
         variables: HashSet.of()
     }
@@ -99,10 +96,6 @@ function reducer(state: Draft<State>, action: Action) {
                 }
                 case 'variable': {
                     switch (action[3]) {
-                        case 'indent': {
-                            state[action[0]][action[1]][action[2]][action[3]] = action[4]
-                            break
-                        }
                         case 'product': {
                             state[action[0]][action[1]][action[2]][action[3]] = action[4]
                             break
@@ -142,10 +135,6 @@ function Component(props) {
         switch (event.target.name) {
             default: {
                 switch (event.target.name) {
-                    case 'indent': {
-                        dispatch(['items', 'variable', 'values', event.target.name, new Indent(event.target.value)])
-                        break
-                    }
                     case 'product': {
                         dispatch(['items', 'variable', 'values', event.target.name, new Product(event.target.value)])
                         break
@@ -191,18 +180,14 @@ function Component(props) {
                 </Item>
                 <Container area={Grid.uom} layout={Grid2.layouts.main}>
                     <Item area={Grid2.header}>
-                        <Title>{item.name}s</Title>
+                        <Title>Items</Title>
                     </Item>
                     <Item area={Grid2.filter} justify='end' align='center' className='flex'>
                         <Button onClick={() => toggleAddItemDrawer(true)}>Add</Button>
                         <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
                             <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
-                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add UOM</div>
+                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
                                 <Container area={none} layout={Grid.layouts.uom} className=''>
-                                    <Item>
-                                        <Label>{item.keys.indent.name}</Label>
-                                        <Input type='text' onChange={onItemInputChange} name='indent' />
-                                    </Item>
                                     <Item>
                                         <Label>{item.keys.product.name}</Label>
                                         <Input type='text' onChange={onItemInputChange} name='product' />

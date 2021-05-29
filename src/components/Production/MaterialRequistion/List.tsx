@@ -13,7 +13,7 @@ import { types } from '../../../main/types'
 import { withRouter } from 'react-router-dom'
 
 type State = Immutable<{
-    typeName: 'Quotation'
+    typeName: 'MaterialRequistionSlip'
     query: Query
     limit: number
     offset: number
@@ -28,12 +28,12 @@ export type Action =
     | ['query', Args]
 
 const initialState: State = {
-    typeName: 'Quotation',
-    query: getQuery('Quotation'),
+    typeName: 'MaterialRequistionSlip',
+    query: getQuery('MaterialRequistionSlip'),
     limit: 5,
     offset: 0,
     page: 1,
-    columns: Vector.of<string>('indent')
+    columns: Vector.of<string>('materialApprovalSlip')
 }
 
 function reducer(state: Draft<State>, action: Action) {
@@ -76,7 +76,7 @@ function Component(props) {
         <Container area={none} layout={Grid.layouts.main} className='p-10'>
             <Item area={Grid.header} align='center' className='flex'>
                 <Title>{type.name}s</Title>
-                <button onClick={() => { props.history.push('/quotation') }} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2'>+</button>
+                <button onClick={() => { props.history.push('/requistion') }} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2'>+</button>
             </Item>
             <Item area={Grid.filter} justify='end' align='center'>
                 <Button onClick={() => setOpen(true)}>Filter</Button>
@@ -91,6 +91,6 @@ function Component(props) {
 
 export default withRouter(Component)
 
-const Title = tw.div`text-4xl text-gray-800 font-bold mx-1 inline-block`
+const Title = tw.div`text-4xl text-gray-800 font-bold mx-1 inline-block whitespace-nowrap`
 
 const Button = tw.button`bg-gray-900 text-white text-center font-bold p-2 mx-1 uppercase w-40 h-full max-w-sm rounded-lg focus:outline-none`

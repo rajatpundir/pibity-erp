@@ -386,7 +386,7 @@ export const types = {
         }
     },
     MaterialReturnSlip: {
-        name: 'Material Return Slip',
+        name: 'Material Return Note',
         autoId: true,
         keys: {
             materialRejectionSlip: {
@@ -407,8 +407,8 @@ export const types = {
             },
             materialRejectionSlipItem: {
                 order: 1,
-                name: 'Material Return Slip Item',
-                type: 'MaterialReturnSlipItem'
+                name: 'Material Rejection Slip Item',
+                type: 'MaterialRejectionSlipItem'
             },
             quantity: {
                 order: 2,
@@ -457,23 +457,7 @@ export const types = {
     BOM: {
         name: 'BOM',
         autoId: false,
-        keys: {
-            product: {
-                order: 0,
-                name: 'Product',
-                type: 'Product'
-            },
-            quantity: {
-                order: 1,
-                name: 'Quantity',
-                type: 'Number'
-            },
-            uom: {
-                order: 2,
-                name: 'UOM',
-                type: 'UOM'
-            }
-        }
+        keys: {}
     },
     BOMItem: {
         name: 'BOM Item',
@@ -560,7 +544,7 @@ export const types = {
         }
     },
     TransferMaterialSlip: {
-        name: 'TransferMaterialSlip',
+        name: 'Transfer Material Slip',
         autoId: true,
         keys: {
             productionPreparationSlip: {
@@ -573,9 +557,9 @@ export const types = {
                 name: 'Quantity',
                 type: 'Number'
             },
-            transfered: {
+            transferred: {
                 order: 2,
-                name: 'Transfered',
+                name: 'Transferred',
                 type: 'Number'
             }
         }

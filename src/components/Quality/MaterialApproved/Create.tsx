@@ -4,13 +4,11 @@ import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
 import { HashSet, Vector } from 'prelude-ts'
 import { Drawer } from '@material-ui/core'
-import { circuits, executeCircuit } from '../../../main/circuit'
-import { getState } from '../../../main/store'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { Decimal, Indent, IndentItem, IndentItemVariable, IndentVariable, MaterialApprovalSlipItemVariable, MaterialApprovalSlipVariable, Product, MaterialApprovalSlip, PurchaseOrder, PurchaseOrderItem, Quotation, QuotationItem, Supplier, UOM, PurchaseInvoice, PurchaseInvoiceItem } from '../../../main/variables'
+import { MaterialApprovalSlipItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlip, PurchaseInvoice, PurchaseInvoiceItem } from '../../../main/variables'
 import * as Grid from './grids/Create'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
@@ -39,10 +37,8 @@ export type Action =
     | ['items', 'offset', number]
     | ['items', 'page', number]
     | ['items', 'query', Args]
-    | ['items', 'variable', 'values', 'materialApprovalSlip', MaterialApprovalSlip]
     | ['items', 'variable', 'values', 'purchaseInvoiceItem', PurchaseInvoiceItem]
     | ['items', 'variable', 'values', 'quantity', number]
-    | ['items', 'variable', 'values', 'requisted', number]
     | ['items', 'addVariable']
 
 const initialState: State = {
@@ -54,7 +50,7 @@ const initialState: State = {
         offset: 0,
         page: 1,
         columns: Vector.of('purchaseInvoiceItem', 'quantity', 'requisted'),
-        variable: new MaterialApprovalSlipItemVariable('', { materialApprovalSlip: new MaterialApprovalSlip(''), purchaseInvoiceItem: new PurchaseInvoiceItem(''), quantity: 0, requisted: 0}),
+        variable: new MaterialApprovalSlipItemVariable('', { materialApprovalSlip: new MaterialApprovalSlip(''), purchaseInvoiceItem: new PurchaseInvoiceItem(''), quantity: 0, requisted: 0 }),
         variables: HashSet.of()
     }
 }
@@ -114,19 +110,11 @@ function reducer(state: Draft<State>, action: Action) {
                 }
                 case 'variable': {
                     switch (action[3]) {
-                        case 'materialApprovalSlip': {
-                            state[action[0]][action[1]][action[2]][action[3]] = action[4]
-                            break
-                        }
                         case 'purchaseInvoiceItem': {
                             state[action[0]][action[1]][action[2]][action[3]] = action[4]
                             break
                         }
                         case 'quantity': {
-                            state[action[0]][action[1]][action[2]][action[3]] = action[4]
-                            break
-                        }
-                        case 'requisted': {
                             state[action[0]][action[1]][action[2]][action[3]] = action[4]
                             break
                         }
@@ -170,19 +158,11 @@ function Component(props) {
         switch (event.target.name) {
             default: {
                 switch (event.target.name) {
-                    case 'materialApprovalSlip': {
-                        dispatch(['items', 'variable', 'values', event.target.name, new MaterialApprovalSlip(event.target.value)])
-                        break
-                    }
                     case 'purchaseInvoiceItem': {
                         dispatch(['items', 'variable', 'values', event.target.name, new PurchaseInvoiceItem(event.target.value)])
                         break
                     }
                     case 'quantity': {
-                        dispatch(['items', 'variable', 'values', event.target.name, parseInt(event.target.value)])
-                        break
-                    }                 
-                    case 'requisted': {
                         dispatch(['items', 'variable', 'values', event.target.name, parseInt(event.target.value)])
                         break
                     }
@@ -225,26 +205,22 @@ function Component(props) {
                 </Container>
                 <Container area={Grid.uom} layout={Grid2.layouts.main}>
                     <Item area={Grid2.header}>
-                        <Title>{item.name}s</Title>
+                        <Title>Items</Title>
                     </Item>
                     <Item area={Grid2.filter} justify='end' align='center' className='flex'>
                         <Button onClick={() => toggleAddItemDrawer(true)}>Add</Button>
                         <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
                             <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
-                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add UOM</div>
+                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
                                 <Container area={none} layout={Grid.layouts.uom} className=''>
                                     <Item>
                                         <Label>{item.keys.purchaseInvoiceItem.name}</Label>
-                                        <Input type='text' onChange={onItemInputChange} name='purchaseOrderItem' />
+                                        <Input type='text' onChange={onItemInputChange} name='purchaseInvoiceItem' />
                                     </Item>
                                     <Item>
                                         <Label>{item.keys.quantity.name}</Label>
                                         <Input type='number' onChange={onItemInputChange} name='quantity' />
                                     </Item>
-                                    <Item>
-                                        <Label>{item.keys.requisted.name}</Label>
-                                        <Input type='number' onChange={onItemInputChange} name='price' />
-                                    </Item>                                
                                     <Item justify='center' align='center'>
                                         <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>
                                     </Item>

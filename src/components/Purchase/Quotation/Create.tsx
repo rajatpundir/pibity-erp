@@ -4,13 +4,11 @@ import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
 import { HashSet, Vector } from 'prelude-ts'
 import { Drawer } from '@material-ui/core'
-import { circuits, executeCircuit } from '../../../main/circuit'
-import { getState } from '../../../main/store'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { Indent, IndentItem, IndentItemVariable, IndentVariable, Product, Quotation, QuotationItemVariable, QuotationVariable, Supplier, UOM } from '../../../main/variables'
+import { Indent, IndentItem, Quotation, QuotationItemVariable, QuotationVariable, Supplier } from '../../../main/variables'
 import * as Grid from './grids/Create'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
@@ -33,7 +31,6 @@ export type Action =
     | ['resetVariable']
     | ['saveVariable']
 
-    | ['variable', 'variableName', Quotation]
     | ['variable', 'values', 'indent', Indent]
     | ['variable', 'values', 'supplier', Supplier]
  
@@ -41,7 +38,6 @@ export type Action =
     | ['items', 'offset', number]
     | ['items', 'page', number]
     | ['items', 'query', Args]
-    | ['items', 'variable', 'values', 'quotation', Quotation]
     | ['items', 'variable', 'values', 'indentItem', IndentItem]
     | ['items', 'variable', 'values', 'quantity', number]
     | ['items', 'addVariable']
@@ -54,7 +50,7 @@ const initialState: State = {
         limit: 5,
         offset: 0,
         page: 1,
-        columns: Vector.of('quotation', 'indentItem', 'quantity'),
+        columns: Vector.of('indentItem', 'quantity'),
         variable: new QuotationItemVariable('', { quotation: new Quotation(''), indentItem: new IndentItem(''), quantity: 0 }),
         variables: HashSet.of()
     }
@@ -81,27 +77,6 @@ function reducer(state: Draft<State>, action: Action) {
         //     }
         //     break
         // }
-        case 'variable': {
-            switch (action[1]) {
-                case 'variableName': {
-                    state[action[0]][action[1]] = action[2]
-                    break
-                }
-                case 'values': {
-                    switch (action[2]) {
-                        case 'indent': {
-                            state[action[0]][action[1]][action[2]] = action[3]
-                            break
-                        }                      
-                        case 'supplier': {
-                            state[action[0]][action[1]][action[2]] = action[3]
-                            break
-                        }
-                    }
-                }
-            }
-            break
-        }
         case 'items': {
             switch (action[1]) {
                 case 'limit': {
@@ -123,10 +98,6 @@ function reducer(state: Draft<State>, action: Action) {
                 }
                 case 'variable': {
                     switch (action[3]) {
-                        case 'quotation': {
-                            state[action[0]][action[1]][action[2]][action[3]] = action[4]
-                            break
-                        }
                         case 'indentItem': {
                             state[action[0]][action[1]][action[2]][action[3]] = action[4]
                             break
@@ -160,10 +131,6 @@ function Component(props) {
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         switch (event.target.name) {
-            case 'variableName': {
-                dispatch(['variable', 'variableName', new Quotation(event.target.value)])
-                break
-            }
             default: {
                 switch (event.target.name) {
                     case 'indent': {
@@ -183,10 +150,6 @@ function Component(props) {
         switch (event.target.name) {
             default: {
                 switch (event.target.name) {
-                    case 'quotation': {
-                        dispatch(['items', 'variable', 'values', event.target.name, new Quotation(event.target.value)])
-                        break
-                    }
                     case 'indentItem': {
                         dispatch(['items', 'variable', 'values', event.target.name, new IndentItem(event.target.value)])
                         break
@@ -229,10 +192,6 @@ function Component(props) {
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>
                     <Item>
-                        <Label>{quotation.name}</Label>
-                        <Input type='text' onChange={onVariableInputChange} value={state.variable.variableName.toString()} name='variableName' />
-                    </Item>
-                    <Item>
                         <Label>{quotation.keys.indent.name}</Label>
                         <Input type='text' onChange={onVariableInputChange} value={state.variable.values.indent.toString()} name='indent' />
                     </Item>
@@ -243,18 +202,14 @@ function Component(props) {
                 </Container>
                 <Container area={Grid.uom} layout={Grid2.layouts.main}>
                     <Item area={Grid2.header}>
-                        <Title>{item.name}s</Title>
+                        <Title>Items</Title>
                     </Item>
                     <Item area={Grid2.filter} justify='end' align='center' className='flex'>
                         <Button onClick={() => toggleAddItemDrawer(true)}>Add</Button>
                         <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
                             <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
-                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add UOM</div>
+                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
                                 <Container area={none} layout={Grid.layouts.uom} className=''>
-                                    <Item>
-                                        <Label>{item.keys.quotation.name}</Label>
-                                        <Input type='text' onChange={onItemInputChange} name='quotation' />
-                                    </Item>
                                     <Item>
                                         <Label>{item.keys.indentItem.name}</Label>
                                         <Input type='text' onChange={onItemInputChange} name='indentItem' />

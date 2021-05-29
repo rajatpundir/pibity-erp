@@ -33,7 +33,7 @@ const initialState: State = {
     limit: 5,
     offset: 0,
     page: 1,
-    columns: Vector.of<string>()
+    columns: Vector.of<string>('quotation')
 }
 
 function reducer(state: Draft<State>, action: Action) {
@@ -83,7 +83,7 @@ function Component(props) {
                 <Drawer open={open} onClose={() => setOpen(false)} anchor={'right'}>
                     <Filter typeName={state.typeName} query={state.query} updateQuery={updateQuery} />
                 </Drawer>
-            </Item>\
+            </Item>
             <Table area={Grid.table} state={state} updatePage={updatePage} variables={variables} showVariableName={true} columns={state.columns} />
         </Container>
     )

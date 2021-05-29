@@ -4,13 +4,11 @@ import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
 import { HashSet, Vector } from 'prelude-ts'
 import { Drawer } from '@material-ui/core'
-import { circuits, executeCircuit } from '../../../main/circuit'
-import { getState } from '../../../main/store'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { Decimal, Indent, IndentItem, IndentItemVariable, IndentVariable, Product, PurchaseInvoice, PurchaseInvoiceItemVariable, PurchaseInvoiceVariable, PurchaseOrder, PurchaseOrderItem, Quotation, QuotationItem, Supplier, UOM } from '../../../main/variables'
+import { PurchaseInvoice, PurchaseInvoiceItemVariable, PurchaseInvoiceVariable, PurchaseOrder, PurchaseOrderItem } from '../../../main/variables'
 import * as Grid from './grids/Create'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
@@ -39,11 +37,8 @@ export type Action =
     | ['items', 'offset', number]
     | ['items', 'page', number]
     | ['items', 'query', Args]
-    | ['items', 'variable', 'values', 'purchaseInvoice', PurchaseInvoice]
     | ['items', 'variable', 'values', 'purchaseOrderItem', PurchaseOrderItem]
     | ['items', 'variable', 'values', 'quantity', number]
-    | ['items', 'variable', 'values', 'approved', number]
-    | ['items', 'variable', 'values', 'rejected', number]
     | ['items', 'addVariable']
 
 const initialState: State = {
@@ -115,23 +110,11 @@ function reducer(state: Draft<State>, action: Action) {
                 }
                 case 'variable': {
                     switch (action[3]) {
-                        case 'purchaseInvoice': {
-                            state[action[0]][action[1]][action[2]][action[3]] = action[4]
-                            break
-                        }
                         case 'purchaseOrderItem': {
                             state[action[0]][action[1]][action[2]][action[3]] = action[4]
                             break
                         }
                         case 'quantity': {
-                            state[action[0]][action[1]][action[2]][action[3]] = action[4]
-                            break
-                        }
-                        case 'approved': {
-                            state[action[0]][action[1]][action[2]][action[3]] = action[4]
-                            break
-                        }
-                        case 'rejected': {
                             state[action[0]][action[1]][action[2]][action[3]] = action[4]
                             break
                         }
@@ -175,23 +158,11 @@ function Component(props) {
         switch (event.target.name) {
             default: {
                 switch (event.target.name) {
-                    case 'purchaseInvoice': {
-                        dispatch(['items', 'variable', 'values', event.target.name, new PurchaseInvoice(event.target.value)])
-                        break
-                    }
                     case 'purchaseOrderItem': {
                         dispatch(['items', 'variable', 'values', event.target.name, new PurchaseOrderItem(event.target.value)])
                         break
                     }
                     case 'quantity': {
-                        dispatch(['items', 'variable', 'values', event.target.name, parseInt(event.target.value)])
-                        break
-                    }
-                    case 'approved': {
-                        dispatch(['items', 'variable', 'values', event.target.name, parseInt(event.target.value)])
-                        break
-                    }
-                    case 'rejected': {
                         dispatch(['items', 'variable', 'values', event.target.name, parseInt(event.target.value)])
                         break
                     }
@@ -218,7 +189,7 @@ function Component(props) {
         <>
             <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
-                    <Title>Create {PurchaseInvoice.name}</Title>
+                    <Title>Create {purchaseInvoice.name}</Title>
                 </Item>
                 <Item area={Grid.button} justify='end' align='center'>
                     <Button onClick={async () => {
@@ -234,13 +205,13 @@ function Component(props) {
                 </Container>
                 <Container area={Grid.uom} layout={Grid2.layouts.main}>
                     <Item area={Grid2.header}>
-                        <Title>{item.name}s</Title>
+                        <Title>Items</Title>
                     </Item>
                     <Item area={Grid2.filter} justify='end' align='center' className='flex'>
                         <Button onClick={() => toggleAddItemDrawer(true)}>Add</Button>
                         <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
                             <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
-                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add UOM</div>
+                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
                                 <Container area={none} layout={Grid.layouts.uom} className=''>
                                     <Item>
                                         <Label>{item.keys.purchaseOrderItem.name}</Label>
@@ -249,14 +220,6 @@ function Component(props) {
                                     <Item>
                                         <Label>{item.keys.quantity.name}</Label>
                                         <Input type='number' onChange={onItemInputChange} name='quantity' />
-                                    </Item>
-                                    <Item>
-                                        <Label>{item.keys.approved.name}</Label>
-                                        <Input type='number' onChange={onItemInputChange} name='price' />
-                                    </Item>
-                                    <Item>
-                                        <Label>{item.keys.rejected.name}</Label>
-                                        <Input type='number' onChange={onItemInputChange} name='received' />
                                     </Item>
                                     <Item justify='center' align='center'>
                                         <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>

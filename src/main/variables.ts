@@ -1127,15 +1127,9 @@ export class BOMVariable {
     [immerable] = true
     readonly typeName = 'BOM'
     variableName: BOM
-    values: {
-        // assertion(product.producable == true)
-        product: Product
-        quantity: Number
-        // assertion(uom.product == product)
-        uom: UOM
-    }
+    values: {}
 
-    constructor(variableName: string, values: { product: Product, quantity: Number, uom: UOM }) {
+    constructor(variableName: string, values: {}) {
         this.variableName = new BOM(variableName)
         this.values = values
     }
@@ -1393,10 +1387,10 @@ export class TransferMaterialSlipVariable {
         // assertion(quantity <= productionPreparationSlip.bom.quantity && quantity > 0)
         quantity: Number // { productionPreparationSlip.approved += quantity }
         // assertion(transfered <= quantity && transfered >= 0)
-        transfered: Number
+        transferred: Number
     }
 
-    constructor(variableName: string, values: { productionPreparationSlip: ProductionPreparationSlip, quantity: Number, transfered: Number }) {
+    constructor(variableName: string, values: { productionPreparationSlip: ProductionPreparationSlip, quantity: Number, transferred: Number }) {
         this.variableName = new TransferMaterialSlip(variableName)
         this.values = values
     }
@@ -1607,11 +1601,7 @@ export function replaceVariable(typeName: NonPrimitiveType, variableName: string
             })
         }
         case 'BOM': {
-            return new BOMVariable(variableName, {
-                product: new Product(values['product']),
-                quantity: parseInt(String(values['quantity'])),
-                uom: new UOM(values['uom'])
-            })
+            return new BOMVariable(variableName, {})
         }
         case 'BOMItem': {
             return new BOMItemVariable(variableName, {
@@ -1645,7 +1635,7 @@ export function replaceVariable(typeName: NonPrimitiveType, variableName: string
             return new TransferMaterialSlipVariable(variableName, {
                 productionPreparationSlip: new ProductionPreparationSlip(values['productionPreparationSlip']),
                 quantity: parseInt(String(values['quantity'])),
-                transfered: parseInt(String(values['quatransferedntity']))
+                transferred: parseInt(String(values['quatransferedntity']))
             })
         }
         case 'WarehouseAcceptanceSlip': {
