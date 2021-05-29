@@ -455,7 +455,7 @@ export const types = {
         }
     },
     BOM: {
-        name: 'BOM',
+        name: 'Bill of Material',
         autoId: false,
         keys: {}
     },

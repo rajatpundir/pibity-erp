@@ -1,7 +1,7 @@
 import { Draft, Immutable } from 'immer'
 import { Vector } from 'prelude-ts'
 import tw from 'twin.macro'
-import { useImmerReducer } from "use-immer"
+import { useImmerReducer } from 'use-immer'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import * as Grid from './grids/List'
@@ -17,6 +17,7 @@ type State = Immutable<{
     limit: number
     offset: number
     page: number
+    columns: Vector<string>
 }>
 
 export type Action =
@@ -30,7 +31,8 @@ const initialState: State = {
     query: getQuery('Supplier'),
     limit: 5,
     offset: 0,
-    page: 1
+    page: 1,
+    columns: Vector.of<string>()
 }
 
 function reducer(state: Draft<State>, action: Action) {
@@ -57,8 +59,7 @@ function reducer(state: Draft<State>, action: Action) {
 
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const variables = useStore(state => state.variables.Supplier).filter(variable => applyFilter(state.query, variable))
-    const columns: Vector<string> = Vector.of()
+    const variables = useStore(state => state.variables.Product).filter(variable => applyFilter(state.query, variable))
     const [open, setOpen] = useState(false)
 
     const updateQuery = (args: Args) => {
@@ -70,10 +71,10 @@ function Component(props) {
     }
 
     return (
-        <Container area={none} layout={Grid.layouts.main}>
+        <Container area={none} layout={Grid.layouts.main} className='p-10'>
             <Item area={Grid.header} align='center' className='flex'>
                 <Title>Suppliers</Title>
-                <button onClick={() => { props.history.push('/supplier') }} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2'>+</button>
+                <button onClick={() => {props.history.push('/supplier')} } className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2'>+</button>
             </Item>
             <Item area={Grid.filter} justify='end' align='center'>
                 <Button onClick={() => setOpen(true)}>Filter</Button>
@@ -81,7 +82,7 @@ function Component(props) {
                     <Filter typeName={state.typeName} query={state.query} updateQuery={updateQuery} />
                 </Drawer>
             </Item>
-            <Table area={Grid.table} state={state} updatePage={updatePage} variables={variables} showVariableName={true} columns={columns} />
+            <Table area={Grid.table} state={state} updatePage={updatePage} variables={variables} showVariableName={true} columns={state.columns} />
         </Container>
     )
 }

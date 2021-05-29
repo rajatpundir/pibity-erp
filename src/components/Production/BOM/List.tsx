@@ -91,6 +91,6 @@ function Component(props) {
 
 export default withRouter(Component)
 
-const Title = tw.div`text-4xl text-gray-800 font-bold mx-1 inline-block`
+const Title = tw.div`text-4xl text-gray-800 font-bold mx-1 inline-block whitespace-nowrap`
 
 const Button = tw.button`bg-gray-900 text-white text-center font-bold p-2 mx-1 uppercase w-40 h-full max-w-sm rounded-lg focus:outline-none`

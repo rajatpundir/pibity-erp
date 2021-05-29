@@ -30,55 +30,25 @@ export const layouts: { [index: string]: GridLayout } = {
             rows: Vector.of('6rem', '1fr '),
             columns: Vector.of('1fr', '10fr', '10fr', '1fr'),
             areas: Vector.of(
-                Vector.of(none, header, filter, none),
-                Vector.of(none, table, table, none) 
+                Vector.of(header, none, none, filter),
+                Vector.of(table, table, table, table) 
             )
         },
         layout_lg: {
             rows: Vector.of('6rem', '1fr '),
             columns: Vector.of('1fr', '10fr', '10fr', '1fr'),
             areas: Vector.of(
-                Vector.of(none, header, filter, none),
-                Vector.of(none, table, table, none) 
+                Vector.of(header, none, none, filter),
+                Vector.of(table, table, table, table) 
             )
         },
         layout_xl: {
             rows: Vector.of('6rem', '1fr '),
             columns: Vector.of('1fr', '10fr', '10fr', '1fr'),
             areas: Vector.of(
-                Vector.of(none, header, filter, none),
-                Vector.of(none, table, table, none) 
+                Vector.of(header, none, none, filter),
+                Vector.of(table, table, table, table) 
             )
-        }
-    }),
-    query: validateLayout({
-        margin: 0,
-        rowGap: '1rem',
-        columnGap: '0rem',
-        layout_mobile: {
-            rows: Vector.of('1fr'),
-            columns: Vector.of('1fr'),
-            areas: Vector.of()
-        },
-        layout_sm: {
-            rows: Vector.of('1fr'),
-            columns: Vector.of('1fr'),
-            areas: Vector.of()
-        },
-        layout_md: {
-            rows: Vector.of('1fr'),
-            columns: Vector.of('1fr'),
-            areas: Vector.of()
-        },
-        layout_lg: {
-            rows: Vector.of('1fr'),
-            columns: Vector.of('1fr'),
-            areas: Vector.of()
-        },
-        layout_xl: {
-            rows: Vector.of('1fr'),
-            columns: Vector.of('1fr'),
-            areas: Vector.of()
         }
     })
 }
