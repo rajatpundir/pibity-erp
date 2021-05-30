@@ -1,6 +1,6 @@
 import { Immutable } from "immer"
 import { HashSet, Vector } from "prelude-ts"
-import { Diff, getReplaceVariableDiff, getRemoveVariableDiff, mergeDiffs } from "./layers"
+import { Diff, getReplaceVariableDiff, getRemoveVariableDiff, mergeDiffs, compose } from "./layers"
 import { evaluateExpression, LispExpression, Symbols, SymbolValue } from "./lisp"
 import { getState } from "./store"
 import { PrimitiveType, NonPrimitiveType, types, Key } from './types'
@@ -137,7 +137,7 @@ function getSymbolPathsForFunction(fx: Function): Array<ReadonlyArray<string>> {
     return symbolPaths
 }
 
-function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveType, variableName: string): [SymbolValue, boolean] {
+function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveType, variableName: string, overlay: Vector<Diff>): [SymbolValue, boolean] {
     const type = types[typeName]
     const symbolValue: SymbolValue = {
         type: 'Text',
@@ -146,7 +146,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
     var symbolFlag = true
     if (symbolPaths.length !== 0 && symbolPaths.filter(x => x.length !== 0).length !== 0) {
         symbolValue.values = {}
-        const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[typeName]
+        const unfilteredVariables: HashSet<Immutable<Variable>> = compose(getState().variables, overlay.toArray())[typeName]
         const variables = unfilteredVariables.filter(x => x.toString() === variableName)
         if (variables.length() === 1) {
             Object.keys(type).forEach(keyName => {
@@ -186,7 +186,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                                 break
                             }
                             default: {
-                                const subSymbols = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)), key.type, variables[0].values[keyName].toString())
+                                const subSymbols = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)), key.type, variables[0].values[keyName].toString(), overlay)
                                 symbolValue.values[keyName] = subSymbols[0]
                                 symbolFlag = symbolFlag && subSymbols[1]
                             }
@@ -205,7 +205,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
     return [symbolValue, symbolFlag]
 }
 
-function getSymbolsForFunction(fx: Function, args: object): [Symbols, boolean] {
+function getSymbolsForFunction(fx: Function, args: object, overlay: Vector<Diff>): [Symbols, boolean] {
     const symbolPaths = getSymbolPathsForFunction(fx)
     const symbols: Symbols = {}
     var symbolFlag = true
@@ -246,7 +246,7 @@ function getSymbolsForFunction(fx: Function, args: object): [Symbols, boolean] {
                 }
                 default: {
                     if (inputName in args || fi.default !== undefined) {
-                        const subSymbols = getSymbols(symbolPaths.filter(x => x[0] === inputName).map(x => x.slice(1)), fi.type, inputName in args ? String(args[inputName]) : (fi.default ? fi.default : ''))
+                        const subSymbols = getSymbols(symbolPaths.filter(x => x[0] === inputName).map(x => x.slice(1)), fi.type, inputName in args ? String(args[inputName]) : (fi.default ? fi.default : ''), overlay)
                         symbols[inputName] = subSymbols[0]
                         symbolFlag = symbolFlag && subSymbols[1]
                     }
@@ -258,13 +258,15 @@ function getSymbolsForFunction(fx: Function, args: object): [Symbols, boolean] {
     return [symbols, symbolFlag]
 }
 
-export function executeFunction(fx: Function, args: object): [object, boolean, Diff] {
-    const [symbols, symbolFlag] = getSymbolsForFunction(fx, args)
+export function executeFunction(fx: Function, args: object, overlay: Vector<Diff>): [object, boolean, Diff] {
+    const [symbols, symbolFlag] = getSymbolsForFunction(fx, args, overlay)
+    console.log(args, symbols, symbolFlag)
     const result = {}
     var diffs: Vector<Diff> = Vector.of()
     if (symbolFlag) {
         Object.keys(fx.outputs).forEach(outputName => {
             const fo = fx.outputs[outputName]
+            console.log(outputName, fo.type)
             switch (fo.type) {
                 case 'Text': {
                     result[outputName] = String(evaluateExpression(fo.value, symbols))
@@ -296,6 +298,7 @@ export function executeFunction(fx: Function, args: object): [object, boolean, D
                             }
                             Object.keys(types[fo.type].keys).forEach(keyName => {
                                 const key: Key = types[fo.type].keys[keyName]
+                                console.log(keyName, key.type)
                                 switch (key.type) {
                                     case 'Text': {
                                         createdVariable.values[keyName] = String(evaluateExpression(fo.values[keyName], symbols))
@@ -318,10 +321,10 @@ export function executeFunction(fx: Function, args: object): [object, boolean, D
                                     }
                                     default: {
                                         const referencedVariableName = String(evaluateExpression(fo.values[keyName], symbols))
-                                        const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[key.type]
-                                        const variables = unfilteredVariables.filter(x => x.toString() === referencedVariableName)
+                                        const unfilteredVariables: HashSet<Immutable<Variable>> = compose(getState().variables, overlay.toArray())[key.type]
+                                        const variables = unfilteredVariables.filter(x => x.variableName.toString() === referencedVariableName)
                                         if (variables.length() === 1) {
-                                            createdVariable.values[keyName] = variables[0].variableName.toString()
+                                            createdVariable.values[keyName] = variables.toArray()[0].variableName.toString()
                                         } else {
                                             // Note: Variable not found in Zustand Store (Base + Diff)
                                             // Resolution: 
@@ -345,7 +348,7 @@ export function executeFunction(fx: Function, args: object): [object, boolean, D
                                 variableName: variableName,
                                 values: {}
                             }
-                            const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[fo.type]
+                            const unfilteredVariables: HashSet<Immutable<Variable>> = compose(getState().variables, overlay.toArray())[fo.type]
                             const variables: HashSet<Immutable<Variable>> = unfilteredVariables.filter(x => x.variableName.toString() === variableName)
                             if (variables.length() === 1) {
                                 const variable: Immutable<Variable> = variables.toArray()[0]
@@ -376,10 +379,10 @@ export function executeFunction(fx: Function, args: object): [object, boolean, D
                                         }
                                         default: {
                                             const referencedVariableName = String(evaluateExpression(fo.values[keyName], symbols))
-                                            const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[key.type]
+                                            const unfilteredVariables: HashSet<Immutable<Variable>> = compose(getState().variables, overlay.toArray())[key.type]
                                             const variables = unfilteredVariables.filter(x => x.toString() === referencedVariableName)
                                             if (variables.length() === 1) {
-                                                updatedVariable.values[keyName] = variables[0].variableName.toString()
+                                                updatedVariable.values[keyName] = variables.toArray()[0].variableName.toString()
                                             } else {
                                                 // Note: Referenced variable not found in Zustand Store (Base + Diff)
                                                 // Resolution: 
@@ -443,7 +446,7 @@ export function executeFunction(fx: Function, args: object): [object, boolean, D
                             updatedVariable.variableName = String(evaluateExpression(fi.variableName, symbols))
                             diffs = diffs.append(getRemoveVariableDiff(fi.type, String(symbols[inputName].value)))
                         }
-                        const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[fi.type]
+                        const unfilteredVariables: HashSet<Immutable<Variable>> = compose(getState().variables, overlay.toArray())[fi.type]
                         const variables: HashSet<Immutable<Variable>> = unfilteredVariables.filter(x => x.variableName.toString() === symbols[inputName].value)
                         if (variables.length() === 1) {
                             const variable: Immutable<Variable> = variables.toArray()[0]
@@ -476,10 +479,10 @@ export function executeFunction(fx: Function, args: object): [object, boolean, D
                                             }
                                             default: {
                                                 const referencedVariableName = String(evaluateExpression(fi.values[keyName], symbols))
-                                                const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[key.type]
+                                                const unfilteredVariables: HashSet<Immutable<Variable>> = compose(getState().variables, overlay.toArray())[key.type]
                                                 const variables = unfilteredVariables.filter(x => x.toString() === referencedVariableName)
                                                 if (variables.length() === 1) {
-                                                    updatedVariable.values[keyName] = variables[0].variableName.toString()
+                                                    updatedVariable.values[keyName] = variables.toArray()[0].variableName.toString()
                                                 } else {
                                                     // Note: Referenced variable not found in Zustand Store (Base + Diff)
                                                     // Resolution: 

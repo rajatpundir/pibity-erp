@@ -1,3 +1,5 @@
+import faker from 'faker'
+
 type NumericType = 'Number' | 'Decimal'
 
 type NumericArg = number | LispExpression
@@ -50,6 +52,11 @@ export type LispExpression = {
     op: 'regex'
     types: Array<ControlFlowType>
     args: ReadonlyArray<string | number | boolean | LispExpression>
+} | {
+    expectedReturnType?: 'Text'
+    op: 'fake'
+    types: []
+    args: [string]
 }
 
 export type SymbolValue = {
@@ -69,6 +76,7 @@ export type SymbolValue = {
 export type Symbols = { [index: string]: SymbolValue }
 
 export function evaluateExpression(expression: LispExpression, symbols: Symbols): string | number | boolean {
+    console.log(expression, symbols, '**********')
     switch (expression.op) {
         case '+': return add(expression, symbols)
         case '*': return multiply(expression, symbols)
@@ -88,7 +96,8 @@ export function evaluateExpression(expression: LispExpression, symbols: Symbols)
         case 'id': return id(expression)
         case '.': return dot(expression, symbols)
         case '++': return concat(expression, symbols)
-        case 'regex': return regex(expression, symbols) 
+        case 'regex': return regex(expression, symbols)
+        case 'fake': return fake(expression)
         default: return "Operator not defined"
     }
 }
@@ -1032,4 +1041,11 @@ function regex(expression: LispExpression, symbols: Symbols): boolean | string {
     }
     else
         return false
+}
+
+function fake(expression: LispExpression): string {
+    if (expression.op === 'fake')
+        return faker.fake(expression.args[0])
+    else
+        return ""
 }

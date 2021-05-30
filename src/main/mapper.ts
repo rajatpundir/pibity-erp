@@ -18,9 +18,15 @@ export type Mapper = {
 export type MapperName =
     | 'createUOMs'
     | 'createIndentItems'
-    | 'createQuotationItem'
-    | 'createPurchaseOrderItem'
-    | 'createPurchaseInvoiceItem'
+    | 'createQuotationItems'
+    | 'createPurchaseOrderItems'
+    | 'createPurchaseInvoiceItems'
+    | 'createMaterialApprovalSlipItems'
+    | 'createMaterialRejectionSlipItems'
+    | 'createMaterialReturnSlipItems'
+    | 'createMaterialRequistionSlipItems'
+    | 'createBOMItems'
+    | 'createProductionPreparationSlipItems'
 
 export const mappers: Record<MapperName, Mapper> = {
     createUOMs: {
@@ -35,23 +41,59 @@ export const mappers: Record<MapperName, Mapper> = {
         functionName: 'createIndentItem',
         functionInput: 'indent'
     },
-    createQuotationItem: {
+    createQuotationItems: {
         query: false,
         queryParams: [],
         functionName: 'createQuotationItem',
         functionInput: 'quotation'
     },
-    createPurchaseOrderItem: {
+    createPurchaseOrderItems: {
         query: false,
         queryParams: [],
         functionName: 'createPurchaseOrderItem',
         functionInput: 'purchaseOrder'
     },
-    createPurchaseInvoiceItem: {
+    createPurchaseInvoiceItems: {
         query: false,
         queryParams: [],
         functionName: 'createPurchaseInvoiceItem',
         functionInput: 'purchaseInvoice'
+    },
+    createMaterialApprovalSlipItems: {
+        query: false,
+        queryParams: [],
+        functionName: 'createMaterialApprovalSlipItem',
+        functionInput: 'materialApprovalSlip'
+    },
+    createMaterialRejectionSlipItems: {
+        query: false,
+        queryParams: [],
+        functionName: 'createMaterialRejectionSlipItem',
+        functionInput: 'materialRejectionSlip'
+    },
+    createMaterialReturnSlipItems: {
+        query: false,
+        queryParams: [],
+        functionName: 'createMaterialReturnSlipItem',
+        functionInput: 'materialReturnSlip'
+    },
+    createMaterialRequistionSlipItems: {
+        query: false,
+        queryParams: [],
+        functionName: 'createMaterialRequistionSlipItem',
+        functionInput: 'materialRequistionSlip'
+    },
+    createBOMItems: {
+        query: false,
+        queryParams: [],
+        functionName: 'createBOMItem',
+        functionInput: 'bom'
+    },
+    createProductionPreparationSlipItems: {
+        query: false,
+        queryParams: [],
+        functionName: 'createProductionPreparationSlipItem',
+        functionInput: 'productionPreparationSlip'
     }
 }
 
@@ -64,9 +106,10 @@ export function isNonPrimitive(typeName: string): typeName is NonPrimitiveType {
     return Object.keys(types).includes(typeName)
 }
 
-export function executeMapper(mapper: Mapper, args: MapperArgs): [Array<object>, boolean, Diff] {
+export function executeMapper(mapper: Mapper, args: MapperArgs, overlay: Vector<Diff>): [Array<object>, boolean, Diff] {
     const fx = functions[mapper.functionName]
     const fi = fx.inputs[mapper.functionInput]
+    console.log(args, '--mapper--')
     var result = Vector.of<object>()
     var diffs = Vector.of<Diff>()
     if (isNonPrimitive(fi.type)) {
@@ -110,7 +153,7 @@ export function executeMapper(mapper: Mapper, args: MapperArgs): [Array<object>,
                 if (index < args.args.length) {
                     const functionArgs = args.args[index]
                     functionArgs[mapper.functionInput] = variable.variableName.toString()
-                    const [functionResult, symbolFlag, diff] = executeFunction(fx, functionArgs)
+                    const [functionResult, symbolFlag, diff] = executeFunction(fx, functionArgs, overlay)
                     if (!symbolFlag) {
                         return [result, false, mergeDiffs(diffs.toArray())]
                     }
@@ -119,7 +162,7 @@ export function executeMapper(mapper: Mapper, args: MapperArgs): [Array<object>,
                 } else {
                     const functionArgs = args.args[args.args.length - 1]
                     functionArgs[mapper.functionInput] = variable.variableName.toString()
-                    const [functionResult, symbolFlag, diff] = executeFunction(fx, functionArgs)
+                    const [functionResult, symbolFlag, diff] = executeFunction(fx, functionArgs, overlay)
                     if (!symbolFlag) {
                         return [result, false, mergeDiffs(diffs.toArray())]
                     }
@@ -129,7 +172,7 @@ export function executeMapper(mapper: Mapper, args: MapperArgs): [Array<object>,
             })
         } else {
             args.args.forEach(arg => {
-                const [functionResult, symbolFlag, diff] = executeFunction(fx, arg)
+                const [functionResult, symbolFlag, diff] = executeFunction(fx, arg, overlay)
                 if (!symbolFlag) {
                     return [result, false, mergeDiffs(diffs.toArray())]
                 }

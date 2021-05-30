@@ -1,99 +1,10 @@
 import { Vector } from 'prelude-ts'
+import { CircuitName, circuits } from './circuits'
 import { executeFunction } from './function'
 import { FunctionName, functions } from './functions'
 import { Diff, mergeDiffs } from './layers'
 import { executeMapper, MapperName, mappers } from './mapper'
 import { NonPrimitiveType } from './types'
-
-type CircuitName =
-    | 'createProduct'
-    | 'createIndent'
-
-export const circuits: Record<string, Circuit> = {
-    createProduct: {
-        inputs: {
-            sku: {
-                type: 'Text'
-            },
-            name: {
-                type: 'Text'
-            },
-            orderable: {
-                type: 'Boolean'
-            },
-            consumable: {
-                type: 'Boolean'
-            },
-            producable: {
-                type: 'Boolean'
-            },
-            uoms: {
-                type: []
-            }
-        },
-        computations: {
-            c1: {
-                order: 1,
-                type: 'function',
-                exec: 'createProduct',
-                connect: {
-                    variableName: ['input', 'sku'],
-                    name: ['input', 'name'],
-                    orderable: ['input', 'orderable'],
-                    consumable: ['input', 'consumable'],
-                    producable: ['input', 'producable']
-                }
-            },
-            c2: {
-                order: 2,
-                type: 'mapper',
-                exec: 'createUOMs',
-                connect: {
-                    queryParams: {},
-                    args: ['input', 'uoms'],
-                    overrides: {
-                        product: ['input', 'sku']
-                    }
-                }
-            }
-        },
-        outputs: {
-            product: ['c1', 'product'],
-            uoms: ['c2', 'uom']
-        }
-    },
-    createIndent: {
-        inputs: {
-            items: {
-                type: []
-            }
-        },
-        computations: {
-            c1: {
-                order: 1,
-                type: 'function',
-                exec: 'createIndent',
-                connect: {}
-            },
-            c2: {
-                order: 2,
-                type: 'mapper',
-                exec: 'createIndentItems',
-                connect: {
-                    queryParams: {},
-                    args: ['input', 'items'],
-                    overrides: {
-                        indent: ['computation', 'c1', 'indent']
-                    }
-                }
-            }
-        },
-        outputs: {
-            indent: ['c1', 'indent'],
-            items: ['c2', 'item']
-        }
-    }
-}
 
 type CircuitInput = {
     type: []
@@ -146,11 +57,12 @@ export type Circuit = {
     outputs: Record<string, CircuitOutput>
 }
 
-export function executeCircuit(circuit: Circuit, args: object): [object, boolean, Diff] {
+export function executeCircuit(circuit: Circuit, args: object, overlay: Vector<Diff> = Vector.of()): [object, boolean, Diff] {
     const computationResults = {}
     var outputs = {}
     var diffs = Vector.of<Diff>()
     Object.keys(circuit.computations).forEach(computationName => {
+        console.log(computationName, '^^^^')
         const computation = circuit.computations[computationName]
         switch (computation.type) {
             case 'function': {
@@ -169,7 +81,7 @@ export function executeCircuit(circuit: Circuit, args: object): [object, boolean
                         }
                     }
                 })
-                const [result, symbolFlag, diff] = executeFunction(fx, functionArgs)
+                const [result, symbolFlag, diff] = executeFunction(fx, functionArgs, overlay.appendAll(diffs))
                 if (!symbolFlag) {
                     return [outputs, false, mergeDiffs(diffs.toArray())]
                 }
@@ -193,7 +105,7 @@ export function executeCircuit(circuit: Circuit, args: object): [object, boolean
                         }
                     }
                 })
-                const [result, symbolFlag, diff] = executeCircuit(computationCircuit, circuitArgs)
+                const [result, symbolFlag, diff] = executeCircuit(computationCircuit, circuitArgs, overlay.appendAll(diffs))
                 if (!symbolFlag) {
                     return [outputs, false, mergeDiffs(diffs.toArray())]
                 }
@@ -231,7 +143,10 @@ export function executeCircuit(circuit: Circuit, args: object): [object, boolean
                                         break
                                     }
                                     case 'computation': {
-                                        x[y] = computationResults[z[1]][z[2]]
+                                        if(typeof computationResults[z[1]][z[2]] === 'object')
+                                            x[y] = computationResults[z[1]][z[2]]['variableName']
+                                        else
+                                            x[y] = computationResults[z[1]][z[2]]
                                         break
                                     }
                                 }
@@ -250,7 +165,10 @@ export function executeCircuit(circuit: Circuit, args: object): [object, boolean
                                         break
                                     }
                                     case 'computation': {
-                                        x[y] = computationResults[z[1]][z[2]]
+                                        if(typeof computationResults[z[1]][z[2]] === 'object')
+                                            x[y] = computationResults[z[1]][z[2]]['variableName']
+                                        else
+                                            x[y] = computationResults[z[1]][z[2]]
                                         break
                                     }
                                 }
@@ -260,7 +178,7 @@ export function executeCircuit(circuit: Circuit, args: object): [object, boolean
                         break
                     }
                 }
-                const [result, symbolFlag, diff] = executeMapper(mapper, { queryParams: queryParams, args: mapperArgs })
+                const [result, symbolFlag, diff] = executeMapper(mapper, { queryParams: queryParams, args: mapperArgs }, overlay.appendAll(diffs))
                 if (!symbolFlag) {
                     return [outputs, false, mergeDiffs(diffs.toArray())]
                 }

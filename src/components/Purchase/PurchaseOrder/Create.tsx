@@ -12,6 +12,10 @@ import { Decimal, PurchaseOrder, PurchaseOrderItemVariable, PurchaseOrderVariabl
 import * as Grid from './grids/Create'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
+import { executeCircuit } from '../../../main/circuit'
+import { circuits } from '../../../main/circuits'
+import { getState } from '../../../main/store'
+import { useStore } from '../../../main/useStore'
 
 type State = Immutable<{
     variable: PurchaseOrderVariable
@@ -61,22 +65,23 @@ function reducer(state: Draft<State>, action: Action) {
         case 'resetVariable': {
             return initialState
         }
-        // case 'saveVariable': {
-        //     const [result, symbolFlag, diff] = executeCircuit(circuits.createIndent, {
-        //         items: state.items.variables.toArray().map(item => {
-        //             return {
-        //                 product: item.values.product.toString(),
-        //                 quantity: item.values.quantity,
-        //                 uom: item.values.uom.toString()
-        //             }
-        //         })
-        //     })
-        //     console.log(result, symbolFlag)
-        //     if (symbolFlag) {
-        //         getState().addDiff(diff)
-        //     }
-        //     break
-        // }
+        case 'saveVariable': {
+            const [result, symbolFlag, diff] = executeCircuit(circuits.createPurchaseOrder, {
+                quotation: state.variable.values.quotation.toString(),
+                items: state.items.variables.toArray().map(item => {
+                    return {
+                        quotationItem: item.values.quotationItem.toString(),
+                        quantity: item.values.quantity,
+                        price: item.values.price
+                    }
+                })
+            })
+            console.log(result, symbolFlag)
+            if (symbolFlag) {
+                getState().addDiff(diff)
+            }
+            break
+        }
         case 'variable': {
             switch (action[1]) {
                 case 'values': {
@@ -140,13 +145,16 @@ function reducer(state: Draft<State>, action: Action) {
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
+    const quotations = useStore(store => store.variables.Quotation)
+    const items = useStore(store => store.variables.QuotationItem.filter(x => x.values.quotation.toString() === state.variable.values.quotation.toString()))
+
     const purchaseOrder = types['PurchaseOrder']
     const item = types['PurchaseOrderItem']
 
     const [addItemDrawer, toggleAddItemDrawer] = useState(false)
     const [itemFilter, toggleItemFilter] = useState(false)
 
-    const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
             default: {
                 switch (event.target.name) {
@@ -159,7 +167,7 @@ function Component(props) {
         }
     }
 
-    const onItemInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onItemInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
             default: {
                 switch (event.target.name) {
@@ -207,24 +215,30 @@ function Component(props) {
                     }}>Save</Button>
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>
-                <Item>
+                    <Item>
                         <Label>{purchaseOrder.keys.quotation.name}</Label>
-                        <Input type='text' onChange={onVariableInputChange} value={state.variable.values.quotation.toString()} name='quotation' />
+                        <Select onChange={onVariableInputChange} value={state.variable.values.quotation.toString()} name='quotation'>
+                            <option value='' selected disabled hidden>Select Quotation</option>
+                            {quotations.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                        </Select>
                     </Item>
                 </Container>
                 <Container area={Grid.uom} layout={Grid2.layouts.main}>
-                    <Item area={Grid2.header}>
+                    <Item area={Grid2.header} className='flex items-center'>
                         <Title>Items</Title>
+                        <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>
                     </Item>
                     <Item area={Grid2.filter} justify='end' align='center' className='flex'>
-                        <Button onClick={() => toggleAddItemDrawer(true)}>Add</Button>
                         <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
                             <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
                                 <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
                                 <Container area={none} layout={Grid.layouts.uom} className=''>
                                     <Item>
                                         <Label>{item.keys.quotationItem.name}</Label>
-                                        <Input type='text' onChange={onItemInputChange} name='quotationItem' />
+                                        <Select onChange={onItemInputChange} value={state.items.variable.values.quotationItem.toString()} name='quotationItem'>
+                                            <option value='' selected disabled hidden>Select Item</option>
+                                            {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                        </Select>
                                     </Item>
                                     <Item>
                                         <Label>{item.keys.quantity.name}</Label>
@@ -259,5 +273,7 @@ const Title = tw.div`py-8 text-4xl text-gray-800 font-bold mx-1 whitespace-nowra
 const Label = tw.label`w-1/2 whitespace-nowrap`
 
 const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full rounded-sm`
+
+const Select = tw.select`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full rounded-sm`
 
 const Button = tw.button`bg-gray-900 text-white text-center font-bold p-2 mx-1 uppercase w-40 h-full max-w-sm rounded-lg focus:outline-none inline-block`

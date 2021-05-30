@@ -5,7 +5,7 @@ import tw from 'twin.macro'
 import Switch from '@material-ui/core/Switch'
 import { HashSet, Vector } from 'prelude-ts'
 import { Drawer } from '@material-ui/core'
-import { circuits, executeCircuit } from '../../../main/circuit'
+import { executeCircuit } from '../../../main/circuit'
 import { getState } from '../../../main/store'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
@@ -15,6 +15,7 @@ import { Product, ProductVariable, UOMVariable } from '../../../main/variables'
 import * as Grid from './grids/Create'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
+import { circuits } from '../../../main/circuits'
 
 type State = Immutable<{
     variable: ProductVariable
@@ -57,7 +58,7 @@ const initialState: State = {
         offset: 0,
         page: 1,
         columns: Vector.of('name', 'conversionRate'),
-        variable: new UOMVariable('', { product: new Product(''), name: '', conversionRate: 0 }),
+        variable: new UOMVariable('', { product: new Product(''), name: '', conversionRate: 1 }),
         variables: HashSet.of()
     }
 }
@@ -256,11 +257,11 @@ function Component(props) {
                     </Item>
                 </Container>
                 <Container area={Grid.uom} layout={Grid2.layouts.main}>
-                    <Item area={Grid2.header}>
+                    <Item area={Grid2.header} className='flex items-center'>
                         <Title>{uom.name}s</Title>
+                        <button onClick={() => toggleAddUOMDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>
                     </Item>
                     <Item area={Grid2.filter} justify='end' align='center' className='flex'>
-                        <Button onClick={() => toggleAddUOMDrawer(true)}>Add</Button>
                         <Drawer open={addUOMDrawer} onClose={() => toggleAddUOMDrawer(false)} anchor={'right'}>
                             <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
                                 <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add UOM</div>

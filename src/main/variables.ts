@@ -1479,10 +1479,7 @@ export function replaceVariable(typeName: NonPrimitiveType, variableName: string
             })
         }
         case 'Indent': {
-            return new IndentVariable(variableName, {
-                timestamp: parseInt(String(values['timestamp'])),
-                approved: Boolean(values['approved']).valueOf()
-            })
+            return new IndentVariable(variableName, {})
         }
         case 'IndentItem': {
             return new IndentItemVariable(variableName, {

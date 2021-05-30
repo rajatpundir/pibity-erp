@@ -7,6 +7,10 @@ import { Container, Item, none } from '../../../main/commons'
 import {  WarehouseAcceptanceSlipVariable, TransferMaterialSlip } from '../../../main/variables'
 import * as Grid from './grids/Create'
 import { withRouter } from 'react-router-dom'
+import { executeCircuit } from '../../../main/circuit'
+import { circuits } from '../../../main/circuits'
+import { getState } from '../../../main/store'
+import { useStore } from '../../../main/useStore'
 
 type State = Immutable<{
     variable: WarehouseAcceptanceSlipVariable
@@ -28,22 +32,17 @@ function reducer(state: Draft<State>, action: Action) {
         case 'resetVariable': {
             return initialState
         }
-        // case 'saveVariable': {
-        //     const [result, symbolFlag, diff] = executeCircuit(circuits.createIndent, {
-        //         items: state.items.variables.toArray().map(item => {
-        //             return {
-        //                 product: item.values.product.toString(),
-        //                 quantity: item.values.quantity,
-        //                 uom: item.values.uom.toString()
-        //             }
-        //         })
-        //     })
-        //     console.log(result, symbolFlag)
-        //     if (symbolFlag) {
-        //         getState().addDiff(diff)
-        //     }
-        //     break
-        // }
+        case 'saveVariable': {
+            const [result, symbolFlag, diff] = executeCircuit(circuits.createWarehouseAcceptanceSlip, {
+                transferMaterialSlip: state.variable.values.transferMaterialSlip.toString(),
+                quantity: state.variable.values.quantity
+            })
+            console.log(result, symbolFlag)
+            if (symbolFlag) {
+                getState().addDiff(diff)
+            }
+            break
+        }
         case 'variable': {
             switch (action[1]) {
                 case 'values': {
@@ -67,9 +66,11 @@ function reducer(state: Draft<State>, action: Action) {
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
+    const transferMaterialSlips = useStore(state => state.variables.TransferMaterialSlip)
+
     const warehouseAcceptanceSlip = types['WarehouseAcceptanceSlip']
 
-    const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
             default: {
                 switch (event.target.name) {
@@ -101,7 +102,10 @@ function Component(props) {
                 <Container area={Grid.details} layout={Grid.layouts.details}>
                     <Item>
                         <Label>{warehouseAcceptanceSlip.keys.transferMaterialSlip.name}</Label>
-                        <Input type='text' onChange={onVariableInputChange} value={state.variable.values.transferMaterialSlip.toString()} name='transferMaterialSlip' />
+                        <Select onChange={onVariableInputChange} value={state.variable.values.transferMaterialSlip.toString()} name='transferMaterialSlip'>
+                            <option value='' selected disabled hidden>Select Material Transfer Slip</option>
+                            {transferMaterialSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                        </Select>
                     </Item>
                     <Item>
                         <Label>{warehouseAcceptanceSlip.keys.quantity.name}</Label>
@@ -120,5 +124,7 @@ const Title = tw.div`py-8 text-4xl text-gray-800 font-bold mx-1 whitespace-nowra
 const Label = tw.label`w-1/2 whitespace-nowrap`
 
 const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full rounded-sm`
+
+const Select = tw.select`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full rounded-sm`
 
 const Button = tw.button`bg-gray-900 text-white text-center font-bold p-2 mx-1 uppercase w-40 h-full max-w-sm rounded-lg focus:outline-none inline-block`

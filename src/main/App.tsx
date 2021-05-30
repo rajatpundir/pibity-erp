@@ -30,8 +30,24 @@ import CreateMaterialScrapped from '../components/Quality/MaterialScrapped/Creat
 import ListMaterialScrapped from '../components/Quality/MaterialScrapped/List'
 import CreateWarehouseReceipt from '../components/Warehouse/Receipt/Create'
 import ListWarehouseReceipt from '../components/Warehouse/Receipt/List'
+import { executeCircuit } from './circuit'
+import { circuits } from './circuits'
+import { getState } from './store'
 
 function App() {
+  const [a, b, c] = executeCircuit(circuits.createProduct, {
+    sku: 'abc',
+    name: 'name',
+    orderable: true,
+    consumable: true,
+    producable: true,
+    uoms: [{
+      name: 'kg',
+      conversionRate: 1
+    }]
+  })
+  console.log(a, b)
+  getState().addDiff(c)
   return (
     <div className='App font-nunito bg-gray-100'>
       <BrowserRouter>

@@ -1,5 +1,4 @@
 
-
 export type KeyType = PrimitiveType | NonPrimitiveType
 
 export type PrimitiveType =
@@ -105,13 +104,7 @@ export const types = {
     Indent: {
         name: 'Indent',
         autoId: true,
-        keys: {
-            approved: {
-                order: 0,
-                name: 'Approved',
-                type: 'Boolean'
-            }
-        }
+        keys: {}
     },
     IndentItem: {
         name: 'Indent Item',
@@ -565,7 +558,7 @@ export const types = {
         }
     },
     WarehouseAcceptanceSlip: {
-        name: 'Warehouse Acceptance Slip',
+        name: 'Warehouse Receipt',
         autoId: true,
         keys: {
             transferMaterialSlip: {

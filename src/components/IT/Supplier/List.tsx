@@ -59,7 +59,7 @@ function reducer(state: Draft<State>, action: Action) {
 
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const variables = useStore(state => state.variables.Product).filter(variable => applyFilter(state.query, variable))
+    const variables = useStore(state => state.variables.Supplier).filter(variable => applyFilter(state.query, variable))
     const [open, setOpen] = useState(false)
 
     const updateQuery = (args: Args) => {
