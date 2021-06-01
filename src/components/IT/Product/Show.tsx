@@ -26,7 +26,7 @@ type State = Immutable<{
         limit: number
         offset: number
         page: number
-        columns: Vector<string>
+        columns: Vector<Array<string>>
         variable: UOMVariable
         variables: HashSet<UOMVariable>
     }
@@ -50,8 +50,8 @@ export type Action =
     | ['uoms', 'variable', 'values', 'conversionRate', number]
     | ['uoms', 'addVariable']
 
-    | ['replace','variable', ProductVariable]
-    | ['replace','uoms', HashSet<UOMVariable>]
+    | ['replace', 'variable', ProductVariable]
+    | ['replace', 'uoms', HashSet<UOMVariable>]
 
 const initialState: State = {
     variable: new ProductVariable('', { name: '', orderable: true, consumable: true, producable: false }),
@@ -61,7 +61,7 @@ const initialState: State = {
         limit: 5,
         offset: 0,
         page: 1,
-        columns: Vector.of('name', 'conversionRate'),
+        columns: Vector.of(['values', 'name'], ['values', 'conversionRate']),
         variable: new UOMVariable('', { product: new Product(''), name: '', conversionRate: 1 }),
         variables: HashSet.of()
     }
@@ -161,7 +161,7 @@ function reducer(state: Draft<State>, action: Action) {
 function Component(props) {
     console.log(props.match.params[0])
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const products = useStore(state => state.variables.Product.filter(x=> x.variableName.toString() === props.match.params[0]))
+    const products = useStore(state => state.variables.Product.filter(x => x.variableName.toString() === props.match.params[0]))
     const uoms = useStore(store => store.variables.UOM.filter(x => x.values.product.toString() === props.match.params[0]))
     dispatch(['replace', 'variable', products[0]])
     dispatch(['replace', 'uoms', HashSet.of<UOMVariable>().addAll(uoms as any)])
@@ -294,7 +294,7 @@ function Component(props) {
                             <Filter typeName='UOM' query={state['uoms'].query} updateQuery={updateQuery('uoms')} />
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={state['uoms']} updatePage={updatePage('uoms')} variables={state.uoms.variables.filter(variable => applyFilter(state['uoms'].query, variable))} showVariableName={false} columns={state['uoms'].columns} />
+                    <Table area={Grid2.table} state={state['uoms']} updatePage={updatePage('uoms')} variables={state.uoms.variables.filter(variable => applyFilter(state['uoms'].query, variable))} showVariableName={false} columns={state['uoms'].columns.toArray()} />
                 </Container >
             </Container>
         </>

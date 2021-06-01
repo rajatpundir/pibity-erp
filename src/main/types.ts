@@ -50,6 +50,7 @@ export type Key = {
 export type Type = {
     name: string
     autoId: boolean
+    url?: string,
     keys: Record<string, Key>
 }
 
@@ -57,6 +58,7 @@ export const types = {
     Product: {
         name: 'SKU',
         autoId: false,
+        url: 'product',
         keys: {
             name: {
                 order: 0,
@@ -104,6 +106,7 @@ export const types = {
     Indent: {
         name: 'Indent',
         autoId: true,
+        url: 'indent',
         keys: {}
     },
     IndentItem: {
@@ -165,6 +168,7 @@ export const types = {
     Supplier: {
         name: 'Supplier',
         autoId: false,
+        url: 'supplier',
         keys: {}
     },
     SupplierProduct: {

@@ -25,7 +25,7 @@ type State = Immutable<{
         limit: number
         offset: number
         page: number
-        columns: Vector<string>
+        columns: Vector<Array<string>>
         variable: UOMVariable
         variables: HashSet<UOMVariable>
     }
@@ -57,7 +57,7 @@ const initialState: State = {
         limit: 5,
         offset: 0,
         page: 1,
-        columns: Vector.of('name', 'conversionRate'),
+        columns: Vector.of(['values', 'name'], ['values', 'conversionRate']),
         variable: new UOMVariable('', { product: new Product(''), name: '', conversionRate: 1 }),
         variables: HashSet.of()
     }
@@ -285,7 +285,7 @@ function Component(props) {
                             <Filter typeName='UOM' query={state['uoms'].query} updateQuery={updateQuery('uoms')} />
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={state['uoms']} updatePage={updatePage('uoms')} variables={state.uoms.variables.filter(variable => applyFilter(state['uoms'].query, variable))} showVariableName={false} columns={state['uoms'].columns} />
+                    <Table area={Grid2.table} state={state['uoms']} updatePage={updatePage('uoms')} variables={state.uoms.variables.filter(variable => applyFilter(state['uoms'].query, variable))} showVariableName={false} columns={state['uoms'].columns.toArray()} />
                 </Container >
             </Container>
         </>

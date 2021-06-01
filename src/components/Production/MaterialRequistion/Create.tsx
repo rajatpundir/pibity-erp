@@ -25,7 +25,7 @@ type State = Immutable<{
         limit: number
         offset: number
         page: number
-        columns: Vector<string>
+        columns: Vector<Array<string>>
         variable: MaterialRequistionSlipItemVariable
         variables: HashSet<MaterialRequistionSlipItemVariable>
     }
@@ -53,7 +53,7 @@ const initialState: State = {
         limit: 5,
         offset: 0,
         page: 1,
-        columns: Vector.of('materialApprovalSlipItem', 'quantity'),
+        columns: Vector.of(['values', 'materialApprovalSlipItem'], ['values', 'quantity']),
         variable: new MaterialRequistionSlipItemVariable('', { materialRequistionSlip: new MaterialRequistionSlip(''), materialApprovalSlipItem: new MaterialApprovalSlipItem(''), quantity: 0, consumed: 0 }),
         variables: HashSet.of()
     }
@@ -245,7 +245,7 @@ function Component(props) {
                             <Filter typeName='MaterialRequistionSlipItem' query={state['items'].query} updateQuery={updateQuery('items')} />
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} showVariableName={false} columns={state['items'].columns} />
+                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} showVariableName={false} columns={state['items'].columns.toArray()} />
                 </Container >
             </Container>
         </>

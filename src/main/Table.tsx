@@ -3,7 +3,8 @@ import { Immutable } from 'immer'
 import tw from 'twin.macro'
 import { Container, Item, TableContainer, Cell, validateLayout, Area, GridLayout } from './commons'
 import { Variable } from './variables'
-import { NonPrimitiveType, types } from './types'
+import { NonPrimitiveType, Type, types } from './types'
+import { getState } from './store'
 
 const body: Area = new Area('body')
 const footer: Area = new Area('footer')
@@ -113,76 +114,113 @@ const layouts: { [index: string]: GridLayout } = {
     })
 }
 
-function getCells(columns: Array<string>, showVariableName: boolean, variables: Immutable<HashSet<Variable>>, start: number, end: number): Vector<unknown> {
+function W(type: Type, path: Array<string>): string {
+    if (path.length !== 0) {
+        switch (path[0]) {
+            case 'variableName': {
+                return type.name
+            }
+            case 'values': {
+                if (path[1] !== undefined) {
+                    const keyName = path[1]
+                    if (Object.keys(type.keys).includes(path[1])) {
+                        const key = type.keys[path[1]]
+                        if (path[2] === undefined) {
+                            return key.name
+                        } else {
+                            const referencedType = types[key.type]
+                            return W(referencedType, path.slice(2))
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return ''
+}
+
+function Q(variable: Immutable<Variable>, path: Array<string>): string {
+    if (path.length !== 0) {
+        switch (path[0]) {
+            case 'variableName': {
+                return variable.variableName.toString()
+            }
+            case 'values': {
+                if (path[1] !== undefined) {
+                    const keyName = path[1]
+                    if (Object.keys(variable.values).includes(path[1])) {
+                        const value = variable.values[path[1]]
+                        if (path[2] === undefined) {
+                            if (typeof value === 'object') {
+                                return value.toString()
+                            } else {
+                                if (typeof value === 'boolean') {
+                                    return value ? 'Yes' : 'No'
+                                } else {
+                                    return value
+                                }
+                            }
+                        } else {
+                            if (typeof path === 'object') {
+                                const type = types[variable.typeName]
+                                if (Object.keys(type.keys).includes(path[1])) {
+                                    const key = type.keys[path[1]]
+                                    const referencedVariableName: string = variable.values[path[1]].toString()
+                                    const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[key.type]
+                                    const variables = unfilteredVariables.filter(x => x.toString() === referencedVariableName)
+                                    if (variables.length() === 1) {
+                                        return Q(variables.toArray[0], path.slice(2))
+                                    } else {
+                                        // Note: Referenced variable not found in Zustand Store (Base + Diff)
+                                        // Resolution: 
+                                        // 1. Check Dexie for variable and load into Zustand Store
+                                        // 2. If not found in Dexie, check backend and load it into Dexie/Zustand
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return ''
+}
+
+function getCells(columns: Array<Array<string>>, showVariableName: boolean, variables: Immutable<HashSet<Variable>>, start: number, end: number): Vector<unknown> {
     var counter = 0
     var cells = Vector.of()
     variables.toArray().slice(start, end).forEach((variable, rowIndex) => {
-        if (rowIndex % 2 === 0) {
-            if (showVariableName) {
-                cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{variable.variableName.toString()}</Cell>)
-                counter += 1
-            }
-            columns.forEach((key, columnIndex) => {
-                const value = variable.values[key]
-                if (!showVariableName && columnIndex === 0) {
-                    switch (typeof value) {
-                        case 'boolean': {
-                            cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{value ? 'Yes' : 'No'}</Cell>)
-                            counter += 1
-                            return
-                        }
-                        default: {
-                            cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{typeof value === 'object' ? value.toString() : value}</Cell>)
-                            counter += 1
-                        }
-                    }
+        const type = types[variable.typeName]
+        if (rowIndex % 2 !== 0) {
+            columns.forEach((path, columnIndex) => {
+                if (columns.length === 1) {
+                    cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{variable.variableName.toString()}</Cell>)
                 } else {
-                    switch (typeof value) {
-                        case 'boolean': {
-                            cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{value ? 'Yes' : 'No'}</Cell>)
-                            counter += 1
-                            return
-                        }
-                        default: {
-                            cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{typeof value === 'object' ? value.toString() : value}</Cell>)
-                            counter += 1
-                        }
+                    if (columnIndex === 0) {
+                        cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{variable.variableName.toString()}</Cell>)
+                    } else if (columnIndex === columns.length - 1) {
+                        cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{Q(variable, path)}</Cell>)
+                    } else {
+                        cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{Q(variable, path)}</Cell>)
                     }
                 }
+                counter += 1
             })
         } else {
-            if (showVariableName) {
-                cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{variable.variableName.toString()}</Cell>)
-                counter += 1
-            }
-            columns.forEach((key, columnIndex) => {
-                const value = variable.values[key]
-                if (!showVariableName && columnIndex === 0) {
-                    switch (typeof value) {
-                        case 'boolean': {
-                            cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{value ? 'Yes' : 'No'}</Cell>)
-                            counter += 1
-                            return
-                        }
-                        default: {
-                            cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{typeof value === 'object' ? value.toString() : value}</Cell>)
-                            counter += 1
-                        }
-                    }
+            columns.forEach((path, columnIndex) => {
+                if (columns.length === 1) {
+                    cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{Q(variable, path)}</Cell>)
                 } else {
-                    switch (typeof value) {
-                        case 'boolean': {
-                            cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{value ? 'Yes' : 'No'}</Cell>)
-                            counter += 1
-                            return
-                        }
-                        default: {
-                            cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{typeof value === 'object' ? value.toString() : value}</Cell>)
-                            counter += 1
-                        }
+                    if (columnIndex === 0) {
+                        cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{Q(variable, path)}</Cell>)
+                    } else if (columnIndex === columns.length - 1) {
+                        cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{Q(variable, path)}</Cell>)
+                    } else {
+                        cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{Q(variable, path)}</Cell>)
                     }
-
                 }
+                counter += 1
             })
         }
     })
@@ -200,14 +238,13 @@ type TableProps = {
     }>
     updatePage: (args: ['limit', number] | ['offset', number] | ['page', number]) => void
     variables: Immutable<HashSet<any>>
-    columns: Readonly<Vector<string>>
+    columns: Array<Array<string>>
 }
 
 export function Table(props: TableProps) {
     const start = Math.min(props.state.limit * props.state.offset, props.variables.length())
     const end = Math.min(start + props.state.limit, props.variables.length())
     const type = types[props.state.typeName]
-    const keys = Object.keys(type.keys).filter(keyName => props.columns.contains(keyName))
 
     const firstPage = async (event: React.MouseEvent<HTMLButtonElement>) => {
         props.updatePage(['offset', 0])
@@ -244,33 +281,31 @@ export function Table(props: TableProps) {
     return (<Container area={props.area} layout={layouts.table} >
         <TableContainer area={body} className="border-l-2 border-r-2 border-t-2 rounded-tl-xl rounded-tr-xl border-gray-300">
             {
-                props.showVariableName ? (<Cell row="1/2" column="1/2" className="bg-gray-800 rounded-tl-lg pl-4">
-                    <Column>{type.name}</Column>
-                </Cell>) : undefined
-            }
-            {
-                keys.slice(0, keys.length - 1).map((keyName, index) => {
-                    if (!props.showVariableName && index === 0) {
-                        return (<Cell key={keyName} row="1/2" column={`${index + 2 - (props.showVariableName ? 0 : 1)}/${index + 3 - (props.showVariableName ? 0 : 1)}`} className="bg-gray-800 rounded-tl-lg pl-4">
-                            <Column>{type.keys[keyName].name}</Column>
+                props.columns.map((path, index) => {
+                    if (props.columns.length === 1) {
+                        return (<Cell row="1/2" column="1/2" className="bg-gray-800 rounded-tl-lg pl-4">
+                            <Column>{W(types[props.state.typeName] as Type, path)}</Column>
                         </Cell>)
-
                     } else {
-                        return (<Cell key={keyName} row="1/2" column={`${index + 2 - (props.showVariableName ? 0 : 1)}/${index + 3 - (props.showVariableName ? 0 : 1)}`} className="bg-gray-800 -mx-1">
-                            <Column>{type.keys[keyName].name}</Column>
-                        </Cell>)
-
+                        if (index === 0) {
+                            return (<Cell key={index} row="1/2" column={`${index + 1}/${index + 2}`} className="bg-gray-800 rounded-tl-lg pl-4">
+                                <Column>{W(types[props.state.typeName] as Type, path)}</Column>
+                            </Cell>)
+                        } else if (index === props.columns.length - 1) {
+                            return (<Cell key={index} row="1/2" column={`${index + 1}/${index + 2}`} className="bg-gray-800 rounded-tr-lg">
+                                <Column>{W(types[props.state.typeName] as Type, path)}</Column>
+                            </Cell>)
+                        } else {
+                            return (<Cell key={index} row="1/2" column={`${index + 1}/${index + 2}`} className="bg-gray-800 -mx-1">
+                                <Column>{W(types[props.state.typeName] as Type, path)}</Column>
+                            </Cell>)
+                        }
                     }
                 })
             }
             {
-                keys.length !== 0 ? (<Cell row="1/2" column={`${keys.length + 1 - (props.showVariableName ? 0 : 1)}/${keys.length + 2 - (props.showVariableName ? 0 : 1)}`} className="bg-gray-800 rounded-tr-lg">
-                    <Column>{type.keys[keys[keys.length - 1]].name}</Column>
-                </Cell>) : undefined
-            }
-            {
                 props.variables.length() !== 0 && start < props.variables.length()
-                    ? getCells(keys, props.showVariableName, props.variables, start, end)
+                    ? getCells(props.columns, props.showVariableName, props.variables, start, end)
                     : <Cell className="pt-4 pb-4 border-b-2 w-full font-bold text-center bg-gray-50" row="2/3" column={`1/${keys.length + 2 - (props.showVariableName ? 0 : 1)}`}>No records found at specified page.</Cell>
             }
         </TableContainer>

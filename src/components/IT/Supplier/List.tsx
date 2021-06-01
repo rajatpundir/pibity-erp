@@ -17,7 +17,7 @@ type State = Immutable<{
     limit: number
     offset: number
     page: number
-    columns: Vector<string>
+    columns: Vector<Array<string>>
 }>
 
 export type Action =
@@ -32,7 +32,7 @@ const initialState: State = {
     limit: 5,
     offset: 0,
     page: 1,
-    columns: Vector.of<string>()
+    columns: Vector.of(['variableName'])
 }
 
 function reducer(state: Draft<State>, action: Action) {
@@ -82,7 +82,7 @@ function Component(props) {
                     <Filter typeName={state.typeName} query={state.query} updateQuery={updateQuery} />
                 </Drawer>
             </Item>
-            <Table area={Grid.table} state={state} updatePage={updatePage} variables={variables} showVariableName={true} columns={state.columns} />
+            <Table area={Grid.table} state={state} updatePage={updatePage} variables={variables} showVariableName={true} columns={state.columns.toArray()} />
         </Container>
     )
 }
