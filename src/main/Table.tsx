@@ -128,8 +128,7 @@ function W(type: Type, path: Array<string>): string {
                         if (path[2] === undefined) {
                             return key.name
                         } else {
-                            const referencedType = types[key.type]
-                            return W(referencedType, path.slice(2))
+                            return W(types[key.type], path.slice(2))
                         }
                     }
                 }
@@ -186,7 +185,7 @@ function Q(variable: Immutable<Variable>, path: Array<string>): [string, string]
     return ['', '']
 }
 
-function getCells(columns: Array<Array<string>>, variables: Immutable<HashSet<Variable>>, start: number, end: number): Vector<unknown> {
+function getCells(columns: Array<Array<string>>, variables: Immutable<HashSet<Variable>>, start: number, end: number) {
     var cells = Vector.of()
     variables.toArray().slice(start, end).forEach((variable, rowIndex) => {
         if (rowIndex % 2 !== 0) {
@@ -231,6 +230,39 @@ function getCells(columns: Array<Array<string>>, variables: Immutable<HashSet<Va
             })
         }
     })
+    Array.from(Array((end - start) - variables.toArray().slice(start, end).length), (_, i) => i + 1).forEach( i => {
+        console.log(i)
+        const rowIndex = variables.toArray().slice(start, end).length + i
+        if(i % 2 !== 0) {
+            columns.forEach((path, columnIndex) => {
+                if (columns.length === 1) {
+                    cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>&#160;</Cell>)
+                } else {
+                    if (columnIndex === 0) {
+                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>&#160;</Cell>)
+                    } else if (columnIndex === columns.length - 1) {
+                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>&#160;</Cell>)
+                    } else {
+                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>&#160;</Cell>)
+                    }
+                }
+            })
+        } else {
+            columns.forEach((path, columnIndex) => {
+                if (columns.length === 1) {
+                    cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>&#160;</Cell>)
+                } else {
+                    if (columnIndex === 0) {
+                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>&#160;</Cell>)
+                    } else if (columnIndex === columns.length - 1) {
+                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>&#160;</Cell>)
+                    } else {
+                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>&#160;</Cell>)
+                    }
+                }
+            })
+        }
+    })
     return cells
 }
 
@@ -249,7 +281,7 @@ type TableProps = {
 
 export function Table(props: TableProps) {
     const start = Math.min(props.state.limit * props.state.offset, props.variables.length())
-    const end = Math.min(start + props.state.limit, props.variables.length())
+    const end = start + props.state.limit
 
     const firstPage = async (event: React.MouseEvent<HTMLButtonElement>) => {
         props.updatePage(['offset', 0])
@@ -311,7 +343,7 @@ export function Table(props: TableProps) {
             {
                 props.variables.length() !== 0 && start < props.variables.length()
                     ? getCells(props.columns, props.variables, start, end)
-                    : <Cell className="pt-4 pb-4 border-b-2 w-full font-bold text-center bg-gray-50" row="2/3" column={`1/${props.columns.length}`}>No records found at specified page.</Cell>
+                    : <Cell className="pt-4 pb-4 border-b-2 w-full font-bold text-center bg-gray-50" row="2/3" column={`1/${props.columns.length + 1}`}>No records found at specified page.</Cell>
             }
         </TableContainer>
         <Container area={footer} layout={layouts.footer} className="bg-gray-100 border-l-2 border-r-2 border-b-2 border-gray-300">
