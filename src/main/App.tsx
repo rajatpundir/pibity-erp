@@ -50,7 +50,7 @@ import { getState } from './store'
 import trialDataExecute from './trialDataExecute'
 
 function App() {
-    trialDataExecute()
+  trialDataExecute()
   return (
     <div className='App font-nunito bg-gray-100'>
       <BrowserRouter>
