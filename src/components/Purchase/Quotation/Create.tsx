@@ -25,7 +25,7 @@ type State = Immutable<{
         limit: number
         offset: number
         page: number
-        columns: Vector<string>
+        columns: Vector<Array<string>>
         variable: QuotationItemVariable
         variables: HashSet<QuotationItemVariable>
     }
@@ -53,8 +53,8 @@ const initialState: State = {
         query: getQuery('QuotationItem'),
         limit: 5,
         offset: 0,
-        page: 1,
-        columns: Vector.of('indentItem', 'quantity'),
+        page: 1,       
+        columns: Vector.of(['values', 'indentItem'], ['values', 'quantity']),
         variable: new QuotationItemVariable('', { quotation: new Quotation(''), indentItem: new IndentItem(''), quantity: 0 }),
         variables: HashSet.of()
     }
@@ -264,7 +264,7 @@ function Component(props) {
                             <Filter typeName='QuotationItem' query={state['items'].query} updateQuery={updateQuery('items')} />
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} showVariableName={false} columns={state['items'].columns} />
+                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} showVariableName={false} columns={state['items'].columns.toArray()} />
                 </Container >
             </Container>
         </>
