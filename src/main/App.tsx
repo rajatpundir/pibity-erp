@@ -47,21 +47,10 @@ import ListWarehouseReceipt from '../components/Warehouse/Receipt/List'
 import { executeCircuit } from './circuit'
 import { circuits } from './circuits'
 import { getState } from './store'
+import trialDataExecute from './trialDataExecute'
 
 function App() {
-  // const [a, b, c] = executeCircuit(circuits.createProduct, {
-  //   sku: 'abc',
-  //   name: 'name',
-  //   orderable: true,
-  //   consumable: true,
-  //   producable: true,
-  //   uoms: [{
-  //     name: 'kg',
-  //     conversionRate: 1
-  //   }]
-  // })
-  // console.log(a, b)
-  // getState().addDiff(c)
+    trialDataExecute()
   return (
     <div className='App font-nunito bg-gray-100'>
       <BrowserRouter>
