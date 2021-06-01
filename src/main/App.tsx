@@ -47,10 +47,10 @@ import ListWarehouseReceipt from '../components/Warehouse/Receipt/List'
 import { executeCircuit } from './circuit'
 import { circuits } from './circuits'
 import { getState } from './store'
-import TrialDataExecute from './TrialDataExecute'
+import trialDataExecute from './trialDataExecute'
 
 function App() {
-    TrialDataExecute()
+    trialDataExecute()
   return (
     <div className='App font-nunito bg-gray-100'>
       <BrowserRouter>

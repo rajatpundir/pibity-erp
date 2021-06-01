@@ -3,7 +3,7 @@ import { circuits } from "./circuits"
 import { getState } from "./store"
 
 
-export default function TrialDataExecute() {
+export default function trialDataExecute() {
 
     const [, , c2] = executeCircuit(circuits.createProduct, {
         sku: 'R1',
