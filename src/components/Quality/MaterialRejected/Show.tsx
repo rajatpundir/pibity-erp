@@ -249,7 +249,7 @@ function Component(props) {
                             <Filter typeName='MaterialRejectionSlipItem' query={state['items'].query} updateQuery={updateQuery('items')} />
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} showVariableName={false} columns={state['items'].columns.toArray()} />
+                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} columns={state['items'].columns.toArray()} />
                 </Container >
             </Container>
         </>

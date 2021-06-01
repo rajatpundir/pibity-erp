@@ -55,7 +55,7 @@ const initialState: State = {
         limit: 5,
         offset: 0,
         page: 1,
-        columns: Vector.of(['values', 'materialRejectionSlipItem'], ['values', 'quantity']),
+        columns: Vector.of(['variableName'], ['values', 'materialRejectionSlipItem'], ['values', 'materialRejectionSlipItem', 'values', 'purchaseInvoice'], ['values', 'quantity']),
         variable: new MaterialReturnSlipItemVariable('', { materialReturnSlip: new MaterialReturnSlip(''), materialRejectionSlipItem: new MaterialRejectionSlipItem(''), quantity: 0 }),
         variables: HashSet.of()
     }
@@ -249,7 +249,7 @@ function Component(props) {
                             <Filter typeName='MaterialReturnSlipItem' query={state['items'].query} updateQuery={updateQuery('items')} />
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} showVariableName={false} columns={state['items'].columns.toArray()} />
+                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} columns={state['items'].columns.toArray()} />
                 </Container >
             </Container>
         </>

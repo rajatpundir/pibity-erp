@@ -32,7 +32,7 @@ const initialState: State = {
     limit: 5,
     offset: 0,
     page: 1,
-    columns: Vector.of(['values', 'name'], ['values', 'orderable'], ['values', 'consumable'], ['values', 'producable'])
+    columns: Vector.of(['variableName'], ['values', 'name'], ['values', 'orderable'], ['values', 'consumable'], ['values', 'producable'])
 }
 
 function reducer(state: Draft<State>, action: Action) {
@@ -82,7 +82,7 @@ function Component(props) {
                     <Filter typeName={state.typeName} query={state.query} updateQuery={updateQuery} />
                 </Drawer>
             </Item>
-            <Table area={Grid.table} state={state} updatePage={updatePage} variables={variables} showVariableName={true} columns={state.columns.toArray()} />
+            <Table area={Grid.table} state={state} updatePage={updatePage} variables={variables} columns={state.columns.toArray()} />
         </Container>
     )
 }

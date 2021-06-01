@@ -84,7 +84,7 @@ function Component(props) {
                     <Filter typeName={state.typeName} query={state.query} updateQuery={updateQuery} />
                 </Drawer>
             </Item>
-            <Table area={Grid.table} state={state} updatePage={updatePage} variables={variables} showVariableName={true} columns={state.columns.toArray()} />
+            <Table area={Grid.table} state={state} updatePage={updatePage} variables={variables} columns={state.columns.toArray()} />
         </Container>
     )
 }

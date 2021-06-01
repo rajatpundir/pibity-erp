@@ -5,6 +5,7 @@ import { Container, Item, TableContainer, Cell, validateLayout, Area, GridLayout
 import { Variable } from './variables'
 import { NonPrimitiveType, Type, types } from './types'
 import { getState } from './store'
+import { withRouter } from 'react-router-dom'
 
 const body: Area = new Area('body')
 const footer: Area = new Area('footer')
@@ -139,11 +140,12 @@ function W(type: Type, path: Array<string>): string {
     return ''
 }
 
-function Q(variable: Immutable<Variable>, path: Array<string>): string {
+function Q(variable: Immutable<Variable>, path: Array<string>): [string, string] {
+    const type = types[variable.typeName] as Type
     if (path.length !== 0) {
         switch (path[0]) {
             case 'variableName': {
-                return variable.variableName.toString()
+                return [variable.variableName.toString(), type.url ? type.url : '']
             }
             case 'values': {
                 if (path[1] !== undefined) {
@@ -152,12 +154,12 @@ function Q(variable: Immutable<Variable>, path: Array<string>): string {
                         const value = variable.values[path[1]]
                         if (path[2] === undefined) {
                             if (typeof value === 'object') {
-                                return value.toString()
+                                return [value.toString(), '']
                             } else {
                                 if (typeof value === 'boolean') {
-                                    return value ? 'Yes' : 'No'
+                                    return [value ? 'Yes' : 'No', '']
                                 } else {
-                                    return value
+                                    return [value, '']
                                 }
                             }
                         } else {
@@ -184,43 +186,52 @@ function Q(variable: Immutable<Variable>, path: Array<string>): string {
             }
         }
     }
-    return ''
+    return ['', '']
 }
 
-function getCells(columns: Array<Array<string>>, showVariableName: boolean, variables: Immutable<HashSet<Variable>>, start: number, end: number): Vector<unknown> {
-    var counter = 0
+function getCells(columns: Array<Array<string>>, variables: Immutable<HashSet<Variable>>, push: (url: string) => void, start: number, end: number): Vector<unknown> {
     var cells = Vector.of()
     variables.toArray().slice(start, end).forEach((variable, rowIndex) => {
         const type = types[variable.typeName]
         if (rowIndex % 2 !== 0) {
             columns.forEach((path, columnIndex) => {
+                const cellValue = Q(variable, path)
                 if (columns.length === 1) {
-                    cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{variable.variableName.toString()}</Cell>)
+                    cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold"
+                        row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}
+                        onClick={() => { push(`${cellValue[1]}/${cellValue[0]}`) }}>{cellValue[0]} </Cell>)
                 } else {
                     if (columnIndex === 0) {
-                        cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{variable.variableName.toString()}</Cell>)
+                        const cellValue = Q(variable, path)
+                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}
+                            onClick={() => { console.log(cellValue[0], cellValue[1]) }}>{cellValue[0]} </Cell>)
                     } else if (columnIndex === columns.length - 1) {
-                        cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{Q(variable, path)}</Cell>)
+                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}
+                            onClick={() => { console.log(cellValue[0], cellValue[1]) }}>{cellValue[0]} </Cell>)
                     } else {
-                        cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{Q(variable, path)}</Cell>)
+                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}
+                            onClick={() => { console.log(cellValue[0], cellValue[1]) }}>{cellValue[0]} </Cell>)
                     }
                 }
-                counter += 1
             })
         } else {
             columns.forEach((path, columnIndex) => {
+                const cellValue = Q(variable, path)
                 if (columns.length === 1) {
-                    cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{Q(variable, path)}</Cell>)
+                    cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}
+                        onClick={() => { push(`${cellValue[1]}/${cellValue[0]}`) }}>{cellValue[0]} </Cell>)
                 } else {
                     if (columnIndex === 0) {
-                        cells = cells.append(<Cell key={counter} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" row={`${rowIndex + 2}/${rowIndex + 3}`} column="1/2">{Q(variable, path)}</Cell>)
+                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}
+                            onClick={() => { console.log(cellValue[0], cellValue[1]) }}>{cellValue[0]} </Cell>)
                     } else if (columnIndex === columns.length - 1) {
-                        cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{Q(variable, path)}</Cell>)
+                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}
+                            onClick={() => { console.log(cellValue[0], cellValue[1]) }}>{cellValue[0]} </Cell>)
                     } else {
-                        cells = cells.append(<Cell key={counter} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 2 - (showVariableName ? 0 : 1)}/${columnIndex + 3 - (showVariableName ? 0 : 1)}`}>{Q(variable, path)}</Cell>)
+                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}
+                            onClick={() => { console.log(cellValue[0], cellValue[1]) }}>{cellValue[0]} </Cell>)
                     }
                 }
-                counter += 1
             })
         }
     })
@@ -229,7 +240,6 @@ function getCells(columns: Array<Array<string>>, showVariableName: boolean, vari
 
 type TableProps = {
     area: Area
-    showVariableName: boolean
     state: Immutable<{
         typeName: NonPrimitiveType
         limit: number
@@ -241,7 +251,7 @@ type TableProps = {
     columns: Array<Array<string>>
 }
 
-export function Table(props: TableProps) {
+export function Component(props) {
     const start = Math.min(props.state.limit * props.state.offset, props.variables.length())
     const end = Math.min(start + props.state.limit, props.variables.length())
     const type = types[props.state.typeName]
@@ -283,7 +293,7 @@ export function Table(props: TableProps) {
             {
                 props.columns.map((path, index) => {
                     if (props.columns.length === 1) {
-                        return (<Cell row="1/2" column="1/2" className="bg-gray-800 rounded-tl-lg pl-4">
+                        return (<Cell row="1/2" column="1/2" className="bg-gray-800 rounded-tl-lg rounded-tr-lg pl-4">
                             <Column>{W(types[props.state.typeName] as Type, path)}</Column>
                         </Cell>)
                     } else {
@@ -305,8 +315,8 @@ export function Table(props: TableProps) {
             }
             {
                 props.variables.length() !== 0 && start < props.variables.length()
-                    ? getCells(props.columns, props.showVariableName, props.variables, start, end)
-                    : <Cell className="pt-4 pb-4 border-b-2 w-full font-bold text-center bg-gray-50" row="2/3" column={`1/${props.columns.length + 2 - (props.showVariableName ? 0 : 1)}`}>No records found at specified page.</Cell>
+                    ? getCells(props.columns, props.variables, props.history.push, start, end)
+                    : <Cell className="pt-4 pb-4 border-b-2 w-full font-bold text-center bg-gray-50" row="2/3" column={`1/${props.columns.length}`}>No records found at specified page.</Cell>
             }
         </TableContainer>
         <Container area={footer} layout={layouts.footer} className="bg-gray-100 border-l-2 border-r-2 border-b-2 border-gray-300">
@@ -361,6 +371,8 @@ export function Table(props: TableProps) {
         </Container>
     </Container>)
 }
+
+export const Table = withRouter(Component)
 
 const Column = tw.div`text-white font-medium text-xl py-3 text-left`
 
