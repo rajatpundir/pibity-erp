@@ -54,7 +54,7 @@ const initialState: State = {
         limit: 5,
         offset: 0,
         page: 1,
-        columns: Vector.of(['values', 'product'], ['values', 'quantity'], ['values', 'uom'], ['values', 'ordered'], ['values', 'received'], ['values', 'approved'], ['values', 'rejected'], ['values', 'returned'], ['values', 'requisted'], ['values', 'consumed']),
+        columns: Vector.of(['values', 'product'], ['values', 'quantity'], ['values', 'uom']),
         variable: new BOMItemVariable('', { bom: new BOM(''), product: new Product(''), quantity: 0, uom: new UOM('') }),
         variables: HashSet.of()
     }
@@ -222,7 +222,7 @@ function Component(props) {
                             <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
                                 <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
                                 <Container area={none} layout={Grid.layouts.uom} className=''>
-                                <Item>
+                                    <Item>
                                         <Label>{item.keys.product.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.product.toString()} name='product'>
                                             <option value='' selected disabled hidden>Select Product</option>
@@ -237,7 +237,7 @@ function Component(props) {
                                         <Label>{item.keys.uom.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.uom.toString()} name='uom'>
                                             <option value='' selected disabled hidden>Select UOM</option>
-                                            {uoms.toArray().map(x => <option value={x.values.name}>{x.values.name}</option>)}
+                                            {uoms.toArray().map(x => <option value={x.variableName.toString()}>{x.values.name}</option>)}
                                         </Select>
                                     </Item>
                                     <Item justify='center' align='center'>

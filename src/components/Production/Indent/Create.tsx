@@ -210,7 +210,7 @@ function Component(props) {
                                         <Label>{item.keys.uom.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.uom.toString()} name='uom'>
                                             <option value='' selected disabled hidden>Select UOM</option>
-                                            {uoms.toArray().map(x => <option value={x.values.name}>{x.values.name}</option>)}
+                                            {uoms.toArray().map(x => <option value={x.variableName.toString()}>{x.values.name}</option>)}
                                         </Select>
                                     </Item>
                                     <Item justify='center' align='center'>

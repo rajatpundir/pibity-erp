@@ -163,14 +163,12 @@ function Q(variable: Immutable<Variable>, path: Array<string>): [string, string]
                             }
                         } else {
                             if (typeof path === 'object') {
-                                const type = types[variable.typeName]
                                 if (Object.keys(type.keys).includes(path[1])) {
-                                    const key = type.keys[path[1]]
-                                    const referencedVariableName: string = variable.values[path[1]].toString()
-                                    const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[key.type]
-                                    const variables = unfilteredVariables.filter(x => x.toString() === referencedVariableName)
+                                    const referencedVariableName: string = value.toString()
+                                    const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[types[variable.typeName].keys[path[1]].type]
+                                    const variables = unfilteredVariables.filter(x => x.variableName.toString() === referencedVariableName)
                                     if (variables.length() === 1) {
-                                        return Q(variables.toArray[0], path.slice(2))
+                                        return Q(variables.toArray()[0], path.slice(2))
                                     } else {
                                         // Note: Referenced variable not found in Zustand Store (Base + Diff)
                                         // Resolution: 

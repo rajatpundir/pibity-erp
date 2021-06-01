@@ -380,7 +380,7 @@ export function executeFunction(fx: Function, args: object, overlay: Vector<Diff
                                         default: {
                                             const referencedVariableName = String(evaluateExpression(fo.values[keyName], symbols))
                                             const unfilteredVariables: HashSet<Immutable<Variable>> = compose(getState().variables, overlay.toArray())[key.type]
-                                            const variables = unfilteredVariables.filter(x => x.toString() === referencedVariableName)
+                                            const variables = unfilteredVariables.filter(x => x.variableName.toString() === referencedVariableName)
                                             if (variables.length() === 1) {
                                                 updatedVariable.values[keyName] = variables.toArray()[0].variableName.toString()
                                             } else {
