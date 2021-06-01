@@ -25,7 +25,7 @@ type State = Immutable<{
         limit: number
         offset: number
         page: number
-        columns: Vector<string>
+        columns: Vector<Array<string>>
         variable: PurchaseOrderItemVariable
         variables: HashSet<PurchaseOrderItemVariable>
     }
@@ -56,7 +56,7 @@ const initialState: State = {
         limit: 5,
         offset: 0,
         page: 1,
-        columns: Vector.of('quotationItem', 'quantity', 'price', 'received'),
+        columns: Vector.of(['values','quotationItem'], ['values','quantity'], ['values','price'], ['values','received']),
         variable: new PurchaseOrderItemVariable('', { purchaseOrder: new PurchaseOrder(''), quotationItem: new QuotationItem(''), quantity: 0, price: 0, received: 0 }),
         variables: HashSet.of()
     }
@@ -263,7 +263,7 @@ function Component(props) {
                             <Filter typeName='PurchaseOrderItem' query={state['items'].query} updateQuery={updateQuery('items')} />
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} showVariableName={false} columns={state['items'].columns} />
+                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} showVariableName={false} columns={state['items'].columns.toArray()} />
                 </Container >
             </Container>
         </>

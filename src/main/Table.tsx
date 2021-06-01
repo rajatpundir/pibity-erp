@@ -306,7 +306,7 @@ export function Table(props: TableProps) {
             {
                 props.variables.length() !== 0 && start < props.variables.length()
                     ? getCells(props.columns, props.showVariableName, props.variables, start, end)
-                    : <Cell className="pt-4 pb-4 border-b-2 w-full font-bold text-center bg-gray-50" row="2/3" column={`1/${keys.length + 2 - (props.showVariableName ? 0 : 1)}`}>No records found at specified page.</Cell>
+                    : <Cell className="pt-4 pb-4 border-b-2 w-full font-bold text-center bg-gray-50" row="2/3" column={`1/${props.columns.length + 2 - (props.showVariableName ? 0 : 1)}`}>No records found at specified page.</Cell>
             }
         </TableContainer>
         <Container area={footer} layout={layouts.footer} className="bg-gray-100 border-l-2 border-r-2 border-b-2 border-gray-300">
