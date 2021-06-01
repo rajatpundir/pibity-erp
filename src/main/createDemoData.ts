@@ -5,7 +5,7 @@ import { Diff, mergeDiffs } from "./layers"
 import { getState } from "./store"
 
 
-export default function trialDataExecute() {
+export default function createDemoData() {
     var diffs = Vector.of<Diff>()
 
     const [, , c2] = executeCircuit(circuits.createProduct, {

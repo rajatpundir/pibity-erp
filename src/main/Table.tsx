@@ -5,7 +5,7 @@ import { Container, Item, TableContainer, Cell, validateLayout, Area, GridLayout
 import { Variable } from './variables'
 import { NonPrimitiveType, Type, types } from './types'
 import { getState } from './store'
-import { withRouter } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const body: Area = new Area('body')
 const footer: Area = new Area('footer')
@@ -123,7 +123,6 @@ function W(type: Type, path: Array<string>): string {
             }
             case 'values': {
                 if (path[1] !== undefined) {
-                    const keyName = path[1]
                     if (Object.keys(type.keys).includes(path[1])) {
                         const key = type.keys[path[1]]
                         if (path[2] === undefined) {
@@ -149,12 +148,12 @@ function Q(variable: Immutable<Variable>, path: Array<string>): [string, string]
             }
             case 'values': {
                 if (path[1] !== undefined) {
-                    const keyName = path[1]
                     if (Object.keys(variable.values).includes(path[1])) {
                         const value = variable.values[path[1]]
                         if (path[2] === undefined) {
                             if (typeof value === 'object') {
-                                return [value.toString(), '']
+                                const keyType = types[type.keys[path[1]].type] as Type
+                                return [value.toString(), keyType.url ? keyType.url : '']
                             } else {
                                 if (typeof value === 'boolean') {
                                     return [value ? 'Yes' : 'No', '']
@@ -189,28 +188,27 @@ function Q(variable: Immutable<Variable>, path: Array<string>): [string, string]
     return ['', '']
 }
 
-function getCells(columns: Array<Array<string>>, variables: Immutable<HashSet<Variable>>, push: (url: string) => void, start: number, end: number): Vector<unknown> {
+function getCells(columns: Array<Array<string>>, variables: Immutable<HashSet<Variable>>, start: number, end: number): Vector<unknown> {
     var cells = Vector.of()
     variables.toArray().slice(start, end).forEach((variable, rowIndex) => {
-        const type = types[variable.typeName]
         if (rowIndex % 2 !== 0) {
             columns.forEach((path, columnIndex) => {
                 const cellValue = Q(variable, path)
                 if (columns.length === 1) {
                     cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold"
-                        row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}
-                        onClick={() => { push(`${cellValue[1]}/${cellValue[0]}`) }}>{cellValue[0]} </Cell>)
+                        row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>
+                        {cellValue[1] === '' ? cellValue[0] : <Link to={`${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
                 } else {
                     if (columnIndex === 0) {
                         const cellValue = Q(variable, path)
-                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}
-                            onClick={() => { console.log(cellValue[0], cellValue[1]) }}>{cellValue[0]} </Cell>)
+                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>
+                            {cellValue[1] === '' ? cellValue[0] : <Link to={`${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
                     } else if (columnIndex === columns.length - 1) {
-                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}
-                            onClick={() => { console.log(cellValue[0], cellValue[1]) }}>{cellValue[0]} </Cell>)
+                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>
+                            {cellValue[1] === '' ? cellValue[0] : <Link to={`${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
                     } else {
-                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}
-                            onClick={() => { console.log(cellValue[0], cellValue[1]) }}>{cellValue[0]} </Cell>)
+                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>
+                            {cellValue[1] === '' ? cellValue[0] : <Link to={`${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
                     }
                 }
             })
@@ -218,18 +216,18 @@ function getCells(columns: Array<Array<string>>, variables: Immutable<HashSet<Va
             columns.forEach((path, columnIndex) => {
                 const cellValue = Q(variable, path)
                 if (columns.length === 1) {
-                    cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}
-                        onClick={() => { push(`${cellValue[1]}/${cellValue[0]}`) }}>{cellValue[0]} </Cell>)
+                    cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>
+                        {cellValue[1] === '' ? cellValue[0] : <Link to={`${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
                 } else {
                     if (columnIndex === 0) {
-                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}
-                            onClick={() => { console.log(cellValue[0], cellValue[1]) }}>{cellValue[0]} </Cell>)
+                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>
+                            {cellValue[1] === '' ? cellValue[0] : <Link to={`${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
                     } else if (columnIndex === columns.length - 1) {
-                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}
-                            onClick={() => { console.log(cellValue[0], cellValue[1]) }}>{cellValue[0]} </Cell>)
+                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>
+                            {cellValue[1] === '' ? cellValue[0] : <Link to={`${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
                     } else {
-                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}
-                            onClick={() => { console.log(cellValue[0], cellValue[1]) }}>{cellValue[0]} </Cell>)
+                        cells = cells.append(<Cell key={`${rowIndex},${columnIndex}`} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>
+                            {cellValue[1] === '' ? cellValue[0] : <Link to={`${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
                     }
                 }
             })
@@ -251,10 +249,9 @@ type TableProps = {
     columns: Array<Array<string>>
 }
 
-export function Component(props) {
+export function Table(props: TableProps) {
     const start = Math.min(props.state.limit * props.state.offset, props.variables.length())
     const end = Math.min(start + props.state.limit, props.variables.length())
-    const type = types[props.state.typeName]
 
     const firstPage = async (event: React.MouseEvent<HTMLButtonElement>) => {
         props.updatePage(['offset', 0])
@@ -315,7 +312,7 @@ export function Component(props) {
             }
             {
                 props.variables.length() !== 0 && start < props.variables.length()
-                    ? getCells(props.columns, props.variables, props.history.push, start, end)
+                    ? getCells(props.columns, props.variables, start, end)
                     : <Cell className="pt-4 pb-4 border-b-2 w-full font-bold text-center bg-gray-50" row="2/3" column={`1/${props.columns.length}`}>No records found at specified page.</Cell>
             }
         </TableContainer>
@@ -371,8 +368,6 @@ export function Component(props) {
         </Container>
     </Container>)
 }
-
-export const Table = withRouter(Component)
 
 const Column = tw.div`text-white font-medium text-xl py-3 text-left`
 

@@ -44,13 +44,10 @@ import ListMaterialScrapped from '../components/Quality/MaterialScrapped/List'
 import CreateWarehouseReceipt from '../components/Warehouse/Receipt/Create'
 import ShowWarehouseReceipt from '../components/Warehouse/Receipt/Show'
 import ListWarehouseReceipt from '../components/Warehouse/Receipt/List'
-import { executeCircuit } from './circuit'
-import { circuits } from './circuits'
-import { getState } from './store'
-import trialDataExecute from './trialDataExecute'
+import createDemoData from './createDemoData'
 
 function App() {
-  trialDataExecute()
+  createDemoData()
   return (
     <div className='App font-nunito bg-gray-100'>
       <BrowserRouter>

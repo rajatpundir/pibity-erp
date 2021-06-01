@@ -190,6 +190,7 @@ export const types = {
     Quotation: {
         name: 'Quotation',
         autoId: true,
+        url: 'quotation',
         keys: {
             indent: {
                 order: 0,
@@ -227,6 +228,7 @@ export const types = {
     PurchaseOrder: {
         name: 'Purchase Order',
         autoId: true,
+        url: 'purchase-order',
         keys: {
             quotation: {
                 order: 0,
@@ -269,6 +271,7 @@ export const types = {
     PurchaseInvoice: {
         name: 'Purchase Invoice',
         autoId: true,
+        url: 'purchase-invoice',
         keys: {
             purchaseOrder: {
                 order: 0,
@@ -311,6 +314,7 @@ export const types = {
     MaterialApprovalSlip: {
         name: 'Material Approval Slip',
         autoId: true,
+        url: 'material-approved',
         keys: {
             purchaseInvoice: {
                 order: 0,
@@ -348,6 +352,7 @@ export const types = {
     MaterialRejectionSlip: {
         name: 'Material Rejection Slip',
         autoId: true,
+        url: 'material-rejected',
         keys: {
             purchaseInvoice: {
                 order: 0,
@@ -385,6 +390,7 @@ export const types = {
     MaterialReturnSlip: {
         name: 'Material Return Note',
         autoId: true,
+        url: 'return',
         keys: {
             materialRejectionSlip: {
                 order: 0,
@@ -417,6 +423,7 @@ export const types = {
     MaterialRequistionSlip: {
         name: 'Material Requistion Slip',
         autoId: true,
+        url: 'requistion',
         keys: {
             materialApprovalSlip: {
                 order: 0,
@@ -454,6 +461,7 @@ export const types = {
     BOM: {
         name: 'Bill of Material',
         autoId: false,
+        url: 'bom',
         keys: {}
     },
     BOMItem: {
@@ -527,6 +535,7 @@ export const types = {
     ScrapMaterialSlip: {
         name: 'Scrap Material Slip',
         autoId: true,
+        url: 'material-scrapped',
         keys: {
             productionPreparationSlip: {
                 order: 0,
@@ -543,6 +552,7 @@ export const types = {
     TransferMaterialSlip: {
         name: 'Transfer Material Slip',
         autoId: true,
+        url: 'material-trasnferred',
         keys: {
             productionPreparationSlip: {
                 order: 0,
@@ -564,6 +574,7 @@ export const types = {
     WarehouseAcceptanceSlip: {
         name: 'Warehouse Receipt',
         autoId: true,
+        url: 'warehouse-receipt',
         keys: {
             transferMaterialSlip: {
                 order: 0,
