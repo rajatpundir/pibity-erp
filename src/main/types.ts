@@ -148,18 +148,23 @@ export const types = {
                 name: 'Approved',
                 type: 'Number'
             },
-            returned: {
+            rejected: {
                 order: 7,
+                name: 'Rejected',
+                type: 'Number'
+            },
+            returned: {
+                order: 8,
                 name: 'Returned',
                 type: 'Number'
             },
             requisted: {
-                order: 8,
+                order: 9,
                 name: 'Requisted',
                 type: 'Number'
             },
             consumed: {
-                order: 9,
+                order: 10,
                 name: 'Consumed',
                 type: 'Number'
             }
