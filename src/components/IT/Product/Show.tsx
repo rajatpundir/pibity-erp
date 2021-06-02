@@ -157,8 +157,6 @@ function reducer(state: Draft<State>, action: Action) {
 
 function Component(props) {
 
-    const [editMode, toggleEditMode] = useState(true)
-
     const products = useStore(store => store.variables.Product.filter(x => x.variableName.toString() === props.match.params[0]))
     const items: HashSet<Immutable<UOMVariable>> = useStore(store => store.variables.UOM.filter(x => x.values.product.toString() === props.match.params[0]))
 
@@ -178,12 +176,12 @@ function Component(props) {
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-
     const product = types['Product']
     const uom = types['UOM']
 
     const [addUOMDrawer, toggleAddUOMDrawer] = useState(false)
     const [uomFilter, toggleUOMFilter] = useState(false)
+    const [editMode, toggleEditMode] = useState(false)
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         switch (event.target.name) {
