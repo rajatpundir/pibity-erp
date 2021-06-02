@@ -28,12 +28,12 @@ type State = Immutable<{
         page: number
         columns: Vector<Array<string>>
         variable: UOMVariable
-        variables: HashSet<UOMVariable>
+        variables: HashSet<Immutable<UOMVariable>>
     }
 }>
 
 export type Action =
-    | ['resetVariable']
+    | ['resetVariable', State]
     | ['saveVariable']
 
     | ['variable', 'variableName', Product]
@@ -49,9 +49,6 @@ export type Action =
     | ['uoms', 'variable', 'values', 'name', string]
     | ['uoms', 'variable', 'values', 'conversionRate', number]
     | ['uoms', 'addVariable']
-
-    | ['replace', 'variable', ProductVariable]
-    | ['replace', 'uoms', HashSet<UOMVariable>]
 
 const initialState: State = {
     variable: new ProductVariable('', { name: '', orderable: true, consumable: true, producable: false }),
@@ -70,7 +67,7 @@ const initialState: State = {
 function reducer(state: Draft<State>, action: Action) {
     switch (action[0]) {
         case 'resetVariable': {
-            return initialState
+            return action[1]
         }
         case 'saveVariable': {
             const [result, symbolFlag, diff] = executeCircuit(circuits.createProduct, {
@@ -160,9 +157,10 @@ function reducer(state: Draft<State>, action: Action) {
 
 function Component(props) {
 
-    const [editMode, toggleEditMode] = useState(false)
+    const [editMode, toggleEditMode] = useState(true)
 
     const products = useStore(store => store.variables.Product.filter(x => x.variableName.toString() === props.match.params[0]))
+    const items: HashSet<Immutable<UOMVariable>> = useStore(store => store.variables.UOM.filter(x => x.values.product.toString() === props.match.params[0]))
 
     const initialState: State = {
         variable: products.length() === 1 ? products.toArray()[0] : new ProductVariable('', { name: '', orderable: true, consumable: true, producable: false }),
@@ -174,7 +172,7 @@ function Component(props) {
             page: 1,
             columns: Vector.of(['values', 'name'], ['values', 'conversionRate']),
             variable: new UOMVariable('', { product: new Product(''), name: '', conversionRate: 1 }),
-            variables: HashSet.of()
+            variables: items
         }
     }
 
@@ -246,17 +244,19 @@ function Component(props) {
         return fx
     }
 
-    if(products.length() === 1) {
-        if(editMode) {
-            return(<div>edit Mode</div>)
-        } else {
+    if (products.length() === 1) {
+        if (editMode) {
             return (
                 <>
                     <Container area={none} layout={Grid.layouts.main}>
                         <Item area={Grid.header}>
-                            <Title>Create Product</Title>
+                            <Title>Update Product</Title>
                         </Item>
                         <Item area={Grid.button} justify='end' align='center'>
+                            <Button onClick={() => {
+                                toggleEditMode(!editMode)
+                                dispatch(['resetVariable', initialState])
+                            }}>Cancel</Button>
                             <Button onClick={async () => {
                                 await dispatch(['saveVariable'])
                                 props.history.push('/products')
@@ -318,10 +318,56 @@ function Component(props) {
                     </Container>
                 </>
             )
+        } else {
+            return (
+                <>
+                    <Container area={none} layout={Grid.layouts.main}>
+                        <Item area={Grid.header}>
+                            <Title>Product</Title>
+                        </Item>
+                        <Item area={Grid.button} justify='end' align='center'>
+                            <Button onClick={() => toggleEditMode(!editMode)}>Edit</Button>
+                        </Item>
+                        <Container area={Grid.details} layout={Grid.layouts.details}>
+                            <Item>
+                                <Label>{product.name}</Label>
+                                <div className='font-bold text-xl'>{state.variable.variableName.toString()}</div>
+                            </Item>
+                            <Item>
+                                <Label>{product.keys.name.name}</Label>
+                                <div className='font-bold text-xl'>{state.variable.values.name}</div>
+                            </Item>
+                            <Item>
+                                <InlineLabel>{product.keys.orderable.name}</InlineLabel>
+                                <div className='font-bold text-xl'>{state.variable.values.orderable ? 'Yes' : 'No'}</div>
+                            </Item>
+                            <Item>
+                                <InlineLabel>{product.keys.consumable.name}</InlineLabel>
+                                <div className='font-bold text-xl'>{state.variable.values.consumable ? 'Yes' : 'No'}</div>
+                            </Item>
+                            <Item>
+                                <InlineLabel>{product.keys.producable.name}</InlineLabel>
+                                <div className='font-bold text-xl'>{state.variable.values.producable ? 'Yes' : 'No'}</div>
+                            </Item>
+                        </Container>
+                        <Container area={Grid.uom} layout={Grid2.layouts.main}>
+                            <Item area={Grid2.header} className='flex items-center'>
+                                <Title>{uom.name}s</Title>
+                            </Item>
+                            <Item area={Grid2.filter} justify='end' align='center' className='flex'>
+                                <Button onClick={() => toggleUOMFilter(true)}>Filter</Button>
+                                <Drawer open={uomFilter} onClose={() => toggleUOMFilter(false)} anchor={'right'}>
+                                    <Filter typeName='UOM' query={state['uoms'].query} updateQuery={updateQuery('uoms')} />
+                                </Drawer>
+                            </Item>
+                            <Table area={Grid2.table} state={state['uoms']} updatePage={updatePage('uoms')} variables={state.uoms.variables.filter(variable => applyFilter(state['uoms'].query, variable))} columns={state['uoms'].columns.toArray()} />
+                        </Container >
+                    </Container>
+                </>
+            )
         }
-
     } else {
-        return(<div>Variable not found</div>)
+        return (<div>Variable not found</div>)
     }
 }
 
@@ -331,7 +377,7 @@ const Title = tw.div`py-8 text-4xl text-gray-800 font-bold mx-1 whitespace-nowra
 
 const Label = tw.label`w-1/2 whitespace-nowrap`
 
-const InlineLabel = tw.label`inline-block w-1/2 mx-2`
+const InlineLabel = tw.label`inline-block w-1/2`
 
 const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full rounded-sm`
 
