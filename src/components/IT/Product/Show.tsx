@@ -159,12 +159,27 @@ function reducer(state: Draft<State>, action: Action) {
 }
 
 function Component(props) {
-    console.log(props.match.params[0])
+
+    const [editMode, toggleEditMode] = useState(false)
+
+    const products = useStore(store => store.variables.Product.filter(x => x.variableName.toString() === props.match.params[0]))
+
+    const initialState: State = {
+        variable: products.length() === 1 ? products.toArray()[0] : new ProductVariable('', { name: '', orderable: true, consumable: true, producable: false }),
+        uoms: {
+            typeName: 'UOM',
+            query: getQuery('UOM'),
+            limit: 5,
+            offset: 0,
+            page: 1,
+            columns: Vector.of(['values', 'name'], ['values', 'conversionRate']),
+            variable: new UOMVariable('', { product: new Product(''), name: '', conversionRate: 1 }),
+            variables: HashSet.of()
+        }
+    }
+
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const products = useStore(state => state.variables.Product.filter(x => x.variableName.toString() === props.match.params[0]))
-    const uoms = useStore(store => store.variables.UOM.filter(x => x.values.product.toString() === props.match.params[0]))
-    dispatch(['replace', 'variable', products[0]])
-    dispatch(['replace', 'uoms', HashSet.of<UOMVariable>().addAll(uoms as any)])
+
 
     const product = types['Product']
     const uom = types['UOM']
@@ -231,74 +246,83 @@ function Component(props) {
         return fx
     }
 
-    return (
-        <>
-            <Container area={none} layout={Grid.layouts.main}>
-                <Item area={Grid.header}>
-                    <Title>Create Product</Title>
-                </Item>
-                <Item area={Grid.button} justify='end' align='center'>
-                    <Button onClick={async () => {
-                        await dispatch(['saveVariable'])
-                        props.history.push('/products')
-                    }}>Save</Button>
-                </Item>
-                <Container area={Grid.details} layout={Grid.layouts.details}>
-                    <Item>
-                        <Label>{product.name}</Label>
-                        <Input type='text' onChange={onVariableInputChange} value={state.variable.variableName.toString()} name='variableName' />
-                    </Item>
-                    <Item>
-                        <Label>{product.keys.name.name}</Label>
-                        <Input type='text' onChange={onVariableInputChange} value={state.variable.values.name} name='name' />
-                    </Item>
-                    <Item>
-                        <InlineLabel>{product.keys.orderable.name}</InlineLabel>
-                        <Switch color='primary' onChange={onVariableSwitchChange} checked={state.variable.values.orderable} name='orderable' />
-                    </Item>
-                    <Item>
-                        <InlineLabel>{product.keys.consumable.name}</InlineLabel>
-                        <Switch color='primary' onChange={onVariableSwitchChange} checked={state.variable.values.consumable} name='consumable' />
-                    </Item>
-                    <Item>
-                        <InlineLabel>{product.keys.producable.name}</InlineLabel>
-                        <Switch color='primary' onChange={onVariableSwitchChange} checked={state.variable.values.producable} name='producable' />
-                    </Item>
-                </Container>
-                <Container area={Grid.uom} layout={Grid2.layouts.main}>
-                    <Item area={Grid2.header} className='flex items-center'>
-                        <Title>{uom.name}s</Title>
-                        <button onClick={() => toggleAddUOMDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>
-                    </Item>
-                    <Item area={Grid2.filter} justify='end' align='center' className='flex'>
-                        <Drawer open={addUOMDrawer} onClose={() => toggleAddUOMDrawer(false)} anchor={'right'}>
-                            <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
-                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add UOM</div>
-                                <Container area={none} layout={Grid.layouts.uom} className=''>
-                                    <Item>
-                                        <Label>{uom.keys.name.name}</Label>
-                                        <Input type='text' onChange={onUOMInputChange} name='name' />
-                                    </Item>
-                                    <Item>
-                                        <Label>{uom.keys.conversionRate.name}</Label>
-                                        <Input type='text' onChange={onUOMInputChange} value={state.uoms.variable.values.conversionRate} name='conversionRate' />
-                                    </Item>
-                                    <Item justify='center' align='center'>
-                                        <Button onClick={() => dispatch(['uoms', 'addVariable'])}>Add</Button>
-                                    </Item>
-                                </Container>
-                            </div>
-                        </Drawer>
-                        <Button onClick={() => toggleUOMFilter(true)}>Filter</Button>
-                        <Drawer open={uomFilter} onClose={() => toggleUOMFilter(false)} anchor={'right'}>
-                            <Filter typeName='UOM' query={state['uoms'].query} updateQuery={updateQuery('uoms')} />
-                        </Drawer>
-                    </Item>
-                    <Table area={Grid2.table} state={state['uoms']} updatePage={updatePage('uoms')} variables={state.uoms.variables.filter(variable => applyFilter(state['uoms'].query, variable))} columns={state['uoms'].columns.toArray()} />
-                </Container >
-            </Container>
-        </>
-    )
+    if(products.length() === 1) {
+        if(editMode) {
+            return(<div>edit Mode</div>)
+        } else {
+            return (
+                <>
+                    <Container area={none} layout={Grid.layouts.main}>
+                        <Item area={Grid.header}>
+                            <Title>Create Product</Title>
+                        </Item>
+                        <Item area={Grid.button} justify='end' align='center'>
+                            <Button onClick={async () => {
+                                await dispatch(['saveVariable'])
+                                props.history.push('/products')
+                            }}>Save</Button>
+                        </Item>
+                        <Container area={Grid.details} layout={Grid.layouts.details}>
+                            <Item>
+                                <Label>{product.name}</Label>
+                                <Input type='text' onChange={onVariableInputChange} value={state.variable.variableName.toString()} name='variableName' />
+                            </Item>
+                            <Item>
+                                <Label>{product.keys.name.name}</Label>
+                                <Input type='text' onChange={onVariableInputChange} value={state.variable.values.name} name='name' />
+                            </Item>
+                            <Item>
+                                <InlineLabel>{product.keys.orderable.name}</InlineLabel>
+                                <Switch color='primary' onChange={onVariableSwitchChange} checked={state.variable.values.orderable} name='orderable' />
+                            </Item>
+                            <Item>
+                                <InlineLabel>{product.keys.consumable.name}</InlineLabel>
+                                <Switch color='primary' onChange={onVariableSwitchChange} checked={state.variable.values.consumable} name='consumable' />
+                            </Item>
+                            <Item>
+                                <InlineLabel>{product.keys.producable.name}</InlineLabel>
+                                <Switch color='primary' onChange={onVariableSwitchChange} checked={state.variable.values.producable} name='producable' />
+                            </Item>
+                        </Container>
+                        <Container area={Grid.uom} layout={Grid2.layouts.main}>
+                            <Item area={Grid2.header} className='flex items-center'>
+                                <Title>{uom.name}s</Title>
+                                <button onClick={() => toggleAddUOMDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>
+                            </Item>
+                            <Item area={Grid2.filter} justify='end' align='center' className='flex'>
+                                <Drawer open={addUOMDrawer} onClose={() => toggleAddUOMDrawer(false)} anchor={'right'}>
+                                    <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
+                                        <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add UOM</div>
+                                        <Container area={none} layout={Grid.layouts.uom} className=''>
+                                            <Item>
+                                                <Label>{uom.keys.name.name}</Label>
+                                                <Input type='text' onChange={onUOMInputChange} name='name' />
+                                            </Item>
+                                            <Item>
+                                                <Label>{uom.keys.conversionRate.name}</Label>
+                                                <Input type='text' onChange={onUOMInputChange} value={state.uoms.variable.values.conversionRate} name='conversionRate' />
+                                            </Item>
+                                            <Item justify='center' align='center'>
+                                                <Button onClick={() => dispatch(['uoms', 'addVariable'])}>Add</Button>
+                                            </Item>
+                                        </Container>
+                                    </div>
+                                </Drawer>
+                                <Button onClick={() => toggleUOMFilter(true)}>Filter</Button>
+                                <Drawer open={uomFilter} onClose={() => toggleUOMFilter(false)} anchor={'right'}>
+                                    <Filter typeName='UOM' query={state['uoms'].query} updateQuery={updateQuery('uoms')} />
+                                </Drawer>
+                            </Item>
+                            <Table area={Grid2.table} state={state['uoms']} updatePage={updatePage('uoms')} variables={state.uoms.variables.filter(variable => applyFilter(state['uoms'].query, variable))} columns={state['uoms'].columns.toArray()} />
+                        </Container >
+                    </Container>
+                </>
+            )
+        }
+
+    } else {
+        return(<div>Variable not found</div>)
+    }
 }
 
 export default withRouter(Component)
