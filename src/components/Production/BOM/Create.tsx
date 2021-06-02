@@ -54,7 +54,7 @@ const initialState: State = {
         limit: 5,
         offset: 0,
         page: 1,
-        columns: Vector.of(['values', 'product'], ['values', 'quantity'], ['values', 'uom']),
+        columns: Vector.of(['values', 'product'], ['values', 'quantity'], ['values', 'uom', 'values', 'name']),
         variable: new BOMItemVariable('', { bom: new BOM(''), product: new Product(''), quantity: 0, uom: new UOM('') }),
         variables: HashSet.of()
     }

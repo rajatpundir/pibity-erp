@@ -46,8 +46,9 @@ import ShowWarehouseReceipt from '../components/Warehouse/Receipt/Show'
 import ListWarehouseReceipt from '../components/Warehouse/Receipt/List'
 import createDemoData from './createDemoData'
 
+createDemoData()
+
 function App() {
-  createDemoData()
   return (
     <div className='App font-nunito bg-gray-100'>
       <BrowserRouter>

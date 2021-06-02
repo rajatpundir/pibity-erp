@@ -52,7 +52,7 @@ const initialState: State = {
         limit: 5,
         offset: 0,
         page: 1,
-        columns: Vector.of(['values', 'product'], ['values', 'quantity'], ['values', 'uom'], ['values', 'ordered'], ['values', 'received'], ['values', 'approved'], ['values', 'rejected'], ['values', 'returned'], ['values', 'requisted'], ['values', 'consumed']),
+        columns: Vector.of(['values', 'product'], ['values', 'quantity'], ['values', 'uom', 'values', 'name'], ['values', 'ordered'], ['values', 'received'], ['values', 'approved'], ['values', 'rejected'], ['values', 'returned'], ['values', 'requisted'], ['values', 'consumed']),
         variable: new IndentItemVariable('', { indent: new Indent(''), product: new Product(''), quantity: 0, uom: new UOM(''), ordered: 0, received: 0, approved: 0, rejected: 0, returned: 0, requisted: 0, consumed: 0 }),
         variables: HashSet.of()
     }
