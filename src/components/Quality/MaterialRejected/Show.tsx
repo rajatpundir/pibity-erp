@@ -27,12 +27,12 @@ type State = Immutable<{
         page: number
         columns: Vector<Array<string>>
         variable: MaterialRejectionSlipItemVariable
-        variables: HashSet<MaterialRejectionSlipItemVariable>
+        variables: HashSet<Immutable<MaterialRejectionSlipItemVariable>>
     }
 }>
 
 export type Action =
-    | ['resetVariable']
+    | ['resetVariable', State]
     | ['saveVariable']
 
     | ['variable', 'values', 'purchaseInvoice', PurchaseInvoice]
@@ -45,7 +45,7 @@ export type Action =
     | ['items', 'variable', 'values', 'quantity', number]
     | ['items', 'addVariable']
 
-    | ['replace', 'variable', MaterialRejectionSlipVariable]
+    
 
 const initialState: State = {
     variable: new MaterialRejectionSlipVariable('', { purchaseInvoice: new PurchaseInvoice('') }),
@@ -64,7 +64,7 @@ const initialState: State = {
 function reducer(state: Draft<State>, action: Action) {
     switch (action[0]) {
         case 'resetVariable': {
-            return initialState
+            return action[1]
         }
         case 'saveVariable': {
             const [result, symbolFlag, diff] = executeCircuit(circuits.createMaterialRejectionSlip, {
@@ -141,7 +141,7 @@ function reducer(state: Draft<State>, action: Action) {
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
     const materialRejectionSlipVariables = useStore(state => state.variables.MaterialRejectionSlip.filter(x=> x.variableName.toString() === props.match.params[0]))     
-    dispatch(['replace', 'variable', materialRejectionSlipVariables[0]])
+    
 
     const purchaseInvoices = useStore(store => store.variables.PurchaseInvoice)
     const items = useStore(store => store.variables.PurchaseInvoiceItem.filter(x => x.values.purchaseInvoice.toString() === state.variable.values.purchaseInvoice.toString()))
@@ -150,7 +150,10 @@ function Component(props) {
     const item = types['MaterialRejectionSlipItem']
 
     const [addItemDrawer, toggleAddItemDrawer] = useState(false)
-    const [itemFilter, toggleItemFilter] = useState(false)
+      const [itemFilter, toggleItemFilter] = useState(false)
+    const [editMode, toggleEditMode] = useState(false)
+
+   
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
@@ -196,15 +199,21 @@ function Component(props) {
         return fx
     }
 
-    return (
-        <>
+       if (materialRejectionSlipVariables.length() === 1) {
+        if (editMode) {
+            return (
+                <>
             <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
-                    <Title>Create {materialRejectionSlip.name}</Title>
+                    <Title>Update{materialRejectionSlip.name}</Title>
                 </Item>
                 <Item area={Grid.button} justify='end' align='center'>
-                    <Button onClick={async () => {
-                        await dispatch(['saveVariable'])
+                         <Button onClick={() => {
+                                toggleEditMode(!editMode)
+                                dispatch(['resetVariable', initialState])
+                            }}>Cancel</Button>
+                            <Button onClick={async () => {
+                                await dispatch(['saveVariable'])
                         props.history.push('/materials-rejected')
                     }}>Save</Button>
                 </Item>
@@ -252,8 +261,68 @@ function Component(props) {
                     <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} columns={state['items'].columns.toArray()} />
                 </Container >
             </Container>
-        </>
-    )
+         </>
+            )
+        } else {
+            return (
+               <>
+               <Container area={none} layout={Grid.layouts.main}>
+                <Item area={Grid.header}>
+                    <Title>Update{materialRejectionSlip.name}</Title>
+                </Item>
+                <Item area={Grid.button} justify='end' align='center'>
+                <Button onClick={() => toggleEditMode(!editMode)}>Edit</Button>
+                </Item>
+                <Container area={Grid.details} layout={Grid.layouts.details}>
+                    <Item>
+                        <Label>{materialRejectionSlip.keys.purchaseInvoice.name}</Label>
+                        <Select onChange={onVariableInputChange} value={state.variable.values.purchaseInvoice.toString()} name='purchaseInvoice'>
+                            <option value='' selected disabled hidden>Select Purchase Invoice</option>
+                            {purchaseInvoices.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                        </Select>
+                    </Item>
+                </Container>
+                <Container area={Grid.uom} layout={Grid2.layouts.main}>
+                    <Item area={Grid2.header} className='flex items-center'>
+                        <Title>Items</Title>
+                        <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>
+                    </Item>
+                    <Item area={Grid2.filter} justify='end' align='center' className='flex'>
+                        <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
+                            <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
+                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
+                                <Container area={none} layout={Grid.layouts.uom} className=''>
+                                    <Item>
+                                        <Label>{item.keys.purchaseInvoiceItem.name}</Label>
+                                        <Select onChange={onItemInputChange} value={state.items.variable.values.purchaseInvoiceItem.toString()} name='purchaseInvoiceItem'>
+                                            <option value='' selected disabled hidden>Select Item</option>
+                                            {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                        </Select>
+                                    </Item>
+                                    <Item>
+                                        <Label>{item.keys.quantity.name}</Label>
+                                        <Input type='number' onChange={onItemInputChange} name='quantity' />
+                                    </Item>
+                                    <Item justify='center' align='center'>
+                                        <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>
+                                    </Item>
+                                </Container>
+                            </div>
+                        </Drawer>
+                        <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
+                        <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
+                            <Filter typeName='MaterialRejectionSlipItem' query={state['items'].query} updateQuery={updateQuery('items')} />
+                        </Drawer>
+                    </Item>
+                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} columns={state['items'].columns.toArray()} />
+                </Container >
+            </Container>
+   </>
+            )
+        }
+    } else {
+        return (<div>Variable not found</div>)
+    }
 }
 
 export default withRouter(Component)

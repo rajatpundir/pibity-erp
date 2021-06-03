@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
@@ -17,13 +17,13 @@ type State = Immutable<{
 }>
 
 export type Action =
-    | ['resetVariable']
+    | ['resetVariable', State]
     | ['saveVariable']
 
     | ['variable', 'values', 'productionPreparationSlip', ProductionPreparationSlip]
     | ['variable', 'values', 'quantity', number]
 
-    | ['replace', 'variable', TransferMaterialSlipVariable ]
+
 
 const initialState: State = {
     variable: new TransferMaterialSlipVariable('', { productionPreparationSlip: new ProductionPreparationSlip(''), quantity: 0, transferred: 0 }),
@@ -32,7 +32,7 @@ const initialState: State = {
 function reducer(state: Draft<State>, action: Action) {
     switch (action[0]) {
         case 'resetVariable': {
-            return initialState
+            return action[1]
         }
         case 'saveVariable': {
             const [result, symbolFlag, diff] = executeCircuit(circuits.createTransferMaterialSlip, {
@@ -67,12 +67,14 @@ function reducer(state: Draft<State>, action: Action) {
 
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const transferMaterialSlips= useStore(state => state.variables.TransferMaterialSlip.filter(x=> x.variableName.toString() === props.match.params[0]))     
-    dispatch(['replace', 'variable', transferMaterialSlips[0]])
+    const transferMaterialSlips = useStore(state => state.variables.TransferMaterialSlip.filter(x => x.variableName.toString() === props.match.params[0]))
+
 
     const productionPreparationSlips = useStore(state => state.variables.ProductionPreparationSlip)
 
     const transferMaterialSlip = types['TransferMaterialSlip']
+
+    const [editMode, toggleEditMode] = useState(false)
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
@@ -91,34 +93,69 @@ function Component(props) {
         }
     }
 
-    return (
-        <>
-            <Container area={none} layout={Grid.layouts.main}>
-                <Item area={Grid.header}>
-                    <Title>Create {transferMaterialSlip.name}</Title>
-                </Item>
-                <Item area={Grid.button} justify='end' align='center'>
-                    <Button onClick={async () => {
-                        await dispatch(['saveVariable'])
-                        props.history.push('/materials-transferred')
-                    }}>Save</Button>
-                </Item>
-                <Container area={Grid.details} layout={Grid.layouts.details}>
-                    <Item>
-                        <Label>{transferMaterialSlip.keys.productionPreparationSlip.name}</Label>
-                        <Select onChange={onVariableInputChange} value={state.variable.values.productionPreparationSlip.toString()} name='productionPreparationSlip'>
-                            <option value='' selected disabled hidden>Select Material Production Preparation Slip</option>
-                            {productionPreparationSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
-                        </Select>
-                    </Item>
-                    <Item>
-                        <Label>{transferMaterialSlip.keys.quantity.name}</Label>
-                        <Input type='text' onChange={onVariableInputChange} value={state.variable.values.quantity} name='quantity' />
-                    </Item>
-                </Container>
-            </Container>
-        </>
-    )
+    if (transferMaterialSlips.length() === 1) {
+        if (editMode) {
+            return (
+                <>
+                    <Container area={none} layout={Grid.layouts.main}>
+                        <Item area={Grid.header}>
+                            <Title>Update{transferMaterialSlip.name}</Title>
+                        </Item>
+                        <Item area={Grid.button} justify='end' align='center'>
+                            <Button onClick={async () => {
+                                await dispatch(['saveVariable'])
+                                props.history.push('/materials-transferred')
+                            }}>Save</Button>
+                        </Item>
+                        <Container area={Grid.details} layout={Grid.layouts.details}>
+                            <Item>
+                                <Label>{transferMaterialSlip.keys.productionPreparationSlip.name}</Label>
+                                <Select onChange={onVariableInputChange} value={state.variable.values.productionPreparationSlip.toString()} name='productionPreparationSlip'>
+                                    <option value='' selected disabled hidden>Select Material Production Preparation Slip</option>
+                                    {productionPreparationSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                </Select>
+                            </Item>
+                            <Item>
+                                <Label>{transferMaterialSlip.keys.quantity.name}</Label>
+                                <Input type='text' onChange={onVariableInputChange} value={state.variable.values.quantity} name='quantity' />
+                            </Item>
+                        </Container>
+                    </Container>
+                </>
+            )
+        } else {
+            return (
+                <>
+                    <Container area={none} layout={Grid.layouts.main}>
+                        <Item area={Grid.header}>
+                            <Title>Update{transferMaterialSlip.name}</Title>
+                        </Item>
+                        <Item area={Grid.button} justify='end' align='center'>
+                            <Button onClick={async () => {
+                                await dispatch(['saveVariable'])
+                                props.history.push('/materials-transferred')
+                            }}>Save</Button>
+                        </Item>
+                        <Container area={Grid.details} layout={Grid.layouts.details}>
+                            <Item>
+                                <Label>{transferMaterialSlip.keys.productionPreparationSlip.name}</Label>
+                                <Select onChange={onVariableInputChange} value={state.variable.values.productionPreparationSlip.toString()} name='productionPreparationSlip'>
+                                    <option value='' selected disabled hidden>Select Material Production Preparation Slip</option>
+                                    {productionPreparationSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                </Select>
+                            </Item>
+                            <Item>
+                                <Label>{transferMaterialSlip.keys.quantity.name}</Label>
+                                <Input type='text' onChange={onVariableInputChange} value={state.variable.values.quantity} name='quantity' />
+                            </Item>
+                        </Container>
+                    </Container>
+                </>
+            )
+        }
+    } else {
+        return (<div>Variable not found</div>)
+    }
 }
 
 export default withRouter(Component)
