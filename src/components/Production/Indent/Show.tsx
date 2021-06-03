@@ -17,7 +17,6 @@ import { circuits } from '../../../main/circuits'
 import { getState } from '../../../main/store'
 import { useStore } from '../../../main/useStore'
 import { iff, when } from '../../../main/utils'
-import { isTemplateSpan } from 'typescript'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'

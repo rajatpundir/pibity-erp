@@ -253,7 +253,7 @@ function Component(props) {
                     {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
-                                dispatch(['saveVariable'])
+                                await dispatch(['saveVariable'])
                                 props.history.push('/products')
                             }}>Save</Button>,
                             iff(state.mode === 'update',

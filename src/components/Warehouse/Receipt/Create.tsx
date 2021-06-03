@@ -95,7 +95,7 @@ function Component(props) {
                 </Item>
                 <Item area={Grid.button} justify='end' align='center'>
                     <Button onClick={async () => {
-                        await dispatch(['saveVariable'])
+                         dispatch(['saveVariable'])
                         props.history.push('/warehouse-receipts')
                     }}>Save</Button>
                 </Item>

@@ -224,7 +224,7 @@ function Component(props) {
                                 dispatch(['resetVariable', initialState])
                             }}>Cancel</Button>
                             <Button onClick={async () => {
-                                await dispatch(['saveVariable'])
+                                 dispatch(['saveVariable'])
                         props.history.push('/quotations')
                     }}>Save</Button>
                 </Item>

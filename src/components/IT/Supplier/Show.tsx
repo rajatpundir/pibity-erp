@@ -96,7 +96,7 @@ function Component(props) {
                     {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
-                                dispatch(['saveVariable'])
+                                await dispatch(['saveVariable'])
                                 props.history.push('/suppliers')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
@@ -107,7 +107,7 @@ function Component(props) {
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
                                         dispatch(['saveVariable'])
-                                        props.history.push('/suppliers')
+                                        await props.history.push('/suppliers')
                                     }}>Save</Button>
                                 </>,
                                 <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>))

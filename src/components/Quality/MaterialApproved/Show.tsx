@@ -213,7 +213,7 @@ function Component(props) {
                                 dispatch(['resetVariable', initialState])
                             }}>Cancel</Button>
                             <Button onClick={async () => {
-                                await dispatch(['saveVariable'])
+                                 dispatch(['saveVariable'])
                         props.history.push('/materials-approved')
                     }}>Save</Button>
                 </Item>
