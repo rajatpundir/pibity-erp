@@ -9,7 +9,7 @@ import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
 import { Indent, IndentItemVariable, IndentVariable, Product, UOM, UOMVariable } from '../../../main/variables'
-import * as Grid from './grids/Create'
+import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
@@ -51,7 +51,7 @@ function Component(props) {
 
     const indents = useStore(state => state.variables.Indent.filter(x => x.variableName.toString() === props.match.params[0]))
     const items: HashSet<Immutable<IndentItemVariable>> = useStore(store => store.variables.IndentItem.filter(x => x.values.indent.toString() === props.match.params[0]))
-    
+
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
         variable: indents.length() === 1 ? indents.toArray()[0] : new IndentVariable('', {}),
@@ -86,7 +86,7 @@ function Component(props) {
                         return {
                             product: item.values.product.toString(),
                             quantity: item.values.quantity,
-                            item: item.values.uom.toString()
+                            uom: item.values.uom.toString()
                         }
                     })
                 })
@@ -203,7 +203,10 @@ function Component(props) {
                 <Item area={Grid.button} justify='end' align='center' className='flex'>
                     {
                         iff(state.mode === 'create',
-                            undefined,
+                            <Button onClick={async () => {
+                                await dispatch(['saveVariable'])
+                                props.history.push('/indents')
+                            }}>Save</Button>,
                             iff(state.mode === 'update',
                                 <>
                                     <Button onClick={() => {

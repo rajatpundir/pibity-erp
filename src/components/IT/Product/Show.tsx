@@ -243,7 +243,7 @@ function Component(props) {
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
-                <Title>{when(state.mode, {
+                    <Title>{when(state.mode, {
                         'create': `Create ${product.name}`,
                         'update': `Update ${product.name}`,
                         'show': `${product.name}`
@@ -252,7 +252,10 @@ function Component(props) {
                 <Item area={Grid.button} justify='end' align='center' className='flex'>
                     {
                         iff(state.mode === 'create',
-                            undefined,
+                            <Button onClick={async () => {
+                                await dispatch(['saveVariable'])
+                                props.history.push('/products')
+                            }}>Save</Button>,
                             iff(state.mode === 'update',
                                 <>
                                     <Button onClick={() => {

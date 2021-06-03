@@ -235,6 +235,12 @@ export const functions: Record<FunctionName, Function> = {
                         types: ['Number'],
                         args: [0]
                     },
+                    rejected: {
+                        expectedReturnType: 'Number',
+                        op: 'id',
+                        types: ['Number'],
+                        args: [0]
+                    },
                     returned: {
                         expectedReturnType: 'Number',
                         op: 'id',
