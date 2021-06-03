@@ -11,6 +11,7 @@ import { circuits } from '../../../main/circuits'
 import { executeCircuit } from '../../../main/circuit'
 import { getState } from '../../../main/store'
 import { useStore } from '../../../main/useStore'
+import { useState } from 'react'
 
 
 type State = Immutable<{
@@ -18,14 +19,10 @@ type State = Immutable<{
 }>
 
 export type Action =
-    | ['resetVariable']
+    | ['resetVariable', State]
     | ['saveVariable']
 
     | ['variable', 'variableName', Supplier]
-
-    | ['replace','variable', SupplierVariable]
- 
-
 
 const initialState: State = {
     variable: new SupplierVariable('', {}),
@@ -34,7 +31,7 @@ const initialState: State = {
 function reducer(state: Draft<State>, action: Action) {
     switch (action[0]) {
         case 'resetVariable': {
-            return initialState
+            return action[1]
         }
         case 'saveVariable': {
             const [result, symbolFlag, diff] = executeCircuit(circuits.createSupplier, {
@@ -60,10 +57,10 @@ function reducer(state: Draft<State>, action: Action) {
 
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const suppliers = useStore(state => state.variables.Supplier.filter(x=> x.variableName.toString() === props.match.params[0]))
-    dispatch(['replace', 'variable', suppliers[0]])
-  
+    const suppliers = useStore(state => state.variables.Supplier.filter(x => x.variableName.toString() === props.match.params[0]))
+
     const supplier = types['Supplier']
+    const [editMode, toggleEditMode] = useState(false)
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         switch (event.target.name) {
@@ -73,28 +70,56 @@ function Component(props) {
             }
         }
     }
-
-    return (
-        <>
-            <Container area={none} layout={Grid.layouts.main}>
-                <Item area={Grid.header}>
-                    <Title>Create {supplier.name}</Title>
-                </Item>
-                <Item area={Grid.button} justify='end' align='center'>
-                    <Button onClick={async () => {
-                        await dispatch(['saveVariable'])
-                        props.history.push('/suppliers')
-                    }}>Save</Button>
-                </Item>
-                <Container area={Grid.details} layout={Grid.layouts.details}>
-                    <Item>
-                        <Label>{supplier.name}</Label>
-                        <Input type='text' onChange={onVariableInputChange} value={state.variable.variableName.toString()} name='variableName' />
-                    </Item>
-                </Container>
-            </Container>
-        </>
-    )
+    if (suppliers.length() === 1) {
+        if (editMode) {
+            return (
+                <>
+                    <Container area={none} layout={Grid.layouts.main}>
+                        <Item area={Grid.header}>
+                            <Title>Update{supplier.name}</Title>
+                        </Item>
+                        <Item area={Grid.button} justify='end' align='center'>
+                            <Button onClick={() => {
+                                toggleEditMode(!editMode)
+                                dispatch(['resetVariable', initialState])
+                            }}>Cancel</Button>
+                            <Button onClick={async () => {
+                                await dispatch(['saveVariable'])
+                                props.history.push('/suppliers')
+                            }}>Save</Button>
+                        </Item>
+                        <Container area={Grid.details} layout={Grid.layouts.details}>
+                            <Item>
+                                <Label>{supplier.name}</Label>
+                                <Input type='text' onChange={onVariableInputChange} value={state.variable.variableName.toString()} name='variableName' />
+                            </Item>
+                        </Container>
+                    </Container>
+                </>
+            )
+        } else {
+            return (
+                <>
+                    <Container area={none} layout={Grid.layouts.main}>
+                        <Item area={Grid.header}>
+                            <Title>Update{supplier.name}</Title>
+                        </Item>
+                        <Item area={Grid.button} justify='end' align='center'>
+                            <Button onClick={() => toggleEditMode(!editMode)}>Edit</Button>
+                        </Item>
+                        <Container area={Grid.details} layout={Grid.layouts.details}>
+                            <Item>
+                                <Label>{supplier.name}</Label>
+                                <Input type='text' onChange={onVariableInputChange} value={state.variable.variableName.toString()} name='variableName' />
+                            </Item>
+                        </Container>
+                    </Container>
+                </>
+            )
+        }
+    } else {
+        return (<div>Variable not found</div>)
+    }
 }
 
 export default withRouter(Component)

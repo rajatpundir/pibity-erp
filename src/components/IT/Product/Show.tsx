@@ -170,7 +170,7 @@ function Component(props) {
             page: 1,
             columns: Vector.of(['values', 'name'], ['values', 'conversionRate']),
             variable: new UOMVariable('', { product: new Product(''), name: '', conversionRate: 1 }),
-            variables: items
+            variables: HashSet.of()
         }
     }
 

@@ -27,12 +27,12 @@ type State = Immutable<{
         page: number
         columns: Vector<Array<string>>
         variable: MaterialReturnSlipItemVariable
-        variables: HashSet<MaterialReturnSlipItemVariable>
+        variables: HashSet<Immutable<MaterialReturnSlipItemVariable>>
     }
 }>
 
 export type Action =
-    | ['resetVariable']
+    | ['resetVariable', State]
     | ['saveVariable']
 
     | ['variable', 'values', 'materialRejectionSlip', MaterialRejectionSlip]
@@ -45,7 +45,7 @@ export type Action =
     | ['items', 'variable', 'values', 'quantity', number]
     | ['items', 'addVariable']
 
-    | ['replace', 'variable', MaterialReturnSlipVariable]
+
 
 const initialState: State = {
     variable: new MaterialReturnSlipVariable('', { materialRejectionSlip: new MaterialRejectionSlip('') }),
@@ -64,7 +64,7 @@ const initialState: State = {
 function reducer(state: Draft<State>, action: Action) {
     switch (action[0]) {
         case 'resetVariable': {
-            return initialState
+            return action[1]
         }
         case 'saveVariable': {
             const [result, symbolFlag, diff] = executeCircuit(circuits.createMaterialReturnSlip, {
@@ -140,8 +140,8 @@ function reducer(state: Draft<State>, action: Action) {
 
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const materialReturnSlips = useStore(state => state.variables.MaterialReturnSlip.filter(x=> x.variableName.toString() === props.match.params[0]))
-    dispatch(['replace', 'variable', materialReturnSlips[0]])
+    const materialReturnSlips = useStore(state => state.variables.MaterialReturnSlip.filter(x => x.variableName.toString() === props.match.params[0]))
+
 
     const materialRejectionSlips = useStore(store => store.variables.MaterialRejectionSlip)
     const items = useStore(store => store.variables.MaterialRejectionSlipItem.filter(x => x.values.materialRejectionSlip.toString() === state.variable.values.materialRejectionSlip.toString()))
@@ -151,6 +151,9 @@ function Component(props) {
 
     const [addItemDrawer, toggleAddItemDrawer] = useState(false)
     const [itemFilter, toggleItemFilter] = useState(false)
+    const [editMode, toggleEditMode] = useState(false)
+
+
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
@@ -196,64 +199,129 @@ function Component(props) {
         return fx
     }
 
-    return (
-        <>
-            <Container area={none} layout={Grid.layouts.main}>
-                <Item area={Grid.header}>
-                    <Title>Create {materialReturnSlip.name}</Title>
-                </Item>
-                <Item area={Grid.button} justify='end' align='center'>
-                    <Button onClick={async () => {
-                        await dispatch(['saveVariable'])
-                        props.history.push('/returns')
-                    }}>Save</Button>
-                </Item>
-                <Container area={Grid.details} layout={Grid.layouts.details}>
-                    <Item>
-                        <Label>{materialReturnSlip.keys.materialRejectionSlip.name}</Label>
-                        <Select onChange={onVariableInputChange} value={state.variable.values.materialRejectionSlip.toString()} name='materialRejectionSlip'>
-                            <option value='' selected disabled hidden>Select Material Rejection Slip</option>
-                            {materialRejectionSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
-                        </Select>
-                    </Item>
-                </Container>
-                <Container area={Grid.uom} layout={Grid2.layouts.main}>
-                    <Item area={Grid2.header} className='flex items-center'>
-                        <Title>Items</Title>
-                        <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>
-                    </Item>
-                    <Item area={Grid2.filter} justify='end' align='center' className='flex'>
-                        <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
-                            <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
-                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
-                                <Container area={none} layout={Grid.layouts.uom} className=''>
-                                    <Item>
-                                        <Label>{item.keys.materialRejectionSlipItem.name}</Label>
-                                        <Select onChange={onItemInputChange} value={state.items.variable.values.materialRejectionSlipItem.toString()} name='materialRejectionSlipItem'>
-                                            <option value='' selected disabled hidden>Select Item</option>
-                                            {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
-                                        </Select>
-                                    </Item>
-                                    <Item>
-                                        <Label>{item.keys.quantity.name}</Label>
-                                        <Input type='number' onChange={onItemInputChange} name='quantity' />
-                                    </Item>
-                                    <Item justify='center' align='center'>
-                                        <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>
-                                    </Item>
-                                </Container>
-                            </div>
-                        </Drawer>
-                        <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
-                        <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
-                            <Filter typeName='MaterialReturnSlipItem' query={state['items'].query} updateQuery={updateQuery('items')} />
-                        </Drawer>
-                    </Item>
-                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} columns={state['items'].columns.toArray()} />
-                </Container >
-            </Container>
-        </>
-    )
+    if (materialReturnSlips.length() === 1) {
+        if (editMode) {
+            return (
+                <>
+                    <Container area={none} layout={Grid.layouts.main}>
+                        <Item area={Grid.header}>
+                            <Title>Update{materialReturnSlip.name}</Title>
+                        </Item>
+                        <Item area={Grid.button} justify='end' align='center'>
+                            <Button onClick={async () => {
+                                await dispatch(['saveVariable'])
+                                props.history.push('/returns')
+                            }}>Save</Button>
+                        </Item>
+                        <Container area={Grid.details} layout={Grid.layouts.details}>
+                            <Item>
+                                <Label>{materialReturnSlip.keys.materialRejectionSlip.name}</Label>
+                                <Select onChange={onVariableInputChange} value={state.variable.values.materialRejectionSlip.toString()} name='materialRejectionSlip'>
+                                    <option value='' selected disabled hidden>Select Material Rejection Slip</option>
+                                    {materialRejectionSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                </Select>
+                            </Item>
+                        </Container>
+                        <Container area={Grid.uom} layout={Grid2.layouts.main}>
+                            <Item area={Grid2.header} className='flex items-center'>
+                                <Title>Items</Title>
+                                <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>
+                            </Item>
+                            <Item area={Grid2.filter} justify='end' align='center' className='flex'>
+                                <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
+                                    <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
+                                        <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
+                                        <Container area={none} layout={Grid.layouts.uom} className=''>
+                                            <Item>
+                                                <Label>{item.keys.materialRejectionSlipItem.name}</Label>
+                                                <Select onChange={onItemInputChange} value={state.items.variable.values.materialRejectionSlipItem.toString()} name='materialRejectionSlipItem'>
+                                                    <option value='' selected disabled hidden>Select Item</option>
+                                                    {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                                </Select>
+                                            </Item>
+                                            <Item>
+                                                <Label>{item.keys.quantity.name}</Label>
+                                                <Input type='number' onChange={onItemInputChange} name='quantity' />
+                                            </Item>
+                                            <Item justify='center' align='center'>
+                                                <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>
+                                            </Item>
+                                        </Container>
+                                    </div>
+                                </Drawer>
+                                <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
+                                <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
+                                    <Filter typeName='MaterialReturnSlipItem' query={state['items'].query} updateQuery={updateQuery('items')} />
+                                </Drawer>
+                            </Item>
+                            <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} columns={state['items'].columns.toArray()} />
+                        </Container >
+                    </Container>
+                </>
+            )
+        } else {
+            return (
+                <>
+                    <Container area={none} layout={Grid.layouts.main}>
+                        <Item area={Grid.header}>
+                            <Title>Update{materialReturnSlip.name}</Title>
+                        </Item>
+                        <Item area={Grid.button} justify='end' align='center'>
+                            <Button onClick={async () => {
+                                await dispatch(['saveVariable'])
+                                props.history.push('/returns')
+                            }}>Save</Button>
+                        </Item>
+                        <Container area={Grid.details} layout={Grid.layouts.details}>
+                            <Item>
+                                <Label>{materialReturnSlip.keys.materialRejectionSlip.name}</Label>
+                                <Select onChange={onVariableInputChange} value={state.variable.values.materialRejectionSlip.toString()} name='materialRejectionSlip'>
+                                    <option value='' selected disabled hidden>Select Material Rejection Slip</option>
+                                    {materialRejectionSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                </Select>
+                            </Item>
+                        </Container>
+                        <Container area={Grid.uom} layout={Grid2.layouts.main}>
+                            <Item area={Grid2.header} className='flex items-center'>
+                                <Title>Items</Title>
+                                <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>
+                            </Item>
+                            <Item area={Grid2.filter} justify='end' align='center' className='flex'>
+                                <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
+                                    <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
+                                        <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
+                                        <Container area={none} layout={Grid.layouts.uom} className=''>
+                                            <Item>
+                                                <Label>{item.keys.materialRejectionSlipItem.name}</Label>
+                                                <Select onChange={onItemInputChange} value={state.items.variable.values.materialRejectionSlipItem.toString()} name='materialRejectionSlipItem'>
+                                                    <option value='' selected disabled hidden>Select Item</option>
+                                                    {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                                </Select>
+                                            </Item>
+                                            <Item>
+                                                <Label>{item.keys.quantity.name}</Label>
+                                                <Input type='number' onChange={onItemInputChange} name='quantity' />
+                                            </Item>
+                                            <Item justify='center' align='center'>
+                                                <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>
+                                            </Item>
+                                        </Container>
+                                    </div>
+                                </Drawer>
+                                <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
+                                <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
+                                    <Filter typeName='MaterialReturnSlipItem' query={state['items'].query} updateQuery={updateQuery('items')} />
+                                </Drawer>
+                            </Item>
+                            <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} columns={state['items'].columns.toArray()} />
+                        </Container >
+                    </Container>
+                </>
+            )
+        }
+    } else {
+        return (<div>Variable not found</div>)
+    }
 }
 
 export default withRouter(Component)

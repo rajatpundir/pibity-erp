@@ -8,7 +8,7 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { Indent, IndentItemVariable, IndentVariable, Product, UOM } from '../../../main/variables'
+import { Indent, IndentItemVariable, IndentVariable, Product, UOM, UOMVariable } from '../../../main/variables'
 import * as Grid from './grids/Create'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
@@ -27,12 +27,12 @@ type State = Immutable<{
         page: number
         columns: Vector<Array<string>>
         variable: IndentItemVariable
-        variables: HashSet<IndentItemVariable>
+        variables: HashSet<Immutable<IndentItemVariable>>
     }
 }>
 
 export type Action =
-    | ['resetVariable']
+    | ['resetVariable', State]
     | ['saveVariable']
 
     | ['items', 'limit', number]
@@ -44,7 +44,7 @@ export type Action =
     | ['items', 'variable', 'values', 'uom', UOM]
     | ['items', 'addVariable']
 
-    | ['replace','variable', IndentVariable]
+
 
 const initialState: State = {
     variable: new IndentVariable('', {}),
@@ -63,7 +63,7 @@ const initialState: State = {
 function reducer(state: Draft<State>, action: Action) {
     switch (action[0]) {
         case 'resetVariable': {
-            return initialState
+            return action[1]
         }
         case 'saveVariable': {
             const [result, symbolFlag, diff] = executeCircuit(circuits.createIndent, {
@@ -129,17 +129,37 @@ function reducer(state: Draft<State>, action: Action) {
 }
 
 function Component(props) {
+
+    const indents = useStore(state => state.variables.Indent.filter(x => x.variableName.toString() === props.match.params[0]))
+    const items: HashSet<Immutable<UOMVariable>> = useStore(store => store.variables.UOM.filter(x => x.values.product.toString() === props.match.params[0]))
+
+    const initialState: State = {
+        variable: new IndentVariable('', {}),
+        items: {
+            typeName: 'IndentItem',
+            query: getQuery('IndentItem'),
+            limit: 5,
+            offset: 0,
+            page: 1,
+            columns: Vector.of(['values', 'product'], ['values', 'quantity'], ['values', 'uom'], ['values', 'ordered'], ['values', 'received'], ['values', 'approved'], ['values', 'rejected'], ['values', 'returned'], ['values', 'requisted'], ['values', 'consumed']),
+            variable: new IndentItemVariable('', { indent: new Indent(''), product: new Product(''), quantity: 0, uom: new UOM(''), ordered: 0, received: 0, approved: 0, rejected: 0, returned: 0, requisted: 0, consumed: 0 }),
+            variables: HashSet.of()
+        }
+    }
+
+
+
+    // const products = useStore(state => state.variables.Product)
+    // const uoms = useStore(store => store.variables.UOM.filter(x => x.values.product.toString() === state.items.variable.values.product.toString()))
+
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const indents = useStore(state => state.variables.Indent.filter(x=> x.variableName.toString() === props.match.params[0]))
-    dispatch(['replace', 'variable', indents[0]])
-    const products = useStore(state => state.variables.Product)
-    const uoms = useStore(store => store.variables.UOM.filter(x => x.values.product.toString() === state.items.variable.values.product.toString()))
 
     const indent = types['Indent']
     const item = types['IndentItem']
 
     const [addItemDrawer, toggleAddItemDrawer] = useState(false)
     const [itemFilter, toggleItemFilter] = useState(false)
+    const [editMode, toggleEditMode] = useState(false)
 
     const onItemInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
@@ -176,62 +196,126 @@ function Component(props) {
         return fx
     }
 
-    return (
-        <>
-            <Container area={none} layout={Grid.layouts.main}>
-                <Item area={Grid.header}>
-                    <Title>Create {indent.name}</Title>
-                </Item>
-                <Item area={Grid.button} justify='end' align='center'>
-                    <Button onClick={async () => {
-                        await dispatch(['saveVariable'])
-                        props.history.push('/indents')
-                    }}>Save</Button>
-                </Item>
-                <Container area={Grid.uom} layout={Grid2.layouts.main}>
-                    <Item area={Grid2.header} className='flex items-center'>
-                        <Title>Items</Title>
-                        <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>
-                    </Item>
-                    <Item area={Grid2.filter} justify='end' align='center' className='flex'>
-                        <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
-                            <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
-                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
-                                <Container area={none} layout={Grid.layouts.uom} className=''>
-                                    <Item>
-                                        <Label>{item.keys.product.name}</Label>
-                                        <Select onChange={onItemInputChange} value={state.items.variable.values.product.toString()} name='product'>
-                                            <option value='' selected disabled hidden>Select Product</option>
-                                            {products.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
-                                        </Select>
-                                    </Item>
-                                    <Item>
-                                        <Label>{item.keys.quantity.name}</Label>
-                                        <Input type='number' onChange={onItemInputChange} name='quantity' />
-                                    </Item>
-                                    <Item>
-                                        <Label>{item.keys.uom.name}</Label>
-                                        <Select onChange={onItemInputChange} value={state.items.variable.values.uom.toString()} name='uom'>
-                                            <option value='' selected disabled hidden>Select UOM</option>
-                                            {uoms.toArray().map(x => <option value={x.values.name}>{x.values.name}</option>)}
-                                        </Select>
-                                    </Item>
-                                    <Item justify='center' align='center'>
-                                        <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>
-                                    </Item>
-                                </Container>
-                            </div>
-                        </Drawer>
-                        <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
-                        <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
-                            <Filter typeName='IndentItem' query={state['items'].query} updateQuery={updateQuery('items')} />
-                        </Drawer>
-                    </Item>
-                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} columns={state['items'].columns.toArray()} />
-                </Container >
-            </Container>
-        </>
-    )
+    if (indents.length() === 1) {
+        if (editMode) {
+            return (
+                <>
+                    <Container area={none} layout={Grid.layouts.main}>
+                        <Item area={Grid.header}>
+                            <Title>Update {indent.name}</Title>
+                        </Item>
+                        <Item area={Grid.button} justify='end' align='center'>
+                            <Button onClick={() => {
+                                toggleEditMode(!editMode)
+                                dispatch(['resetVariable', initialState])
+                            }}>Cancel</Button>
+                            <Button onClick={async () => {
+                                await dispatch(['saveVariable'])
+                                props.history.push('/indents')
+                            }}>Save</Button>
+                        </Item>
+                        <Container area={Grid.uom} layout={Grid2.layouts.main}>
+                            <Item area={Grid2.header} className='flex items-center'>
+                                <Title>Items</Title>
+                                <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>
+                            </Item>
+                            <Item area={Grid2.filter} justify='end' align='center' className='flex'>
+                                <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
+                                    <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
+                                        <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
+                                        <Container area={none} layout={Grid.layouts.uom} className=''>
+                                            <Item>
+                                                <Label>{item.keys.product.name}</Label>
+                                                <Select onChange={onItemInputChange} value={state.items.variable.values.product.toString()} name='product'>
+                                                    <option value='' selected disabled hidden>Select Product</option>
+                                                    {indents.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                                </Select>
+                                            </Item>
+                                            <Item>
+                                                <Label>{item.keys.quantity.name}</Label>
+                                                <Input type='number' onChange={onItemInputChange} name='quantity' />
+                                            </Item>
+                                            <Item>
+                                                <Label>{item.keys.uom.name}</Label>
+                                                <Select onChange={onItemInputChange} value={state.items.variable.values.uom.toString()} name='uom'>
+                                                    <option value='' selected disabled hidden>Select UOM</option>
+                                                    {items.toArray().map(x => <option value={x.values.name}>{x.values.name}</option>)}
+                                                </Select>
+                                            </Item>
+                                            <Item justify='center' align='center'>
+                                                <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>
+                                            </Item>
+                                        </Container>
+                                    </div>
+                                </Drawer>
+                                <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
+                                <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
+                                    <Filter typeName='IndentItem' query={state['items'].query} updateQuery={updateQuery('items')} />
+                                </Drawer>
+                            </Item>
+                            <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} columns={state['items'].columns.toArray()} />
+                        </Container >
+                    </Container>
+                </>
+            )
+        } else {
+            return (
+                <>
+                    <Container area={none} layout={Grid.layouts.main}>
+                        <Item area={Grid.header}>
+                            <Title>Update{indent.name}</Title>
+                        </Item>
+                        <Item area={Grid.button} justify='end' align='center'>
+                            <Button onClick={() => toggleEditMode(!editMode)}>Edit</Button>
+                        </Item>
+                        <Container area={Grid.uom} layout={Grid2.layouts.main}>
+                            <Item area={Grid2.header} className='flex items-center'>
+                                <Title>Items</Title>
+                                <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>
+                            </Item>
+                            <Item area={Grid2.filter} justify='end' align='center' className='flex'>
+                                <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
+                                    <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
+                                        <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
+                                        <Container area={none} layout={Grid.layouts.uom} className=''>
+                                            <Item>
+                                                <Label>{item.keys.product.name}</Label>
+                                                <Select onChange={onItemInputChange} value={state.items.variable.values.product.toString()} name='product'>
+                                                    <option value='' selected disabled hidden>Select Product</option>
+                                                    {indents.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                                </Select>
+                                            </Item>
+                                            <Item>
+                                                <Label>{item.keys.quantity.name}</Label>
+                                                <Input type='number' onChange={onItemInputChange} name='quantity' />
+                                            </Item>
+                                            <Item>
+                                                <Label>{item.keys.uom.name}</Label>
+                                                <Select onChange={onItemInputChange} value={state.items.variable.values.uom.toString()} name='uom'>
+                                                    <option value='' selected disabled hidden>Select UOM</option>
+                                                    {items.toArray().map(x => <option value={x.values.name}>{x.values.name}</option>)}
+                                                </Select>
+                                            </Item>
+                                            <Item justify='center' align='center'>
+                                                <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>
+                                            </Item>
+                                        </Container>
+                                    </div>
+                                </Drawer>
+                                <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
+                                <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
+                                    <Filter typeName='IndentItem' query={state['items'].query} updateQuery={updateQuery('items')} />
+                                </Drawer>
+                            </Item>
+                            <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} columns={state['items'].columns.toArray()} />
+                        </Container >
+                    </Container>
+                </>
+            )
+        }
+    } else {
+        return (<div>Variable not found</div>)
+    }
 }
 
 export default withRouter(Component)
