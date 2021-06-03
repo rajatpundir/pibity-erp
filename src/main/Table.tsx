@@ -231,7 +231,6 @@ function getCells(columns: Array<Array<string>>, variables: Immutable<HashSet<Va
         }
     })
     Array.from(Array((end - start) - variables.toArray().slice(start, end).length), (_, i) => i + 1).forEach( i => {
-        console.log(i)
         const rowIndex = variables.toArray().slice(start, end).length + i
         if(i % 2 !== 0) {
             columns.forEach((path, columnIndex) => {

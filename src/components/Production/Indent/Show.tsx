@@ -17,6 +17,7 @@ import { circuits } from '../../../main/circuits'
 import { getState } from '../../../main/store'
 import { useStore } from '../../../main/useStore'
 import { iff, when } from '../../../main/utils'
+import { isTemplateSpan } from 'typescript'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -63,7 +64,7 @@ function Component(props) {
             page: 1,
             columns: Vector.of(['values', 'product'], ['values', 'quantity'], ['values', 'uom', 'values', 'name'], ['values', 'ordered'], ['values', 'received'], ['values', 'approved'], ['values', 'rejected'], ['values', 'returned'], ['values', 'requisted'], ['values', 'consumed']),
             variable: new IndentItemVariable('', { indent: new Indent(''), product: new Product(''), quantity: 0, uom: new UOM(''), ordered: 0, received: 0, approved: 0, rejected: 0, returned: 0, requisted: 0, consumed: 0 }),
-            variables: items
+            variables: props.match.params[0] ? HashSet.of<IndentItemVariable>() : items
         }
     }
 
@@ -204,7 +205,7 @@ function Component(props) {
                     {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
-                                await dispatch(['saveVariable'])
+                                dispatch(['saveVariable'])
                                 props.history.push('/indents')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
@@ -214,7 +215,7 @@ function Component(props) {
                                         dispatch(['resetVariable', initialState])
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
-                                        await dispatch(['saveVariable'])
+                                        dispatch(['saveVariable'])
                                         props.history.push('/indents')
                                     }}>Save</Button>
                                 </>,
