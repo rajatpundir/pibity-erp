@@ -243,10 +243,10 @@ function Component(props) {
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
-                    <Title>{when(state.mode, {
-                        'create': 'Create Product',
-                        'update': 'Update Product',
-                        'show': 'Product'
+                <Title>{when(state.mode, {
+                        'create': `Create ${product.name}`,
+                        'update': `Update ${product.name}`,
+                        'show': `${product.name}`
                     })}</Title>
                 </Item>
                 <Item area={Grid.button} justify='end' align='center' className='flex'>

@@ -32,6 +32,7 @@ type State = Immutable<{
 }>
 
 export type Action =
+    | ['toggleMode']
     | ['resetVariable', State]
     | ['saveVariable']
 
@@ -277,7 +278,7 @@ function Component(props) {
                             <Title>Update{bom.name}</Title>
                         </Item>
                         <Item area={Grid.button} justify='end' align='center'>
-                        <Button onClick={() => toggleEditMode(!editMode)}>Edit</Button>
+                            <Button onClick={() => toggleEditMode(!editMode)}>Edit</Button>
                         </Item>
                         <Container area={Grid.details} layout={Grid.layouts.details}>
                             <Item>
