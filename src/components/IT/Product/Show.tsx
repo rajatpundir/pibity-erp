@@ -263,7 +263,7 @@ function Component(props) {
                                         dispatch(['resetVariable', initialState])
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
-                                        dispatch(['saveVariable'])
+                                        await dispatch(['saveVariable'])
                                         props.history.push('/products')
                                     }}>Save</Button>
                                 </>,

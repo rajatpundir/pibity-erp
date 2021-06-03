@@ -5,7 +5,7 @@ import tw from 'twin.macro'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Supplier, SupplierVariable } from '../../../main/variables'
-import * as Grid from './grids/Create'
+import * as Grid from './grids/Show'
 import { withRouter } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
 import { executeCircuit } from '../../../main/circuit'
@@ -106,8 +106,8 @@ function Component(props) {
                                         dispatch(['resetVariable', initialState])
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
-                                        dispatch(['saveVariable'])
-                                        await props.history.push('/suppliers')
+                                        await dispatch(['saveVariable'])
+                                        props.history.push('/suppliers')
                                     }}>Save</Button>
                                 </>,
                                 <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>))

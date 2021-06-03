@@ -9,15 +9,17 @@ import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
 import { MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialReturnSlipItemVariable, MaterialReturnSlipVariable } from '../../../main/variables'
-import * as Grid from './grids/Create'
+import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
 import { circuits } from '../../../main/circuits'
 import { getState } from '../../../main/store'
 import { useStore } from '../../../main/useStore'
+import { iff, when } from '../../../main/utils'
 
 type State = Immutable<{
+    mode: 'create' | 'update' | 'show'
     variable: MaterialReturnSlipVariable
     items: {
         typeName: 'MaterialReturnSlipItem'
@@ -32,6 +34,7 @@ type State = Immutable<{
 }>
 
 export type Action =
+    | ['toggleMode']
     | ['resetVariable', State]
     | ['saveVariable']
 
@@ -45,103 +48,105 @@ export type Action =
     | ['items', 'variable', 'values', 'quantity', number]
     | ['items', 'addVariable']
 
-
-
-const initialState: State = {
-    variable: new MaterialReturnSlipVariable('', { materialRejectionSlip: new MaterialRejectionSlip('') }),
-    items: {
-        typeName: 'MaterialReturnSlipItem',
-        query: getQuery('MaterialReturnSlipItem'),
-        limit: 5,
-        offset: 0,
-        page: 1,
-        columns: Vector.of(['variableName'], ['values', 'materialRejectionSlipItem'], ['values', 'materialRejectionSlipItem', 'values', 'purchaseInvoice'], ['values', 'quantity']),
-        variable: new MaterialReturnSlipItemVariable('', { materialReturnSlip: new MaterialReturnSlip(''), materialRejectionSlipItem: new MaterialRejectionSlipItem(''), quantity: 0 }),
-        variables: HashSet.of()
-    }
-}
-
-function reducer(state: Draft<State>, action: Action) {
-    switch (action[0]) {
-        case 'resetVariable': {
-            return action[1]
-        }
-        case 'saveVariable': {
-            const [result, symbolFlag, diff] = executeCircuit(circuits.createMaterialReturnSlip, {
-                materialRejectionSlip: state.variable.values.materialRejectionSlip,
-                items: state.items.variables.toArray().map(item => {
-                    return {
-                        materialRejectionSlipItem: item.values.materialRejectionSlipItem.toString(),
-                        quantity: item.values.quantity
-                    }
-                })
-            })
-            console.log(result, symbolFlag)
-            if (symbolFlag) {
-                getState().addDiff(diff)
-            }
-            break
-        }
-        case 'variable': {
-            switch (action[1]) {
-                case 'values': {
-                    switch (action[2]) {
-                        case 'materialRejectionSlip': {
-                            state[action[0]][action[1]][action[2]] = action[3]
-                            break
-                        }
-                    }
-                }
-            }
-            break
-        }
-        case 'items': {
-            switch (action[1]) {
-                case 'limit': {
-                    state[action[0]].limit = Math.max(initialState.items.limit, action[2])
-                    break
-                }
-                case 'offset': {
-                    state[action[0]].offset = Math.max(0, action[2])
-                    state[action[0]].page = Math.max(0, action[2]) + 1
-                    break
-                }
-                case 'page': {
-                    state[action[0]].page = action[2]
-                    break
-                }
-                case 'query': {
-                    updateQuery(state[action[0]].query, action[2])
-                    break
-                }
-                case 'variable': {
-                    switch (action[3]) {
-                        case 'materialRejectionSlipItem': {
-                            state[action[0]][action[1]][action[2]][action[3]] = action[4]
-                            break
-                        }
-                        case 'quantity': {
-                            state[action[0]][action[1]][action[2]][action[3]] = action[4]
-                            break
-                        }
-                    }
-                    break
-                }
-                case 'addVariable': {
-                    state.items.variables = state.items.variables.add(new MaterialReturnSlipItemVariable('', { materialReturnSlip: new MaterialReturnSlip(''), materialRejectionSlipItem: new MaterialRejectionSlipItem(state.items.variable.values.materialRejectionSlipItem.toString()), quantity: state.items.variable.values.quantity }))
-                    state.items.variable = initialState.items.variable
-                    break
-                }
-            }
-            break
-        }
-    }
-}
-
 function Component(props) {
-    const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const materialReturnSlips = useStore(state => state.variables.MaterialReturnSlip.filter(x => x.variableName.toString() === props.match.params[0]))
 
+    const materialReturnSlips = useStore(state => state.variables.MaterialReturnSlip.filter(x => x.variableName.toString() === props.match.params[0]))
+    const materialReturnSlipItems: HashSet<Immutable<MaterialReturnSlipItemVariable>> = useStore(store => store.variables.MaterialReturnSlipItem.filter(x => x.values.materialReturnSlip.toString() === props.match.params[0]))
+
+
+    const initialState: State = {
+        mode: props.match.params[0] ? 'show' : 'create',
+        variable: materialReturnSlips.length() === 1 ? materialReturnSlips.toArray()[0] : new MaterialReturnSlipVariable('', { materialRejectionSlip: new MaterialRejectionSlip('') }),
+        items: {
+            typeName: 'MaterialReturnSlipItem',
+            query: getQuery('MaterialReturnSlipItem'),
+            limit: 5,
+            offset: 0,
+            page: 1,
+            columns: Vector.of(['variableName'], ['values', 'materialRejectionSlipItem'], ['values', 'materialRejectionSlipItem', 'values', 'purchaseInvoice'], ['values', 'quantity']),
+            variable: new MaterialReturnSlipItemVariable('', { materialReturnSlip: new MaterialReturnSlip(''), materialRejectionSlipItem: new MaterialRejectionSlipItem(''), quantity: 0 }),
+            variables: props.match.params[0] ? HashSet.of() : materialReturnSlipItems
+        }
+    }
+
+    function reducer(state: Draft<State>, action: Action) {
+        switch (action[0]) {
+            case 'resetVariable': {
+                return action[1]
+            }
+            case 'saveVariable': {
+                const [result, symbolFlag, diff] = executeCircuit(circuits.createMaterialReturnSlip, {
+                    materialRejectionSlip: state.variable.values.materialRejectionSlip,
+                    items: state.items.variables.toArray().map(item => {
+                        return {
+                            materialRejectionSlipItem: item.values.materialRejectionSlipItem.toString(),
+                            quantity: item.values.quantity
+                        }
+                    })
+                })
+                console.log(result, symbolFlag)
+                if (symbolFlag) {
+                    getState().addDiff(diff)
+                }
+                break
+            }
+            case 'variable': {
+                switch (action[1]) {
+                    case 'values': {
+                        switch (action[2]) {
+                            case 'materialRejectionSlip': {
+                                state[action[0]][action[1]][action[2]] = action[3]
+                                break
+                            }
+                        }
+                    }
+                }
+                break
+            }
+            case 'items': {
+                switch (action[1]) {
+                    case 'limit': {
+                        state[action[0]].limit = Math.max(initialState.items.limit, action[2])
+                        break
+                    }
+                    case 'offset': {
+                        state[action[0]].offset = Math.max(0, action[2])
+                        state[action[0]].page = Math.max(0, action[2]) + 1
+                        break
+                    }
+                    case 'page': {
+                        state[action[0]].page = action[2]
+                        break
+                    }
+                    case 'query': {
+                        updateQuery(state[action[0]].query, action[2])
+                        break
+                    }
+                    case 'variable': {
+                        switch (action[3]) {
+                            case 'materialRejectionSlipItem': {
+                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                break
+                            }
+                            case 'quantity': {
+                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                break
+                            }
+                        }
+                        break
+                    }
+                    case 'addVariable': {
+                        state.items.variables = state.items.variables.add(new MaterialReturnSlipItemVariable('', { materialReturnSlip: new MaterialReturnSlip(''), materialRejectionSlipItem: new MaterialRejectionSlipItem(state.items.variable.values.materialRejectionSlipItem.toString()), quantity: state.items.variable.values.quantity }))
+                        state.items.variable = initialState.items.variable
+                        break
+                    }
+                }
+                break
+            }
+        }
+    }
+
+    const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
     const materialRejectionSlips = useStore(store => store.variables.MaterialRejectionSlip)
     const items = useStore(store => store.variables.MaterialRejectionSlipItem.filter(x => x.values.materialRejectionSlip.toString() === state.variable.values.materialRejectionSlip.toString()))
@@ -151,9 +156,6 @@ function Component(props) {
 
     const [addItemDrawer, toggleAddItemDrawer] = useState(false)
     const [itemFilter, toggleItemFilter] = useState(false)
-    const [editMode, toggleEditMode] = useState(false)
-
-
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
@@ -185,7 +187,7 @@ function Component(props) {
         }
     }
 
-    const updateQuery = (list: 'items') => {
+    const updateItemsQuery = (list: 'items') => {
         const fx = (args: Args) => {
             dispatch([list, 'query', args])
         }
@@ -199,129 +201,92 @@ function Component(props) {
         return fx
     }
 
-    if (materialReturnSlips.length() === 1) {
-        if (editMode) {
-            return (
-                <>
-                    <Container area={none} layout={Grid.layouts.main}>
-                        <Item area={Grid.header}>
-                            <Title>Update{materialReturnSlip.name}</Title>
-                        </Item>
-                        <Item area={Grid.button} justify='end' align='center'>
+    return iff(state.mode === 'create' || materialReturnSlips.length() === 1,
+        () => {
+            return <Container area={none} layout={Grid.layouts.main}>
+                <Item area={Grid.header}>
+                    <Title>{when(state.mode, {
+                        'create': `Create ${materialReturnSlip.name}`,
+                        'update': `Update ${materialReturnSlip.name}`,
+                        'show': `${materialReturnSlip.name}`
+                    })}</Title>
+                </Item>
+                <Item area={Grid.button} justify='end' align='center' className='flex'>
+                    {
+                        iff(state.mode === 'create',
                             <Button onClick={async () => {
-                                 dispatch(['saveVariable'])
+                                dispatch(['saveVariable'])
                                 props.history.push('/returns')
-                            }}>Save</Button>
-                        </Item>
-                        <Container area={Grid.details} layout={Grid.layouts.details}>
-                            <Item>
-                                <Label>{materialReturnSlip.keys.materialRejectionSlip.name}</Label>
+                            }}>Save</Button>,
+                            iff(state.mode === 'update',
+                                <>
+                                    <Button onClick={() => {
+                                        dispatch(['toggleMode'])
+                                        dispatch(['resetVariable', initialState])
+                                    }}>Cancel</Button>
+                                    <Button onClick={async () => {
+                                        dispatch(['saveVariable'])
+                                        props.history.push('/returns')
+                                    }}>Save</Button>
+                                </>,
+                                <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>))
+                    }
+                </Item>
+                <Container area={Grid.details} layout={Grid.layouts.details}>
+                    <Item>
+                        <Label>{materialReturnSlip.keys.materialRejectionSlip.name}</Label>
+                        {
+                            iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.materialRejectionSlip.toString()} name='materialRejectionSlip'>
                                     <option value='' selected disabled hidden>Select Material Rejection Slip</option>
                                     {materialRejectionSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
-                                </Select>
-                            </Item>
-                        </Container>
-                        <Container area={Grid.uom} layout={Grid2.layouts.main}>
-                            <Item area={Grid2.header} className='flex items-center'>
-                                <Title>Items</Title>
-                                <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>
-                            </Item>
-                            <Item area={Grid2.filter} justify='end' align='center' className='flex'>
-                                <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
-                                    <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
-                                        <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
-                                        <Container area={none} layout={Grid.layouts.uom} className=''>
-                                            <Item>
-                                                <Label>{item.keys.materialRejectionSlipItem.name}</Label>
-                                                <Select onChange={onItemInputChange} value={state.items.variable.values.materialRejectionSlipItem.toString()} name='materialRejectionSlipItem'>
-                                                    <option value='' selected disabled hidden>Select Item</option>
-                                                    {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
-                                                </Select>
-                                            </Item>
-                                            <Item>
-                                                <Label>{item.keys.quantity.name}</Label>
-                                                <Input type='number' onChange={onItemInputChange} name='quantity' />
-                                            </Item>
-                                            <Item justify='center' align='center'>
-                                                <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>
-                                            </Item>
-                                        </Container>
-                                    </div>
-                                </Drawer>
-                                <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
-                                <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
-                                    <Filter typeName='MaterialReturnSlipItem' query={state['items'].query} updateQuery={updateQuery('items')} />
-                                </Drawer>
-                            </Item>
-                            <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} columns={state['items'].columns.toArray()} />
-                        </Container >
-                    </Container>
-                </>
-            )
-        } else {
-            return (
-                <>
-                    <Container area={none} layout={Grid.layouts.main}>
-                        <Item area={Grid.header}>
-                            <Title>Update{materialReturnSlip.name}</Title>
-                        </Item>
-                        <Item area={Grid.button} justify='end' align='center'>
-                            <Button onClick={async () => {
-                                 dispatch(['saveVariable'])
-                                props.history.push('/returns')
-                            }}>Save</Button>
-                        </Item>
-                        <Container area={Grid.details} layout={Grid.layouts.details}>
-                            <Item>
-                                <Label>{materialReturnSlip.keys.materialRejectionSlip.name}</Label>
-                                <Select onChange={onVariableInputChange} value={state.variable.values.materialRejectionSlip.toString()} name='materialRejectionSlip'>
-                                    <option value='' selected disabled hidden>Select Material Rejection Slip</option>
-                                    {materialRejectionSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
-                                </Select>
-                            </Item>
-                        </Container>
-                        <Container area={Grid.uom} layout={Grid2.layouts.main}>
-                            <Item area={Grid2.header} className='flex items-center'>
-                                <Title>Items</Title>
-                                <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>
-                            </Item>
-                            <Item area={Grid2.filter} justify='end' align='center' className='flex'>
-                                <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
-                                    <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
-                                        <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
-                                        <Container area={none} layout={Grid.layouts.uom} className=''>
-                                            <Item>
-                                                <Label>{item.keys.materialRejectionSlipItem.name}</Label>
-                                                <Select onChange={onItemInputChange} value={state.items.variable.values.materialRejectionSlipItem.toString()} name='materialRejectionSlipItem'>
-                                                    <option value='' selected disabled hidden>Select Item</option>
-                                                    {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
-                                                </Select>
-                                            </Item>
-                                            <Item>
-                                                <Label>{item.keys.quantity.name}</Label>
-                                                <Input type='number' onChange={onItemInputChange} name='quantity' />
-                                            </Item>
-                                            <Item justify='center' align='center'>
-                                                <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>
-                                            </Item>
-                                        </Container>
-                                    </div>
-                                </Drawer>
-                                <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
-                                <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
-                                    <Filter typeName='MaterialReturnSlipItem' query={state['items'].query} updateQuery={updateQuery('items')} />
-                                </Drawer>
-                            </Item>
-                            <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} columns={state['items'].columns.toArray()} />
-                        </Container >
-                    </Container>
-                </>
-            )
-        }
-    } else {
-        return (<div>Variable not found</div>)
-    }
+                                </Select>,
+                                <div className='font-bold text-xl'>{state.variable.values.materialRejectionSlip.toString()}</div>
+                            )
+                        }
+                    </Item>
+                </Container>
+                <Container area={Grid.uom} layout={Grid2.layouts.main}>
+                    <Item area={Grid2.header} className='flex items-center'>
+                        <Title>{item.name}s</Title>
+                        {
+                            iff(state.mode === 'create' || state.mode === 'update',
+                                <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>,
+                                undefined
+                            )
+                        }
+                    </Item>
+                    <Item area={Grid2.filter} justify='end' align='center' className='flex'>
+                        <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
+                        <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
+                            <Filter typeName='MaterialReturnSlipItem' query={state['items'].query} updateQuery={updateItemsQuery('items')} />
+                        </Drawer>
+                        <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
+                            <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
+                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
+                                <Container area={none} layout={Grid.layouts.uom} className=''>
+                                    <Item>
+                                        <Label>{item.keys.materialRejectionSlipItem.name}</Label>
+                                        <Select onChange={onItemInputChange} value={state.items.variable.values.materialRejectionSlipItem.toString()} name='materialRejectionSlipItem'>
+                                            <option value='' selected disabled hidden>Select Product</option>
+                                            {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                        </Select>
+                                    </Item>
+                                    <Item>
+                                        <Label>{item.keys.quantity.name}</Label>
+                                        <Input type='number' onChange={onItemInputChange} value={state.items.variable.values.quantity} name='quantity' />
+                                    </Item>
+                                    <Item justify='center' align='center'>
+                                        <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>
+                                    </Item>
+                                </Container>
+                            </div>
+                        </Drawer>
+                    </Item>
+                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} columns={state['items'].columns.toArray()} />
+                </Container >
+            </Container>
+        }, <div>Variable not found</div>)
 }
 
 export default withRouter(Component)

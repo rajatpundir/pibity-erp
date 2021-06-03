@@ -9,7 +9,7 @@ import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
 import { Indent, IndentItem, Quotation, QuotationItemVariable, QuotationVariable, Supplier } from '../../../main/variables'
-import * as Grid from './grids/Create'
+import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
 import { useStore } from '../../../main/useStore'
@@ -196,7 +196,7 @@ function Component(props) {
         }
     }
 
-    const updateQuery = (list: 'items') => {
+     const updateItemsQuery = (list: 'items') => {
         const fx = (args: Args) => {
             dispatch([list, 'query', args])
         }
@@ -273,7 +273,7 @@ function Component(props) {
                         </Drawer>
                         <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
                         <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
-                            <Filter typeName='QuotationItem' query={state['items'].query} updateQuery={updateQuery('items')} />
+                            <Filter typeName='QuotationItem' query={state['items'].query} updateQuery={updateItemsQuery('items')} />
                         </Drawer>
                     </Item>
                     <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} columns={state['items'].columns.toArray()} />
@@ -336,7 +336,7 @@ function Component(props) {
                         </Drawer>
                         <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
                         <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
-                            <Filter typeName='QuotationItem' query={state['items'].query} updateQuery={updateQuery('items')} />
+                            <Filter typeName='QuotationItem' query={state['items'].query} updateQuery={updateItemsQuery('items')} />
                         </Drawer>
                     </Item>
                     <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} columns={state['items'].columns.toArray()} />

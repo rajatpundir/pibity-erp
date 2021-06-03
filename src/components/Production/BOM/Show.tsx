@@ -9,7 +9,7 @@ import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
 import { BOM, BOMItemVariable, BOMVariable, Product, UOM } from '../../../main/variables'
-import * as Grid from './grids/Create'
+import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
@@ -265,7 +265,7 @@ function Component(props) {
                     <Item area={Grid2.filter} justify='end' align='center' className='flex'>
                         <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
                         <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
-                            <Filter typeName='IndentItem' query={state['items'].query} updateQuery={updateItemsQuery('items')} />
+                            <Filter typeName='BOMItem' query={state['items'].query} updateQuery={updateItemsQuery('items')} />
                         </Drawer>
                         <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
                             <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
