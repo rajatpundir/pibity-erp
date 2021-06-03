@@ -2,7 +2,6 @@ import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
 import Navbar from './Navbar'
 import { Container, Item, none } from './commons'
 import * as Grid from './grids'
-import CreateProduct from '../components/IT/Product/Create'
 import ShowProduct from '../components/IT/Product/Show'
 import ListProduct from '../components/IT/Product/List'
 import CreateSupplier from '../components/IT/Supplier/Create'
@@ -58,9 +57,9 @@ function App() {
           </Item>
           <Item area={Grid.content} className='overflow-y-auto py-8'>
             <Switch>
-              <Route exact path='/product'><CreateProduct /></Route>
-              <Route exact path='/product/*'><ShowProduct /></Route>
               <Route exact path='/products'><ListProduct /></Route>
+              <Route exact path='/product/*'><ShowProduct /></Route>
+              <Route path='/product'><ShowProduct /></Route>
               <Route exact path='/supplier'><CreateSupplier /></Route>
               <Route exact path='/supplier/*'><ShowSupplier /></Route>
               <Route exact path='/suppliers'><ListSupplier /></Route>

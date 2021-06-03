@@ -35,6 +35,7 @@ type State = Immutable<{
 }>
 
 export type Action =
+    | ['toggleMode']
     | ['resetVariable', State]
     | ['saveVariable']
 
@@ -57,8 +58,10 @@ function Component(props) {
     const products = useStore(store => store.variables.Product.filter(x => x.variableName.toString() === props.match.params[0]))
     const items: HashSet<Immutable<UOMVariable>> = useStore(store => store.variables.UOM.filter(x => x.values.product.toString() === props.match.params[0]))
 
+    console.log(props.match.params[0] ,'$$', props.match)
+
     const initialState: State = {
-        mode: props.match.params[0] === '' ? 'create' : 'show',
+        mode: props.match.params[0] ? 'show' : 'create',
         variable: products.length() === 1 ? products.toArray()[0] : new ProductVariable('', { name: '', orderable: true, consumable: true, producable: false }),
         uoms: {
             typeName: 'UOM',
@@ -74,6 +77,14 @@ function Component(props) {
 
     function reducer(state: Draft<State>, action: Action) {
         switch (action[0]) {
+            case 'toggleMode': {
+                state.mode = when(state.mode, {
+                    'create': 'create',
+                    'update': 'show',
+                    'show': 'update'
+                })
+                break
+            }
             case 'resetVariable': {
                 return action[1]
             }
@@ -136,7 +147,7 @@ function Component(props) {
                         break
                     }
                     case 'query': {
-                        // updateQuery(state[action[0]].query, action[2])
+                        updateQuery(state[action[0]].query, action[2])
                         break
                     }
                     case 'variable': {
@@ -170,7 +181,6 @@ function Component(props) {
 
     const [addUOMDrawer, toggleAddUOMDrawer] = useState(false)
     const [uomFilter, toggleUOMFilter] = useState(false)
-    const [editMode, toggleEditMode] = useState(false)
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         switch (event.target.name) {
@@ -217,7 +227,7 @@ function Component(props) {
         }
     }
 
-    const updateQuery = (list: 'uoms') => {
+    const updateItemsQuery = (list: 'uoms') => {
         const fx = (args: Args) => {
             dispatch([list, 'query', args])
         }
@@ -231,7 +241,7 @@ function Component(props) {
         return fx
     }
 
-    const q = iff(products.length() === 1   ,
+    return iff(state.mode === 'create' || products.length() === 1,
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
@@ -242,43 +252,85 @@ function Component(props) {
                     })}</Title>
                 </Item>
                 <Item area={Grid.button} justify='end' align='center'>
-                    <Button onClick={() => {
-                        toggleEditMode(!editMode)
-                        dispatch(['resetVariable', initialState])
-                    }}>Cancel</Button>
-                    <Button onClick={async () => {
-                        await dispatch(['saveVariable'])
-                        props.history.push('/products')
-                    }}>Save</Button>
+                    {
+                        iff(state.mode === 'create',
+                            undefined,
+                            iff(state.mode === 'update',
+                                <>
+                                    <Button onClick={() => {
+                                        dispatch(['toggleMode'])
+                                        dispatch(['resetVariable', initialState])
+                                    }}>Cancel</Button>
+                                    <Button onClick={async () => {
+                                        await dispatch(['saveVariable'])
+                                        props.history.push('/products')
+                                    }}>Save</Button>
+                                </>,
+                                <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>))
+                    }
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>
                     <Item>
                         <Label>{product.name}</Label>
-                        <Input type='text' onChange={onVariableInputChange} value={state.variable.variableName.toString()} name='variableName' />
+                        {
+                            iff(state.mode === 'create' || state.mode === 'update',
+                                <Input type='text' onChange={onVariableInputChange} value={state.variable.variableName.toString()} name='variableName' />,
+                                <div className='font-bold text-xl'>{state.variable.variableName.toString()}</div>
+                            )
+                        }
                     </Item>
                     <Item>
                         <Label>{product.keys.name.name}</Label>
-                        <Input type='text' onChange={onVariableInputChange} value={state.variable.values.name} name='name' />
+                        {
+                            iff(state.mode === 'create' || state.mode === 'update',
+                                <Input type='text' onChange={onVariableInputChange} value={state.variable.values.name} name='name' />,
+                                <div className='font-bold text-xl'>{state.variable.values.name}</div>
+                            )
+                        }
                     </Item>
                     <Item>
                         <InlineLabel>{product.keys.orderable.name}</InlineLabel>
-                        <Switch color='primary' onChange={onVariableSwitchChange} checked={state.variable.values.orderable} name='orderable' />
+                        {
+                            iff(state.mode === 'create' || state.mode === 'update',
+                                <Switch color='primary' onChange={onVariableSwitchChange} checked={state.variable.values.orderable} name='orderable' />,
+                                <div className='font-bold text-xl'>{state.variable.values.orderable ? 'Yes' : 'No'}</div>
+                            )
+                        }
                     </Item>
                     <Item>
                         <InlineLabel>{product.keys.consumable.name}</InlineLabel>
-                        <Switch color='primary' onChange={onVariableSwitchChange} checked={state.variable.values.consumable} name='consumable' />
+                        {
+                            iff(state.mode === 'create' || state.mode === 'update',
+                                <Switch color='primary' onChange={onVariableSwitchChange} checked={state.variable.values.consumable} name='consumable' />,
+                                <div className='font-bold text-xl'>{state.variable.values.consumable ? 'Yes' : 'No'}</div>
+                            )
+                        }
                     </Item>
                     <Item>
                         <InlineLabel>{product.keys.producable.name}</InlineLabel>
-                        <Switch color='primary' onChange={onVariableSwitchChange} checked={state.variable.values.producable} name='producable' />
+                        {
+                            iff(state.mode === 'create' || state.mode === 'update',
+                                <Switch color='primary' onChange={onVariableSwitchChange} checked={state.variable.values.producable} name='producable' />,
+                                <div className='font-bold text-xl'>{state.variable.values.producable ? 'Yes' : 'No'}</div>
+                            )
+                        }
                     </Item>
                 </Container>
                 <Container area={Grid.uom} layout={Grid2.layouts.main}>
                     <Item area={Grid2.header} className='flex items-center'>
                         <Title>{uom.name}s</Title>
-                        <button onClick={() => toggleAddUOMDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>
+                        {
+                            iff(state.mode === 'create' || state.mode === 'update',
+                                <button onClick={() => toggleAddUOMDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>,
+                                undefined
+                            )
+                        }
                     </Item>
                     <Item area={Grid2.filter} justify='end' align='center' className='flex'>
+                        <Button onClick={() => toggleUOMFilter(true)}>Filter</Button>
+                        <Drawer open={uomFilter} onClose={() => toggleUOMFilter(false)} anchor={'right'}>
+                            <Filter typeName='UOM' query={state['uoms'].query} updateQuery={updateItemsQuery('uoms')} />
+                        </Drawer>
                         <Drawer open={addUOMDrawer} onClose={() => toggleAddUOMDrawer(false)} anchor={'right'}>
                             <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
                                 <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add UOM</div>
@@ -297,79 +349,11 @@ function Component(props) {
                                 </Container>
                             </div>
                         </Drawer>
-                        <Button onClick={() => toggleUOMFilter(true)}>Filter</Button>
-                        <Drawer open={uomFilter} onClose={() => toggleUOMFilter(false)} anchor={'right'}>
-                            <Filter typeName='UOM' query={state['uoms'].query} updateQuery={updateQuery('uoms')} />
-                        </Drawer>
                     </Item>
                     <Table area={Grid2.table} state={state['uoms']} updatePage={updatePage('uoms')} variables={state.uoms.variables.filter(variable => applyFilter(state['uoms'].query, variable))} columns={state['uoms'].columns.toArray()} />
                 </Container >
             </Container>
-        },
-        () => {
-            return <div>Variable not found</div>
-        })
-    return q
-
-    if (products.length() === 1) {
-        return (
-            <>
-
-            </>
-        )
-        if (editMode) {
-
-        } else {
-            return (
-                <>
-                    <Container area={none} layout={Grid.layouts.main}>
-                        <Item area={Grid.header}>
-                            <Title>Product</Title>
-                        </Item>
-                        <Item area={Grid.button} justify='end' align='center'>
-                            <Button onClick={() => toggleEditMode(!editMode)}>Edit</Button>
-                        </Item>
-                        <Container area={Grid.details} layout={Grid.layouts.details}>
-                            <Item>
-                                <Label>{product.name}</Label>
-                                <div className='font-bold text-xl'>{state.variable.variableName.toString()}</div>
-                            </Item>
-                            <Item>
-                                <Label>{product.keys.name.name}</Label>
-                                <div className='font-bold text-xl'>{state.variable.values.name}</div>
-                            </Item>
-                            <Item>
-                                <InlineLabel>{product.keys.orderable.name}</InlineLabel>
-                                <div className='font-bold text-xl'>{state.variable.values.orderable ? 'Yes' : 'No'}</div>
-                            </Item>
-                            <Item>
-                                <InlineLabel>{product.keys.consumable.name}</InlineLabel>
-                                <div className='font-bold text-xl'>{state.variable.values.consumable ? 'Yes' : 'No'}</div>
-                            </Item>
-                            <Item>
-                                <InlineLabel>{product.keys.producable.name}</InlineLabel>
-                                <div className='font-bold text-xl'>{state.variable.values.producable ? 'Yes' : 'No'}</div>
-                            </Item>
-                        </Container>
-                        <Container area={Grid.uom} layout={Grid2.layouts.main}>
-                            <Item area={Grid2.header} className='flex items-center'>
-                                <Title>{uom.name}s</Title>
-                            </Item>
-                            <Item area={Grid2.filter} justify='end' align='center' className='flex'>
-                                <Button onClick={() => toggleUOMFilter(true)}>Filter</Button>
-                                <Drawer open={uomFilter} onClose={() => toggleUOMFilter(false)} anchor={'right'}>
-                                    <Filter typeName='UOM' query={state['uoms'].query} updateQuery={updateQuery('uoms')} />
-                                </Drawer>
-                            </Item>
-                            <Table area={Grid2.table} state={state['uoms']} updatePage={updatePage('uoms')} variables={state.uoms.variables.filter(variable => applyFilter(state['uoms'].query, variable))} columns={state['uoms'].columns.toArray()} />
-                        </Container >
-                    </Container>
-                </>
-            )
-        }
-    } else {
-        return (<div>Variable not found</div>)
-    }
+        }, <div>Variable not found</div>)
 }
 
 export default withRouter(Component)
