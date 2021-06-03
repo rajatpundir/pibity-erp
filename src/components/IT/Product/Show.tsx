@@ -12,7 +12,7 @@ import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
 import { Product, ProductVariable, UOMVariable } from '../../../main/variables'
-import * as Grid from './grids/Create'
+import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
@@ -58,8 +58,6 @@ function Component(props) {
     const products = useStore(store => store.variables.Product.filter(x => x.variableName.toString() === props.match.params[0]))
     const items: HashSet<Immutable<UOMVariable>> = useStore(store => store.variables.UOM.filter(x => x.values.product.toString() === props.match.params[0]))
 
-    console.log(props.match.params[0] ,'$$', props.match)
-
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
         variable: products.length() === 1 ? products.toArray()[0] : new ProductVariable('', { name: '', orderable: true, consumable: true, producable: false }),
@@ -71,7 +69,7 @@ function Component(props) {
             page: 1,
             columns: Vector.of(['values', 'name'], ['values', 'conversionRate']),
             variable: new UOMVariable('', { product: new Product(''), name: '', conversionRate: 1 }),
-            variables: HashSet.of()
+            variables: items
         }
     }
 
@@ -251,7 +249,7 @@ function Component(props) {
                         'show': 'Product'
                     })}</Title>
                 </Item>
-                <Item area={Grid.button} justify='end' align='center'>
+                <Item area={Grid.button} justify='end' align='center' className='flex'>
                     {
                         iff(state.mode === 'create',
                             undefined,
