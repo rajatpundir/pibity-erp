@@ -8,7 +8,7 @@ import * as Grid from './grids/List'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
 import Drawer from '@material-ui/core/Drawer'
 import { useState } from 'react'
-import { useStore } from '../../../main/useStore'
+import { useStore } from '../../../main/store'
 import { types } from '../../../main/types'
 import { withRouter } from 'react-router-dom'
 

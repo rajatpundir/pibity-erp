@@ -15,7 +15,7 @@ import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
 import { circuits } from '../../../main/circuits'
 import { getState } from '../../../main/store'
-import { useStore } from '../../../main/useStore'
+import { useStore } from '../../../main/store'
 import { iff, when } from '../../../main/utils'
 
 type State = Immutable<{
@@ -65,7 +65,7 @@ function Component(props) {
             page: 1,
             columns: Vector.of(['variableName'], ['values', 'purchaseorderItem'], ['values', 'purchaseorderItem', 'values', 'purchaseorder'], ['values', 'quantity']),
             variable: new PurchaseInvoiceItemVariable('', { purchaseInvoice: new PurchaseInvoice(''), purchaseOrderItem: new PurchaseOrderItem(''), quantity: 0, approved: 0, rejected: 0 }),
-            variables: props.match.params[0] ? HashSet.of() : purchaseInvoiceItems
+            variables: props.match.params[0] ? purchaseInvoiceItems : HashSet.of()
         }
     }
 
@@ -248,7 +248,7 @@ function Component(props) {
                 </Container>
                 <Container area={Grid.uom} layout={Grid2.layouts.main}>
                     <Item area={Grid2.header} className='flex items-center'>
-                        <Title>{item.name}s</Title>
+                        <Title>Items</Title>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>,
@@ -268,7 +268,7 @@ function Component(props) {
                                     <Item>
                                         <Label>{item.keys.purchaseOrderItem.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.purchaseOrderItem.toString()} name='purchaseOrderItem'>
-                                            <option value='' selected disabled hidden>Select Product</option>
+                                            <option value='' selected disabled hidden>Select Item</option>
                                             {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                         </Select>
                                     </Item>

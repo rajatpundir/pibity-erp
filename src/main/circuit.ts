@@ -58,7 +58,7 @@ export type Circuit = {
 }
 
 export function executeCircuit(circuit: Circuit, args: object, overlay: Vector<Diff> = Vector.of()): [object, boolean, Diff] {
-    console.log(args)
+    console.log('$', args)
     const computationResults = {}
     var outputs = {}
     var diffs = Vector.of<Diff>()

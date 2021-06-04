@@ -1,22 +1,25 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
-import { TransferMaterialSlipVariable, ProductionPreparationSlip } from '../../../main/variables'
+import { ProductionPreparationSlip, TransferMaterialSlipVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
 import { circuits } from '../../../main/circuits'
 import { getState } from '../../../main/store'
-import { useStore } from '../../../main/useStore'
+import { useStore } from '../../../main/store'
+import { iff, when } from '../../../main/utils'
 
 type State = Immutable<{
+    mode: 'create' | 'update' | 'show'
     variable: TransferMaterialSlipVariable
 }>
 
 export type Action =
+    | ['toggleMode']
     | ['resetVariable', State]
     | ['saveVariable']
 
@@ -24,57 +27,53 @@ export type Action =
     | ['variable', 'values', 'quantity', number]
 
 
-
-const initialState: State = {
-    variable: new TransferMaterialSlipVariable('', { productionPreparationSlip: new ProductionPreparationSlip(''), quantity: 0, transferred: 0 }),
-}
-
-function reducer(state: Draft<State>, action: Action) {
-    switch (action[0]) {
-        case 'resetVariable': {
-            return action[1]
-        }
-        case 'saveVariable': {
-            const [result, symbolFlag, diff] = executeCircuit(circuits.createTransferMaterialSlip, {
-                productionPreparationSlip: state.variable.values.productionPreparationSlip.toString(),
-                quantity: state.variable.values.quantity
-            })
-            console.log(result, symbolFlag)
-            if (symbolFlag) {
-                getState().addDiff(diff)
-            }
-            break
-        }
-        case 'variable': {
-            switch (action[1]) {
-                case 'values': {
-                    switch (action[2]) {
-                        case 'productionPreparationSlip': {
-                            state[action[0]][action[1]][action[2]] = action[3]
-                            break
-                        }
-                        case 'quantity': {
-                            state[action[0]][action[1]][action[2]] = action[3]
-                            break
-                        }
-                    }
-                }
-            }
-            break
-        }
-    }
-}
-
 function Component(props) {
-    const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
+
     const transferMaterialSlips = useStore(state => state.variables.TransferMaterialSlip.filter(x => x.variableName.toString() === props.match.params[0]))
 
 
-    const productionPreparationSlips = useStore(state => state.variables.ProductionPreparationSlip)
+    const initialState: State = {
+        mode: props.match.params[0] ? 'show' : 'create',
+        variable: transferMaterialSlips.length() === 1 ? transferMaterialSlips.toArray()[0] : new TransferMaterialSlipVariable('', { productionPreparationSlip: new ProductionPreparationSlip(''), quantity: 0, transferred: 0 })
+    }
+
+    function reducer(state: Draft<State>, action: Action) {
+        switch (action[0]) {
+            case 'resetVariable': {
+                return action[1]
+            }
+            case 'saveVariable': {
+                const [result, symbolFlag, diff] = executeCircuit(circuits.createTransferMaterialSlip, {
+                    productionPreparationSlip: state.variable.values.productionPreparationSlip,
+                    quantity: state.variable.values.quantity
+                })
+                console.log(result, symbolFlag)
+                if (symbolFlag) {
+                    getState().addDiff(diff)
+                }
+                break
+            }
+            case 'variable': {
+                switch (action[1]) {
+                    case 'values': {
+                        switch (action[2]) {
+                            case 'productionPreparationSlip': {
+                                state[action[0]][action[1]][action[2]] = action[3]
+                                break
+                            }
+                        }
+                    }
+                }
+                break
+            }
+        }
+    }
+
+    const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
+
+    const productionpreparationslips = useStore(store => store.variables.ProductionPreparationSlip)
 
     const transferMaterialSlip = types['TransferMaterialSlip']
-
-    const [editMode, toggleEditMode] = useState(false)
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
@@ -93,69 +92,62 @@ function Component(props) {
         }
     }
 
-    if (transferMaterialSlips.length() === 1) {
-        if (editMode) {
-            return (
-                <>
-                    <Container area={none} layout={Grid.layouts.main}>
-                        <Item area={Grid.header}>
-                            <Title>Update{transferMaterialSlip.name}</Title>
-                        </Item>
-                        <Item area={Grid.button} justify='end' align='center'>
+    return iff(state.mode === 'create' || transferMaterialSlips.length() === 1,
+        () => {
+            return <Container area={none} layout={Grid.layouts.main}>
+                <Item area={Grid.header}>
+                    <Title>{when(state.mode, {
+                        'create': `Create ${transferMaterialSlip.name}`,
+                        'update': `Update ${transferMaterialSlip.name}`,
+                        'show': `${transferMaterialSlip.name}`
+                    })}</Title>
+                </Item>
+                <Item area={Grid.button} justify='end' align='center' className='flex'>
+                    {
+                        iff(state.mode === 'create',
                             <Button onClick={async () => {
-                                 dispatch(['saveVariable'])
-                                props.history.push('/materials-transferred')
-                            }}>Save</Button>
-                        </Item>
-                        <Container area={Grid.details} layout={Grid.layouts.details}>
-                            <Item>
-                                <Label>{transferMaterialSlip.keys.productionPreparationSlip.name}</Label>
+                                dispatch(['saveVariable'])
+                                props.history.push('/purchase-orders')
+                            }}>Save</Button>,
+                            iff(state.mode === 'update',
+                                <>
+                                    <Button onClick={() => {
+                                        dispatch(['toggleMode'])
+                                        dispatch(['resetVariable', initialState])
+                                    }}>Cancel</Button>
+                                    <Button onClick={async () => {
+                                        dispatch(['saveVariable'])
+                                        props.history.push('/purchase-orders')
+                                    }}>Save</Button>
+                                </>,
+                                <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>))
+                    }
+                </Item>
+                <Container area={Grid.details} layout={Grid.layouts.details}>
+                    <Item>
+                        <Label>{transferMaterialSlip.keys.productionPreparationSlip.name}</Label>
+                        {
+                            iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.productionPreparationSlip.toString()} name='productionPreparationSlip'>
-                                    <option value='' selected disabled hidden>Select Material Production Preparation Slip</option>
-                                    {productionPreparationSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
-                                </Select>
-                            </Item>
-                            <Item>
-                                <Label>{transferMaterialSlip.keys.quantity.name}</Label>
-                                <Input type='text' onChange={onVariableInputChange} value={state.variable.values.quantity} name='quantity' />
-                            </Item>
-                        </Container>
-                    </Container>
-                </>
-            )
-        } else {
-            return (
-                <>
-                    <Container area={none} layout={Grid.layouts.main}>
-                        <Item area={Grid.header}>
-                            <Title>Update{transferMaterialSlip.name}</Title>
-                        </Item>
-                        <Item area={Grid.button} justify='end' align='center'>
-                            <Button onClick={async () => {
-                                 dispatch(['saveVariable'])
-                                props.history.push('/materials-transferred')
-                            }}>Save</Button>
-                        </Item>
-                        <Container area={Grid.details} layout={Grid.layouts.details}>
-                            <Item>
-                                <Label>{transferMaterialSlip.keys.productionPreparationSlip.name}</Label>
-                                <Select onChange={onVariableInputChange} value={state.variable.values.productionPreparationSlip.toString()} name='productionPreparationSlip'>
-                                    <option value='' selected disabled hidden>Select Material Production Preparation Slip</option>
-                                    {productionPreparationSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
-                                </Select>
-                            </Item>
-                            <Item>
-                                <Label>{transferMaterialSlip.keys.quantity.name}</Label>
-                                <Input type='text' onChange={onVariableInputChange} value={state.variable.values.quantity} name='quantity' />
-                            </Item>
-                        </Container>
-                    </Container>
-                </>
-            )
-        }
-    } else {
-        return (<div>Variable not found</div>)
-    }
+                                    <option value='' selected disabled hidden>Select Material Rejection Slip</option>
+                                    {productionpreparationslips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                </Select>,
+                                <div className='font-bold text-xl'>{state.variable.values.productionPreparationSlip.toString()}</div>
+                            )
+                        }
+                    </Item>
+                    <Item>
+                        <Label>{transferMaterialSlip.keys.quantity.name}</Label>
+                        {
+                            iff(state.mode === 'create' || state.mode === 'update',
+                                <Input type='number' onChange={onVariableInputChange} value={state.variable.values.quantity} name='quantity' />,
+                                <div className='font-bold text-xl'>{state.variable.values.quantity.toString()}</div>
+                            )
+                        }
+                    </Item>
+                </Container>
+            </Container>
+        }, <div>Variable not found</div>)
 }
 
 export default withRouter(Component)

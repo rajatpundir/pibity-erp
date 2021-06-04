@@ -16,7 +16,7 @@ import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
-import { useStore } from '../../../main/useStore'
+import { useStore } from '../../../main/store'
 import { iff, when } from '../../../main/utils'
 
 type State = Immutable<{
@@ -69,7 +69,7 @@ function Component(props) {
             page: 1,
             columns: Vector.of(['values', 'name'], ['values', 'conversionRate']),
             variable: new UOMVariable('', { product: new Product(''), name: '', conversionRate: 1 }),
-            variables: items
+            variables: props.match.params[0] ? items : HashSet.of<UOMVariable>()
         }
     }
 

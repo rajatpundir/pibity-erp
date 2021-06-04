@@ -158,7 +158,7 @@ export class UOMVariable {
         if (!other) {
             return false;
         }
-        return this.variableName.equals(other.variableName) && (this.values.product.equals(other.values.product) && this.values.name === other.values.name)
+        return this.values.product.equals(other.values.product) && this.values.name === other.values.name
     }
 
     hashCode(): number {
@@ -276,7 +276,7 @@ export class IndentItemVariable {
         if (!other) {
             return false;
         }
-        return this.variableName.equals(other.variableName) && (this.values.indent.equals(other.values.indent) && this.values.product.equals(other.values.product))
+        return this.values.indent.equals(other.values.indent) && this.values.product.equals(other.values.product)
     }
 
     hashCode(): number {
@@ -372,7 +372,7 @@ export class SupplierProductVariable {
         if (!other) {
             return false;
         }
-        return this.variableName.equals(other.variableName) && (this.values.supplier.equals(other.values.supplier) && this.values.product.equals(other.values.product))
+        return this.values.supplier.equals(other.values.supplier) && this.values.product.equals(other.values.product)
     }
 
     hashCode(): number {
@@ -474,7 +474,7 @@ export class QuotationItemVariable {
         if (!other) {
             return false;
         }
-        return this.variableName.equals(other.variableName) && (this.values.quotation.equals(other.values.quotation) && this.values.indentItem.equals(other.values.indentItem))
+        return this.values.quotation.equals(other.values.quotation) && this.values.indentItem.equals(other.values.indentItem)
     }
 
     hashCode(): number {
@@ -578,7 +578,7 @@ export class PurchaseOrderItemVariable {
         if (!other) {
             return false;
         }
-        return this.variableName.equals(other.variableName) && (this.values.purchaseOrder.equals(other.values.purchaseOrder) && this.values.quotationItem.equals(other.values.quotationItem))
+        return this.values.purchaseOrder.equals(other.values.purchaseOrder) && this.values.quotationItem.equals(other.values.quotationItem)
     }
 
     hashCode(): number {
@@ -682,7 +682,7 @@ export class PurchaseInvoiceItemVariable {
         if (!other) {
             return false;
         }
-        return this.variableName.equals(other.variableName) && (this.values.purchaseInvoice.equals(other.values.purchaseInvoice) && this.values.purchaseOrderItem.equals(other.values.purchaseOrderItem))
+        return this.values.purchaseInvoice.equals(other.values.purchaseInvoice) && this.values.purchaseOrderItem.equals(other.values.purchaseOrderItem)
     }
 
     hashCode(): number {
@@ -785,7 +785,7 @@ export class MaterialApprovalSlipItemVariable {
         if (!other) {
             return false;
         }
-        return this.variableName.equals(other.variableName) && (this.values.materialApprovalSlip.equals(other.values.materialApprovalSlip) && this.values.purchaseInvoiceItem.equals(other.values.purchaseInvoiceItem))
+        return this.values.materialApprovalSlip.equals(other.values.materialApprovalSlip) && this.values.purchaseInvoiceItem.equals(other.values.purchaseInvoiceItem)
     }
 
     hashCode(): number {
@@ -888,7 +888,7 @@ export class MaterialRejectionSlipItemVariable {
         if (!other) {
             return false;
         }
-        return this.variableName.equals(other.variableName) && (this.values.materialRejectionSlip.equals(other.values.materialRejectionSlip) && this.values.purchaseInvoiceItem.equals(other.values.purchaseInvoiceItem))
+        return this.values.materialRejectionSlip.equals(other.values.materialRejectionSlip) && this.values.purchaseInvoiceItem.equals(other.values.purchaseInvoiceItem)
     }
 
     hashCode(): number {
@@ -989,7 +989,7 @@ export class MaterialReturnSlipItemVariable {
         if (!other) {
             return false;
         }
-        return this.variableName.equals(other.variableName) && (this.values.materialReturnSlip.equals(other.values.materialReturnSlip) && this.values.materialRejectionSlipItem.equals(other.values.materialRejectionSlipItem))
+        return this.values.materialReturnSlip.equals(other.values.materialReturnSlip) && this.values.materialRejectionSlipItem.equals(other.values.materialRejectionSlipItem)
     }
 
     hashCode(): number {
@@ -1092,7 +1092,7 @@ export class MaterialRequistionSlipItemVariable {
         if (!other) {
             return false;
         }
-        return this.variableName.equals(other.variableName) && (this.values.materialRequistionSlip.equals(other.values.materialRequistionSlip) && this.values.materialApprovalSlipItem.equals(other.values.materialApprovalSlipItem))
+        return this.values.materialRequistionSlip.equals(other.values.materialRequistionSlip) && this.values.materialApprovalSlipItem.equals(other.values.materialApprovalSlipItem)
     }
 
     hashCode(): number {
@@ -1192,7 +1192,7 @@ export class BOMItemVariable {
         if (!other) {
             return false;
         }
-        return this.variableName.equals(other.variableName) && (this.values.bom.equals(other.values.bom) && this.values.product.equals(other.values.product))
+        return this.values.bom.equals(other.values.bom) && this.values.product.equals(other.values.product)
     }
 
     hashCode(): number {
@@ -1297,7 +1297,7 @@ export class ProductionPreparationSlipItemVariable {
         if (!other) {
             return false;
         }
-        return this.variableName.equals(other.variableName) && (this.values.productionPreparationSlip.equals(other.values.productionPreparationSlip) && this.values.bomItem === other.values.bomItem)
+        return this.values.productionPreparationSlip.equals(other.values.productionPreparationSlip) && this.values.bomItem === other.values.bomItem
     }
 
     hashCode(): number {

@@ -1,4 +1,5 @@
 import create from 'zustand/vanilla'
+import createStore from 'zustand'
 import { Layer, Diff, compose, base } from './layers'
 import { devtools } from 'zustand/middleware'
 
@@ -27,3 +28,5 @@ export const store = create<State>(devtools((set, get) => ({
 })))
 
 export const { getState, setState, subscribe, destroy } = store
+
+export const useStore = createStore(store)

@@ -15,7 +15,7 @@ import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
 import { circuits } from '../../../main/circuits'
 import { getState } from '../../../main/store'
-import { useStore } from '../../../main/useStore'
+import { useStore } from '../../../main/store'
 import { iff, when } from '../../../main/utils'
 
 type State = Immutable<{
@@ -63,7 +63,7 @@ function Component(props) {
             page: 1,
             columns: Vector.of(['values', 'product'], ['values', 'quantity'], ['values', 'uom', 'values', 'name'], ['values', 'ordered'], ['values', 'received'], ['values', 'approved'], ['values', 'rejected'], ['values', 'returned'], ['values', 'requisted'], ['values', 'consumed']),
             variable: new IndentItemVariable('', { indent: new Indent(''), product: new Product(''), quantity: 0, uom: new UOM(''), ordered: 0, received: 0, approved: 0, rejected: 0, returned: 0, requisted: 0, consumed: 0 }),
-            variables: props.match.params[0] ? HashSet.of<IndentItemVariable>() : items
+            variables: props.match.params[0] ? items : HashSet.of<IndentItemVariable>()
         }
     }
 
@@ -223,7 +223,7 @@ function Component(props) {
                 </Item>
                 <Container area={Grid.uom} layout={Grid2.layouts.main}>
                     <Item area={Grid2.header} className='flex items-center'>
-                        <Title>{item.name}s</Title>
+                        <Title>Items</Title>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>,

@@ -12,7 +12,7 @@ import { Indent, IndentItem, Quotation, QuotationItemVariable, QuotationVariable
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
-import { useStore } from '../../../main/useStore'
+import { useStore } from '../../../main/store'
 import { executeCircuit } from '../../../main/circuit'
 import { circuits } from '../../../main/circuits'
 import { getState } from '../../../main/store'
