@@ -1,4 +1,5 @@
 import { immerable } from 'immer'
+import { BOMItemRow, BOMRow, IndentItemRow, IndentRow, MaterialApprovalSlipItemRow, MaterialApprovalSlipRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow, MaterialRequistionSlipItemRow, MaterialRequistionSlipRow, MaterialReturnSlipItemRow, MaterialReturnSlipRow, ProductionPreparationSlipItemRow, ProductionPreparationSlipRow, ProductRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow, PurchaseOrderItemRow, PurchaseOrderRow, QuotationItemRow, QuotationRow, ScrapMaterialSlipRow, SupplierProductRow, SupplierRow, TransferMaterialSlipRow, UOMRow, WarehouseAcceptanceSlipRow } from './rows'
 import { NonPrimitiveType } from './types'
 
 export type Text = string
@@ -117,6 +118,10 @@ export class ProductVariable {
     toString(): string {
         return JSON.stringify(this, null, 2)
     }
+
+    toRow(): ProductRow {
+        return new ProductRow(this.variableName.toString(), this.values)
+    }
 }
 
 export class UOM {
@@ -168,6 +173,14 @@ export class UOMVariable {
     toString(): string {
         return JSON.stringify(this, null, 2)
     }
+
+    toRow(): UOMRow {
+        return new UOMRow(this.variableName.toString(), {
+            product: this.values.product.toString(),
+            name: this.values.name,
+            conversionRate: this.values.conversionRate
+        })
+    }
 }
 
 export class Indent {
@@ -218,6 +231,10 @@ export class IndentVariable {
 
     toString(): string {
         return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): IndentRow {
+        return new IndentRow(this.variableName.toString(), this.values)
     }
 }
 
@@ -286,6 +303,22 @@ export class IndentItemVariable {
     toString(): string {
         return JSON.stringify(this, null, 2)
     }
+
+    toRow(): IndentItemRow {
+        return new IndentItemRow(this.variableName.toString(), {
+            indent: this.values.indent.toString(),
+            product: this.values.product.toString(),
+            quantity: this.values.quantity,
+            uom: this.values.uom.toString(),
+            ordered: this.values.ordered,
+            received: this.values.received,
+            approved: this.values.approved,
+            rejected: this.values.rejected,
+            returned: this.values.returned,
+            requisted: this.values.requisted,
+            consumed: this.values.consumed,
+        })
+    }
 }
 
 export class Supplier {
@@ -331,6 +364,10 @@ export class SupplierVariable {
 
     toString(): string {
         return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): SupplierRow {
+        return new SupplierRow(this.variableName.toString(), this.values)
     }
 }
 
@@ -382,6 +419,13 @@ export class SupplierProductVariable {
     toString(): string {
         return JSON.stringify(this, null, 2)
     }
+
+    toRow(): SupplierProductRow {
+        return new SupplierProductRow(this.variableName.toString(), {
+            supplier: this.values.supplier.toString(),
+            product: this.values.product.toString()
+        })
+    }
 }
 
 export class Quotation {
@@ -430,6 +474,13 @@ export class QuotationVariable {
 
     toString(): string {
         return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): QuotationRow {
+        return new QuotationRow(this.variableName.toString(), {
+            indent: this.values.indent.toString(),
+            supplier: this.values.supplier.toString()
+        })
     }
 }
 
@@ -484,6 +535,14 @@ export class QuotationItemVariable {
     toString(): string {
         return JSON.stringify(this, null, 2)
     }
+
+    toRow(): QuotationItemRow {
+        return new QuotationItemRow(this.variableName.toString(), {
+            quotation: this.values.quotation.toString(),
+            indentItem: this.values.indentItem.toString(),
+            quantity: this.values.quantity
+        })
+    }
 }
 
 export class PurchaseOrder {
@@ -531,6 +590,12 @@ export class PurchaseOrderVariable {
 
     toString(): string {
         return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): PurchaseOrderRow {
+        return new PurchaseOrderRow(this.variableName.toString(), {
+            quotation: this.values.quotation.toString()
+        })
     }
 }
 
@@ -588,6 +653,16 @@ export class PurchaseOrderItemVariable {
     toString(): string {
         return JSON.stringify(this, null, 2)
     }
+
+    toRow(): PurchaseOrderItemRow {
+        return new PurchaseOrderItemRow(this.variableName.toString(), {
+            purchaseOrder: this.values.purchaseOrder.toString(),
+            quotationItem: this.values.quotationItem.toString(),
+            quantity: this.values.quantity,
+            price: this.values.price,
+            received: this.values.received
+        })
+    }
 }
 
 export class PurchaseInvoice {
@@ -635,6 +710,12 @@ export class PurchaseInvoiceVariable {
 
     toString(): string {
         return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): PurchaseInvoiceRow {
+        return new PurchaseInvoiceRow(this.variableName.toString(), {
+            purchaseOrder: this.values.purchaseOrder.toString()
+        })
     }
 }
 
@@ -692,6 +773,16 @@ export class PurchaseInvoiceItemVariable {
     toString(): string {
         return JSON.stringify(this, null, 2)
     }
+
+    toRow(): PurchaseInvoiceItemRow {
+        return new PurchaseInvoiceItemRow(this.variableName.toString(), {
+            purchaseInvoice: this.values.purchaseInvoice.toString(),
+            purchaseOrderItem: this.values.purchaseOrderItem.toString(),
+            quantity: this.values.quantity,
+            approved: this.values.approved,
+            rejected: this.values.approved
+        })
+    }
 }
 
 export class MaterialApprovalSlip {
@@ -739,6 +830,12 @@ export class MaterialApprovalSlipVariable {
 
     toString(): string {
         return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): MaterialApprovalSlipRow {
+        return new MaterialApprovalSlipRow(this.variableName.toString(), {
+            purchaseInvoice: this.values.purchaseInvoice.toString()
+        })
     }
 }
 
@@ -795,6 +892,15 @@ export class MaterialApprovalSlipItemVariable {
     toString(): string {
         return JSON.stringify(this, null, 2)
     }
+
+    toRow(): MaterialApprovalSlipItemRow {
+        return new MaterialApprovalSlipItemRow(this.variableName.toString(), {
+            materialApprovalSlip: this.values.materialApprovalSlip.toString(),
+            purchaseInvoiceItem: this.values.purchaseInvoiceItem.toString(),
+            quantity: this.values.quantity,
+            requisted: this.values.requisted
+        })
+    }
 }
 
 export class MaterialRejectionSlip {
@@ -842,6 +948,12 @@ export class MaterialRejectionSlipVariable {
 
     toString(): string {
         return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): MaterialRejectionSlipRow {
+        return new MaterialRejectionSlipRow(this.variableName.toString(), {
+            purchaseInvoice: this.values.purchaseInvoice.toString()
+        })
     }
 }
 
@@ -898,6 +1010,15 @@ export class MaterialRejectionSlipItemVariable {
     toString(): string {
         return JSON.stringify(this, null, 2)
     }
+
+    toRow(): MaterialRejectionSlipItemRow {
+        return new MaterialRejectionSlipItemRow(this.variableName.toString(), {
+            materialRejectionSlip: this.values.materialRejectionSlip.toString(),
+            purchaseInvoiceItem: this.values.purchaseInvoiceItem.toString(),
+            quantity: this.values.quantity,
+            returned: this.values.returned
+        })
+    }
 }
 
 export class MaterialReturnSlip {
@@ -945,6 +1066,12 @@ export class MaterialReturnSlipVariable {
 
     toString(): string {
         return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): MaterialReturnSlipRow {
+        return new MaterialReturnSlipRow(this.variableName.toString(), {
+            materialRejectionSlip: this.values.materialRejectionSlip.toString()
+        })
     }
 }
 
@@ -999,6 +1126,14 @@ export class MaterialReturnSlipItemVariable {
     toString(): string {
         return JSON.stringify(this, null, 2)
     }
+
+    toRow(): MaterialReturnSlipItemRow {
+        return new MaterialReturnSlipItemRow(this.variableName.toString(), {
+            materialReturnSlip: this.values.materialReturnSlip.toString(),
+            materialRejectionSlipItem: this.values.materialRejectionSlipItem.toString(),
+            quantity: this.values.quantity
+        })
+    }
 }
 
 export class MaterialRequistionSlip {
@@ -1046,6 +1181,12 @@ export class MaterialRequistionSlipVariable {
 
     toString(): string {
         return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): MaterialRequistionSlipRow {
+        return new MaterialRequistionSlipRow(this.variableName.toString(), {
+            materialApprovalSlip: this.values.materialApprovalSlip.toString()
+        })
     }
 }
 
@@ -1102,6 +1243,15 @@ export class MaterialRequistionSlipItemVariable {
     toString(): string {
         return JSON.stringify(this, null, 2)
     }
+
+    toRow(): MaterialRequistionSlipItemRow {
+        return new MaterialRequistionSlipItemRow(this.variableName.toString(), {
+            materialRequistionSlip: this.values.materialRequistionSlip.toString(),
+            materialApprovalSlipItem: this.values.materialApprovalSlipItem.toString(),
+            quantity: this.values.quantity,
+            consumed: this.values.consumed
+        })
+    }
 }
 
 export class BOM {
@@ -1147,6 +1297,10 @@ export class BOMVariable {
 
     toString(): string {
         return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): BOMRow {
+        return new BOMRow(this.variableName.toString(), this.values)
     }
 }
 
@@ -1202,6 +1356,15 @@ export class BOMItemVariable {
     toString(): string {
         return JSON.stringify(this, null, 2)
     }
+
+    toRow(): BOMItemRow {
+        return new BOMItemRow(this.variableName.toString(), {
+            bom: this.values.bom.toString(),
+            product: this.values.product.toString(),
+            quantity: this.values.quantity,
+            uom: this.values.uom.toString()
+        })
+    }
 }
 
 export class ProductionPreparationSlip {
@@ -1252,6 +1415,14 @@ export class ProductionPreparationSlipVariable {
 
     toString(): string {
         return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): ProductionPreparationSlipRow {
+        return new ProductionPreparationSlipRow(this.variableName.toString(), {
+            bom: this.values.bom.toString(),
+            approved: this.values.approved,
+            scrapped: this.values.scrapped
+        })
     }
 }
 
@@ -1307,6 +1478,14 @@ export class ProductionPreparationSlipItemVariable {
     toString(): string {
         return JSON.stringify(this, null, 2)
     }
+
+    toRow(): ProductionPreparationSlipItemRow {
+        return new ProductionPreparationSlipItemRow(this.variableName.toString(), {
+            productionPreparationSlip: this.values.productionPreparationSlip.toString(),
+            bomItem: this.values.bomItem,
+            materialRequistionSlipItem: this.values.materialRequistionSlipItem.toString()
+        })
+    }
 }
 
 export class ScrapMaterialSlip {
@@ -1356,6 +1535,13 @@ export class ScrapMaterialSlipVariable {
 
     toString(): string {
         return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): ScrapMaterialSlipRow {
+        return new ScrapMaterialSlipRow(this.variableName.toString(), {
+            productionPreparationSlip: this.values.productionPreparationSlip.toString(),
+            quantity: this.values.quantity
+        })
     }
 }
 
@@ -1409,6 +1595,14 @@ export class TransferMaterialSlipVariable {
     toString(): string {
         return JSON.stringify(this, null, 2)
     }
+
+    toRow(): TransferMaterialSlipRow {
+        return new TransferMaterialSlipRow(this.variableName.toString(), {
+            productionPreparationSlip: this.values.productionPreparationSlip.toString(),
+            quantity: this.values.quantity,
+            transferred: this.values.transferred
+        })
+    }
 }
 
 export class WarehouseAcceptanceSlip {
@@ -1458,6 +1652,13 @@ export class WarehouseAcceptanceSlipVariable {
 
     toString(): string {
         return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): WarehouseAcceptanceSlipRow {
+        return new WarehouseAcceptanceSlipRow(this.variableName.toString(), {
+            transferMaterialSlip: this.values.transferMaterialSlip.toString(),
+            quantity: this.values.quantity
+        })
     }
 }
 
