@@ -18,7 +18,6 @@ import { withRouter } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
 import { useStore } from '../../../main/store'
 import { iff, when } from '../../../main/utils'
-import { db } from '../../../main/dexie'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -254,8 +253,8 @@ function Component(props) {
                     {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
-                                await db.products.put(state.variable)
-                                // await dispatch(['saveVariable'])
+                                // await db.products.put(state.variable)
+                                await dispatch(['saveVariable'])
                                 props.history.push('/products')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
@@ -265,8 +264,8 @@ function Component(props) {
                                         dispatch(['resetVariable', initialState])
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
-                                        await db.products.put(state.variable)
-                                        // await dispatch(['saveVariable'])
+                                        // await db.products.put(state.variable)
+                                        await dispatch(['saveVariable'])
                                         props.history.push('/products')
                                     }}>Save</Button>
                                 </>,

@@ -1,9 +1,9 @@
 import Dexie from 'dexie'
 import { Immutable } from 'immer'
-import { Product, ProductVariable } from './variables'
+import { ProductRow } from './rows'
 
 class Database extends Dexie {
-    products: Dexie.Table<Immutable<ProductVariable>, Product>
+    products: Dexie.Table<Immutable<ProductRow>, string>
 
     constructor () {
         super('Database')
