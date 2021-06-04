@@ -38,13 +38,13 @@ export type Action =
     | ['resetVariable', State]
     | ['saveVariable']
 
-    | ['variable', 'values', 'purchaseorder', PurchaseOrder]
+    | ['variable', 'values', 'purchaseOrder', PurchaseOrder]
 
     | ['items', 'limit', number]
     | ['items', 'offset', number]
     | ['items', 'page', number]
     | ['items', 'query', Args]
-    | ['items', 'variable', 'values', 'purchaseorderItem', PurchaseOrderItem]
+    | ['items', 'variable', 'values', 'purchaseOrderItem', PurchaseOrderItem]
     | ['items', 'variable', 'values', 'quantity', number]
     | ['items', 'addVariable']
 
@@ -63,7 +63,7 @@ function Component(props) {
             limit: 5,
             offset: 0,
             page: 1,
-            columns: Vector.of(['variableName'], ['values', 'purchaseorderItem'], ['values', 'purchaseorderItem', 'values', 'purchaseorder'], ['values', 'quantity']),
+            columns: Vector.of(['values', 'purchaseOrderItem'], ['values', 'purchaseOrderItem', 'values', 'purchaseOrder'], ['values', 'quantity']),
             variable: new PurchaseInvoiceItemVariable('', { purchaseInvoice: new PurchaseInvoice(''), purchaseOrderItem: new PurchaseOrderItem(''), quantity: 0, approved: 0, rejected: 0 }),
             variables: props.match.params[0] ? purchaseInvoiceItems : HashSet.of()
         }
@@ -71,6 +71,14 @@ function Component(props) {
 
     function reducer(state: Draft<State>, action: Action) {
         switch (action[0]) {
+            case 'toggleMode': {
+                state.mode = when(state.mode, {
+                    'create': 'create',
+                    'update': 'show',
+                    'show': 'update'
+                })
+                break
+            }
             case 'resetVariable': {
                 return action[1]
             }
@@ -94,7 +102,7 @@ function Component(props) {
                 switch (action[1]) {
                     case 'values': {
                         switch (action[2]) {
-                            case 'purchaseorder': {
+                            case 'purchaseOrder': {
                                 state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
@@ -124,7 +132,7 @@ function Component(props) {
                     }
                     case 'variable': {
                         switch (action[3]) {
-                            case 'purchaseorderItem': {
+                            case 'purchaseOrderItem': {
                                 state[action[0]][action[1]][action[2]][action[3]] = action[4]
                                 break
                             }
@@ -148,7 +156,7 @@ function Component(props) {
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const purchaseorders = useStore(store => store.variables.PurchaseOrder)
+    const purchaseOrders = useStore(store => store.variables.PurchaseOrder)
     const items = useStore(store => store.variables.PurchaseOrderItem.filter(x => x.values.purchaseOrder.toString() === state.variable.values.purchaseOrder.toString()))
 
     const purchaseInvoice = types['PurchaseInvoice']
@@ -161,7 +169,7 @@ function Component(props) {
         switch (event.target.name) {
             default: {
                 switch (event.target.name) {
-                    case 'purchaseorder': {
+                    case 'purchaseOrder': {
                         dispatch(['variable', 'values', event.target.name, new PurchaseOrder(event.target.value)])
                         break
                     }
@@ -174,7 +182,7 @@ function Component(props) {
         switch (event.target.name) {
             default: {
                 switch (event.target.name) {
-                    case 'purchaseorderItem': {
+                    case 'purchaseOrderItem': {
                         dispatch(['items', 'variable', 'values', event.target.name, new PurchaseOrderItem(event.target.value)])
                         break
                     }
@@ -215,8 +223,8 @@ function Component(props) {
                     {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
-                                dispatch(['saveVariable'])
-                                props.history.push('/purchase-orders')
+                                await dispatch(['saveVariable'])
+                                props.history.push('/purchase-invoices')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
                                 <>
@@ -225,8 +233,8 @@ function Component(props) {
                                         dispatch(['resetVariable', initialState])
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
-                                        dispatch(['saveVariable'])
-                                        props.history.push('/purchase-orders')
+                                        await dispatch(['saveVariable'])
+                                        props.history.push('/purchase-invoices')
                                     }}>Save</Button>
                                 </>,
                                 <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>))
@@ -238,8 +246,8 @@ function Component(props) {
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.purchaseOrder.toString()} name='purchaseOrder'>
-                                    <option value='' selected disabled hidden>Select Material Rejection Slip</option>
-                                    {purchaseorders.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    <option value='' selected disabled hidden>Select item</option>
+                                    {purchaseOrders.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.purchaseOrder.toString()}</div>
                             )

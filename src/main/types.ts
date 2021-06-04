@@ -557,7 +557,7 @@ export const types = {
     TransferMaterialSlip: {
         name: 'Transfer Material Slip',
         autoId: true,
-        url: 'material-trasnferred',
+        url: 'material-transferred',
         keys: {
             productionPreparationSlip: {
                 order: 0,

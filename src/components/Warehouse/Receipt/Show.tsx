@@ -39,6 +39,14 @@ function Component(props) {
 
     function reducer(state: Draft<State>, action: Action) {
         switch (action[0]) {
+            case 'toggleMode': {
+                state.mode = when(state.mode, {
+                    'create': 'create',
+                    'update': 'show',
+                    'show': 'update'
+                })
+                break
+            }
             case 'resetVariable': {
                 return action[1]
             }
@@ -61,6 +69,10 @@ function Component(props) {
                                 state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
+                            case 'quantity': {
+                                state[action[0]][action[1]][action[2]] = action[3]
+                                break
+                            }
                         }
                     }
                 }
@@ -71,7 +83,7 @@ function Component(props) {
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const transfermaterialslips = useStore(store => store.variables.TransferMaterialSlip)
+    const transferMaterialSlips = useStore(store => store.variables.TransferMaterialSlip)
 
     const warehouseAcceptanceSlip = types['WarehouseAcceptanceSlip']
 
@@ -107,7 +119,7 @@ function Component(props) {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
                                 dispatch(['saveVariable'])
-                                props.history.push('/purchase-orders')
+                                props.history.push('/warehouse-receipts')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
                                 <>
@@ -117,7 +129,7 @@ function Component(props) {
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
                                         dispatch(['saveVariable'])
-                                        props.history.push('/purchase-orders')
+                                        props.history.push('/warehouse-receipts')
                                     }}>Save</Button>
                                 </>,
                                 <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>))
@@ -129,8 +141,8 @@ function Component(props) {
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.transferMaterialSlip.toString()} name='transferMaterialSlip'>
-                                    <option value='' selected disabled hidden>Select Material Rejection Slip</option>
-                                    {transfermaterialslips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    <option value='' selected disabled hidden>Select item</option>
+                                    {transferMaterialSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.transferMaterialSlip.toString()}</div>
                             )

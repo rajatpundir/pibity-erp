@@ -38,13 +38,13 @@ export type Action =
     | ['resetVariable', State]
     | ['saveVariable']
 
-    | ['variable', 'values', 'purchaseinvoice', PurchaseInvoice]
+    | ['variable', 'values', 'purchaseInvoice', PurchaseInvoice]
 
     | ['items', 'limit', number]
     | ['items', 'offset', number]
     | ['items', 'page', number]
     | ['items', 'query', Args]
-    | ['items', 'variable', 'values', 'purchaseinvoiceItem', PurchaseInvoiceItem]
+    | ['items', 'variable', 'values', 'purchaseInvoiceItem', PurchaseInvoiceItem]
     | ['items', 'variable', 'values', 'quantity', number]
     | ['items', 'addVariable']
 
@@ -63,7 +63,7 @@ function Component(props) {
             limit: 5,
             offset: 0,
             page: 1,
-            columns: Vector.of(['variableName'], ['values', 'purchaseinvoiceItem'], ['values', 'purchaseinvoiceItem', 'values', 'purchaseinvoice'], ['values', 'quantity']),
+            columns: Vector.of(['values', 'purchaseInvoiceItem'], ['values', 'purchaseInvoiceItem', 'values', 'purchaseInvoice'], ['values', 'quantity']),
             variable: new MaterialApprovalSlipItemVariable('', { materialApprovalSlip: new MaterialApprovalSlip(''), purchaseInvoiceItem: new PurchaseInvoiceItem(''), quantity: 0, requisted: 0 }),
             variables: props.match.params[0] ? materialApprovalSlipItems : HashSet.of()
         }
@@ -71,6 +71,14 @@ function Component(props) {
 
     function reducer(state: Draft<State>, action: Action) {
         switch (action[0]) {
+            case 'toggleMode': {
+                state.mode = when(state.mode, {
+                    'create': 'create',
+                    'update': 'show',
+                    'show': 'update'
+                })
+                break
+            }
             case 'resetVariable': {
                 return action[1]
             }
@@ -94,7 +102,7 @@ function Component(props) {
                 switch (action[1]) {
                     case 'values': {
                         switch (action[2]) {
-                            case 'purchaseinvoice': {
+                            case 'purchaseInvoice': {
                                 state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
@@ -124,7 +132,7 @@ function Component(props) {
                     }
                     case 'variable': {
                         switch (action[3]) {
-                            case 'purchaseinvoiceItem': {
+                            case 'purchaseInvoiceItem': {
                                 state[action[0]][action[1]][action[2]][action[3]] = action[4]
                                 break
                             }
@@ -148,7 +156,7 @@ function Component(props) {
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const purchaseinvoices = useStore(store => store.variables.PurchaseInvoice)
+    const purchaseInvoices = useStore(store => store.variables.PurchaseInvoice)
     const items = useStore(store => store.variables.PurchaseInvoiceItem.filter(x => x.values.purchaseInvoice.toString() === state.variable.values.purchaseInvoice.toString()))
 
     const materialApprovalSlip = types['MaterialApprovalSlip']
@@ -161,7 +169,7 @@ function Component(props) {
         switch (event.target.name) {
             default: {
                 switch (event.target.name) {
-                    case 'purchaseinvoice': {
+                    case 'purchaseInvoice': {
                         dispatch(['variable', 'values', event.target.name, new PurchaseInvoice(event.target.value)])
                         break
                     }
@@ -174,7 +182,7 @@ function Component(props) {
         switch (event.target.name) {
             default: {
                 switch (event.target.name) {
-                    case 'purchaseinvoiceItem': {
+                    case 'purchaseInvoiceItem': {
                         dispatch(['items', 'variable', 'values', event.target.name, new PurchaseInvoiceItem(event.target.value)])
                         break
                     }
@@ -216,7 +224,7 @@ function Component(props) {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
                                 dispatch(['saveVariable'])
-                                props.history.push('/purchase-orders')
+                                props.history.push('/materials-approved')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
                                 <>
@@ -226,7 +234,7 @@ function Component(props) {
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
                                         dispatch(['saveVariable'])
-                                        props.history.push('/purchase-orders')
+                                        props.history.push('/materials-approved')
                                     }}>Save</Button>
                                 </>,
                                 <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>))
@@ -238,8 +246,8 @@ function Component(props) {
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.purchaseInvoice.toString()} name='purchaseInvoice'>
-                                    <option value='' selected disabled hidden>Select Material Rejection Slip</option>
-                                    {purchaseinvoices.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    <option value='' selected disabled hidden>Select item</option>
+                                    {purchaseInvoices.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.purchaseInvoice.toString()}</div>
                             )
