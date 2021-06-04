@@ -71,6 +71,14 @@ function Component(props) {
 
     function reducer(state: Draft<State>, action: Action) {
         switch (action[0]) {
+            case 'toggleMode': {
+                state.mode = when(state.mode, {
+                    'create': 'create',
+                    'update': 'show',
+                    'show': 'update'
+                })
+                break
+            }
             case 'resetVariable': {
                 return action[1]
             }
