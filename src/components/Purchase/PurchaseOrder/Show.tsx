@@ -63,7 +63,7 @@ function Component(props) {
             limit: 5,
             offset: 0,
             page: 1,
-            columns: Vector.of(['variableName'], ['values', 'quotationItem'], ['values', 'quotationItem', 'values', 'quotation'], ['values', 'quantity']),
+            columns: Vector.of(['values', 'quotationItem'], ['values', 'quotationItem', 'values', 'quotation'], ['values', 'quantity']),
             variable: new PurchaseOrderItemVariable('', { purchaseOrder: new PurchaseOrder(''), quotationItem: new QuotationItem(''), quantity: 0, price: 0, received: 0 }),
             variables: props.match.params[0] ? purchaseOrderItems : HashSet.of()
         }
@@ -238,7 +238,7 @@ function Component(props) {
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.quotation.toString()} name='quotation'>
-                                    <option value='' selected disabled hidden>Select Material Rejection Slip</option>
+                                    <option value='' selected disabled hidden>Select Quotation</option>
                                     {quotations.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.quotation.toString()}</div>
