@@ -2,7 +2,7 @@ import { Vector } from 'prelude-ts'
 import { CircuitName, circuits } from './circuits'
 import { executeFunction } from './function'
 import { FunctionName, functions } from './functions'
-import { Diff, mergeDiffs } from './layers'
+import { DiffVariable, mergeDiffs } from './layers'
 import { executeMapper, MapperName, mappers } from './mapper'
 import { NonPrimitiveType } from './types'
 
@@ -57,11 +57,11 @@ export type Circuit = {
     outputs: Record<string, CircuitOutput>
 }
 
-export async function executeCircuit(circuit: Circuit, args: object, overlay: Vector<Diff> = Vector.of()): Promise<[object, boolean, Diff]> {
+export async function executeCircuit(circuit: Circuit, args: object, overlay: Vector<DiffVariable> = Vector.of()): Promise<[object, boolean, DiffVariable]> {
     console.log('$', args)
     const computationResults = {}
     var outputs = {}
-    var diffs = Vector.of<Diff>()
+    var diffs = Vector.of<DiffVariable>()
     Object.keys(circuit.computations).forEach(async computationName => {
         console.log(computationName, '^^^^')
         const computation = circuit.computations[computationName]

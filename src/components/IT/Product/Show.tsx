@@ -6,7 +6,6 @@ import Switch from '@material-ui/core/Switch'
 import { HashSet, Vector } from 'prelude-ts'
 import { Drawer } from '@material-ui/core'
 import { executeCircuit } from '../../../main/circuit'
-import { getState } from '../../../main/store'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
@@ -88,23 +87,23 @@ function Component(props) {
                 return action[1]
             }
             case 'saveVariable': {
-                const [result, symbolFlag, diff] = executeCircuit(circuits.createProduct, {
-                    sku: state.variable.variableName.toString(),
-                    name: state.variable.values.name,
-                    orderable: state.variable.values.orderable,
-                    consumable: state.variable.values.consumable,
-                    producable: state.variable.values.producable,
-                    uoms: state.uoms.variables.toArray().map(uom => {
-                        return {
-                            name: uom.values.name,
-                            conversionRate: uom.values.conversionRate
-                        }
-                    })
-                })
-                console.log(result, symbolFlag)
-                if (symbolFlag) {
-                    getState().addDiff(diff)
-                }
+                // const [result, symbolFlag, diff] = executeCircuit(circuits.createProduct, {
+                //     sku: state.variable.variableName.toString(),
+                //     name: state.variable.values.name,
+                //     orderable: state.variable.values.orderable,
+                //     consumable: state.variable.values.consumable,
+                //     producable: state.variable.values.producable,
+                //     uoms: state.uoms.variables.toArray().map(uom => {
+                //         return {
+                //             name: uom.values.name,
+                //             conversionRate: uom.values.conversionRate
+                //         }
+                //     })
+                // })
+                // console.log(result, symbolFlag)
+                // if (symbolFlag) {
+                //     getState().addDiff(diff)
+                // }
                 break
             }
             case 'variable': {

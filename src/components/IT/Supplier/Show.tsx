@@ -9,7 +9,7 @@ import * as Grid from './grids/Show'
 import { withRouter } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
 import { executeCircuit } from '../../../main/circuit'
-import { getState } from '../../../main/store'
+
 import { useStore } from '../../../main/store'
 import { iff, when } from '../../../main/utils'
 

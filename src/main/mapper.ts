@@ -5,7 +5,7 @@ import { NonPrimitiveType, types } from "./types"
 import { Variable } from "./variables"
 import { Query, getQuery, applyFilter } from './Filter'
 import { executeFunction } from "./function"
-import { Diff, getVariables, mergeDiffs } from "./layers"
+import { DiffVariable, getVariables, mergeDiffs } from "./layers"
 
 export type Mapper = {
     query: boolean
@@ -105,12 +105,12 @@ export function isNonPrimitive(typeName: string): typeName is NonPrimitiveType {
     return Object.keys(types).includes(typeName)
 }
 
-export async function executeMapper(mapper: Mapper, args: MapperArgs, overlay: Vector<Diff>): Promise<[Array<object>, boolean, Diff]> {
+export async function executeMapper(mapper: Mapper, args: MapperArgs, overlay: Vector<DiffVariable>): Promise<[Array<object>, boolean, DiffVariable]> {
     const fx = functions[mapper.functionName]
     const fi = fx.inputs[mapper.functionInput]
     console.log(args, '--mapper--')
     var result = Vector.of<object>()
-    var diffs = Vector.of<Diff>()
+    var diffs = Vector.of<DiffVariable>()
     if (isNonPrimitive(fi.type)) {
         if (mapper.query) {
             const query: Query = getQuery(fi.type)

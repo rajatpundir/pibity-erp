@@ -1,5 +1,5 @@
 import { Vector } from "prelude-ts"
-import { Diff, getReplaceVariableDiff, getRemoveVariableDiff, mergeDiffs, compose, getVariable } from "./layers"
+import { getReplaceVariableDiff, getRemoveVariableDiff, mergeDiffs, getVariable, DiffVariable } from "./layers"
 import { evaluateExpression, LispExpression, Symbols, SymbolValue } from "./lisp"
 import { PrimitiveType, NonPrimitiveType, types, Key } from './types'
 import { replaceVariable } from "./variables"
@@ -198,7 +198,7 @@ async function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimit
     return [symbolValue, symbolFlag]
 }
 
-async function getSymbolsForFunction(fx: Function, args: object, overlay: Vector<Diff>): Promise<[Symbols, boolean]> {
+async function getSymbolsForFunction(fx: Function, args: object, overlay: Vector<DiffVariable>): Promise<[Symbols, boolean]> {
     const symbolPaths = getSymbolPathsForFunction(fx)
     const symbols: Symbols = {}
     var symbolFlag = true
@@ -251,11 +251,11 @@ async function getSymbolsForFunction(fx: Function, args: object, overlay: Vector
     return [symbols, symbolFlag]
 }
 
-export async function executeFunction(fx: Function, args: object, overlay: Vector<Diff>): Promise<[object, boolean, Diff]> {
+export async function executeFunction(fx: Function, args: object, overlay: Vector<DiffVariable>): Promise<[object, boolean, DiffVariable]> {
     const [symbols, symbolFlag] = await getSymbolsForFunction(fx, args, overlay)
     console.log(args, symbols, symbolFlag)
     const result = {}
-    var diffs: Vector<Diff> = Vector.of()
+    var diffs: Vector<DiffVariable> = Vector.of()
     if (symbolFlag) {
         Object.keys(fx.outputs).forEach(async outputName => {
             const fo = fx.outputs[outputName]
