@@ -336,8 +336,6 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                                 variableName: variableName,
                                 values: {}
                             }
-                            // const unfilteredVariables: HashSet<Immutable<Variable>> = compose(getState().variables, overlay.toArray())[fo.type]
-                            // const variables: HashSet<Immutable<Variable>> = unfilteredVariables.filter(x => x.variableName.toString() === variableName)
                             const variable = await getVariable(fo.type, variableName)
                             if (variable !== undefined) {
                                 Object.keys(variable.values).forEach(keyName => {

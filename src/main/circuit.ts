@@ -57,12 +57,12 @@ export type Circuit = {
     outputs: Record<string, CircuitOutput>
 }
 
-export function executeCircuit(circuit: Circuit, args: object, overlay: Vector<Diff> = Vector.of()): [object, boolean, Diff] {
+export async function executeCircuit(circuit: Circuit, args: object, overlay: Vector<Diff> = Vector.of()): Promise<[object, boolean, Diff]> {
     console.log('$', args)
     const computationResults = {}
     var outputs = {}
     var diffs = Vector.of<Diff>()
-    Object.keys(circuit.computations).forEach(computationName => {
+    Object.keys(circuit.computations).forEach(async computationName => {
         console.log(computationName, '^^^^')
         const computation = circuit.computations[computationName]
         switch (computation.type) {
@@ -82,7 +82,7 @@ export function executeCircuit(circuit: Circuit, args: object, overlay: Vector<D
                         }
                     }
                 })
-                const [result, symbolFlag, diff] = executeFunction(fx, functionArgs, overlay.appendAll(diffs))
+                const [result, symbolFlag, diff] = await executeFunction(fx, functionArgs, overlay.appendAll(diffs))
                 if (!symbolFlag) {
                     return [outputs, false, mergeDiffs(diffs.toArray())]
                 }
@@ -106,7 +106,7 @@ export function executeCircuit(circuit: Circuit, args: object, overlay: Vector<D
                         }
                     }
                 })
-                const [result, symbolFlag, diff] = executeCircuit(computationCircuit, circuitArgs, overlay.appendAll(diffs))
+                const [result, symbolFlag, diff] = await executeCircuit(computationCircuit, circuitArgs, overlay.appendAll(diffs))
                 if (!symbolFlag) {
                     return [outputs, false, mergeDiffs(diffs.toArray())]
                 }
@@ -179,7 +179,7 @@ export function executeCircuit(circuit: Circuit, args: object, overlay: Vector<D
                         break
                     }
                 }
-                const [result, symbolFlag, diff] = executeMapper(mapper, { queryParams: queryParams, args: mapperArgs }, overlay.appendAll(diffs))
+                const [result, symbolFlag, diff] = await executeMapper(mapper, { queryParams: queryParams, args: mapperArgs }, overlay.appendAll(diffs))
                 if (!symbolFlag) {
                     return [outputs, false, mergeDiffs(diffs.toArray())]
                 }

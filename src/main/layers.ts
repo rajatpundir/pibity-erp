@@ -543,7 +543,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.products.get(variableName)
             if (row !== undefined) {
-                return row.toVariable()
+                return row.toVariable() as Variable
             } else {
                 return undefined
             }
@@ -579,7 +579,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.indents.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -597,7 +597,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.indentItems.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -615,7 +615,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.suppliers.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -633,7 +633,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.supplierProducts.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -651,7 +651,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.quotations.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -669,7 +669,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.quotationItems.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -687,7 +687,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.purchaseOrders.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -705,7 +705,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.purchaseOrderItems.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -723,7 +723,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.purchaseInvoices.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -741,7 +741,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.purchaseInvoiceItems.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -759,7 +759,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.materialApprovalSlips.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -777,7 +777,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.materialApprovalSlipItems.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -795,7 +795,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.materialRejectionSlips.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -813,7 +813,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.materialRejectionSlipItems.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -831,7 +831,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.materialReturnSlips.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -849,7 +849,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.materialReturnSlipItems.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -867,7 +867,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.materialRequistionSlips.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -885,7 +885,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.materialRequistionSlipItems.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -903,7 +903,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.boms.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -921,7 +921,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.bomItems.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -939,7 +939,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.productionPreparationSlips.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -957,7 +957,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.productionPreparationSlipItems.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -975,7 +975,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.scrapMaterialSlips.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -993,7 +993,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.transferMaterialSlips.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
@@ -1011,11 +1011,43 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             })
             const row = await db.warehouseAcceptanceSlips.get(variableName)
             if (row !== undefined) {
-                return row.toVariable() as Variable
+                return row.toVariable()
             } else {
                 return undefined
             }
         }
+    })
+}
+
+export async function getVariables(typeName: NonPrimitiveType): Promise<Array<Immutable<Variable>>> {
+    return when(typeName, {
+        'Product': (await db.products.toArray()).map(x => x.toVariable()),
+        'UOM': (await db.uoms.toArray()).map(x => x.toVariable()),
+        'Indent': (await db.indents.toArray()).map(x => x.toVariable()),
+        'IndentItem': (await db.indentItems.toArray()).map(x => x.toVariable()),
+        'Supplier': (await db.suppliers.toArray()).map(x => x.toVariable()),
+        'SupplierProduct': (await db.supplierProducts.toArray()).map(x => x.toVariable()),
+        'Quotation': (await db.quotations.toArray()).map(x => x.toVariable()),
+        'QuotationItem': (await db.quotationItems.toArray()).map(x => x.toVariable()),
+        'PurchaseOrder': (await db.purchaseOrders.toArray()).map(x => x.toVariable()),
+        'PurchaseOrderItem': (await db.purchaseOrderItems.toArray()).map(x => x.toVariable()),
+        'PurchaseInvoice': (await db.purchaseInvoices.toArray()).map(x => x.toVariable()),
+        'PurchaseInvoiceItem': (await db.purchaseInvoiceItems.toArray()).map(x => x.toVariable()),
+        'MaterialApprovalSlip': (await db.materialApprovalSlips.toArray()).map(x => x.toVariable()),
+        'MaterialApprovalSlipItem': (await db.materialApprovalSlipItems.toArray()).map(x => x.toVariable()),
+        'MaterialRejectionSlip': (await db.materialRejectionSlips.toArray()).map(x => x.toVariable()),
+        'MaterialRejectionSlipItem': (await db.materialRejectionSlipItems.toArray()).map(x => x.toVariable()),
+        'MaterialReturnSlip': (await db.materialReturnSlips.toArray()).map(x => x.toVariable()),
+        'MaterialReturnSlipItem': (await db.materialReturnSlipItems.toArray()).map(x => x.toVariable()),
+        'MaterialRequistionSlip': (await db.materialRequistionSlips.toArray()).map(x => x.toVariable()),
+        'MaterialRequistionSlipItem': (await db.materialRequistionSlipItems.toArray()).map(x => x.toVariable()),
+        'BOM': (await db.boms.toArray()).map(x => x.toVariable()),
+        'BOMItem': (await db.bomItems.toArray()).map(x => x.toVariable()),
+        'ProductionPreparationSlip': (await db.productionPreparationSlips.toArray()).map(x => x.toVariable()),
+        'ProductionPreparationSlipItem': (await db.productionPreparationSlipItems.toArray()).map(x => x.toVariable()),
+        'ScrapMaterialSlip': (await db.scrapMaterialSlips.toArray()).map(x => x.toVariable()),
+        'TransferMaterialSlip': (await db.transferMaterialSlips.toArray()).map(x => x.toVariable()),
+        'WarehouseAcceptanceSlip': (await db.warehouseAcceptanceSlips.toArray()).map(x => x.toVariable())
     })
 }
 

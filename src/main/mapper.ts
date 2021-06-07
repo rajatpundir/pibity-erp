@@ -1,12 +1,11 @@
 import { Immutable } from 'immer'
 import { HashSet, Vector } from 'prelude-ts'
 import { FunctionName, functions } from "./functions"
-import { getState } from "./store"
 import { NonPrimitiveType, types } from "./types"
 import { Variable } from "./variables"
 import { Query, getQuery, applyFilter } from './Filter'
 import { executeFunction } from "./function"
-import { Diff, mergeDiffs } from "./layers"
+import { Diff, getVariables, mergeDiffs } from "./layers"
 
 export type Mapper = {
     query: boolean
@@ -106,7 +105,7 @@ export function isNonPrimitive(typeName: string): typeName is NonPrimitiveType {
     return Object.keys(types).includes(typeName)
 }
 
-export function executeMapper(mapper: Mapper, args: MapperArgs, overlay: Vector<Diff>): [Array<object>, boolean, Diff] {
+export async function executeMapper(mapper: Mapper, args: MapperArgs, overlay: Vector<Diff>): Promise<[Array<object>, boolean, Diff]> {
     const fx = functions[mapper.functionName]
     const fi = fx.inputs[mapper.functionInput]
     console.log(args, '--mapper--')
@@ -147,13 +146,14 @@ export function executeMapper(mapper: Mapper, args: MapperArgs, overlay: Vector<
                     query[queryParam] = value
                 }
             })
-            const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[fi.type]
-            const variables: Array<Immutable<Variable>> = unfilteredVariables.filter(variable => applyFilter(query, variable)).toArray()
-            variables.forEach((variable, index) => {
+
+            const unfilteredVariables = await getVariables(fi.type)
+            const variables: Array<Immutable<Variable>> = unfilteredVariables.filter(variable => applyFilter(query, variable))
+            variables.forEach(async (variable, index) => {
                 if (index < args.args.length) {
                     const functionArgs = args.args[index]
                     functionArgs[mapper.functionInput] = variable.variableName.toString()
-                    const [functionResult, symbolFlag, diff] = executeFunction(fx, functionArgs, overlay)
+                    const [functionResult, symbolFlag, diff] = await executeFunction(fx, functionArgs, overlay)
                     if (!symbolFlag) {
                         return [result, false, mergeDiffs(diffs.toArray())]
                     }
@@ -162,7 +162,7 @@ export function executeMapper(mapper: Mapper, args: MapperArgs, overlay: Vector<
                 } else {
                     const functionArgs = args.args[args.args.length - 1]
                     functionArgs[mapper.functionInput] = variable.variableName.toString()
-                    const [functionResult, symbolFlag, diff] = executeFunction(fx, functionArgs, overlay)
+                    const [functionResult, symbolFlag, diff] = await executeFunction(fx, functionArgs, overlay)
                     if (!symbolFlag) {
                         return [result, false, mergeDiffs(diffs.toArray())]
                     }
@@ -171,8 +171,8 @@ export function executeMapper(mapper: Mapper, args: MapperArgs, overlay: Vector<
                 }
             })
         } else {
-            args.args.forEach(arg => {
-                const [functionResult, symbolFlag, diff] = executeFunction(fx, arg, overlay)
+            args.args.forEach(async arg => {
+                const [functionResult, symbolFlag, diff] = await executeFunction(fx, arg, overlay)
                 if (!symbolFlag) {
                     return [result, false, mergeDiffs(diffs.toArray())]
                 }
