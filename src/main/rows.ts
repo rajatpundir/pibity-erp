@@ -42,7 +42,8 @@ export class UOMRow {
     [immerable] = true
     readonly typeName = 'UOM'
     readonly variableName: string
-    readonly parent: string
+    readonly product: string
+    readonly name: string
     values: {
         // UNQ(product, name)
         product: string
@@ -53,7 +54,8 @@ export class UOMRow {
     constructor(variableName: string, values: { product: string, name: string, conversionRate: Decimal }) {
         this.variableName = variableName
         this.values = values
-        this.parent = values.product
+        this.product = values.product
+        this.name = values.name
     }
 
     equals(other: UOMRow): boolean {
@@ -120,7 +122,8 @@ export class IndentItemRow {
     [immerable] = true
     readonly typeName = 'IndentItem'
     readonly variableName: string
-    readonly parent: string
+    readonly indent: string
+    readonly product: string
     values: {
         // UNQ(indent, product)
         indent: string
@@ -147,7 +150,8 @@ export class IndentItemRow {
     constructor(variableName: string, values: { indent: string, product: string, quantity: Number, uom: string, ordered: Number, received: Number, approved: Number, rejected: Number, returned: Number, requisted: Number, consumed: Number }) {
         this.variableName = variableName
         this.values = values
-        this.parent = values.indent
+        this.indent = values.indent
+        this.product = values.product
     }
 
     equals(other: IndentItemRow): boolean {
@@ -296,7 +300,8 @@ export class QuotationItemRow {
     [immerable] = true
     readonly typeName = 'QuotationItem'
     readonly variableName: string
-    readonly parent: string
+    readonly quotation: string
+    readonly indentItem: string
     values: {
         // UNQ(quotation, indentItem)
         quotation: string
@@ -309,7 +314,8 @@ export class QuotationItemRow {
     constructor(variableName: string, values: { quotation: string, indentItem: string, quantity: Number }) {
         this.variableName = variableName
         this.values = values
-        this.parent = values.quotation
+        this.quotation = values.quotation
+        this.indentItem = values.indentItem
     }
 
     equals(other: QuotationItemRow): boolean {
@@ -375,7 +381,8 @@ export class PurchaseOrderItemRow {
     [immerable] = true
     readonly typeName = 'PurchaseOrderItem'
     readonly variableName: string
-    readonly parent: string
+    readonly purchaseOrder: string
+    readonly quotationItem: string
     values: {
         // UNQ(purchaseOrder, quotationItem)
         purchaseOrder: string
@@ -391,7 +398,8 @@ export class PurchaseOrderItemRow {
     constructor(variableName: string, values: { purchaseOrder: string, quotationItem: string, quantity: Number, price: Decimal, received: Number }) {
         this.variableName = variableName
         this.values = values
-        this.parent = values.purchaseOrder
+        this.purchaseOrder = values.purchaseOrder
+        this.quotationItem = values.quotationItem
     }
 
     equals(other: PurchaseOrderItemRow): boolean {
@@ -459,7 +467,8 @@ export class PurchaseInvoiceItemRow {
     [immerable] = true
     readonly typeName = 'PurchaseInvoiceItem'
     readonly variableName: string
-    readonly parent: string
+    readonly purchaseInvoice: string
+    readonly purchaseOrderItem: string
     values: {
         // UNQ(purchaseInvoice, purchaseOrderItem)
         purchaseInvoice: string
@@ -475,7 +484,8 @@ export class PurchaseInvoiceItemRow {
     constructor(variableName: string, values: { purchaseInvoice: string, purchaseOrderItem: string, quantity: Number, approved: Number, rejected: Number }) {
         this.variableName = variableName
         this.values = values
-        this.parent = values.purchaseInvoice
+        this.purchaseInvoice = values.purchaseInvoice
+        this.purchaseOrderItem = values.purchaseOrderItem
     }
 
     equals(other: PurchaseInvoiceItemRow): boolean {
@@ -543,7 +553,8 @@ export class MaterialApprovalSlipItemRow {
     [immerable] = true
     readonly typeName = 'MaterialApprovalSlipItem'
     readonly variableName: string
-    readonly parent: string
+    readonly materialApprovalSlip: string
+    readonly purchaseInvoiceItem: string
     values: {
         // UNQ(materialApprovalSlip, purchaseInvoiceItem)
         materialApprovalSlip: string
@@ -558,7 +569,8 @@ export class MaterialApprovalSlipItemRow {
     constructor(variableName: string, values: { materialApprovalSlip: string, purchaseInvoiceItem: string, quantity: Number, requisted: Number }) {
         this.variableName = variableName
         this.values = values
-        this.parent = values.materialApprovalSlip
+        this.materialApprovalSlip = values.materialApprovalSlip
+        this.purchaseInvoiceItem = values.purchaseInvoiceItem
     }
 
     equals(other: MaterialApprovalSlipItemRow): boolean {
@@ -625,7 +637,8 @@ export class MaterialRejectionSlipItemRow {
     [immerable] = true
     readonly typeName = 'MaterialRejectionSlipItem'
     readonly variableName: string
-    readonly parent: string
+    readonly materialRejectionSlip: string
+    readonly purchaseInvoiceItem: string
     values: {
         // UNQ(materialRejectionSlip, purchaseInvoiceItem)
         materialRejectionSlip: string
@@ -640,7 +653,8 @@ export class MaterialRejectionSlipItemRow {
     constructor(variableName: string, values: { materialRejectionSlip: string, purchaseInvoiceItem: string, quantity: Number, returned: Number }) {
         this.variableName = variableName
         this.values = values
-        this.parent = values.materialRejectionSlip
+        this.materialRejectionSlip = values.materialRejectionSlip
+        this.purchaseInvoiceItem = values.purchaseInvoiceItem
     }
 
     equals(other: MaterialRejectionSlipItemRow): boolean {
@@ -707,7 +721,8 @@ export class MaterialReturnSlipItemRow {
     [immerable] = true
     readonly typeName = 'MaterialReturnSlipItem'
     readonly variableName: string
-    readonly parent: string
+    readonly materialReturnSlip: string
+    readonly materialRejectionSlipItem: string
     values: {
         // UNQ(materialReturnSlip, materialRejectionSlipItem)
         materialReturnSlip: string
@@ -720,7 +735,8 @@ export class MaterialReturnSlipItemRow {
     constructor(variableName: string, values: { materialReturnSlip: string, materialRejectionSlipItem: string, quantity: Number }) {
         this.variableName = variableName
         this.values = values
-        this.parent = values.materialReturnSlip
+        this.materialReturnSlip = values.materialReturnSlip
+        this.materialRejectionSlipItem = values.materialRejectionSlipItem
     }
 
     equals(other: MaterialReturnSlipItemRow): boolean {
@@ -786,7 +802,8 @@ export class MaterialRequistionSlipItemRow {
     [immerable] = true
     readonly typeName = 'MaterialRequistionSlipItem'
     readonly variableName: string
-    readonly parent: string
+    readonly materialRequistionSlip: string
+    readonly materialApprovalSlipItem: string
     values: {
         // UNQ(materialRequistionSlip, materialApprovalSlipItem)
         materialRequistionSlip: string
@@ -801,7 +818,8 @@ export class MaterialRequistionSlipItemRow {
     constructor(variableName: string, values: { materialRequistionSlip: string, materialApprovalSlipItem: string, quantity: Number, consumed: Number }) {
         this.variableName = variableName
         this.values = values
-        this.parent = values.materialRequistionSlip
+        this.materialRequistionSlip = values.materialRequistionSlip
+        this.materialApprovalSlipItem = values.materialApprovalSlipItem
     }
 
     equals(other: MaterialRequistionSlipItemRow): boolean {
@@ -864,7 +882,8 @@ export class BOMItemRow {
     [immerable] = true
     readonly typeName = 'BOMItem'
     readonly variableName: string
-    readonly parent: string
+    readonly bom: string
+    readonly product: string
     values: {
         // UNQ(bom, product)
         bom: string
@@ -878,7 +897,8 @@ export class BOMItemRow {
     constructor(variableName: string, values: { bom: string, product: string, quantity: Number, uom: string }) {
         this.variableName = variableName
         this.values = values
-        this.parent = values.bom
+        this.bom = values.bom
+        this.product = values.product
     }
 
     equals(other: BOMItemRow): boolean {
@@ -950,7 +970,8 @@ export class ProductionPreparationSlipItemRow {
     [immerable] = true
     readonly typeName = 'ProductionPreparationSlipItem'
     readonly variableName: string
-    readonly parent: string
+    readonly productionPreparationSlip: string
+    readonly bomItem: string
     values: {
         // UNQ(productionPreparationSlip, bomItem)
         productionPreparationSlip: string
@@ -964,7 +985,8 @@ export class ProductionPreparationSlipItemRow {
     constructor(variableName: string, values: { productionPreparationSlip: string, bomItem: string, materialRequistionSlipItem: string }) {
         this.variableName = variableName
         this.values = values
-        this.parent = values.productionPreparationSlip
+        this.productionPreparationSlip = values.productionPreparationSlip
+        this.bomItem = values.bomItem
     }
 
     equals(other: ProductionPreparationSlipItemRow): boolean {
