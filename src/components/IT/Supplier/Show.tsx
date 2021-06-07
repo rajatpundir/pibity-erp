@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
@@ -9,10 +9,9 @@ import * as Grid from './grids/Show'
 import { withRouter } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
 import { executeCircuit } from '../../../main/circuit'
-
-import { useStore } from '../../../main/store'
 import { iff, when } from '../../../main/utils'
-
+import { db } from '../../../main/dexie'
+import { getVariable } from '../../../main/layers'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -22,16 +21,16 @@ type State = Immutable<{
 export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
-    | ['saveVariable']
 
     | ['variable', 'variableName', Supplier]
 
+    | ['replace', 'variable', SupplierVariable]
+
 function Component(props) {
-    const suppliers = useStore(store => store.variables.Supplier.filter(x => x.variableName.toString() === props.match.params[0]))
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: suppliers.length() === 1 ? suppliers.toArray()[0] : new SupplierVariable('', {})
+        variable: new SupplierVariable('', {})
     }
 
     function reducer(state: Draft<State>, action: Action) {
@@ -47,20 +46,19 @@ function Component(props) {
             case 'resetVariable': {
                 return action[1]
             }
-            case 'saveVariable': {
-                const [result, symbolFlag, diff] = executeCircuit(circuits.createSupplier, {
-                    name: state.variable.variableName.toString()
-                })
-                console.log(result, symbolFlag)
-                if (symbolFlag) {
-                    getState().addDiff(diff)
-                }
-                break
-            }
             case 'variable': {
                 switch (action[1]) {
                     case 'variableName': {
                         state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                }
+                break
+            }
+            case 'replace': {
+                switch (action[1]) {
+                    case 'variable': {
+                        state.variable = action[2]
                         break
                     }
                 }
@@ -82,7 +80,29 @@ function Component(props) {
         }
     }
 
-    return iff(state.mode === 'create' || suppliers.length() === 1,
+    useEffect(() => {
+        async function setVariable() {
+            if (props.match.params[0]) {
+                const variable = await getVariable('Supplier', props.match.params[0])
+                if (variable !== undefined) {
+                    dispatch(['replace', 'variable', variable as SupplierVariable])
+                }
+            }
+        }
+        setVariable()
+    }, [])
+
+    const saveVariable = async () => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.createSupplier, {
+            name: state.variable.variableName.toString()
+        })
+        console.log(result, symbolFlag)
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
+    }
+
+    return iff(state.mode === 'create',
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
@@ -96,7 +116,7 @@ function Component(props) {
                     {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
-                                await dispatch(['saveVariable'])
+                                await saveVariable()
                                 props.history.push('/suppliers')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
@@ -106,7 +126,7 @@ function Component(props) {
                                         dispatch(['resetVariable', initialState])
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
-                                        await dispatch(['saveVariable'])
+                                        await saveVariable()
                                         props.history.push('/suppliers')
                                     }}>Save</Button>
                                 </>,

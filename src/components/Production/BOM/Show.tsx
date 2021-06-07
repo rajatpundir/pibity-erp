@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
@@ -8,15 +8,16 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { BOM, BOMItemVariable, BOMVariable, Product, UOM } from '../../../main/variables'
+import { BOM, BOMItem, BOMItemVariable, BOMVariable, Product, UOM } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
 import { circuits } from '../../../main/circuits'
-
-import { useStore } from '../../../main/store'
 import { iff, when } from '../../../main/utils'
+import { db } from '../../../main/dexie'
+import { getVariable } from '../../../main/layers'
+import { useLiveQuery } from "dexie-react-hooks";
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -36,7 +37,6 @@ type State = Immutable<{
 export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
-    | ['saveVariable']
 
     | ['variable', 'variableName', BOM]
 
@@ -49,14 +49,14 @@ export type Action =
     | ['items', 'variable', 'values', 'uom', UOM]
     | ['items', 'addVariable']
 
-function Component(props) {
+    | ['replace', 'variable', BOMVariable]
+    | ['replace', 'items', Array<BOMItemVariable>]
 
-    const boms = useStore(state => state.variables.BOM.filter(x => x.variableName.toString() === props.match.params[0]))
-    const items: HashSet<Immutable<BOMItemVariable>> = useStore(store => store.variables.BOMItem.filter(x => x.values.bom.toString() === props.match.params[0]))
+function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: boms.length() === 1 ? boms.toArray()[0] : new BOMVariable('', {}),
+        variable: new BOMVariable('', {}),
         items: {
             typeName: 'BOMItem',
             query: getQuery('BOMItem'),
@@ -65,7 +65,7 @@ function Component(props) {
             page: 1,
             columns: Vector.of(['values', 'product'], ['values', 'quantity'], ['values', 'uom'], ['values', 'ordered'], ['values', 'received'], ['values', 'approved'], ['values', 'rejected'], ['values', 'returned'], ['values', 'requisted'], ['values', 'consumed']),
             variable: new BOMItemVariable('', { bom: new BOM(''), product: new Product(''), quantity: 0, uom: new UOM('') }),
-            variables: props.match.params[0] ? items : HashSet.of<BOMItemVariable>()
+            variables: HashSet.of<BOMItemVariable>()
         }
     }
 
@@ -81,23 +81,6 @@ function Component(props) {
             }
             case 'resetVariable': {
                 return action[1]
-            }
-            case 'saveVariable': {
-                const [result, symbolFlag, diff] = executeCircuit(circuits.createBOM, {
-                    variableName: state.variable.variableName.toString(),
-                    items: state.items.variables.toArray().map(item => {
-                        return {
-                            product: item.values.product.toString(),
-                            quantity: item.values.quantity,
-                            uom: item.values.uom.toString()
-                        }
-                    })
-                })
-                console.log(result, symbolFlag)
-                if (symbolFlag) {
-                    getState().addDiff(diff)
-                }
-                break
             }
             case 'variable': {
                 switch (action[1]) {
@@ -152,13 +135,40 @@ function Component(props) {
                 }
                 break
             }
+            case 'replace': {
+                switch (action[1]) {
+                    case 'variable': {
+                        state.variable = action[2]
+                        break
+                    }
+                    case 'items': {
+                        state.items.variables = HashSet.of<BOMItemVariable>().addAll(action[2])
+                        break
+                    }
+                }
+                break
+            }
         }
     }
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const products = useStore(state => state.variables.Product)
-    const uoms = useStore(store => store.variables.UOM.filter(x => x.values.product.toString() === state.items.variable.values.product.toString()))
+    useEffect(() => {
+        async function setVariable() {
+            if (props.match.params[0]) {
+                const variable = await getVariable('BOM', props.match.params[0])
+                const items = await db.bomItems.where({ product: props.match.params[0] }).toArray()
+                if (variable !== undefined) {
+                    dispatch(['replace', 'variable', variable as BOMVariable])
+                    dispatch(['replace', 'items', items.map(x => x.toVariable())])
+                }
+            }
+        }
+        setVariable()
+    }, [])
+
+    const products = useLiveQuery(() => db.products.toArray())
+    const uoms = useLiveQuery(() => db.uoms.where({ product: state.items.variable.values.product.toString() }).toArray())
 
     const bom = types['BOM']
     const item = types['BOMItem']
@@ -210,7 +220,24 @@ function Component(props) {
         return fx
     }
 
-    return iff(state.mode === 'create' || boms.length() === 1,
+    const saveVariable = async () => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.createBOM, {
+            variableName: state.variable.variableName.toString(),
+            items: state.items.variables.toArray().map(item => {
+                return {
+                    product: item.values.product.toString(),
+                    quantity: item.values.quantity,
+                    uom: item.values.uom.toString()
+                }
+            })
+        })
+        console.log(result, symbolFlag)
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
+    }
+
+    return iff(state.mode === 'create',
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
@@ -224,7 +251,7 @@ function Component(props) {
                     {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
-                                dispatch(['saveVariable'])
+                                await saveVariable()
                                 props.history.push('/boms')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
@@ -234,7 +261,7 @@ function Component(props) {
                                         dispatch(['resetVariable', initialState])
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
-                                        dispatch(['saveVariable'])
+                                        await saveVariable()
                                         props.history.push('/boms')
                                     }}>Save</Button>
                                 </>,
@@ -275,7 +302,7 @@ function Component(props) {
                                         <Label>{item.keys.product.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.product.toString()} name='product'>
                                             <option value='' selected disabled hidden>Select Product</option>
-                                            {products.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                            {(products ? products : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>
@@ -286,7 +313,7 @@ function Component(props) {
                                         <Label>{item.keys.uom.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.uom.toString()} name='uom'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                            {uoms.toArray().map(x => <option value={x.variableName.toString()}>{x.values.name}</option>)}
+                                            {(uoms ? uoms : []).map(x => <option value={x.variableName.toString()}>{x.values.name}</option>)}
                                         </Select>
                                     </Item>
                                     <Item justify='center' align='center'>
