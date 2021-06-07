@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
@@ -15,9 +15,9 @@ import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
-import { useStore } from '../../../main/store'
 import { iff, when } from '../../../main/utils'
 import { db } from '../../../main/dexie'
+import { getVariable } from '../../../main/layers'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -52,14 +52,14 @@ export type Action =
     | ['uoms', 'variable', 'values', 'conversionRate', number]
     | ['uoms', 'addVariable']
 
-function Component(props) {
+    | ['replace', 'variable', ProductVariable]
+    | ['replace', 'uoms', Array<UOMVariable>]
 
-    const products = useStore(store => store.variables.Product.filter(x => x.variableName.toString() === props.match.params[0]))
-    const items: HashSet<Immutable<UOMVariable>> = useStore(store => store.variables.UOM.filter(x => x.values.product.toString() === props.match.params[0]))
+function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: products.length() === 1 ? products.toArray()[0] : new ProductVariable('', { name: '', orderable: true, consumable: true, producable: false }),
+        variable: new ProductVariable('', { name: '', orderable: true, consumable: true, producable: false }),
         uoms: {
             typeName: 'UOM',
             query: getQuery('UOM'),
@@ -68,7 +68,7 @@ function Component(props) {
             page: 1,
             columns: Vector.of(['values', 'name'], ['values', 'conversionRate']),
             variable: new UOMVariable('', { product: new Product(''), name: '', conversionRate: 1 }),
-            variables: props.match.params[0] ? items : HashSet.of<UOMVariable>()
+            variables: HashSet.of<UOMVariable>()
         }
     }
 
@@ -148,6 +148,19 @@ function Component(props) {
                 }
                 break
             }
+            case 'replace': {
+                switch (action[1]) {
+                    case 'variable': {
+                        state.variable = action[2]
+                        break
+                    }
+                    case 'uoms': {
+                        state.uoms.variables = HashSet.of<UOMVariable>().addAll(action[2])
+                        break
+                    }
+                }
+                break
+            }
         }
     }
 
@@ -158,6 +171,20 @@ function Component(props) {
 
     const [addUOMDrawer, toggleAddUOMDrawer] = useState(false)
     const [uomFilter, toggleUOMFilter] = useState(false)
+
+    useEffect(() => {
+        async function setVariable() {
+            if (props.match.params[0]) {
+                const variable = await getVariable('Product', props.match.params[0])
+                const items = await db.uoms.where({ product: props.match.params[0] }).toArray()
+                if (variable !== undefined) {
+                    dispatch(['replace', 'variable', variable as ProductVariable])
+                    dispatch(['replace', 'uoms', items.map(x => x.toVariable())])
+                }
+            }
+        }
+        setVariable()
+    }, [])
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         switch (event.target.name) {
@@ -218,7 +245,7 @@ function Component(props) {
         return fx
     }
 
-    const saveVariable = async() => {
+    const saveVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createProduct, {
             sku: state.variable.variableName.toString(),
             name: state.variable.values.name,
@@ -238,7 +265,7 @@ function Component(props) {
         }
     }
 
-    return iff(state.mode === 'create' || products.length() === 1,
+    return iff(state.mode === 'create',
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
