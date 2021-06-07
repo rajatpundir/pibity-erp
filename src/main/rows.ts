@@ -1,7 +1,7 @@
 import { immerable } from 'immer'
 import { HashSet } from 'prelude-ts'
 import { DiffVariable } from './layers'
-import { Number, Decimal, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip, MaterialReturnSlipItem, BOMItem, ProductionPreparationSlipItem, ScrapMaterialSlip, WarehouseAcceptanceSlip } from './variables'
+import { Number, Decimal, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip, MaterialReturnSlipItem, BOMItem, ProductionPreparationSlipItem, ScrapMaterialSlip, WarehouseAcceptanceSlip, SupplierProduct } from './variables'
 
 export class ProductRow {
     [immerable] = true
@@ -1487,59 +1487,115 @@ export class DiffRow {
     }
 
     toVariable(): DiffVariable {
-        const diff = new DiffVariable(this.id, this.active)
-        diff.variables.Product.replace = HashSet.of<ProductVariable>().addAll(this.variables.Product.replace.map(x => x.toVariable()))
-        diff.variables.Product.remove = HashSet.of<Product>().addAll(this.variables.Product.remove.map(x => new Product(x)))
-        diff.variables.UOM.replace = HashSet.of<UOMVariable>().addAll(this.variables.UOM.replace.map(x => x.toVariable()))
-        diff.variables.UOM.remove = HashSet.of<UOM>().addAll(this.variables.UOM.remove.map(x => new UOM(x)))
-        diff.variables.Indent.replace = HashSet.of<IndentVariable>().addAll(this.variables.Indent.replace.map(x => x.toVariable()))
-        diff.variables.Indent.remove = HashSet.of<Indent>().addAll(this.variables.Indent.remove.map(x => new Indent(x)))
-        diff.variables.IndentItem.replace = HashSet.of<IndentItemVariable>().addAll(this.variables.IndentItem.replace.map(x => x.toVariable()))
-        diff.variables.IndentItem.remove = HashSet.of<IndentItem>().addAll(this.variables.IndentItem.remove.map(x => new IndentItem(x)))
-        diff.variables.Supplier.replace = HashSet.of<SupplierVariable>().addAll(this.variables.Supplier.replace.map(x => x.toVariable()))
-        diff.variables.Supplier.remove = HashSet.of<Supplier>().addAll(this.variables.Supplier.remove.map(x => new Supplier(x)))
-        diff.variables.Quotation.replace = HashSet.of<QuotationVariable>().addAll(this.variables.Quotation.replace.map(x => x.toVariable()))
-        diff.variables.Quotation.remove = HashSet.of<Quotation>().addAll(this.variables.Quotation.remove.map(x => new Quotation(x)))
-        diff.variables.QuotationItem.replace = HashSet.of<QuotationItemVariable>().addAll(this.variables.QuotationItem.replace.map(x => x.toVariable()))
-        diff.variables.QuotationItem.remove = HashSet.of<QuotationItem>().addAll(this.variables.QuotationItem.remove.map(x => new QuotationItem(x)))
-        diff.variables.PurchaseOrder.replace = HashSet.of<PurchaseOrderVariable>().addAll(this.variables.PurchaseOrder.replace.map(x => x.toVariable()))
-        diff.variables.PurchaseOrder.remove = HashSet.of<PurchaseOrder>().addAll(this.variables.PurchaseOrder.remove.map(x => new PurchaseOrder(x)))
-        diff.variables.PurchaseOrderItem.replace = HashSet.of<PurchaseOrderItemVariable>().addAll(this.variables.PurchaseOrderItem.replace.map(x => x.toVariable()))
-        diff.variables.PurchaseOrderItem.remove = HashSet.of<PurchaseOrderItem>().addAll(this.variables.PurchaseOrderItem.remove.map(x => new PurchaseOrderItem(x)))
-        diff.variables.PurchaseInvoice.replace = HashSet.of<PurchaseInvoiceVariable>().addAll(this.variables.PurchaseInvoice.replace.map(x => x.toVariable()))
-        diff.variables.PurchaseInvoice.remove = HashSet.of<PurchaseInvoice>().addAll(this.variables.PurchaseInvoice.remove.map(x => new PurchaseInvoice(x)))
-        diff.variables.PurchaseInvoiceItem.replace = HashSet.of<PurchaseInvoiceItemVariable>().addAll(this.variables.PurchaseInvoiceItem.replace.map(x => x.toVariable()))
-        diff.variables.PurchaseInvoiceItem.remove = HashSet.of<PurchaseInvoiceItem>().addAll(this.variables.PurchaseInvoiceItem.remove.map(x => new PurchaseInvoiceItem(x)))
-        diff.variables.MaterialApprovalSlip.replace = HashSet.of<MaterialApprovalSlipVariable>().addAll(this.variables.MaterialApprovalSlip.replace.map(x => x.toVariable()))
-        diff.variables.MaterialApprovalSlip.remove = HashSet.of<MaterialApprovalSlip>().addAll(this.variables.MaterialApprovalSlip.remove.map(x => new MaterialApprovalSlip(x)))
-        diff.variables.MaterialApprovalSlipItem.replace = HashSet.of<MaterialApprovalSlipItemVariable>().addAll(this.variables.MaterialApprovalSlipItem.replace.map(x => x.toVariable()))
-        diff.variables.MaterialApprovalSlipItem.remove = HashSet.of<MaterialApprovalSlipItem>().addAll(this.variables.MaterialApprovalSlipItem.remove.map(x => new MaterialApprovalSlipItem(x)))
-        diff.variables.MaterialRejectionSlip.replace = HashSet.of<MaterialRejectionSlipVariable>().addAll(this.variables.MaterialRejectionSlip.replace.map(x => x.toVariable()))
-        diff.variables.MaterialRejectionSlip.remove = HashSet.of<MaterialRejectionSlip>().addAll(this.variables.MaterialRejectionSlip.remove.map(x => new MaterialRejectionSlip(x)))
-        diff.variables.MaterialRejectionSlipItem.replace = HashSet.of<MaterialRejectionSlipItemVariable>().addAll(this.variables.MaterialRejectionSlipItem.replace.map(x => x.toVariable()))
-        diff.variables.MaterialRejectionSlipItem.remove = HashSet.of<MaterialRejectionSlipItem>().addAll(this.variables.MaterialRejectionSlipItem.remove.map(x => new MaterialRejectionSlipItem(x)))
-        diff.variables.MaterialReturnSlip.replace = HashSet.of<MaterialReturnSlipVariable>().addAll(this.variables.MaterialReturnSlip.replace.map(x => x.toVariable()))
-        diff.variables.MaterialReturnSlip.remove = HashSet.of<MaterialReturnSlip>().addAll(this.variables.MaterialReturnSlip.remove.map(x => new MaterialReturnSlip(x)))
-        diff.variables.MaterialReturnSlipItem.replace = HashSet.of<MaterialReturnSlipItemVariable>().addAll(this.variables.MaterialReturnSlipItem.replace.map(x => x.toVariable()))
-        diff.variables.MaterialReturnSlipItem.remove = HashSet.of<MaterialReturnSlipItem>().addAll(this.variables.MaterialReturnSlipItem.remove.map(x => new MaterialReturnSlipItem(x)))
-        diff.variables.MaterialRequistionSlip.replace = HashSet.of<MaterialRequistionSlipVariable>().addAll(this.variables.MaterialRequistionSlip.replace.map(x => x.toVariable()))
-        diff.variables.MaterialRequistionSlip.remove = HashSet.of<MaterialRequistionSlip>().addAll(this.variables.MaterialRequistionSlip.remove.map(x => new MaterialRequistionSlip(x)))
-        diff.variables.MaterialRequistionSlipItem.replace = HashSet.of<MaterialRequistionSlipItemVariable>().addAll(this.variables.MaterialRequistionSlipItem.replace.map(x => x.toVariable()))
-        diff.variables.MaterialRequistionSlipItem.remove = HashSet.of<MaterialRequistionSlipItem>().addAll(this.variables.MaterialRequistionSlipItem.remove.map(x => new MaterialRequistionSlipItem(x)))
-        diff.variables.BOM.replace = HashSet.of<BOMVariable>().addAll(this.variables.BOM.replace.map(x => x.toVariable()))
-        diff.variables.BOM.remove = HashSet.of<BOM>().addAll(this.variables.BOM.remove.map(x => new BOM(x)))
-        diff.variables.BOMItem.replace = HashSet.of<BOMItemVariable>().addAll(this.variables.BOMItem.replace.map(x => x.toVariable()))
-        diff.variables.BOMItem.remove = HashSet.of<BOMItem>().addAll(this.variables.BOMItem.remove.map(x => new BOMItem(x)))
-        diff.variables.ProductionPreparationSlip.replace = HashSet.of<ProductionPreparationSlipVariable>().addAll(this.variables.ProductionPreparationSlip.replace.map(x => x.toVariable()))
-        diff.variables.ProductionPreparationSlip.remove = HashSet.of<ProductionPreparationSlip>().addAll(this.variables.ProductionPreparationSlip.remove.map(x => new ProductionPreparationSlip(x)))
-        diff.variables.ProductionPreparationSlipItem.replace = HashSet.of<ProductionPreparationSlipItemVariable>().addAll(this.variables.ProductionPreparationSlipItem.replace.map(x => x.toVariable()))
-        diff.variables.ProductionPreparationSlipItem.remove = HashSet.of<ProductionPreparationSlipItem>().addAll(this.variables.ProductionPreparationSlipItem.remove.map(x => new ProductionPreparationSlipItem(x)))
-        diff.variables.ScrapMaterialSlip.replace = HashSet.of<ScrapMaterialSlipVariable>().addAll(this.variables.ScrapMaterialSlip.replace.map(x => x.toVariable()))
-        diff.variables.ScrapMaterialSlip.remove = HashSet.of<ScrapMaterialSlip>().addAll(this.variables.ScrapMaterialSlip.remove.map(x => new ScrapMaterialSlip(x)))
-        diff.variables.TransferMaterialSlip.replace = HashSet.of<TransferMaterialSlipVariable>().addAll(this.variables.TransferMaterialSlip.replace.map(x => x.toVariable()))
-        diff.variables.TransferMaterialSlip.remove = HashSet.of<TransferMaterialSlip>().addAll(this.variables.TransferMaterialSlip.remove.map(x => new TransferMaterialSlip(x)))
-        diff.variables.WarehouseAcceptanceSlip.replace = HashSet.of<WarehouseAcceptanceSlipVariable>().addAll(this.variables.WarehouseAcceptanceSlip.replace.map(x => x.toVariable()))
-        diff.variables.WarehouseAcceptanceSlip.remove = HashSet.of<WarehouseAcceptanceSlip>().addAll(this.variables.WarehouseAcceptanceSlip.remove.map(x => new WarehouseAcceptanceSlip(x)))
-        return diff
+        return new DiffVariable(this.id, this.active, {
+            Product: {
+                replace: HashSet.of<ProductVariable>().addAll(this.variables.Product.replace.map(x => x.toVariable())),
+                remove: HashSet.of<Product>().addAll(this.variables.Product.remove.map(x => new Product(x)))
+            },
+            UOM: {
+                replace: HashSet.of<UOMVariable>().addAll(this.variables.UOM.replace.map(x => x.toVariable())),
+                remove: HashSet.of<UOM>().addAll(this.variables.UOM.remove.map(x => new UOM(x)))
+            },
+            Indent: {
+                replace: HashSet.of<IndentVariable>().addAll(this.variables.Indent.replace.map(x => x.toVariable())),
+                remove: HashSet.of<Indent>().addAll(this.variables.Indent.remove.map(x => new Indent(x)))
+            },
+            IndentItem: {
+                replace: HashSet.of<IndentItemVariable>().addAll(this.variables.IndentItem.replace.map(x => x.toVariable())),
+                remove: HashSet.of<IndentItem>().addAll(this.variables.IndentItem.remove.map(x => new IndentItem(x)))
+            },
+            Supplier: {
+                replace: HashSet.of<SupplierVariable>().addAll(this.variables.Supplier.replace.map(x => x.toVariable())),
+                remove: HashSet.of<Supplier>().addAll(this.variables.Supplier.remove.map(x => new Supplier(x)))
+            },
+            SupplierProduct: {
+                replace: HashSet.of<SupplierProductVariable>().addAll(this.variables.SupplierProduct.replace.map(x => x.toVariable())),
+                remove: HashSet.of<SupplierProduct>().addAll(this.variables.SupplierProduct.remove.map(x => new SupplierProduct(x)))
+            },
+            Quotation: {
+                replace: HashSet.of<QuotationVariable>().addAll(this.variables.Quotation.replace.map(x => x.toVariable())),
+                remove: HashSet.of<Quotation>().addAll(this.variables.Quotation.remove.map(x => new Quotation(x)))
+            },
+            QuotationItem: {
+                replace: HashSet.of<QuotationItemVariable>().addAll(this.variables.QuotationItem.replace.map(x => x.toVariable())),
+                remove: HashSet.of<QuotationItem>().addAll(this.variables.QuotationItem.remove.map(x => new QuotationItem(x)))
+            },
+            PurchaseOrder: {
+                replace: HashSet.of<PurchaseOrderVariable>().addAll(this.variables.PurchaseOrder.replace.map(x => x.toVariable())),
+                remove: HashSet.of<PurchaseOrder>().addAll(this.variables.PurchaseOrder.remove.map(x => new PurchaseOrder(x)))
+            },
+            PurchaseOrderItem: {
+                replace: HashSet.of<PurchaseOrderItemVariable>().addAll(this.variables.PurchaseOrderItem.replace.map(x => x.toVariable())),
+                remove: HashSet.of<PurchaseOrderItem>().addAll(this.variables.PurchaseOrderItem.remove.map(x => new PurchaseOrderItem(x)))
+            },
+            PurchaseInvoice: {
+                replace: HashSet.of<PurchaseInvoiceVariable>().addAll(this.variables.PurchaseInvoice.replace.map(x => x.toVariable())),
+                remove: HashSet.of<PurchaseInvoice>().addAll(this.variables.PurchaseInvoice.remove.map(x => new PurchaseInvoice(x)))
+            },
+            PurchaseInvoiceItem: {
+                replace: HashSet.of<PurchaseInvoiceItemVariable>().addAll(this.variables.PurchaseInvoiceItem.replace.map(x => x.toVariable())),
+                remove: HashSet.of<PurchaseInvoiceItem>().addAll(this.variables.PurchaseInvoiceItem.remove.map(x => new PurchaseInvoiceItem(x)))
+            },
+            MaterialApprovalSlip: {
+                replace: HashSet.of<MaterialApprovalSlipVariable>().addAll(this.variables.MaterialApprovalSlip.replace.map(x => x.toVariable())),
+                remove: HashSet.of<MaterialApprovalSlip>().addAll(this.variables.MaterialApprovalSlip.remove.map(x => new MaterialApprovalSlip(x)))
+            },
+            MaterialApprovalSlipItem: {
+                replace: HashSet.of<MaterialApprovalSlipItemVariable>().addAll(this.variables.MaterialApprovalSlipItem.replace.map(x => x.toVariable())),
+                remove: HashSet.of<MaterialApprovalSlipItem>().addAll(this.variables.MaterialApprovalSlipItem.remove.map(x => new MaterialApprovalSlipItem(x)))
+            },
+            MaterialRejectionSlip: {
+                replace: HashSet.of<MaterialRejectionSlipVariable>().addAll(this.variables.MaterialRejectionSlip.replace.map(x => x.toVariable())),
+                remove: HashSet.of<MaterialRejectionSlip>().addAll(this.variables.MaterialRejectionSlip.remove.map(x => new MaterialRejectionSlip(x)))
+            },
+            MaterialRejectionSlipItem: {
+                replace: HashSet.of<MaterialRejectionSlipItemVariable>().addAll(this.variables.MaterialRejectionSlipItem.replace.map(x => x.toVariable())),
+                remove: HashSet.of<MaterialRejectionSlipItem>().addAll(this.variables.MaterialRejectionSlipItem.remove.map(x => new MaterialRejectionSlipItem(x)))
+            },
+            MaterialReturnSlip: {
+                replace: HashSet.of<MaterialReturnSlipVariable>().addAll(this.variables.MaterialReturnSlip.replace.map(x => x.toVariable())),
+                remove: HashSet.of<MaterialReturnSlip>().addAll(this.variables.MaterialReturnSlip.remove.map(x => new MaterialReturnSlip(x)))
+            },
+            MaterialReturnSlipItem: {
+                replace: HashSet.of<MaterialReturnSlipItemVariable>().addAll(this.variables.MaterialReturnSlipItem.replace.map(x => x.toVariable())),
+                remove: HashSet.of<MaterialReturnSlipItem>().addAll(this.variables.MaterialReturnSlipItem.remove.map(x => new MaterialReturnSlipItem(x)))
+            },
+            MaterialRequistionSlip: {
+                replace: HashSet.of<MaterialRequistionSlipVariable>().addAll(this.variables.MaterialRequistionSlip.replace.map(x => x.toVariable())),
+                remove: HashSet.of<MaterialRequistionSlip>().addAll(this.variables.MaterialRequistionSlip.remove.map(x => new MaterialRequistionSlip(x)))
+            },
+            MaterialRequistionSlipItem: {
+                replace: HashSet.of<MaterialRequistionSlipItemVariable>().addAll(this.variables.MaterialRequistionSlipItem.replace.map(x => x.toVariable())),
+                remove: HashSet.of<MaterialRequistionSlipItem>().addAll(this.variables.MaterialRequistionSlipItem.remove.map(x => new MaterialRequistionSlipItem(x)))
+            },
+            BOM: {
+                replace: HashSet.of<BOMVariable>().addAll(this.variables.BOM.replace.map(x => x.toVariable())),
+                remove: HashSet.of<BOM>().addAll(this.variables.BOM.remove.map(x => new BOM(x)))
+            },
+            BOMItem: {
+                replace: HashSet.of<BOMItemVariable>().addAll(this.variables.BOMItem.replace.map(x => x.toVariable())),
+                remove: HashSet.of<BOMItem>().addAll(this.variables.BOMItem.remove.map(x => new BOMItem(x)))
+            },
+            ProductionPreparationSlip: {
+                replace: HashSet.of<ProductionPreparationSlipVariable>().addAll(this.variables.ProductionPreparationSlip.replace.map(x => x.toVariable())),
+                remove: HashSet.of<ProductionPreparationSlip>().addAll(this.variables.ProductionPreparationSlip.remove.map(x => new ProductionPreparationSlip(x)))
+            },
+            ProductionPreparationSlipItem: {
+                replace = HashSet.of<ProductionPreparationSlipItemVariable>().addAll(this.variables.ProductionPreparationSlipItem.replace.map(x => x.toVariable())),
+                remove: HashSet.of<ProductionPreparationSlipItem>().addAll(this.variables.ProductionPreparationSlipItem.remove.map(x => new ProductionPreparationSlipItem(x)))
+            },
+            ScrapMaterialSlip: {
+                replace: HashSet.of<ScrapMaterialSlipVariable>().addAll(this.variables.ScrapMaterialSlip.replace.map(x => x.toVariable())),
+                remove: HashSet.of<ScrapMaterialSlip>().addAll(this.variables.ScrapMaterialSlip.remove.map(x => new ScrapMaterialSlip(x)))
+            },
+            TransferMaterialSlip: {
+                replace: HashSet.of<TransferMaterialSlipVariable>().addAll(this.variables.TransferMaterialSlip.replace.map(x => x.toVariable())),
+                remove: HashSet.of<TransferMaterialSlip>().addAll(this.variables.TransferMaterialSlip.remove.map(x => new TransferMaterialSlip(x)))
+            },
+            WarehouseAcceptanceSlip: {
+                replace: HashSet.of<WarehouseAcceptanceSlipVariable>().addAll(this.variables.WarehouseAcceptanceSlip.replace.map(x => x.toVariable())),
+                remove: HashSet.of<WarehouseAcceptanceSlip>().addAll(this.variables.WarehouseAcceptanceSlip.remove.map(x => new WarehouseAcceptanceSlip(x)))
+            }
+        })
     }
 }

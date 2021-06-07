@@ -557,234 +557,236 @@ export function mergeDiffs(diffs: ReadonlyArray<Diff>): Diff {
     return result
 }
 
+type DiffVariables = {
+    Product: {
+        replace: HashSet<Immutable<ProductVariable>>
+        remove: HashSet<Immutable<Product>>
+    }
+    UOM: {
+        replace: HashSet<Immutable<UOMVariable>>,
+        remove: HashSet<Immutable<UOM>>
+    },
+    Indent: {
+        replace: HashSet<Immutable<IndentVariable>>,
+        remove: HashSet<Immutable<Indent>>
+    },
+    IndentItem: {
+        replace: HashSet<Immutable<IndentItemVariable>>,
+        remove: HashSet<Immutable<IndentItem>>
+    },
+    Supplier: {
+        replace: HashSet<Immutable<SupplierVariable>>,
+        remove: HashSet<Immutable<Supplier>>
+    },
+    SupplierProduct: {
+        replace: HashSet<Immutable<SupplierProductVariable>>,
+        remove: HashSet<Immutable<SupplierProduct>>
+    },
+    Quotation: {
+        replace: HashSet<Immutable<QuotationVariable>>,
+        remove: HashSet<Immutable<Quotation>>
+    },
+    QuotationItem: {
+        replace: HashSet<Immutable<QuotationItemVariable>>,
+        remove: HashSet<Immutable<QuotationItem>>
+    },
+    PurchaseOrder: {
+        replace: HashSet<Immutable<PurchaseOrderVariable>>,
+        remove: HashSet<Immutable<PurchaseOrder>>
+    },
+    PurchaseOrderItem: {
+        replace: HashSet<Immutable<PurchaseOrderItemVariable>>,
+        remove: HashSet<Immutable<PurchaseOrderItem>>
+    },
+    PurchaseInvoice: {
+        replace: HashSet<Immutable<PurchaseInvoiceVariable>>,
+        remove: HashSet<Immutable<PurchaseInvoice>>
+    },
+    PurchaseInvoiceItem: {
+        replace: HashSet<Immutable<PurchaseInvoiceItemVariable>>,
+        remove: HashSet<Immutable<PurchaseInvoiceItem>>
+    },
+    MaterialApprovalSlip: {
+        replace: HashSet<Immutable<MaterialApprovalSlipVariable>>,
+        remove: HashSet<Immutable<MaterialApprovalSlip>>
+    },
+    MaterialApprovalSlipItem: {
+        replace: HashSet<Immutable<MaterialApprovalSlipItemVariable>>,
+        remove: HashSet<Immutable<MaterialApprovalSlipItem>>
+    },
+    MaterialRejectionSlip: {
+        replace: HashSet<Immutable<MaterialRejectionSlipVariable>>,
+        remove: HashSet<Immutable<MaterialRejectionSlip>>
+    },
+    MaterialRejectionSlipItem: {
+        replace: HashSet<Immutable<MaterialRejectionSlipItemVariable>>,
+        remove: HashSet<Immutable<MaterialRejectionSlipItem>>
+    },
+    MaterialReturnSlip: {
+        replace: HashSet<Immutable<MaterialReturnSlipVariable>>,
+        remove: HashSet<Immutable<MaterialReturnSlip>>
+    },
+    MaterialReturnSlipItem: {
+        replace: HashSet<Immutable<MaterialReturnSlipItemVariable>>,
+        remove: HashSet<Immutable<MaterialReturnSlipItem>>
+    },
+    MaterialRequistionSlip: {
+        replace: HashSet<Immutable<MaterialRequistionSlipVariable>>,
+        remove: HashSet<Immutable<MaterialRequistionSlip>>
+    },
+    MaterialRequistionSlipItem: {
+        replace: HashSet<Immutable<MaterialRequistionSlipItemVariable>>,
+        remove: HashSet<Immutable<MaterialRequistionSlipItem>>
+    },
+    BOM: {
+        replace: HashSet<Immutable<BOMVariable>>,
+        remove: HashSet<Immutable<BOM>>
+    },
+    BOMItem: {
+        replace: HashSet<Immutable<BOMItemVariable>>,
+        remove: HashSet<Immutable<BOMItem>>
+    },
+    ProductionPreparationSlip: {
+        replace: HashSet<Immutable<ProductionPreparationSlipVariable>>,
+        remove: HashSet<Immutable<ProductionPreparationSlip>>
+    },
+    ProductionPreparationSlipItem: {
+        replace: HashSet<Immutable<ProductionPreparationSlipItemVariable>>,
+        remove: HashSet<Immutable<ProductionPreparationSlipItem>>
+    },
+    ScrapMaterialSlip: {
+        replace: HashSet<Immutable<ScrapMaterialSlipVariable>>,
+        remove: HashSet<Immutable<ScrapMaterialSlip>>
+    },
+    TransferMaterialSlip: {
+        replace: HashSet<Immutable<TransferMaterialSlipVariable>>,
+        remove: HashSet<Immutable<TransferMaterialSlip>>
+    },
+    WarehouseAcceptanceSlip: {
+        replace: HashSet<Immutable<WarehouseAcceptanceSlipVariable>>,
+        remove: HashSet<Immutable<WarehouseAcceptanceSlip>>
+    }
+}
+
 export class DiffVariable {
     [immerable] = true
     readonly id: number
     active: boolean
-    variables: {
+    variables: DiffVariables
+
+    constructor(id: number = -1, active: boolean = true, variables: DiffVariables = {
         Product: {
-            replace: HashSet<Immutable<ProductVariable>>
-            remove: HashSet<Immutable<Product>>
-        }
+            replace: HashSet.of(),
+            remove: HashSet.of()
+        },
         UOM: {
-            replace: HashSet<Immutable<UOMVariable>>,
-            remove: HashSet<Immutable<UOM>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         Indent: {
-            replace: HashSet<Immutable<IndentVariable>>,
-            remove: HashSet<Immutable<Indent>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         IndentItem: {
-            replace: HashSet<Immutable<IndentItemVariable>>,
-            remove: HashSet<Immutable<IndentItem>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         Supplier: {
-            replace: HashSet<Immutable<SupplierVariable>>,
-            remove: HashSet<Immutable<Supplier>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         SupplierProduct: {
-            replace: HashSet<Immutable<SupplierProductVariable>>,
-            remove: HashSet<Immutable<SupplierProduct>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         Quotation: {
-            replace: HashSet<Immutable<QuotationVariable>>,
-            remove: HashSet<Immutable<Quotation>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         QuotationItem: {
-            replace: HashSet<Immutable<QuotationItemVariable>>,
-            remove: HashSet<Immutable<QuotationItem>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         PurchaseOrder: {
-            replace: HashSet<Immutable<PurchaseOrderVariable>>,
-            remove: HashSet<Immutable<PurchaseOrder>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         PurchaseOrderItem: {
-            replace: HashSet<Immutable<PurchaseOrderItemVariable>>,
-            remove: HashSet<Immutable<PurchaseOrderItem>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         PurchaseInvoice: {
-            replace: HashSet<Immutable<PurchaseInvoiceVariable>>,
-            remove: HashSet<Immutable<PurchaseInvoice>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         PurchaseInvoiceItem: {
-            replace: HashSet<Immutable<PurchaseInvoiceItemVariable>>,
-            remove: HashSet<Immutable<PurchaseInvoiceItem>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         MaterialApprovalSlip: {
-            replace: HashSet<Immutable<MaterialApprovalSlipVariable>>,
-            remove: HashSet<Immutable<MaterialApprovalSlip>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         MaterialApprovalSlipItem: {
-            replace: HashSet<Immutable<MaterialApprovalSlipItemVariable>>,
-            remove: HashSet<Immutable<MaterialApprovalSlipItem>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         MaterialRejectionSlip: {
-            replace: HashSet<Immutable<MaterialRejectionSlipVariable>>,
-            remove: HashSet<Immutable<MaterialRejectionSlip>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         MaterialRejectionSlipItem: {
-            replace: HashSet<Immutable<MaterialRejectionSlipItemVariable>>,
-            remove: HashSet<Immutable<MaterialRejectionSlipItem>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         MaterialReturnSlip: {
-            replace: HashSet<Immutable<MaterialReturnSlipVariable>>,
-            remove: HashSet<Immutable<MaterialReturnSlip>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         MaterialReturnSlipItem: {
-            replace: HashSet<Immutable<MaterialReturnSlipItemVariable>>,
-            remove: HashSet<Immutable<MaterialReturnSlipItem>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         MaterialRequistionSlip: {
-            replace: HashSet<Immutable<MaterialRequistionSlipVariable>>,
-            remove: HashSet<Immutable<MaterialRequistionSlip>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         MaterialRequistionSlipItem: {
-            replace: HashSet<Immutable<MaterialRequistionSlipItemVariable>>,
-            remove: HashSet<Immutable<MaterialRequistionSlipItem>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         BOM: {
-            replace: HashSet<Immutable<BOMVariable>>,
-            remove: HashSet<Immutable<BOM>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         BOMItem: {
-            replace: HashSet<Immutable<BOMItemVariable>>,
-            remove: HashSet<Immutable<BOMItem>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         ProductionPreparationSlip: {
-            replace: HashSet<Immutable<ProductionPreparationSlipVariable>>,
-            remove: HashSet<Immutable<ProductionPreparationSlip>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         ProductionPreparationSlipItem: {
-            replace: HashSet<Immutable<ProductionPreparationSlipItemVariable>>,
-            remove: HashSet<Immutable<ProductionPreparationSlipItem>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         ScrapMaterialSlip: {
-            replace: HashSet<Immutable<ScrapMaterialSlipVariable>>,
-            remove: HashSet<Immutable<ScrapMaterialSlip>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         TransferMaterialSlip: {
-            replace: HashSet<Immutable<TransferMaterialSlipVariable>>,
-            remove: HashSet<Immutable<TransferMaterialSlip>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         },
         WarehouseAcceptanceSlip: {
-            replace: HashSet<Immutable<WarehouseAcceptanceSlipVariable>>,
-            remove: HashSet<Immutable<WarehouseAcceptanceSlip>>
+            replace: HashSet.of(),
+            remove: HashSet.of()
         }
-    }
-
-    constructor(id: number = -1, active: boolean = true) {
+    }) {
         this.id = id
         this.active = active
-        this.variables = {
-            Product: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            UOM: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            Indent: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            IndentItem: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            Supplier: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            SupplierProduct: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            Quotation: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            QuotationItem: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            PurchaseOrder: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            PurchaseOrderItem: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            PurchaseInvoice: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            PurchaseInvoiceItem: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            MaterialApprovalSlip: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            MaterialApprovalSlipItem: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            MaterialRejectionSlip: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            MaterialRejectionSlipItem: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            MaterialReturnSlip: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            MaterialReturnSlipItem: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            MaterialRequistionSlip: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            MaterialRequistionSlipItem: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            BOM: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            BOMItem: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            ProductionPreparationSlip: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            ProductionPreparationSlipItem: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            ScrapMaterialSlip: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            TransferMaterialSlip: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            },
-            WarehouseAcceptanceSlip: {
-                replace: HashSet.of(),
-                remove: HashSet.of()
-            }
-        }
+        this.variables = variables
     }
 
     equals(other: DiffVariable): boolean {
