@@ -1,4 +1,5 @@
 import { immerable } from 'immer'
+import { HashSet } from 'prelude-ts'
 import { Number, Decimal, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip } from './variables'
 
 export class ProductRow {
@@ -1128,4 +1129,254 @@ export class WarehouseAcceptanceSlipRow {
             quantity: this.values.quantity
         })
     }
+}
+
+export class DiffRow {
+    [immerable] = true
+    readonly id: number
+    active: boolean
+    variables: {
+        Product: {
+            replace: Array<ProductRow>
+            remove: Array<string>
+        }
+        UOM: {
+            replace: Array<UOMRow>
+            remove: Array<string>
+        },
+        Indent: {
+            replace: Array<IndentRow>
+            remove: Array<string>
+        },
+        IndentItem: {
+            replace: Array<IndentItemRow>
+            remove: Array<string>
+        },
+        Supplier: {
+            replace: Array<SupplierRow>
+            remove: Array<string>
+        },
+        SupplierProduct: {
+            replace: Array<SupplierProductRow>
+            remove: Array<string>
+        },
+        Quotation: {
+            replace: Array<QuotationRow>
+            remove: Array<string>
+        },
+        QuotationItem: {
+            replace: Array<QuotationItemRow>
+            remove: Array<string>
+        },
+        PurchaseOrder: {
+            replace: Array<PurchaseOrderRow>
+            remove: Array<string>
+        },
+        PurchaseOrderItem: {
+            replace: Array<PurchaseOrderItemRow>
+            remove: Array<string>
+        },
+        PurchaseInvoice: {
+            replace: Array<PurchaseInvoiceRow>
+            remove: Array<string>
+        },
+        PurchaseInvoiceItem: {
+            replace: Array<PurchaseInvoiceItemRow>
+            remove: Array<string>
+        },
+        MaterialApprovalSlip: {
+            replace: Array<MaterialApprovalSlipRow>
+            remove: Array<string>
+        },
+        MaterialApprovalSlipItem: {
+            replace: Array<MaterialApprovalSlipItemRow>
+            remove: Array<string>
+        },
+        MaterialRejectionSlip: {
+            replace: Array<MaterialRejectionSlipRow>
+            remove: Array<string>
+        },
+        MaterialRejectionSlipItem: {
+            replace: Array<MaterialRejectionSlipItemRow>
+            remove: Array<string>
+        },
+        MaterialReturnSlip: {
+            replace: Array<MaterialReturnSlipRow>
+            remove: Array<string>
+        },
+        MaterialReturnSlipItem: {
+            replace: Array<MaterialReturnSlipItemRow>
+            remove: Array<string>
+        },
+        MaterialRequistionSlip: {
+            replace: Array<MaterialRequistionSlipRow>
+            remove: Array<string>
+        },
+        MaterialRequistionSlipItem: {
+            replace: Array<MaterialRequistionSlipItemRow>
+            remove: Array<string>
+        },
+        BOM: {
+            replace: Array<BOMRow>
+            remove: Array<string>
+        },
+        BOMItem: {
+            replace: Array<BOMItemRow>
+            remove: Array<string>
+        },
+        ProductionPreparationSlip: {
+            replace: Array<ProductionPreparationSlipRow>
+            remove: Array<string>
+        },
+        ProductionPreparationSlipItem: {
+            replace: Array<ProductionPreparationSlipItemRow>
+            remove: Array<string>
+        },
+        ScrapMaterialSlip: {
+            replace: Array<ScrapMaterialSlipRow>
+            remove: Array<string>
+        },
+        TransferMaterialSlip: {
+            replace: Array<TransferMaterialSlipRow>
+            remove: Array<string>
+        },
+        WarehouseAcceptanceSlip: {
+            replace: Array<WarehouseAcceptanceSlipRow>
+            remove: Array<string>
+        }
+    }
+
+    constructor(productReplace: HashSet<ProductRow>, productRemove: HashSet<string>) {
+        this.id = -1
+        this.active = true
+        this.variables = {
+            Product: {
+                replace: productReplace.toArray(),
+                remove: productRemove.toArray()
+            },
+            UOM: {
+                replace: uomReplace.toArray(),
+                remove: uomRemove.toArray()
+            },
+            Indent: {
+                replace: indentReplace.toArray(),
+                remove: indentRemove.toArray()
+            },
+            IndentItem: {
+                replace: indentItemReplace.toArray(),
+                remove: indentItemRemove.toArray()
+            },
+            Supplier: {
+                replace: supplierReplace.toArray(),
+                remove: supplierRemove.toArray()
+            },
+            SupplierProduct: {
+                replace: supplierProductReplace.toArray(),
+                remove: supplierProductRemove.toArray()
+            },
+            Quotation: {
+                replace: quotationReplace.toArray(),
+                remove: quotationRemove.toArray()
+            },
+            QuotationItem: {
+                replace: quotationItemReplace.toArray(),
+                remove: quotationItemRemove.toArray()
+            },
+            PurchaseOrder: {
+                replace: purchaseOrderReplace.toArray(),
+                remove: purchaseOrderRemove.toArray()
+            },
+            PurchaseOrderItem: {
+                replace: purchaseOrderItemReplace.toArray(),
+                remove: purchaseOrderItemRemove.toArray()
+            },
+            PurchaseInvoice: {
+                replace: purchaseInvoiceReplace.toArray(),
+                remove: purchaseInvoiceRemove.toArray()
+            },
+            PurchaseInvoiceItem: {
+                replace: purchaseInvoiceItemReplace.toArray(),
+                remove: purchaseInvoiceItemRemove.toArray()
+            },
+            MaterialApprovalSlip: {
+                replace: materialApprovalSlipReplace.toArray(),
+                remove: materialApprovalSlipRemove.toArray()
+            },
+            MaterialApprovalSlipItem: {
+                replace: materialApprovalSlipItemReplace.toArray(),
+                remove: materialApprovalSlipItemRemove.toArray()
+            },
+            MaterialRejectionSlip: {
+                replace: materialRejectionSlipReplace.toArray(),
+                remove: materialRejectionSlipRemove.toArray()
+            },
+            MaterialRejectionSlipItem: {
+                replace: materialRejectionSlipItemReplace.toArray(),
+                remove: materialRejectionSlipItemRemove.toArray()
+            },
+            MaterialReturnSlip: {
+                replace: materialReturnSlipReplace.toArray(),
+                remove: materialReturnSlipRemove.toArray()
+            },
+            MaterialReturnSlipItem: {
+                replace: materialReturnSlipItemReplace.toArray(),
+                remove: materialReturnSlipItemRemove.toArray()
+            },
+            MaterialRequistionSlip: {
+                replace: materialRequistionSlipReplace.toArray(),
+                remove: materialRequistionSlipRemove.toArray()
+            },
+            MaterialRequistionSlipItem: {
+                replace: materialRequistionSlipItemReplace.toArray(),
+                remove: materialRequistionSlipItemRemove.toArray()
+            },
+            BOM: {
+                replace: bomReplace.toArray(),
+                remove: bomRemove.toArray()
+            },
+            BOMItem: {
+                replace: bomItemReplace.toArray(),
+                remove: bomItemRemove.toArray()
+            },
+            ProductionPreparationSlip: {
+                replace: productionPreparationSlipReplace.toArray(),
+                remove: productionPreparationSlipRemove.toArray()
+            },
+            ProductionPreparationSlipItem: {
+                replace: productionPreparationSlipItemReplace.toArray(),
+                remove: productionPreparationSlipItemRemove.toArray()
+            },
+            ScrapMaterialSlip: {
+                replace: scrapMaterialSlipReplace.toArray(),
+                remove: scrapMaterialSlipRemove.toArray()
+            },
+            TransferMaterialSlip: {
+                replace: TransferMaterialSlipReplace.toArray(),
+                remove: transferMaterialSlipRemove.toArray()
+            },
+            WarehouseAcceptanceSlip: {
+                replace: warehouseAcceptanceSlipReplace.toArray(),
+                remove: warehouseAcceptanceSlipRemove.toArray()
+            }
+        }
+    }
+
+    equals(other: DiffRow): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.id === other.id
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return JSON.stringify(this, null, 2)
+    }
+
+    // toVariable(): ProductVariable {
+    //     return new ProductVariable(this.variableName, this.values)
+    // }
 }
