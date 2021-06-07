@@ -1581,7 +1581,7 @@ export class DiffRow {
                 remove: HashSet.of<ProductionPreparationSlip>().addAll(this.variables.ProductionPreparationSlip.remove.map(x => new ProductionPreparationSlip(x)))
             },
             ProductionPreparationSlipItem: {
-                replace = HashSet.of<ProductionPreparationSlipItemVariable>().addAll(this.variables.ProductionPreparationSlipItem.replace.map(x => x.toVariable())),
+                replace: HashSet.of<ProductionPreparationSlipItemVariable>().addAll(this.variables.ProductionPreparationSlipItem.replace.map(x => x.toVariable())),
                 remove: HashSet.of<ProductionPreparationSlipItem>().addAll(this.variables.ProductionPreparationSlipItem.remove.map(x => new ProductionPreparationSlipItem(x)))
             },
             ScrapMaterialSlip: {
