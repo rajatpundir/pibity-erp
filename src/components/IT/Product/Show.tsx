@@ -37,7 +37,6 @@ type State = Immutable<{
 export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
-    | ['saveVariable']
 
     | ['variable', 'variableName', Product]
     | ['variable', 'values', 'name', string]
@@ -85,26 +84,6 @@ function Component(props) {
             }
             case 'resetVariable': {
                 return action[1]
-            }
-            case 'saveVariable': {
-                // const [result, symbolFlag, diff] = executeCircuit(circuits.createProduct, {
-                //     sku: state.variable.variableName.toString(),
-                //     name: state.variable.values.name,
-                //     orderable: state.variable.values.orderable,
-                //     consumable: state.variable.values.consumable,
-                //     producable: state.variable.values.producable,
-                //     uoms: state.uoms.variables.toArray().map(uom => {
-                //         return {
-                //             name: uom.values.name,
-                //             conversionRate: uom.values.conversionRate
-                //         }
-                //     })
-                // })
-                // console.log(result, symbolFlag)
-                // if (symbolFlag) {
-                //     getState().addDiff(diff)
-                // }
-                break
             }
             case 'variable': {
                 switch (action[1]) {
@@ -239,6 +218,26 @@ function Component(props) {
         return fx
     }
 
+    const saveVariable = async() => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.createProduct, {
+            sku: state.variable.variableName.toString(),
+            name: state.variable.values.name,
+            orderable: state.variable.values.orderable,
+            consumable: state.variable.values.consumable,
+            producable: state.variable.values.producable,
+            uoms: state.uoms.variables.toArray().map(uom => {
+                return {
+                    name: uom.values.name,
+                    conversionRate: uom.values.conversionRate
+                }
+            })
+        })
+        console.log(result, symbolFlag)
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
+    }
+
     return iff(state.mode === 'create' || products.length() === 1,
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
@@ -253,8 +252,7 @@ function Component(props) {
                     {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
-                                await db.products.put(state.variable.toRow())
-                                // await dispatch(['saveVariable'])
+                                await saveVariable()
                                 props.history.push('/products')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
@@ -264,8 +262,7 @@ function Component(props) {
                                         dispatch(['resetVariable', initialState])
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
-                                        await db.products.put(state.variable.toRow())
-                                        // await dispatch(['saveVariable'])
+                                        await saveVariable()
                                         props.history.push('/products')
                                     }}>Save</Button>
                                 </>,
