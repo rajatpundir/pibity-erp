@@ -27,6 +27,6 @@ export const store = create<State>(devtools((set, get) => ({
     }
 })))
 
-export const { getState, setState, subscribe, destroy } = store
+// export const { getState, setState, subscribe, destroy } = store
 
 export const useStore = createStore(store)

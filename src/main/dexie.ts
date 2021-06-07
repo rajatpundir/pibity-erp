@@ -1,8 +1,9 @@
 import Dexie from 'dexie'
 import { Immutable } from 'immer'
-import { BOMItemRow, BOMRow, IndentItemRow, IndentRow, MaterialApprovalSlipItemRow, MaterialApprovalSlipRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow, MaterialRequistionSlipItemRow, MaterialRequistionSlipRow, MaterialReturnSlipItemRow, MaterialReturnSlipRow, ProductionPreparationSlipItemRow, ProductionPreparationSlipRow, ProductRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow, PurchaseOrderItemRow, PurchaseOrderRow, QuotationItemRow, QuotationRow, ScrapMaterialSlipRow, SupplierProductRow, SupplierRow, TransferMaterialSlipRow, UOMRow, WarehouseAcceptanceSlipRow } from './rows'
+import { BOMItemRow, BOMRow, DiffRow, IndentItemRow, IndentRow, MaterialApprovalSlipItemRow, MaterialApprovalSlipRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow, MaterialRequistionSlipItemRow, MaterialRequistionSlipRow, MaterialReturnSlipItemRow, MaterialReturnSlipRow, ProductionPreparationSlipItemRow, ProductionPreparationSlipRow, ProductRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow, PurchaseOrderItemRow, PurchaseOrderRow, QuotationItemRow, QuotationRow, ScrapMaterialSlipRow, SupplierProductRow, SupplierRow, TransferMaterialSlipRow, UOMRow, WarehouseAcceptanceSlipRow } from './rows'
 
 class Database extends Dexie {
+    diffs: Dexie.Table<Immutable<DiffRow>, number>
     products: Dexie.Table<Immutable<ProductRow>, string>
     uoms: Dexie.Table<Immutable<UOMRow>, string>
     indents: Dexie.Table<Immutable<IndentRow>, string>
@@ -34,6 +35,7 @@ class Database extends Dexie {
     constructor() {
         super('Database')
         this.version(1).stores({
+            diffs: '++id',
             products: '&variableName',
             uoms: '[product+name]',
             indents: '&variableName',
@@ -63,6 +65,7 @@ class Database extends Dexie {
             warehouseAcceptanceSlips: '&variableName'
         })
 
+        this.diffs = this.table('diffs')
         this.products = this.table('products')
         this.uoms = this.table('uoms')
         this.indents = this.table('indents')
@@ -91,6 +94,7 @@ class Database extends Dexie {
         this.transferMaterialSlips = this.table('transferMaterialSlips')
         this.warehouseAcceptanceSlips = this.table('warehouseAcceptanceSlips')
 
+        this.diffs.mapToClass(DiffRow)
         this.products.mapToClass(ProductRow)
         this.uoms.mapToClass(UOMRow)
         this.indents.mapToClass(IndentRow)

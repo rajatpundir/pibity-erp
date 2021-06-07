@@ -1,10 +1,8 @@
-import { Immutable } from "immer"
-import { HashSet, Vector } from "prelude-ts"
-import { Diff, getReplaceVariableDiff, getRemoveVariableDiff, mergeDiffs, compose } from "./layers"
+import { Vector } from "prelude-ts"
+import { Diff, getReplaceVariableDiff, getRemoveVariableDiff, mergeDiffs, compose, getVariable } from "./layers"
 import { evaluateExpression, LispExpression, Symbols, SymbolValue } from "./lisp"
-import { getState } from "./store"
 import { PrimitiveType, NonPrimitiveType, types, Key } from './types'
-import { replaceVariable, Variable } from "./variables"
+import { replaceVariable } from "./variables"
 
 type FunctionInput =
     | {
@@ -137,7 +135,7 @@ function getSymbolPathsForFunction(fx: Function): Array<ReadonlyArray<string>> {
     return symbolPaths
 }
 
-function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveType, variableName: string, overlay: Vector<Diff>): [SymbolValue, boolean] {
+async function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveType, variableName: string): Promise<[SymbolValue, boolean]> {
     const type = types[typeName]
     const symbolValue: SymbolValue = {
         type: 'Text',
@@ -146,10 +144,11 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
     var symbolFlag = true
     if (symbolPaths.length !== 0 && symbolPaths.filter(x => x.length !== 0).length !== 0) {
         symbolValue.values = {}
-        const unfilteredVariables: HashSet<Immutable<Variable>> = compose(getState().variables, overlay.toArray())[typeName]
-        const variables = unfilteredVariables.filter(x => x.toString() === variableName)
-        if (variables.length() === 1) {
-            Object.keys(type).forEach(keyName => {
+        const variable = await getVariable(typeName, variableName)
+        if (variable === undefined) {
+            symbolFlag = false
+        } else {
+            Object.keys(type).forEach(async keyName => {
                 if (symbolFlag && symbolPaths.filter(x => x[0] === keyName)) {
                     const key: Key = type[keyName]
                     if (symbolValue['values'] !== undefined) {
@@ -157,7 +156,7 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                             case 'Text': {
                                 symbolValue.values[keyName] = {
                                     type: key.type,
-                                    value: variables[0].values[keyName]
+                                    value: variable.values[keyName]
                                 }
                                 break
                             }
@@ -167,26 +166,26 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                             case 'Time': {
                                 symbolValue.values[keyName] = {
                                     type: 'Number',
-                                    value: variables[0].values[keyName]
+                                    value: variable.values[keyName]
                                 }
                                 break
                             }
                             case 'Decimal': {
                                 symbolValue.values[keyName] = {
                                     type: 'Decimal',
-                                    value: variables[0].values[keyName]
+                                    value: variable.values[keyName]
                                 }
                                 break
                             }
                             case 'Boolean': {
                                 symbolValue.values[keyName] = {
                                     type: key.type,
-                                    value: variables[0].values[keyName]
+                                    value: variable.values[keyName]
                                 }
                                 break
                             }
                             default: {
-                                const subSymbols = getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)), key.type, variables[0].values[keyName].toString(), overlay)
+                                const subSymbols = await getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)), key.type, variable.values[keyName].toString())
                                 symbolValue.values[keyName] = subSymbols[0]
                                 symbolFlag = symbolFlag && subSymbols[1]
                             }
@@ -194,22 +193,16 @@ function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveTyp
                     }
                 }
             })
-        } else {
-            // Note: Variable not found in Zustand Store (Base + Diff)
-            // Resolution: 
-            // 1. Check Dexie for variable and load into Zustand Store
-            // 2. Information is not present, set symbolFlag to false
-            symbolFlag = false
         }
     }
     return [symbolValue, symbolFlag]
 }
 
-function getSymbolsForFunction(fx: Function, args: object, overlay: Vector<Diff>): [Symbols, boolean] {
+async function getSymbolsForFunction(fx: Function, args: object, overlay: Vector<Diff>): Promise<[Symbols, boolean]> {
     const symbolPaths = getSymbolPathsForFunction(fx)
     const symbols: Symbols = {}
     var symbolFlag = true
-    Object.keys(fx.inputs).forEach(inputName => {
+    Object.keys(fx.inputs).forEach(async inputName => {
         if (symbolFlag && symbolPaths.filter(x => x[0] === inputName).length !== 0) {
             const fi = fx.inputs[inputName]
             switch (fi.type) {
@@ -246,7 +239,7 @@ function getSymbolsForFunction(fx: Function, args: object, overlay: Vector<Diff>
                 }
                 default: {
                     if (inputName in args || fi.default !== undefined) {
-                        const subSymbols = getSymbols(symbolPaths.filter(x => x[0] === inputName).map(x => x.slice(1)), fi.type, inputName in args ? String(args[inputName]) : (fi.default ? fi.default : ''), overlay)
+                        const subSymbols = await getSymbols(symbolPaths.filter(x => x[0] === inputName).map(x => x.slice(1)), fi.type, inputName in args ? String(args[inputName]) : (fi.default ? fi.default : ''))
                         symbols[inputName] = subSymbols[0]
                         symbolFlag = symbolFlag && subSymbols[1]
                     }
@@ -258,13 +251,13 @@ function getSymbolsForFunction(fx: Function, args: object, overlay: Vector<Diff>
     return [symbols, symbolFlag]
 }
 
-export function executeFunction(fx: Function, args: object, overlay: Vector<Diff>): [object, boolean, Diff] {
-    const [symbols, symbolFlag] = getSymbolsForFunction(fx, args, overlay)
+export async function executeFunction(fx: Function, args: object, overlay: Vector<Diff>): Promise<[object, boolean, Diff]> {
+    const [symbols, symbolFlag] = await getSymbolsForFunction(fx, args, overlay)
     console.log(args, symbols, symbolFlag)
     const result = {}
     var diffs: Vector<Diff> = Vector.of()
     if (symbolFlag) {
-        Object.keys(fx.outputs).forEach(outputName => {
+        Object.keys(fx.outputs).forEach(async outputName => {
             const fo = fx.outputs[outputName]
             console.log(outputName, fo.type)
             switch (fo.type) {
@@ -296,7 +289,7 @@ export function executeFunction(fx: Function, args: object, overlay: Vector<Diff
                                 variableName: variableName,
                                 values: {}
                             }
-                            Object.keys(types[fo.type].keys).forEach(keyName => {
+                            Object.keys(types[fo.type].keys).forEach(async keyName => {
                                 const key: Key = types[fo.type].keys[keyName]
                                 console.log(keyName, key.type)
                                 switch (key.type) {
@@ -320,16 +313,11 @@ export function executeFunction(fx: Function, args: object, overlay: Vector<Diff
                                         break
                                     }
                                     default: {
-                                        const referencedVariableName = String(evaluateExpression(fo.values[keyName], symbols))
-                                        const unfilteredVariables: HashSet<Immutable<Variable>> = compose(getState().variables, overlay.toArray())[key.type]
-                                        const variables = unfilteredVariables.filter(x => x.variableName.toString() === referencedVariableName)
-                                        if (variables.length() === 1) {
-                                            createdVariable.values[keyName] = variables.toArray()[0].variableName.toString()
+                                        const referencedVariable = await getVariable(key.type, String(evaluateExpression(fo.values[keyName], symbols)))
+                                        if (referencedVariable !== undefined) {
+                                            createdVariable.values[keyName] = referencedVariable.variableName.toString()
                                         } else {
-                                            // Note: Variable not found in Zustand Store (Base + Diff)
-                                            // Resolution: 
-                                            // 1. Check Dexie for variable and load into Zustand Store
-                                            // 2. Information is not present, return with symbolFlag as false
+                                            // Information is not present, return with symbolFlag as false
                                             result[outputName] = createdVariable
                                             return ([result, false, mergeDiffs(diffs.toArray())])
                                         }
@@ -348,14 +336,14 @@ export function executeFunction(fx: Function, args: object, overlay: Vector<Diff
                                 variableName: variableName,
                                 values: {}
                             }
-                            const unfilteredVariables: HashSet<Immutable<Variable>> = compose(getState().variables, overlay.toArray())[fo.type]
-                            const variables: HashSet<Immutable<Variable>> = unfilteredVariables.filter(x => x.variableName.toString() === variableName)
-                            if (variables.length() === 1) {
-                                const variable: Immutable<Variable> = variables.toArray()[0]
+                            // const unfilteredVariables: HashSet<Immutable<Variable>> = compose(getState().variables, overlay.toArray())[fo.type]
+                            // const variables: HashSet<Immutable<Variable>> = unfilteredVariables.filter(x => x.variableName.toString() === variableName)
+                            const variable = await getVariable(fo.type, variableName)
+                            if (variable !== undefined) {
                                 Object.keys(variable.values).forEach(keyName => {
                                     updatedVariable.values[keyName] = variable.values[keyName]
                                 })
-                                Object.keys(fo.values).forEach(keyName => {
+                                Object.keys(fo.values).forEach(async keyName => {
                                     const key: Key = types[fo.type].keys[keyName]
                                     switch (key.type) {
                                         case 'Text': {
@@ -378,16 +366,11 @@ export function executeFunction(fx: Function, args: object, overlay: Vector<Diff
                                             break
                                         }
                                         default: {
-                                            const referencedVariableName = String(evaluateExpression(fo.values[keyName], symbols))
-                                            const unfilteredVariables: HashSet<Immutable<Variable>> = compose(getState().variables, overlay.toArray())[key.type]
-                                            const variables = unfilteredVariables.filter(x => x.variableName.toString() === referencedVariableName)
-                                            if (variables.length() === 1) {
-                                                updatedVariable.values[keyName] = variables.toArray()[0].variableName.toString()
+                                            const referencedVariable = await getVariable(key.type, String(evaluateExpression(fo.values[keyName], symbols)))
+                                            if (referencedVariable !== undefined) {
+                                                updatedVariable.values[keyName] = referencedVariable.variableName.toString()
                                             } else {
-                                                // Note: Referenced variable not found in Zustand Store (Base + Diff)
-                                                // Resolution: 
-                                                // 1. Check Dexie for variable and load into Zustand Store
-                                                // 2. Information is not present, return with symbolFlag as false
+                                                // Information is not present, return with symbolFlag as false
                                                 result[outputName] = {
                                                     typeName: updatedVariable.typeName,
                                                     variableName: updatedVariable.variableName.toString(),
@@ -407,11 +390,8 @@ export function executeFunction(fx: Function, args: object, overlay: Vector<Diff
                                 const replacedVariable = replaceVariable(updatedVariable.typeName, updatedVariable.variableName.toString(), updatedVariable.values)
                                 diffs = diffs.append(getReplaceVariableDiff(replacedVariable))
                             } else {
-                                // Note: Variable not found in Zustand Store (Base + Diff)
-                                // Resolution: 
-                                // 1. Check Dexie for variable and load into Zustand Store
-                                // 2. If Information is not present in Dexie, then no issue since user did not had the variable in first place.
-                                // 3. Care must be taken to not refer the the FunctionOutput in Circuit which has an update operation since it may not have been actually performed due to lack of information.
+                                // 1. Information is not present in Dexie, then no issue since user did not had the variable in first place.
+                                // 2. Care must be taken to not refer the the FunctionOutput in Circuit which has an update operation since it may not have been actually performed due to lack of information.
                             }
                             break
                         }
@@ -425,7 +405,7 @@ export function executeFunction(fx: Function, args: object, overlay: Vector<Diff
                 }
             }
         })
-        Object.keys(fx.inputs).forEach(inputName => {
+        Object.keys(fx.inputs).forEach(async inputName => {
             const fi = fx.inputs[inputName]
             switch (fi.type) {
                 case 'Text':
@@ -446,15 +426,13 @@ export function executeFunction(fx: Function, args: object, overlay: Vector<Diff
                             updatedVariable.variableName = String(evaluateExpression(fi.variableName, symbols))
                             diffs = diffs.append(getRemoveVariableDiff(fi.type, String(symbols[inputName].value)))
                         }
-                        const unfilteredVariables: HashSet<Immutable<Variable>> = compose(getState().variables, overlay.toArray())[fi.type]
-                        const variables: HashSet<Immutable<Variable>> = unfilteredVariables.filter(x => x.variableName.toString() === symbols[inputName].value)
-                        if (variables.length() === 1) {
-                            const variable: Immutable<Variable> = variables.toArray()[0]
+                        const variable = await getVariable(fi.type, String(symbols[inputName].value))
+                        if (variable !== undefined) {
                             Object.keys(variable.values).forEach(keyName => {
                                 updatedVariable.values[keyName] = variable.values[keyName]
                             })
-                            if(fi.values !== undefined) {
-                                Object.keys(fi.values).forEach(keyName => {
+                            if (fi.values !== undefined) {
+                                Object.keys(fi.values).forEach(async keyName => {
                                     const key: Key = types[fi.type].keys[keyName]
                                     if (fi.values !== undefined) {
                                         switch (key.type) {
@@ -478,16 +456,11 @@ export function executeFunction(fx: Function, args: object, overlay: Vector<Diff
                                                 break
                                             }
                                             default: {
-                                                const referencedVariableName = String(evaluateExpression(fi.values[keyName], symbols))
-                                                const unfilteredVariables: HashSet<Immutable<Variable>> = compose(getState().variables, overlay.toArray())[key.type]
-                                                const variables = unfilteredVariables.filter(x => x.toString() === referencedVariableName)
-                                                if (variables.length() === 1) {
-                                                    updatedVariable.values[keyName] = variables.toArray()[0].variableName.toString()
+                                                const referencedVariable = await getVariable(key.type, String(evaluateExpression(fi.values[keyName], symbols)))
+                                                if (referencedVariable !== undefined) {
+                                                    updatedVariable.values[keyName] = referencedVariable.variableName.toString()
                                                 } else {
-                                                    // Note: Referenced variable not found in Zustand Store (Base + Diff)
-                                                    // Resolution: 
-                                                    // 1. Check Dexie for variable and load into Zustand Store
-                                                    // 2. Information is not present, return with symbolFlag as false
+                                                    // Information is not present, return with symbolFlag as false
                                                     return [result, false, mergeDiffs(diffs.toArray())]
                                                 }
                                             }
@@ -497,12 +470,6 @@ export function executeFunction(fx: Function, args: object, overlay: Vector<Diff
                             }
                             const replacedVariable = replaceVariable(updatedVariable.typeName, updatedVariable.variableName.toString(), updatedVariable.values)
                             diffs = diffs.append(getReplaceVariableDiff(replacedVariable))
-                        } else {
-                            // Note: Variable not found in Zustand Store (Base + Diff)
-                            // Resolution: 
-                            // 1. Check Dexie for variable and load into Zustand Store
-                            // 2. If Information is not present in Dexie, then no issue since user did not had the variable in first place.
-                            // 3. Care must be taken to not refer the the FunctionOutput in Circuit which has an update operation since it may not have been actually performed due to lack of information.
                         }
                     }
                 }

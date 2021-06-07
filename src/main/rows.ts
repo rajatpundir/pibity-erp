@@ -3,6 +3,35 @@ import { HashSet } from 'prelude-ts'
 import { DiffVariable } from './layers'
 import { Number, Decimal, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip, MaterialReturnSlipItem, BOMItem, ProductionPreparationSlipItem, ScrapMaterialSlip, WarehouseAcceptanceSlip, SupplierProduct } from './variables'
 
+export type Row =
+    | ProductRow
+    | UOMRow
+    | IndentRow
+    | IndentItemRow
+    | SupplierRow
+    | SupplierProductRow
+    | QuotationRow
+    | QuotationItemRow
+    | PurchaseOrderRow
+    | PurchaseOrderItemRow
+    | PurchaseInvoiceRow
+    | PurchaseInvoiceItemRow
+    | MaterialApprovalSlipRow
+    | MaterialApprovalSlipItemRow
+    | MaterialRejectionSlipRow
+    | MaterialRejectionSlipItemRow
+    | MaterialReturnSlipRow
+    | MaterialReturnSlipItemRow
+    | MaterialRequistionSlipRow
+    | MaterialRequistionSlipItemRow
+    | BOMRow
+    | BOMItemRow
+    | ProductionPreparationSlipRow
+    | ProductionPreparationSlipItemRow
+    | ScrapMaterialSlipRow
+    | TransferMaterialSlipRow
+    | WarehouseAcceptanceSlipRow
+
 export class ProductRow {
     [immerable] = true
     readonly typeName = 'Product'
