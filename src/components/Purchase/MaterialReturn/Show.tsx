@@ -14,8 +14,6 @@ import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
 import { circuits } from '../../../main/circuits'
-
-
 import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -40,7 +38,6 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
-
     | ['variable', 'values', 'materialRejectionSlip', MaterialRejectionSlip]
 
     | ['items', 'limit', number]
@@ -51,19 +48,14 @@ export type Action =
     | ['items', 'variable', 'values', 'quantity', number]
     | ['items', 'addVariable']
 
-    | ['replace', 'variable', BOMVariable]
-    | ['replace', 'items', Array<BOMItemVariable>]
+    | ['replace', 'variable', MaterialReturnSlipVariable]
+    | ['replace', 'items', Array<MaterialReturnSlipItemVariable>]
 
 function Component(props) {
 
-
-    const materialReturnSlips = useStore(state => state.variables.MaterialReturnSlip.filter(x => x.variableName.toString() === props.match.params[0]))
-    const materialReturnSlipItems: HashSet<Immutable<MaterialReturnSlipItemVariable>> = useStore(store => store.variables.MaterialReturnSlipItem.filter(x => x.values.materialReturnSlip.toString() === props.match.params[0]))
-
-
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: materialReturnSlips.length() === 1 ? materialReturnSlips.toArray()[0] : new MaterialReturnSlipVariable('', { materialRejectionSlip: new MaterialRejectionSlip('') }),
+        variable: new MaterialReturnSlipVariable('', { materialRejectionSlip: new MaterialRejectionSlip('') }),
         items: {
             typeName: 'MaterialReturnSlipItem',
             query: getQuery('MaterialReturnSlipItem'),
@@ -72,7 +64,7 @@ function Component(props) {
             page: 1,
             columns: Vector.of(['variableName'], ['values', 'materialRejectionSlipItem'], ['values', 'materialRejectionSlipItem', 'values', 'purchaseInvoice'], ['values', 'quantity']),
             variable: new MaterialReturnSlipItemVariable('', { materialReturnSlip: new MaterialReturnSlip(''), materialRejectionSlipItem: new MaterialRejectionSlipItem(''), quantity: 0 }),
-            variables: props.match.params[0] ? materialReturnSlipItems : HashSet.of()
+            variables: HashSet.of()
         }
     }
 
@@ -88,22 +80,6 @@ function Component(props) {
             }
             case 'resetVariable': {
                 return action[1]
-            }
-            case 'saveVariable': {
-                const [result, symbolFlag, diff] = await executeCircuit(circuits.createMaterialReturnSlip, {
-                    materialRejectionSlip: state.variable.values.materialRejectionSlip,
-                    items: state.items.variables.toArray().map(item => {
-                        return {
-                            materialRejectionSlipItem: item.values.materialRejectionSlipItem.toString(),
-                            quantity: item.values.quantity
-                        }
-                    })
-                })
-                console.log(result, symbolFlag)
-                if (symbolFlag) {
-                    getState().addDiff(diff)
-                }
-                break
             }
             case 'variable': {
                 switch (action[1]) {
@@ -158,13 +134,40 @@ function Component(props) {
                 }
                 break
             }
+            case 'replace': {
+                switch (action[1]) {
+                    case 'variable': {
+                        state.variable = action[2]
+                        break
+                    }
+                    case 'items': {
+                        state.items.variables = HashSet.of<MaterialReturnSlipItemVariable>().addAll(action[2])
+                        break
+                    }
+                }
+                break
+            }
         }
     }
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const materialRejectionSlips = useStore(store => store.variables.MaterialRejectionSlip)
-    const items = useStore(store => store.variables.MaterialRejectionSlipItem.filter(x => x.values.materialRejectionSlip.toString() === state.variable.values.materialRejectionSlip.toString()))
+    useEffect(() => {
+        async function setVariable() {
+            if (props.match.params[0]) {
+                const variable = await getVariable('MaterialReturnSlip', props.match.params[0])
+                const items = await db.materialReturnSlipItems.where({ materialReturnSlip: props.match.params[0] }).toArray()
+                if (variable !== undefined) {
+                    dispatch(['replace', 'variable', variable as MaterialReturnSlipVariable])
+                    dispatch(['replace', 'items', items.map(x => x.toVariable())])
+                }
+            }
+        }
+        setVariable()
+    }, [])
+
+    const materialRejectionSlips = useLiveQuery(() => db.materialRejectionSlips.toArray())
+    const items = useLiveQuery(() => db.materialRejectionSlipItems.where({ materialRejectionSlip: state.variable.values.materialRejectionSlip.toString() }).toArray())
 
     const materialReturnSlip = types['MaterialReturnSlip']
     const item = types['MaterialReturnSlipItem']
@@ -216,7 +219,23 @@ function Component(props) {
         return fx
     }
 
-    return iff(state.mode === 'create' || materialReturnSlips.length() === 1,
+    const saveVariable = async () => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.createMaterialReturnSlip, {
+            materialRejectionSlip: state.variable.values.materialRejectionSlip,
+            items: state.items.variables.toArray().map(item => {
+                return {
+                    materialRejectionSlipItem: item.values.materialRejectionSlipItem.toString(),
+                    quantity: item.values.quantity
+                }
+            })
+        })
+        console.log(result, symbolFlag)
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
+    }
+
+    return iff(state.mode === 'create',
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
@@ -254,7 +273,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.materialRejectionSlip.toString()} name='materialRejectionSlip'>
                                     <option value='' selected disabled hidden>Select Material Rejection Slip</option>
-                                    {materialRejectionSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {(materialRejectionSlips ? materialRejectionSlips : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.materialRejectionSlip.toString()}</div>
                             )
@@ -284,7 +303,7 @@ function Component(props) {
                                         <Label>{item.keys.materialRejectionSlipItem.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.materialRejectionSlipItem.toString()} name='materialRejectionSlipItem'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                            {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                            {(items ? items : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>
