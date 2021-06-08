@@ -14,6 +14,7 @@ import { circuits } from '../../../main/circuits'
 import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { db } from '../../../main/dexie'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
