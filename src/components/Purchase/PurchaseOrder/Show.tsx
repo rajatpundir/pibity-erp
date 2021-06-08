@@ -8,7 +8,7 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItemVariable, PurchaseOrderVariable, BOMItemVariable, BOMVariable } from '../../../main/variables'
+import { Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItemVariable, PurchaseOrderVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
@@ -81,7 +81,7 @@ function Component(props) {
             }
             case 'resetVariable': {
                 return action[1]
-            }     
+            }
             case 'variable': {
                 switch (action[1]) {
                     case 'values': {
@@ -165,13 +165,11 @@ function Component(props) {
             }
         }
         setVariable()
-    }, [])
+    }, [props.match.params, dispatch])
 
     const quotations = useLiveQuery(() => db.quotations.toArray())
-    const items = useLiveQuery(() => db.quotationItems.where({ materialRejectionSlip: state.variable.values.quotation.toString() }).toArray())
+    const items = useLiveQuery(() => db.quotationItems.where({ quotation: state.variable.values.quotation.toString() }).toArray())
 
-   
-  
     const purchaseOrder = types['PurchaseOrder']
     const item = types['PurchaseOrderItem']
 
@@ -233,12 +231,12 @@ function Component(props) {
             })
         })
         console.log(result, symbolFlag)
-       if (symbolFlag) {
-    db.diffs.put(diff.toRow())
-}
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
     }
 
-    return iff(state.mode === 'create' ,
+    return iff(state.mode === 'create',
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
@@ -306,7 +304,7 @@ function Component(props) {
                                         <Label>{item.keys.quotationItem.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.quotationItem.toString()} name='quotationItem'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                           {(items ? items : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                            {(items ? items : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>

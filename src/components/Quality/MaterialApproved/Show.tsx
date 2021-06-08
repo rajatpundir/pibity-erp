@@ -14,8 +14,6 @@ import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
 import { circuits } from '../../../main/circuits'
-
-
 import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -167,7 +165,7 @@ function Component(props) {
             }
         }
         setVariable()
-    }, [])
+    }, [props.match.params, dispatch])
 
     const purchaseInvoices = useLiveQuery(() => db.purchaseInvoices.toArray())
     const items = useLiveQuery(() => db.purchaseInvoiceItems.where({ purchaseInvoice: state.variable.values.purchaseInvoice.toString() }).toArray())

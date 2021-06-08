@@ -14,8 +14,6 @@ import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
 import { circuits } from '../../../main/circuits'
-
-
 import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -39,7 +37,6 @@ type State = Immutable<{
 export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
-
 
     | ['variable', 'values', 'purchaseOrder', PurchaseOrder]
 
@@ -168,8 +165,10 @@ function Component(props) {
             }
         }
         setVariable()
-    }, [])
+    }, [props.match.params, dispatch])
 
+    const purchaseOrders = useLiveQuery(() => db.purchaseOrders.toArray())
+    const items = useLiveQuery(() => db.purchaseOrderItems.where({ purchaseOrder: state.variable.values.purchaseOrder.toString() }).toArray())
   
     const purchaseInvoice = types['PurchaseInvoice']
     const item = types['PurchaseInvoiceItem']
@@ -274,7 +273,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.purchaseOrder.toString()} name='purchaseOrder'>
                                     <option value='' selected disabled hidden>Select item</option>
-                                    {purchaseOrders.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {(purchaseOrders ? purchaseOrders : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.purchaseOrder.toString()}</div>
                             )

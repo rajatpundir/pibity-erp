@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
@@ -90,7 +90,7 @@ function Component(props) {
             }
         }
         setVariable()
-    }, [])
+    }, [props.match.params, dispatch])
 
     const saveVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createSupplier, {

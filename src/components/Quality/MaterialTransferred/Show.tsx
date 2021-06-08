@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
@@ -9,8 +9,6 @@ import * as Grid from './grids/Show'
 import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
 import { circuits } from '../../../main/circuits'
-
-
 import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -25,16 +23,16 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
-
     | ['variable', 'values', 'productionPreparationSlip', ProductionPreparationSlip]
     | ['variable', 'values', 'quantity', number]
 
+    | ['replace', 'variable', TransferMaterialSlipVariable]
 
 function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: transferMaterialSlips.length() === 1 ? transferMaterialSlips.toArray()[0] : new TransferMaterialSlipVariable('', { productionPreparationSlip: new ProductionPreparationSlip(''), quantity: 0, transferred: 0 })
+        variable: new TransferMaterialSlipVariable('', { productionPreparationSlip: new ProductionPreparationSlip(''), quantity: 0, transferred: 0 })
     }
 
     function reducer(state: Draft<State>, action: Action) {
@@ -67,13 +65,34 @@ function Component(props) {
                 }
                 break
             }
+            case 'replace': {
+                switch (action[1]) {
+                    case 'variable': {
+                        state.variable = action[2]
+                        break
+                    }
+                }
+                break
+            }
         }
     }
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const productionPreparationSlips = useStore(store => store.variables.ProductionPreparationSlip)
+    useEffect(() => {
+        async function setVariable() {
+            if (props.match.params[0]) {
+                const variable = await getVariable('TransferMaterialSlip', props.match.params[0])
+                if (variable !== undefined) {
+                    dispatch(['replace', 'variable', variable as TransferMaterialSlipVariable])
+                }
+            }
+        }
+        setVariable()
+    }, [props.match.params, dispatch])
 
+    const productionPreparationSlips = useLiveQuery(() => db.productionPreparationSlips.toArray())
+    
     const transferMaterialSlip = types['TransferMaterialSlip']
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -99,9 +118,9 @@ function Component(props) {
             quantity: state.variable.values.quantity
         })
         console.log(result, symbolFlag)
-       if (symbolFlag) {
-    db.diffs.put(diff.toRow())
-}
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
     }
 
     return iff(state.mode === 'create',
@@ -118,7 +137,7 @@ function Component(props) {
                     {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
-                               await saveVariable()
+                                await saveVariable()
                                 props.history.push('/materials-transferred')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
@@ -128,7 +147,7 @@ function Component(props) {
                                         dispatch(['resetVariable', initialState])
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
-                                     await saveVariable()
+                                        await saveVariable()
                                         props.history.push('/materials-transferred')
                                     }}>Save</Button>
                                 </>,
@@ -142,7 +161,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.productionPreparationSlip.toString()} name='productionPreparationSlip'>
                                     <option value='' selected disabled hidden>Select item</option>
-                                    {productionPreparationSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {(productionPreparationSlips ? productionPreparationSlips : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.productionPreparationSlip.toString()}</div>
                             )

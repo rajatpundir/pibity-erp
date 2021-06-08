@@ -1,5 +1,5 @@
 import { Immutable } from 'immer'
-import { HashSet, Vector } from 'prelude-ts'
+import { Vector } from 'prelude-ts'
 import { FunctionName, functions } from "./functions"
 import { NonPrimitiveType, types } from "./types"
 import { Variable } from "./variables"

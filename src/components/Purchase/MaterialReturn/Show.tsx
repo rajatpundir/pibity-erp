@@ -164,7 +164,7 @@ function Component(props) {
             }
         }
         setVariable()
-    }, [])
+    }, [props.match.params, dispatch])
 
     const materialRejectionSlips = useLiveQuery(() => db.materialRejectionSlips.toArray())
     const items = useLiveQuery(() => db.materialRejectionSlipItems.where({ materialRejectionSlip: state.variable.values.materialRejectionSlip.toString() }).toArray())

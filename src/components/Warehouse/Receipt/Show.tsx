@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
@@ -9,8 +9,6 @@ import * as Grid from './grids/Show'
 import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
 import { circuits } from '../../../main/circuits'
-
-
 import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -25,17 +23,17 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
-
     | ['variable', 'values', 'transferMaterialSlip', TransferMaterialSlip]
     | ['variable', 'values', 'quantity', number]
 
+    | ['replace', 'variable', WarehouseAcceptanceSlipVariable]
 
 function Component(props) {
 
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: warehouseAcceptanceSlips.length() === 1 ? warehouseAcceptanceSlips.toArray()[0] : new WarehouseAcceptanceSlipVariable('', { transferMaterialSlip: new TransferMaterialSlip(''), quantity: 0 }),
+        variable: new WarehouseAcceptanceSlipVariable('', { transferMaterialSlip: new TransferMaterialSlip(''), quantity: 0 }),
     }
 
     function reducer(state: Draft<State>, action: Action) {
@@ -68,12 +66,33 @@ function Component(props) {
                 }
                 break
             }
+            case 'replace': {
+                switch (action[1]) {
+                    case 'variable': {
+                        state.variable = action[2]
+                        break
+                    }
+                }
+                break
+            }
         }
     }
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const transferMaterialSlips = useStore(store => store.variables.TransferMaterialSlip)
+    useEffect(() => {
+        async function setVariable() {
+            if (props.match.params[0]) {
+                const variable = await getVariable('WarehouseAcceptanceSlip', props.match.params[0])
+                if (variable !== undefined) {
+                    dispatch(['replace', 'variable', variable as WarehouseAcceptanceSlipVariable])
+                }
+            }
+        }
+        setVariable()
+    }, [props.match.params, dispatch])
+
+    const transferMaterialSlips = useLiveQuery(() => db.transferMaterialSlips.toArray())
 
     const warehouseAcceptanceSlip = types['WarehouseAcceptanceSlip']
 
@@ -100,11 +119,11 @@ function Component(props) {
             quantity: state.variable.values.quantity
         })
         console.log(result, symbolFlag)
-       if (symbolFlag) {
-    db.diffs.put(diff.toRow())
-}
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
     }
-    
+
     return iff(state.mode === 'create',
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
@@ -143,7 +162,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.transferMaterialSlip.toString()} name='transferMaterialSlip'>
                                     <option value='' selected disabled hidden>Select item</option>
-                                    {transferMaterialSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {(transferMaterialSlips ? transferMaterialSlips : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.transferMaterialSlip.toString()}</div>
                             )

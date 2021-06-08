@@ -12,10 +12,8 @@ import { Indent, IndentItem, Quotation, QuotationItemVariable, QuotationVariable
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
-
 import { executeCircuit } from '../../../main/circuit'
 import { circuits } from '../../../main/circuits'
-
 import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -172,11 +170,11 @@ function Component(props) {
             }
         }
         setVariable()
-    }, [])
+    }, [props.match.params, dispatch])
 
-    const quotations = useLiveQuery(() => db.quotations.toArray())
-    const items = useLiveQuery(() => db.quotationItems.where({ quotation: state.variable.values.quotation.toString() }).toArray())
-
+    const indents = useLiveQuery(() => db.indents.toArray())
+    const suppliers = useLiveQuery(() => db.suppliers.toArray())
+    const items = useLiveQuery(() => db.quotationItems.where({ indent: state.variable.values.indent.toString() }).toArray())
 
     const quotation = types['Quotation']
     const item = types['QuotationItem']
@@ -246,9 +244,9 @@ function Component(props) {
             })
         })
         console.log(result, symbolFlag)
-       if (symbolFlag) {
-    db.diffs.put(diff.toRow())
-}
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
     }
 
     return iff(state.mode === 'create',
@@ -289,7 +287,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.indent.toString()} name='indent'>
                                     <option value='' selected disabled hidden>Select Indent</option>
-                                    {indents.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {(indents ? indents : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.indent.toString()}</div>
                             )
@@ -331,7 +329,7 @@ function Component(props) {
                                         <Label>{item.keys.indentItem.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.indentItem.toString()} name='indentItem'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                           {(items ? items : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                            {(items ? items : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>

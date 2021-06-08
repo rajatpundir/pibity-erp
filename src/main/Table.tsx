@@ -4,8 +4,8 @@ import tw from 'twin.macro'
 import { Container, Item, TableContainer, Cell, validateLayout, Area, GridLayout } from './commons'
 import { Variable } from './variables'
 import { NonPrimitiveType, Type, types } from './types'
-import { getState } from './store'
 import { Link } from 'react-router-dom'
+import { getVariable } from './layers'
 
 const body: Area = new Area('body')
 const footer: Area = new Area('footer')
@@ -138,7 +138,7 @@ function W(type: Type, path: Array<string>): string {
     return ''
 }
 
-function Q(variable: Immutable<Variable>, path: Array<string>): [string, string] {
+async function Q(variable: Immutable<Variable>, path: Array<string>): Promise<[string, string]> {
     const type = types[variable.typeName] as Type
     if (path.length !== 0) {
         switch (path[0]) {
@@ -163,16 +163,11 @@ function Q(variable: Immutable<Variable>, path: Array<string>): [string, string]
                         } else {
                             if (typeof path === 'object') {
                                 if (Object.keys(type.keys).includes(path[1])) {
-                                    const referencedVariableName: string = value.toString()
-                                    const unfilteredVariables: HashSet<Immutable<Variable>> = getState().variables[types[variable.typeName].keys[path[1]].type]
-                                    const variables = unfilteredVariables.filter(x => x.variableName.toString() === referencedVariableName)
-                                    if (variables.length() === 1) {
-                                        return Q(variables.toArray()[0], path.slice(2))
+                                    const referencedVariable = await getVariable(types[variable.typeName].keys[path[1]].type, value.toString())
+                                    if (referencedVariable !== undefined) {
+                                        return Q(referencedVariable, path.slice(2))
                                     } else {
-                                        // Note: Referenced variable not found in Zustand Store (Base + Diff)
-                                        // Resolution: 
-                                        // 1. Check Dexie for variable and load into Zustand Store
-                                        // 2. If not found in Dexie, check backend and load it into Dexie/Zustand
+                                        // Not found in Dexie, check backend and load it into Dexie
                                     }
                                 }
                             }

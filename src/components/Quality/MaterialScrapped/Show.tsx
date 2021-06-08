@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
@@ -9,8 +9,6 @@ import * as Grid from './grids/Show'
 import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
 import { circuits } from '../../../main/circuits'
-
-
 import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -25,10 +23,10 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
-
     | ['variable', 'values', 'productionPreparationSlip', ProductionPreparationSlip]
     | ['variable', 'values', 'quantity', number]
 
+    | ['replace', 'variable', ScrapMaterialSlipVariable]
 
 function Component(props) {
 
@@ -72,7 +70,19 @@ function Component(props) {
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const productionPreparationSlips = useStore(store => store.variables.ProductionPreparationSlip)
+    useEffect(() => {
+        async function setVariable() {
+            if (props.match.params[0]) {
+                const variable = await getVariable('ScrapMaterialSlip', props.match.params[0])
+                if (variable !== undefined) {
+                    dispatch(['replace', 'variable', variable as ScrapMaterialSlipVariable])
+                }
+            }
+        }
+        setVariable()
+    }, [props.match.params, dispatch])
+
+    const productionPreparationSlips = useLiveQuery(() => db.productionPreparationSlips.toArray())
 
     const scrapMaterialSlip = types['ScrapMaterialSlip']
 
@@ -93,16 +103,16 @@ function Component(props) {
         }
     }
 
-    
+
     const saveVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createScrapMaterialSlip, {
             productionPreparationSlip: state.variable.values.productionPreparationSlip,
             quantity: state.variable.values.quantity
         })
         console.log(result, symbolFlag)
-       if (symbolFlag) {
-    db.diffs.put(diff.toRow())
-}
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
     }
 
     return iff(state.mode === 'create',
