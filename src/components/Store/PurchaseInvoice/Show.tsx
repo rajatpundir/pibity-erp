@@ -51,19 +51,15 @@ export type Action =
     | ['items', 'variable', 'values', 'quantity', number]
     | ['items', 'addVariable']
 
-    | ['replace', 'variable', BOMVariable]
-    | ['replace', 'items', Array<BOMItemVariable>]
+    | ['replace', 'variable', PurchaseInvoiceVariable]
+    | ['replace', 'items', Array<PurchaseInvoiceItemVariable>]
 
 function Component(props) {
 
 
-    const purchaseInvoices = useStore(state => state.variables.PurchaseInvoice.filter(x => x.variableName.toString() === props.match.params[0]))
-    const purchaseInvoiceItems: HashSet<Immutable<PurchaseInvoiceItemVariable>> = useStore(store => store.variables.PurchaseInvoiceItem.filter(x => x.values.purchaseInvoice.toString() === props.match.params[0]))
-
-
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: purchaseInvoices.length() === 1 ? purchaseInvoices.toArray()[0] : new PurchaseInvoiceVariable('', { purchaseOrder: new PurchaseOrder('') }),
+        variable: new PurchaseInvoiceVariable('', { purchaseOrder: new PurchaseOrder('') }),
         items: {
             typeName: 'PurchaseInvoiceItem',
             query: getQuery('PurchaseInvoiceItem'),
@@ -72,7 +68,7 @@ function Component(props) {
             page: 1,
             columns: Vector.of(['values', 'purchaseOrderItem'], ['values', 'purchaseOrderItem', 'values', 'purchaseOrder'], ['values', 'quantity']),
             variable: new PurchaseInvoiceItemVariable('', { purchaseInvoice: new PurchaseInvoice(''), purchaseOrderItem: new PurchaseOrderItem(''), quantity: 0, approved: 0, rejected: 0 }),
-            variables: props.match.params[0] ? purchaseInvoiceItems : HashSet.of()
+            variables: HashSet.of()
         }
     }
 
@@ -88,22 +84,6 @@ function Component(props) {
             }
             case 'resetVariable': {
                 return action[1]
-            }
-            case 'saveVariable': {
-                const [result, symbolFlag, diff] = await executeCircuit(circuits.createPurchaseInvoice, {
-                    purchaseOrder: state.variable.values.purchaseOrder,
-                    items: state.items.variables.toArray().map(item => {
-                        return {
-                            purchaseOrderItem: item.values.purchaseOrderItem.toString(),
-                            quantity: item.values.quantity
-                        }
-                    })
-                })
-                console.log(result, symbolFlag)
-                if (symbolFlag) {
-                    getState().addDiff(diff)
-                }
-                break
             }
             case 'variable': {
                 switch (action[1]) {
@@ -158,14 +138,39 @@ function Component(props) {
                 }
                 break
             }
+            case 'replace': {
+                switch (action[1]) {
+                    case 'variable': {
+                        state.variable = action[2]
+                        break
+                    }
+                    case 'items': {
+                        state.items.variables = HashSet.of<PurchaseInvoiceItemVariable>().addAll(action[2])
+                        break
+                    }
+                }
+                break
+            }
         }
     }
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const purchaseOrders = useStore(store => store.variables.PurchaseOrder)
-    const items = useStore(store => store.variables.PurchaseOrderItem.filter(x => x.values.purchaseOrder.toString() === state.variable.values.purchaseOrder.toString()))
+    useEffect(() => {
+        async function setVariable() {
+            if (props.match.params[0]) {
+                const variable = await getVariable('PurchaseInvoice', props.match.params[0])
+                const items = await db.purchaseInvoiceItems.where({ purchaseInvoice: props.match.params[0] }).toArray()
+                if (variable !== undefined) {
+                    dispatch(['replace', 'variable', variable as PurchaseInvoiceVariable])
+                    dispatch(['replace', 'items', items.map(x => x.toVariable())])
+                }
+            }
+        }
+        setVariable()
+    }, [])
 
+  
     const purchaseInvoice = types['PurchaseInvoice']
     const item = types['PurchaseInvoiceItem']
 
@@ -216,7 +221,22 @@ function Component(props) {
         return fx
     }
 
-    return iff(state.mode === 'create' || purchaseInvoices.length() === 1,
+    const saveVariable = async () => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.createPurchaseInvoice, {
+            purchaseOrder: state.variable.values.purchaseOrder,
+            items: state.items.variables.toArray().map(item => {
+                return {
+                    purchaseOrderItem: item.values.purchaseOrderItem.toString(),
+                    quantity: item.values.quantity
+                }
+            })
+        })
+        console.log(result, symbolFlag)
+       if (symbolFlag) {
+    db.diffs.put(diff.toRow())
+}
+    }
+    return iff(state.mode === 'create',
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
@@ -284,7 +304,7 @@ function Component(props) {
                                         <Label>{item.keys.purchaseOrderItem.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.purchaseOrderItem.toString()} name='purchaseOrderItem'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                            {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                           {(items ? items : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>

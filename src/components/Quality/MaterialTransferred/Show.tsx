@@ -32,9 +32,6 @@ export type Action =
 
 function Component(props) {
 
-    const transferMaterialSlips = useStore(state => state.variables.TransferMaterialSlip.filter(x => x.variableName.toString() === props.match.params[0]))
-
-
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
         variable: transferMaterialSlips.length() === 1 ? transferMaterialSlips.toArray()[0] : new TransferMaterialSlipVariable('', { productionPreparationSlip: new ProductionPreparationSlip(''), quantity: 0, transferred: 0 })
@@ -52,17 +49,6 @@ function Component(props) {
             }
             case 'resetVariable': {
                 return action[1]
-            }
-            case 'saveVariable': {
-                const [result, symbolFlag, diff] = await executeCircuit(circuits.createTransferMaterialSlip, {
-                    productionPreparationSlip: state.variable.values.productionPreparationSlip,
-                    quantity: state.variable.values.quantity
-                })
-                console.log(result, symbolFlag)
-                if (symbolFlag) {
-                    getState().addDiff(diff)
-                }
-                break
             }
             case 'variable': {
                 switch (action[1]) {
@@ -107,7 +93,18 @@ function Component(props) {
         }
     }
 
-    return iff(state.mode === 'create' || transferMaterialSlips.length() === 1,
+    const saveVariable = async () => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.createTransferMaterialSlip, {
+            productionPreparationSlip: state.variable.values.productionPreparationSlip,
+            quantity: state.variable.values.quantity
+        })
+        console.log(result, symbolFlag)
+       if (symbolFlag) {
+    db.diffs.put(diff.toRow())
+}
+    }
+
+    return iff(state.mode === 'create',
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>

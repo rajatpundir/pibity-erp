@@ -32,8 +32,6 @@ export type Action =
 
 function Component(props) {
 
-    const warehouseAcceptanceSlips = useStore(state => state.variables.WarehouseAcceptanceSlip.filter(x => x.variableName.toString() === props.match.params[0]))
-
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
@@ -52,17 +50,6 @@ function Component(props) {
             }
             case 'resetVariable': {
                 return action[1]
-            }
-            case 'saveVariable': {
-                const [result, symbolFlag, diff] = await executeCircuit(circuits.createWarehouseAcceptanceSlip, {
-                    transferMaterialSlip: state.variable.values.transferMaterialSlip,
-                    quantity: state.variable.values.quantity
-                })
-                console.log(result, symbolFlag)
-                if (symbolFlag) {
-                    getState().addDiff(diff)
-                }
-                break
             }
             case 'variable': {
                 switch (action[1]) {
@@ -107,7 +94,18 @@ function Component(props) {
         }
     }
 
-    return iff(state.mode === 'create' || warehouseAcceptanceSlips.length() === 1,
+    const saveVariable = async () => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.createWarehouseAcceptanceSlip, {
+            transferMaterialSlip: state.variable.values.transferMaterialSlip,
+            quantity: state.variable.values.quantity
+        })
+        console.log(result, symbolFlag)
+       if (symbolFlag) {
+    db.diffs.put(diff.toRow())
+}
+    }
+    
+    return iff(state.mode === 'create',
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>

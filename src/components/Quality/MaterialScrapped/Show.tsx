@@ -32,12 +32,9 @@ export type Action =
 
 function Component(props) {
 
-    const scrapMaterialSlips = useStore(state => state.variables.ScrapMaterialSlip.filter(x => x.variableName.toString() === props.match.params[0]))
-
-
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: scrapMaterialSlips.length() === 1 ? scrapMaterialSlips.toArray()[0] : new ScrapMaterialSlipVariable('', { productionPreparationSlip: new ProductionPreparationSlip(''), quantity: 0 })
+        variable: new ScrapMaterialSlipVariable('', { productionPreparationSlip: new ProductionPreparationSlip(''), quantity: 0 })
     }
 
     function reducer(state: Draft<State>, action: Action) {
@@ -52,17 +49,6 @@ function Component(props) {
             }
             case 'resetVariable': {
                 return action[1]
-            }
-            case 'saveVariable': {
-                const [result, symbolFlag, diff] = await executeCircuit(circuits.createScrapMaterialSlip, {
-                    productionPreparationSlip: state.variable.values.productionPreparationSlip,
-                    quantity: state.variable.values.quantity
-                })
-                console.log(result, symbolFlag)
-                if (symbolFlag) {
-                    getState().addDiff(diff)
-                }
-                break
             }
             case 'variable': {
                 switch (action[1]) {
@@ -107,7 +93,19 @@ function Component(props) {
         }
     }
 
-    return iff(state.mode === 'create' || scrapMaterialSlips.length() === 1,
+    
+    const saveVariable = async () => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.createScrapMaterialSlip, {
+            productionPreparationSlip: state.variable.values.productionPreparationSlip,
+            quantity: state.variable.values.quantity
+        })
+        console.log(result, symbolFlag)
+       if (symbolFlag) {
+    db.diffs.put(diff.toRow())
+}
+    }
+
+    return iff(state.mode === 'create',
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
@@ -145,7 +143,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.productionPreparationSlip.toString()} name='productionPreparationSlip'>
                                     <option value='' selected disabled hidden>Select item</option>
-                                    {productionPreparationSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {(productionPreparationSlips ? productionPreparationSlips : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.productionPreparationSlip.toString()}</div>
                             )

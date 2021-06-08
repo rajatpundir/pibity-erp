@@ -51,19 +51,14 @@ export type Action =
     | ['items', 'variable', 'values', 'quantity', number]
     | ['items', 'addVariable']
 
-    | ['replace', 'variable', BOMVariable]
-    | ['replace', 'items', Array<BOMItemVariable>]
+    | ['replace', 'variable', MaterialApprovalSlipVariable]
+    | ['replace', 'items', Array<MaterialApprovalSlipItemVariable>]
 
 function Component(props) {
 
-
-    const materialApprovalSlips = useStore(state => state.variables.MaterialApprovalSlip.filter(x => x.variableName.toString() === props.match.params[0]))
-    const materialApprovalSlipItems: HashSet<Immutable<MaterialApprovalSlipItemVariable>> = useStore(store => store.variables.MaterialApprovalSlipItem.filter(x => x.values.materialApprovalSlip.toString() === props.match.params[0]))
-
-
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: materialApprovalSlips.length() === 1 ? materialApprovalSlips.toArray()[0] : new MaterialApprovalSlipVariable('', { purchaseInvoice: new PurchaseInvoice('') }),
+        variable: new MaterialApprovalSlipVariable('', { purchaseInvoice: new PurchaseInvoice('') }),
         items: {
             typeName: 'MaterialApprovalSlipItem',
             query: getQuery('MaterialApprovalSlipItem'),
@@ -72,7 +67,7 @@ function Component(props) {
             page: 1,
             columns: Vector.of(['values', 'purchaseInvoiceItem'], ['values', 'purchaseInvoiceItem', 'values', 'purchaseInvoice'], ['values', 'quantity']),
             variable: new MaterialApprovalSlipItemVariable('', { materialApprovalSlip: new MaterialApprovalSlip(''), purchaseInvoiceItem: new PurchaseInvoiceItem(''), quantity: 0, requisted: 0 }),
-            variables: props.match.params[0] ? materialApprovalSlipItems : HashSet.of()
+            variables: HashSet.of()
         }
     }
 
@@ -88,22 +83,6 @@ function Component(props) {
             }
             case 'resetVariable': {
                 return action[1]
-            }
-            case 'saveVariable': {
-                const [result, symbolFlag, diff] = await executeCircuit(circuits.createMaterialApprovalSlip, {
-                    purchaseInvoice: state.variable.values.purchaseInvoice,
-                    items: state.items.variables.toArray().map(item => {
-                        return {
-                            purchaseInvoiceItem: item.values.purchaseInvoiceItem.toString(),
-                            quantity: item.values.quantity
-                        }
-                    })
-                })
-                console.log(result, symbolFlag)
-                if (symbolFlag) {
-                    getState().addDiff(diff)
-                }
-                break
             }
             case 'variable': {
                 switch (action[1]) {
@@ -158,13 +137,40 @@ function Component(props) {
                 }
                 break
             }
+            case 'replace': {
+                switch (action[1]) {
+                    case 'variable': {
+                        state.variable = action[2]
+                        break
+                    }
+                    case 'items': {
+                        state.items.variables = HashSet.of<MaterialApprovalSlipItemVariable>().addAll(action[2])
+                        break
+                    }
+                }
+                break
+            }
         }
     }
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const purchaseInvoices = useStore(store => store.variables.PurchaseInvoice)
-    const items = useStore(store => store.variables.PurchaseInvoiceItem.filter(x => x.values.purchaseInvoice.toString() === state.variable.values.purchaseInvoice.toString()))
+    useEffect(() => {
+        async function setVariable() {
+            if (props.match.params[0]) {
+                const variable = await getVariable('MaterialApprovalSlip', props.match.params[0])
+                const items = await db.materialApprovalSlipItems.where({ materialApprovalSlip: props.match.params[0] }).toArray()
+                if (variable !== undefined) {
+                    dispatch(['replace', 'variable', variable as MaterialApprovalSlipVariable])
+                    dispatch(['replace', 'items', items.map(x => x.toVariable())])
+                }
+            }
+        }
+        setVariable()
+    }, [])
+
+    const purchaseInvoices = useLiveQuery(() => db.purchaseInvoices.toArray())
+    const items = useLiveQuery(() => db.purchaseInvoiceItems.where({ purchaseInvoice: state.variable.values.purchaseInvoice.toString() }).toArray())
 
     const materialApprovalSlip = types['MaterialApprovalSlip']
     const item = types['MaterialApprovalSlipItem']
@@ -216,7 +222,24 @@ function Component(props) {
         return fx
     }
 
-    return iff(state.mode === 'create' || materialApprovalSlips.length() === 1,
+
+    const saveVariable = async () => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.createMaterialApprovalSlip, {
+            purchaseInvoice: state.variable.values.purchaseInvoice,
+            items: state.items.variables.toArray().map(item => {
+                return {
+                    purchaseInvoiceItem: item.values.purchaseInvoiceItem.toString(),
+                    quantity: item.values.quantity
+                }
+            })
+        })
+        console.log(result, symbolFlag)
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
+    }
+
+    return iff(state.mode === 'create',
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
@@ -254,7 +277,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.purchaseInvoice.toString()} name='purchaseInvoice'>
                                     <option value='' selected disabled hidden>Select item</option>
-                                    {purchaseInvoices.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {(purchaseInvoices ? purchaseInvoices : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.purchaseInvoice.toString()}</div>
                             )
@@ -284,7 +307,7 @@ function Component(props) {
                                         <Label>{item.keys.purchaseInvoiceItem.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.purchaseInvoiceItem.toString()} name='purchaseInvoiceItem'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                            {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                            {(items ? items : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>
