@@ -1,5 +1,5 @@
 import { Draft, Immutable } from 'immer'
-import { Vector } from 'prelude-ts'
+import { HashSet, Vector } from 'prelude-ts'
 import tw from 'twin.macro'
 import { useImmerReducer } from 'use-immer'
 import { Container, Item, none } from '../../../main/commons'
@@ -8,9 +8,10 @@ import * as Grid from './grids/List'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
 import Drawer from '@material-ui/core/Drawer'
 import { useState } from 'react'
-import { useStore } from '../../../main/store'
 import { types } from '../../../main/types'
 import { withRouter } from 'react-router-dom'
+import { useLiveQuery } from 'dexie-react-hooks'
+import { db } from '../../../main/dexie'
 
 type State = Immutable<{
     typeName: 'WarehouseAcceptanceSlip'
@@ -32,7 +33,7 @@ const initialState: State = {
     query: getQuery('WarehouseAcceptanceSlip'),
     limit: 5,
     offset: 0,
-    page: 1,   
+    page: 1,
     columns: Vector.of(['variableName'], ['values', 'transferMaterialSlip'], ['values', 'quantity'])
 }
 
@@ -60,7 +61,8 @@ function reducer(state: Draft<State>, action: Action) {
 
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const variables = useStore(state => state.variables.WarehouseAcceptanceSlip).filter(variable => applyFilter(state.query, variable))
+    const queriedVariables = useLiveQuery(() => db.warehouseAcceptanceSlips.toArray())
+    const variables = (queriedVariables ? queriedVariables.map(x => x.toVariable()) : []).filter(variable => applyFilter(state.query, variable))
     const [open, setOpen] = useState(false)
     const type = types[state.typeName]
 
@@ -84,7 +86,7 @@ function Component(props) {
                     <Filter typeName={state.typeName} query={state.query} updateQuery={updateQuery} />
                 </Drawer>
             </Item>
-            <Table area={Grid.table} state={state} updatePage={updatePage} variables={variables} columns={state.columns.toArray()} />
+            <Table area={Grid.table} state={state} updatePage={updatePage} variables={HashSet.of().addAll(variables)} columns={state.columns.toArray()} />
         </Container>
     )
 }

@@ -10,8 +10,10 @@ import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
 import { circuits } from '../../../main/circuits'
 
-import { useStore } from '../../../main/store'
+
 import { iff, when } from '../../../main/utils'
+import { getVariable } from '../../../main/layers'
+import { useLiveQuery } from 'dexie-react-hooks'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -21,7 +23,7 @@ type State = Immutable<{
 export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
-    | ['saveVariable']
+
 
     | ['variable', 'values', 'transferMaterialSlip', TransferMaterialSlip]
     | ['variable', 'values', 'quantity', number]
@@ -51,7 +53,7 @@ function Component(props) {
                 return action[1]
             }
             case 'saveVariable': {
-                const [result, symbolFlag, diff] = executeCircuit(circuits.createWarehouseAcceptanceSlip, {
+                const [result, symbolFlag, diff] = await executeCircuit(circuits.createWarehouseAcceptanceSlip, {
                     transferMaterialSlip: state.variable.values.transferMaterialSlip,
                     quantity: state.variable.values.quantity
                 })
@@ -118,7 +120,7 @@ function Component(props) {
                     {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
-                                dispatch(['saveVariable'])
+                                await saveVariable()
                                 props.history.push('/warehouse-receipts')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
@@ -128,7 +130,7 @@ function Component(props) {
                                         dispatch(['resetVariable', initialState])
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
-                                        dispatch(['saveVariable'])
+                                        await saveVariable()
                                         props.history.push('/warehouse-receipts')
                                     }}>Save</Button>
                                 </>,

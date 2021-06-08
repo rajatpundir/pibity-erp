@@ -12,11 +12,13 @@ import { Indent, IndentItem, Quotation, QuotationItemVariable, QuotationVariable
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
-import { useStore } from '../../../main/store'
+
 import { executeCircuit } from '../../../main/circuit'
 import { circuits } from '../../../main/circuits'
 
 import { iff, when } from '../../../main/utils'
+import { getVariable } from '../../../main/layers'
+import { useLiveQuery } from 'dexie-react-hooks'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -36,7 +38,7 @@ type State = Immutable<{
 export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
-    | ['saveVariable']
+
 
     | ['variable', 'values', 'indent', Indent]
     | ['variable', 'values', 'supplier', Supplier]
@@ -49,7 +51,11 @@ export type Action =
     | ['items', 'variable', 'values', 'quantity', number]
     | ['items', 'addVariable']
 
+    | ['replace', 'variable', BOMVariable]
+    | ['replace', 'items', Array<BOMItemVariable>]
+
 function Component(props) {
+
 
     const quotations = useStore(state => state.variables.Quotation.filter(x => x.variableName.toString() === props.match.params[0]))
     const quotationItems: HashSet<Immutable<QuotationItemVariable>> = useStore(store => store.variables.QuotationItem.filter(x => x.values.quotation.toString() === props.match.params[0]))
@@ -83,7 +89,7 @@ function Component(props) {
                 return action[1]
             }
             case 'saveVariable': {
-                const [result, symbolFlag, diff] = executeCircuit(circuits.createQuotation, {
+                const [result, symbolFlag, diff] = await executeCircuit(circuits.createQuotation, {
                     indent: state.variable.values.indent.toString(),
                     supplier: state.variable.values.supplier.toString(),
                     items: state.items.variables.toArray().map(item => {
@@ -234,7 +240,7 @@ function Component(props) {
                     {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
-                                dispatch(['saveVariable'])
+                                await saveVariable()
                                 props.history.push('/quotations')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
@@ -244,7 +250,7 @@ function Component(props) {
                                         dispatch(['resetVariable', initialState])
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
-                                        dispatch(['saveVariable'])
+                                        await saveVariable()
                                         props.history.push('/quotations')
                                     }}>Save</Button>
                                 </>,

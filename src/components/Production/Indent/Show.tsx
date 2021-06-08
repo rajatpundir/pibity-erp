@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
@@ -14,9 +14,10 @@ import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
 import { circuits } from '../../../main/circuits'
-
-import { useStore } from '../../../main/store'
 import { iff, when } from '../../../main/utils'
+import { getVariable } from '../../../main/layers'
+import { useLiveQuery } from 'dexie-react-hooks'
+import { db } from '../../../main/dexie'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -36,7 +37,6 @@ type State = Immutable<{
 export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
-    | ['saveVariable']
 
     | ['items', 'limit', number]
     | ['items', 'offset', number]
@@ -47,14 +47,14 @@ export type Action =
     | ['items', 'variable', 'values', 'uom', UOM]
     | ['items', 'addVariable']
 
-function Component(props) {
+    | ['replace', 'variable', IndentVariable]
+    | ['replace', 'items', Array<IndentItemVariable>]
 
-    const indents = useStore(state => state.variables.Indent.filter(x => x.variableName.toString() === props.match.params[0]))
-    const items: HashSet<Immutable<IndentItemVariable>> = useStore(store => store.variables.IndentItem.filter(x => x.values.indent.toString() === props.match.params[0]))
+function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: indents.length() === 1 ? indents.toArray()[0] : new IndentVariable('', {}),
+        variable: new IndentVariable('', {}),
         items: {
             typeName: 'IndentItem',
             query: getQuery('IndentItem'),
@@ -63,7 +63,7 @@ function Component(props) {
             page: 1,
             columns: Vector.of(['values', 'product'], ['values', 'quantity'], ['values', 'uom', 'values', 'name'], ['values', 'ordered'], ['values', 'received'], ['values', 'approved'], ['values', 'rejected'], ['values', 'returned'], ['values', 'requisted'], ['values', 'consumed']),
             variable: new IndentItemVariable('', { indent: new Indent(''), product: new Product(''), quantity: 0, uom: new UOM(''), ordered: 0, received: 0, approved: 0, rejected: 0, returned: 0, requisted: 0, consumed: 0 }),
-            variables: props.match.params[0] ? items : HashSet.of<IndentItemVariable>()
+            variables: HashSet.of<IndentItemVariable>()
         }
     }
 
@@ -79,22 +79,6 @@ function Component(props) {
             }
             case 'resetVariable': {
                 return action[1]
-            }
-            case 'saveVariable': {
-                const [result, symbolFlag, diff] = executeCircuit(circuits.createIndent, {
-                    items: state.items.variables.toArray().map(item => {
-                        return {
-                            product: item.values.product.toString(),
-                            quantity: item.values.quantity,
-                            uom: item.values.uom.toString()
-                        }
-                    })
-                })
-                console.log(result, symbolFlag)
-                if (symbolFlag) {
-                    getState().addDiff(diff)
-                }
-                break
             }
             case 'items': {
                 switch (action[1]) {
@@ -140,14 +124,40 @@ function Component(props) {
                 }
                 break
             }
+            case 'replace': {
+                switch (action[1]) {
+                    case 'variable': {
+                        state.variable = action[2]
+                        break
+                    }
+                    case 'items': {
+                        state.items.variables = HashSet.of<IndentItemVariable>().addAll(action[2])
+                        break
+                    }
+                }
+                break
+            }
         }
     }
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const products = useStore(store => store.variables.Product)
-    const uoms: HashSet<Immutable<UOMVariable>> = useStore(store => store.variables.UOM.filter(x => x.values.product.toString() === state.items.variable.values.product.toString()))
+    useEffect(() => {
+        async function setVariable() {
+            if (props.match.params[0]) {
+                const variable = await getVariable('Indent', props.match.params[0])
+                const items = await db.indentItems.where({ indent: props.match.params[0] }).toArray()
+                if (variable !== undefined) {
+                    dispatch(['replace', 'variable', variable as IndentVariable])
+                    dispatch(['replace', 'items', items.map(x => x.toVariable())])
+                }
+            }
+        }
+        setVariable()
+    }, [])
 
+    const products = useLiveQuery(() => db.products.toArray())
+    const uoms = useLiveQuery(() => db.uoms.where({ product: state.items.variable.values.product.toString() }).toArray())
 
     const indent = types['Indent']
     const item = types['IndentItem']
@@ -190,7 +200,23 @@ function Component(props) {
         return fx
     }
 
-    return iff(state.mode === 'create' || indents.length() === 1,
+    const saveVariable = async () => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.createIndent, {
+            items: state.items.variables.toArray().map(item => {
+                return {
+                    product: item.values.product.toString(),
+                    quantity: item.values.quantity,
+                    uom: item.values.uom.toString()
+                }
+            })
+        })
+        console.log(result, symbolFlag)
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
+    }
+
+    return iff(state.mode === 'create',
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
@@ -204,7 +230,7 @@ function Component(props) {
                     {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
-                                dispatch(['saveVariable'])
+                                await saveVariable()
                                 props.history.push('/indents')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
@@ -214,7 +240,7 @@ function Component(props) {
                                         dispatch(['resetVariable', initialState])
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
-                                        dispatch(['saveVariable'])
+                                        await saveVariable()
                                         props.history.push('/indents')
                                     }}>Save</Button>
                                 </>,
@@ -244,7 +270,7 @@ function Component(props) {
                                         <Label>{item.keys.product.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.product.toString()} name='product'>
                                             <option value='' selected disabled hidden>Select Product</option>
-                                            {products.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                            {(products ? products : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>
@@ -255,7 +281,7 @@ function Component(props) {
                                         <Label>{item.keys.uom.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.uom.toString()} name='uom'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                            {uoms.toArray().map(x => <option value={x.variableName.toString()}>{x.values.name}</option>)}
+                                            {(uoms ? uoms : []).map(x => <option value={x.variableName.toString()}>{x.values.name}</option>)}
                                         </Select>
                                     </Item>
                                     <Item justify='center' align='center'>

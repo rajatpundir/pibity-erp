@@ -157,7 +157,7 @@ function Component(props) {
         async function setVariable() {
             if (props.match.params[0]) {
                 const variable = await getVariable('BOM', props.match.params[0])
-                const items = await db.bomItems.where({ product: props.match.params[0] }).toArray()
+                const items = await db.bomItems.where({ bom: props.match.params[0] }).toArray()
                 if (variable !== undefined) {
                     dispatch(['replace', 'variable', variable as BOMVariable])
                     dispatch(['replace', 'items', items.map(x => x.toVariable())])

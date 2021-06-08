@@ -15,8 +15,10 @@ import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
 import { circuits } from '../../../main/circuits'
 
-import { useStore } from '../../../main/store'
+
 import { iff, when } from '../../../main/utils'
+import { getVariable } from '../../../main/layers'
+import { useLiveQuery } from 'dexie-react-hooks'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -36,7 +38,7 @@ type State = Immutable<{
 export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
-    | ['saveVariable']
+
 
     | ['variable', 'values', 'materialRejectionSlip', MaterialRejectionSlip]
 
@@ -48,7 +50,11 @@ export type Action =
     | ['items', 'variable', 'values', 'quantity', number]
     | ['items', 'addVariable']
 
+    | ['replace', 'variable', BOMVariable]
+    | ['replace', 'items', Array<BOMItemVariable>]
+
 function Component(props) {
+
 
     const materialReturnSlips = useStore(state => state.variables.MaterialReturnSlip.filter(x => x.variableName.toString() === props.match.params[0]))
     const materialReturnSlipItems: HashSet<Immutable<MaterialReturnSlipItemVariable>> = useStore(store => store.variables.MaterialReturnSlipItem.filter(x => x.values.materialReturnSlip.toString() === props.match.params[0]))
@@ -83,7 +89,7 @@ function Component(props) {
                 return action[1]
             }
             case 'saveVariable': {
-                const [result, symbolFlag, diff] = executeCircuit(circuits.createMaterialReturnSlip, {
+                const [result, symbolFlag, diff] = await executeCircuit(circuits.createMaterialReturnSlip, {
                     materialRejectionSlip: state.variable.values.materialRejectionSlip,
                     items: state.items.variables.toArray().map(item => {
                         return {
@@ -223,7 +229,7 @@ function Component(props) {
                     {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
-                                dispatch(['saveVariable'])
+                                await saveVariable()
                                 props.history.push('/returns')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
@@ -233,7 +239,7 @@ function Component(props) {
                                         dispatch(['resetVariable', initialState])
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
-                                        dispatch(['saveVariable'])
+                                        await saveVariable()
                                         props.history.push('/returns')
                                     }}>Save</Button>
                                 </>,
