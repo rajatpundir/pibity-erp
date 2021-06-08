@@ -120,7 +120,7 @@ type DiffVariables = {
 
 export class DiffVariable {
     [immerable] = true
-    readonly id: number
+    // readonly id: number
     active: boolean
     variables: DiffVariables
 
@@ -234,7 +234,7 @@ export class DiffVariable {
             remove: HashSet.of()
         }
     }) {
-        this.id = id
+        // this.id = id
         this.active = active
         this.variables = variables
     }
@@ -243,7 +243,8 @@ export class DiffVariable {
         if (!other) {
             return false;
         }
-        return this.id === other.id
+        return false
+        // return this.id === other.id
     }
 
     hashCode(): number {

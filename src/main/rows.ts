@@ -1163,7 +1163,7 @@ export class WarehouseAcceptanceSlipRow {
 
 export class DiffRow {
     [immerable] = true
-    readonly id: number
+    readonly id?: number
     active: boolean
     variables: {
         Product: {
@@ -1386,7 +1386,6 @@ export class DiffRow {
             remove: HashSet<string>
         }
     }) {
-        this.id = -1
         this.active = true
         this.variables = {
             Product: {
@@ -1504,7 +1503,8 @@ export class DiffRow {
         if (!other) {
             return false;
         }
-        return this.id === other.id
+        // return this.id === other.id
+        return false
     }
 
     hashCode(): number {

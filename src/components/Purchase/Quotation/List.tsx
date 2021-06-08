@@ -10,7 +10,7 @@ import Drawer from '@material-ui/core/Drawer'
 import { useState } from 'react'
 import { types } from '../../../main/types'
 import { withRouter } from 'react-router-dom'
-import { useLiveQuery } from "dexie-react-hooks";
+import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
 
 type State = Immutable<{

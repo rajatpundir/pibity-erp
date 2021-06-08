@@ -7,9 +7,9 @@ import { Table } from '../../../main/Table'
 import * as Grid from './grids/List'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
 import Drawer from '@material-ui/core/Drawer'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { withRouter } from 'react-router-dom'
-import { useLiveQuery } from "dexie-react-hooks";
+import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
 
 type State = Immutable<{

@@ -6,9 +6,10 @@ import { DiffVariable, mergeDiffs } from './layers'
 import { executeMapper, MapperName, mappers } from './mapper'
 import { NonPrimitiveType } from './types'
 
-type CircuitInput = {
-    type: []
-}
+type CircuitInput =
+    | {
+        type: []
+    }
     | {
         type: 'Text'
         default?: string
@@ -144,7 +145,7 @@ export async function executeCircuit(circuit: Circuit, args: object, overlay: Ve
                                         break
                                     }
                                     case 'computation': {
-                                        if(typeof computationResults[z[1]][z[2]] === 'object')
+                                        if (typeof computationResults[z[1]][z[2]] === 'object')
                                             x[y] = computationResults[z[1]][z[2]]['variableName']
                                         else
                                             x[y] = computationResults[z[1]][z[2]]
@@ -166,7 +167,7 @@ export async function executeCircuit(circuit: Circuit, args: object, overlay: Ve
                                         break
                                     }
                                     case 'computation': {
-                                        if(typeof computationResults[z[1]][z[2]] === 'object')
+                                        if (typeof computationResults[z[1]][z[2]] === 'object')
                                             x[y] = computationResults[z[1]][z[2]]['variableName']
                                         else
                                             x[y] = computationResults[z[1]][z[2]]
@@ -188,14 +189,17 @@ export async function executeCircuit(circuit: Circuit, args: object, overlay: Ve
                 break
             }
         }
+        Object.keys(circuit.outputs).forEach(outputName => {
+            const output = circuit.outputs[outputName]
+            if (computationName === output[0]) {
+                if (!Array.isArray(computationResults[computationName])) {
+                    outputs[outputName] = computationResults[computationName][output[1]]
+                } else {
+                    outputs[outputName] = computationResults[computationName]
+                }
+            }
+        })
     })
-    Object.keys(circuit.outputs).forEach(outputName => {
-        const output = circuit.outputs[outputName]
-        if (!Array.isArray(computationResults[output[0]])) {
-            outputs[outputName] = computationResults[output[0]][output[1]]
-        } else {
-            outputs[outputName] = computationResults[output[0]]
-        }
-    })
+    console.log(outputs)
     return [outputs, true, mergeDiffs(diffs.toArray())]
 }
