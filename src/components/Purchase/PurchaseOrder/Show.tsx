@@ -8,14 +8,12 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItemVariable, PurchaseOrderVariable } from '../../../main/variables'
+import { Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItemVariable, PurchaseOrderVariable, BOMItemVariable, BOMVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
 import { circuits } from '../../../main/circuits'
-
-
 import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -51,19 +49,14 @@ export type Action =
     | ['items', 'variable', 'values', 'quantity', number]
     | ['items', 'addVariable']
 
-    | ['replace', 'variable', BOMVariable]
-    | ['replace', 'items', Array<BOMItemVariable>]
+    | ['replace', 'variable', PurchaseOrderVariable]
+    | ['replace', 'items', Array<PurchaseOrderItemVariable>]
 
 function Component(props) {
 
-
-    const purchaseOrders = useStore(state => state.variables.PurchaseOrder.filter(x => x.variableName.toString() === props.match.params[0]))
-    const purchaseOrderItems: HashSet<Immutable<PurchaseOrderItemVariable>> = useStore(store => store.variables.PurchaseOrderItem.filter(x => x.values.purchaseOrder.toString() === props.match.params[0]))
-
-
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: purchaseOrders.length() === 1 ? purchaseOrders.toArray()[0] : new PurchaseOrderVariable('', { quotation: new Quotation('') }),
+        variable: new PurchaseOrderVariable('', { quotation: new Quotation('') }),
         items: {
             typeName: 'PurchaseOrderItem',
             query: getQuery('PurchaseOrderItem'),
@@ -72,7 +65,7 @@ function Component(props) {
             page: 1,
             columns: Vector.of(['values', 'quotationItem'], ['values', 'quotationItem', 'values', 'quotation'], ['values', 'quantity']),
             variable: new PurchaseOrderItemVariable('', { purchaseOrder: new PurchaseOrder(''), quotationItem: new QuotationItem(''), quantity: 0, price: 0, received: 0 }),
-            variables: props.match.params[0] ? purchaseOrderItems : HashSet.of()
+            variables: HashSet.of()
         }
     }
 
@@ -88,23 +81,7 @@ function Component(props) {
             }
             case 'resetVariable': {
                 return action[1]
-            }
-            case 'saveVariable': {
-                const [result, symbolFlag, diff] = await executeCircuit(circuits.createPurchaseOrder, {
-                    quotation: state.variable.values.quotation,
-                    items: state.items.variables.toArray().map(item => {
-                        return {
-                            quotationItem: item.values.quotationItem.toString(),
-                            quantity: item.values.quantity
-                        }
-                    })
-                })
-                console.log(result, symbolFlag)
-                if (symbolFlag) {
-                    getState().addDiff(diff)
-                }
-                break
-            }
+            }     
             case 'variable': {
                 switch (action[1]) {
                     case 'values': {
@@ -158,14 +135,43 @@ function Component(props) {
                 }
                 break
             }
+            case 'replace': {
+                switch (action[1]) {
+                    case 'variable': {
+                        state.variable = action[2]
+                        break
+                    }
+                    case 'items': {
+                        state.items.variables = HashSet.of<PurchaseOrderItemVariable>().addAll(action[2])
+                        break
+                    }
+                }
+                break
+            }
         }
     }
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const quotations = useStore(store => store.variables.Quotation)
-    const items = useStore(store => store.variables.QuotationItem.filter(x => x.values.quotation.toString() === state.variable.values.quotation.toString()))
+    useEffect(() => {
+        async function setVariable() {
+            if (props.match.params[0]) {
+                const variable = await getVariable('PurchaseOrder', props.match.params[0])
+                const items = await db.purchaseOrderItems.where({ purchaseOrder: props.match.params[0] }).toArray()
+                if (variable !== undefined) {
+                    dispatch(['replace', 'variable', variable as PurchaseOrderVariable])
+                    dispatch(['replace', 'items', items.map(x => x.toVariable())])
+                }
+            }
+        }
+        setVariable()
+    }, [])
 
+    const quotations = useLiveQuery(() => db.quotations.toArray())
+    const items = useLiveQuery(() => db.quotationItems.where({ materialRejectionSlip: state.variable.values.quotation.toString() }).toArray())
+
+   
+  
     const purchaseOrder = types['PurchaseOrder']
     const item = types['PurchaseOrderItem']
 
@@ -216,7 +222,23 @@ function Component(props) {
         return fx
     }
 
-    return iff(state.mode === 'create' || purchaseOrders.length() === 1,
+    const saveVariable = async () => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.createPurchaseOrder, {
+            quotation: state.variable.values.quotation,
+            items: state.items.variables.toArray().map(item => {
+                return {
+                    quotationItem: item.values.quotationItem.toString(),
+                    quantity: item.values.quantity
+                }
+            })
+        })
+        console.log(result, symbolFlag)
+       if (symbolFlag) {
+    db.diffs.put(diff.toRow())
+}
+    }
+
+    return iff(state.mode === 'create' ,
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
@@ -254,7 +276,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.quotation.toString()} name='quotation'>
                                     <option value='' selected disabled hidden>Select Quotation</option>
-                                    {quotations.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {(quotations ? quotations : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.quotation.toString()}</div>
                             )
@@ -284,7 +306,7 @@ function Component(props) {
                                         <Label>{item.keys.quotationItem.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.quotationItem.toString()} name='quotationItem'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                            {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                           {(items ? items : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>

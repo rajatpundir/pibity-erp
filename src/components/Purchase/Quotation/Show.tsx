@@ -52,18 +52,14 @@ export type Action =
     | ['items', 'variable', 'values', 'quantity', number]
     | ['items', 'addVariable']
 
-    | ['replace', 'variable', BOMVariable]
-    | ['replace', 'items', Array<BOMItemVariable>]
+    | ['replace', 'variable', QuotationVariable]
+    | ['replace', 'items', Array<QuotationItemVariable>]
 
 function Component(props) {
 
-
-    const quotations = useStore(state => state.variables.Quotation.filter(x => x.variableName.toString() === props.match.params[0]))
-    const quotationItems: HashSet<Immutable<QuotationItemVariable>> = useStore(store => store.variables.QuotationItem.filter(x => x.values.quotation.toString() === props.match.params[0]))
-
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: quotations.length() === 1 ? quotations.toArray()[0] : new QuotationVariable('', { indent: new Indent(''), supplier: new Supplier(''), }),
+        variable: new QuotationVariable('', { indent: new Indent(''), supplier: new Supplier(''), }),
         items: {
             typeName: 'QuotationItem',
             query: getQuery('QuotationItem'),
@@ -72,7 +68,7 @@ function Component(props) {
             page: 1,
             columns: Vector.of(['values', 'indentItem'], ['values', 'quantity']),
             variable: new QuotationItemVariable('', { quotation: new Quotation(''), indentItem: new IndentItem(''), quantity: 0 }),
-            variables: props.match.params[0] ? quotationItems : HashSet.of<QuotationItemVariable>()
+            variables: HashSet.of<QuotationItemVariable>()
         }
     }
 
@@ -88,23 +84,6 @@ function Component(props) {
             }
             case 'resetVariable': {
                 return action[1]
-            }
-            case 'saveVariable': {
-                const [result, symbolFlag, diff] = await executeCircuit(circuits.createQuotation, {
-                    indent: state.variable.values.indent.toString(),
-                    supplier: state.variable.values.supplier.toString(),
-                    items: state.items.variables.toArray().map(item => {
-                        return {
-                            indentItem: item.values.indentItem.toString(),
-                            quantity: item.values.quantity
-                        }
-                    })
-                })
-                console.log(result, symbolFlag)
-                if (symbolFlag) {
-                    getState().addDiff(diff)
-                }
-                break
             }
             case 'variable': {
                 switch (action[1]) {
@@ -163,14 +142,41 @@ function Component(props) {
                 }
                 break
             }
+            case 'replace': {
+                switch (action[1]) {
+                    case 'variable': {
+                        state.variable = action[2]
+                        break
+                    }
+                    case 'items': {
+                        state.items.variables = HashSet.of<QuotationItemVariable>().addAll(action[2])
+                        break
+                    }
+                }
+                break
+            }
         }
     }
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const indents = useStore(store => store.variables.Indent)
-    const suppliers = useStore(store => store.variables.Supplier)
-    const items = useStore(store => store.variables.IndentItem.filter(x => x.values.indent.toString() === state.variable.values.indent.toString()))
+    useEffect(() => {
+        async function setVariable() {
+            if (props.match.params[0]) {
+                const variable = await getVariable('Quotation', props.match.params[0])
+                const items = await db.quotationItems.where({ quotation: props.match.params[0] }).toArray()
+                if (variable !== undefined) {
+                    dispatch(['replace', 'variable', variable as QuotationVariable])
+                    dispatch(['replace', 'items', items.map(x => x.toVariable())])
+                }
+            }
+        }
+        setVariable()
+    }, [])
+
+    const quotations = useLiveQuery(() => db.quotations.toArray())
+    const items = useLiveQuery(() => db.quotationItems.where({ quotation: state.variable.values.quotation.toString() }).toArray())
+
 
     const quotation = types['Quotation']
     const item = types['QuotationItem']
@@ -227,7 +233,25 @@ function Component(props) {
         return fx
     }
 
-    return iff(state.mode === 'create' || indents.length() === 1,
+
+    const saveVariable = async () => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.createQuotation, {
+            indent: state.variable.values.indent.toString(),
+            supplier: state.variable.values.supplier.toString(),
+            items: state.items.variables.toArray().map(item => {
+                return {
+                    indentItem: item.values.indentItem.toString(),
+                    quantity: item.values.quantity
+                }
+            })
+        })
+        console.log(result, symbolFlag)
+       if (symbolFlag) {
+    db.diffs.put(diff.toRow())
+}
+    }
+
+    return iff(state.mode === 'create',
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
@@ -277,7 +301,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.supplier.toString()} name='supplier'>
                                     <option value='' selected disabled hidden>Select Supplier</option>
-                                    {suppliers.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {(suppliers ? suppliers : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.supplier.toString()}</div>
                             )
@@ -307,7 +331,7 @@ function Component(props) {
                                         <Label>{item.keys.indentItem.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.indentItem.toString()} name='indentItem'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                            {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                           {(items ? items : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>
