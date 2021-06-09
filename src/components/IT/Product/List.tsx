@@ -62,15 +62,15 @@ function reducer(state: Draft<State>, action: Action) {
 
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const productRows = useLiveQuery(() => db.products.toArray())
+    const rows = useLiveQuery(() => db.products.toArray())
+    var composedVariables = HashSet.of<Immutable<ProductVariable>>().addAll(rows ? rows.map(x => ProductRow.toVariable(x)) : [])
     const diffs = useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
-    var w = HashSet.of<Immutable<ProductVariable>>().addAll(productRows ? productRows.map(x => ProductRow.toVariable(x)) : [])
     diffs?.forEach(diff => {
-        w = w.filter(x => !diff.variables.Product.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.Product.replace)
+        composedVariables = composedVariables.filter(x => !diff.variables[state.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.typeName].replace)
     })
-    const variables = w.filter(variable => applyFilter(state.query, variable))
+    const variables = composedVariables.filter(variable => applyFilter(state.query, variable))
     const [open, setOpen] = useState(false)
-    variables.forEach(v => console.log(v))
+
     const updateQuery = (args: Args) => {
         dispatch(['query', args])
     }
@@ -83,7 +83,7 @@ function Component(props) {
         <Container area={none} layout={Grid.layouts.main} className='p-10'>
             <Item area={Grid.header} align='center' className='flex'>
                 <Title>Products</Title>
-                <button onClick={() => {props.history.push('/product')} } className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2'>+</button>
+                <button onClick={() => { props.history.push('/product') }} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2'>+</button>
             </Item>
             <Item area={Grid.filter} justify='end' align='center'>
                 <Button onClick={() => setOpen(true)}>Filter</Button>

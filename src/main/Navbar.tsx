@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import createDemoData from './createDemoData'
 
 const navbar: { [index: string]: { [index: string]: string } } = {
     'IT': {
@@ -75,5 +76,6 @@ export default function Navbar() {
                 })
             }
         </ul>
+        <button className='bg-gray-800 font-bold text-lg w-full' onClick={createDemoData}>RESET DATA</button>
     </>)
 }

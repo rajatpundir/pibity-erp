@@ -12,7 +12,8 @@ import { types } from '../../../main/types'
 import { withRouter } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { MaterialApprovalSlipRow } from '../../../main/rows'
+import { DiffRow, MaterialApprovalSlipRow } from '../../../main/rows'
+import { MaterialApprovalSlipVariable } from '../../../main/variables'
 
 type State = Immutable<{
     typeName: 'MaterialApprovalSlip'
@@ -62,8 +63,13 @@ function reducer(state: Draft<State>, action: Action) {
 
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const queriedVariables = useLiveQuery(() => db.materialApprovalSlips.toArray())
-    const variables = (queriedVariables ? queriedVariables.map(x => MaterialApprovalSlipRow.toVariable(x)) : []).filter(variable => applyFilter(state.query, variable))
+    const rows = useLiveQuery(() => db.materialApprovalSlips.toArray())
+    var composedVariables = HashSet.of<Immutable<MaterialApprovalSlipVariable>>().addAll(rows ? rows.map(x => MaterialApprovalSlipRow.toVariable(x)) : [])
+    const diffs = useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
+    diffs?.forEach(diff => {
+        composedVariables = composedVariables.filter(x => !diff.variables[state.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.typeName].replace)
+    })
+    const variables = composedVariables.filter(variable => applyFilter(state.query, variable))
     const [open, setOpen] = useState(false)
     const type = types[state.typeName]
 
