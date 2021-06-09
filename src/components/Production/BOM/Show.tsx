@@ -18,6 +18,7 @@ import { iff, when } from '../../../main/utils'
 import { db } from '../../../main/dexie'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { BOMItemRow } from '../../../main/rows'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -160,7 +161,7 @@ function Component(props) {
                 const items = await db.bomItems.where({ bom: props.match.params[0] }).toArray()
                 if (variable !== undefined) {
                     dispatch(['replace', 'variable', variable as BOMVariable])
-                    dispatch(['replace', 'items', items.map(x => x.toVariable())])
+                    dispatch(['replace', 'items', items.map(x => BOMItemRow.toVariable(x))])
                 }
             }
         }

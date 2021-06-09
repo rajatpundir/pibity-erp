@@ -18,6 +18,7 @@ import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
+import { PurchaseOrderItemRow } from '../../../main/rows'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -160,7 +161,7 @@ function Component(props) {
                 const items = await db.purchaseOrderItems.where({ purchaseOrder: props.match.params[0] }).toArray()
                 if (variable !== undefined) {
                     dispatch(['replace', 'variable', variable as PurchaseOrderVariable])
-                    dispatch(['replace', 'items', items.map(x => x.toVariable())])
+                    dispatch(['replace', 'items', items.map(x => PurchaseOrderItemRow.toVariable(x))])
                 }
             }
         }

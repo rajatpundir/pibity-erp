@@ -18,6 +18,7 @@ import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
+import { MaterialReturnSlipItemRow } from '../../../main/rows'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -159,7 +160,7 @@ function Component(props) {
                 const items = await db.materialReturnSlipItems.where({ materialReturnSlip: props.match.params[0] }).toArray()
                 if (variable !== undefined) {
                     dispatch(['replace', 'variable', variable as MaterialReturnSlipVariable])
-                    dispatch(['replace', 'items', items.map(x => x.toVariable())])
+                    dispatch(['replace', 'items', items.map(x => MaterialReturnSlipItemRow.toVariable(x))])
                 }
             }
         }

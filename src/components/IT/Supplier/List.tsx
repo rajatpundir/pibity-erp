@@ -11,6 +11,7 @@ import { useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
+import { SupplierRow } from '../../../main/rows'
 
 type State = Immutable<{
     typeName: 'Supplier'
@@ -61,7 +62,7 @@ function reducer(state: Draft<State>, action: Action) {
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
     const queriedVariables = useLiveQuery(() => db.suppliers.toArray())
-    const variables = (queriedVariables ? queriedVariables.map(x => x.toVariable()) : []).filter(variable => applyFilter(state.query, variable))
+    const variables = (queriedVariables ? queriedVariables.map(x => SupplierRow.toVariable(x)) : []).filter(variable => applyFilter(state.query, variable))
     const [open, setOpen] = useState(false)
 
     const updateQuery = (args: Args) => {

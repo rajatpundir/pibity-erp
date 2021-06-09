@@ -18,6 +18,7 @@ import { circuits } from '../../../main/circuits'
 import { iff, when } from '../../../main/utils'
 import { db } from '../../../main/dexie'
 import { getVariable } from '../../../main/layers'
+import { UOMRow } from '../../../main/rows'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -179,7 +180,7 @@ function Component(props) {
                 const items = await db.uoms.where({ product: props.match.params[0] }).toArray()
                 if (variable !== undefined) {
                     dispatch(['replace', 'variable', variable as ProductVariable])
-                    dispatch(['replace', 'uoms', items.map(x => x.toVariable())])
+                    dispatch(['replace', 'uoms', items.map(x => UOMRow.toVariable(x))])
                 }
             }
         }

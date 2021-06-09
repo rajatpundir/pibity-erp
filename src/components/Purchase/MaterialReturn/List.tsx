@@ -12,6 +12,7 @@ import { types } from '../../../main/types'
 import { withRouter } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
+import { MaterialReturnSlipRow } from '../../../main/rows'
 
 type State = Immutable<{
     typeName: 'MaterialReturnSlip'
@@ -62,7 +63,7 @@ function reducer(state: Draft<State>, action: Action) {
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
     const queriedVariables = useLiveQuery(() => db.materialReturnSlips.toArray())
-    const variables = (queriedVariables ? queriedVariables.map(x => x.toVariable()) : []).filter(variable => applyFilter(state.query, variable))
+    const variables = (queriedVariables ? queriedVariables.map(x => MaterialReturnSlipRow.toVariable(x)) : []).filter(variable => applyFilter(state.query, variable))
     const [open, setOpen] = useState(false)
     const type = types[state.typeName]
 

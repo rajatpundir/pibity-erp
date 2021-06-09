@@ -7,12 +7,12 @@ import { Table } from '../../../main/Table'
 import * as Grid from './grids/List'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
 import Drawer from '@material-ui/core/Drawer'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { ProductVariable, Variable } from '../../../main/variables'
-import { diffRowtoVariable, ProductRow } from '../../../main/rows'
+import { ProductVariable } from '../../../main/variables'
+import { DiffRow, ProductRow } from '../../../main/rows'
 
 type State = Immutable<{
     typeName: 'Product'
@@ -63,10 +63,7 @@ function reducer(state: Draft<State>, action: Action) {
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
     const productRows = useLiveQuery(() => db.products.toArray())
-    const diffs = useLiveQuery(() => db.diffs.toArray())?.map(x => {
-        console.log('#$#$', x)
-        console.log('#$#$', diffRowtoVariable(x))
-        return diffRowtoVariable(x)})
+    const diffs = useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
     var w = HashSet.of<Immutable<ProductVariable>>().addAll(productRows ? productRows.map(x => ProductRow.toVariable(x)) : [])
     diffs?.forEach(diff => {
         w = w.filter(x => !diff.variables.Product.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.Product.replace)

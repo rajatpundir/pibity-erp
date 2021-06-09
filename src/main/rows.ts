@@ -847,225 +847,116 @@ export class DiffRow {
 
     constructor(variables: {
         Product: {
-            replace: HashSet<ProductRow>,
-            remove: HashSet<string>
+            replace: Array<ProductRow>,
+            remove: Array<string>
         },
         UOM: {
-            replace: HashSet<UOMRow>,
-            remove: HashSet<string>
+            replace: Array<UOMRow>,
+            remove: Array<string>
         },
         Indent: {
-            replace: HashSet<IndentRow>,
-            remove: HashSet<string>
+            replace: Array<IndentRow>,
+            remove: Array<string>
         },
         IndentItem: {
-            replace: HashSet<IndentItemRow>,
-            remove: HashSet<string>
+            replace: Array<IndentItemRow>,
+            remove: Array<string>
         },
         Supplier: {
-            replace: HashSet<SupplierRow>,
-            remove: HashSet<string>
+            replace: Array<SupplierRow>,
+            remove: Array<string>
         },
         SupplierProduct: {
-            replace: HashSet<SupplierProductRow>,
-            remove: HashSet<string>
+            replace: Array<SupplierProductRow>,
+            remove: Array<string>
         },
         Quotation: {
-            replace: HashSet<QuotationRow>,
-            remove: HashSet<string>
+            replace: Array<QuotationRow>,
+            remove: Array<string>
         },
         QuotationItem: {
-            replace: HashSet<QuotationItemRow>,
-            remove: HashSet<string>
+            replace: Array<QuotationItemRow>,
+            remove: Array<string>
         },
         PurchaseOrder: {
-            replace: HashSet<PurchaseOrderRow>,
-            remove: HashSet<string>
+            replace: Array<PurchaseOrderRow>,
+            remove: Array<string>
         },
         PurchaseOrderItem: {
-            replace: HashSet<PurchaseOrderItemRow>,
-            remove: HashSet<string>
+            replace: Array<PurchaseOrderItemRow>,
+            remove: Array<string>
         },
         PurchaseInvoice: {
-            replace: HashSet<PurchaseInvoiceRow>,
-            remove: HashSet<string>
+            replace: Array<PurchaseInvoiceRow>,
+            remove: Array<string>
         },
         PurchaseInvoiceItem: {
-            replace: HashSet<PurchaseInvoiceItemRow>,
-            remove: HashSet<string>
+            replace: Array<PurchaseInvoiceItemRow>,
+            remove: Array<string>
         },
         MaterialApprovalSlip: {
-            replace: HashSet<MaterialApprovalSlipRow>,
-            remove: HashSet<string>
+            replace: Array<MaterialApprovalSlipRow>,
+            remove: Array<string>
         },
         MaterialApprovalSlipItem: {
-            replace: HashSet<MaterialApprovalSlipItemRow>,
-            remove: HashSet<string>
+            replace: Array<MaterialApprovalSlipItemRow>,
+            remove: Array<string>
         },
         MaterialRejectionSlip: {
-            replace: HashSet<MaterialRejectionSlipRow>,
-            remove: HashSet<string>
+            replace: Array<MaterialRejectionSlipRow>,
+            remove: Array<string>
         },
         MaterialRejectionSlipItem: {
-            replace: HashSet<MaterialRejectionSlipItemRow>,
-            remove: HashSet<string>
+            replace: Array<MaterialRejectionSlipItemRow>,
+            remove: Array<string>
         },
         MaterialReturnSlip: {
-            replace: HashSet<MaterialReturnSlipRow>,
-            remove: HashSet<string>
+            replace: Array<MaterialReturnSlipRow>,
+            remove: Array<string>
         },
         MaterialReturnSlipItem: {
-            replace: HashSet<MaterialReturnSlipItemRow>,
-            remove: HashSet<string>
+            replace: Array<MaterialReturnSlipItemRow>,
+            remove: Array<string>
         },
         MaterialRequistionSlip: {
-            replace: HashSet<MaterialRequistionSlipRow>,
-            remove: HashSet<string>
+            replace: Array<MaterialRequistionSlipRow>,
+            remove: Array<string>
         },
         MaterialRequistionSlipItem: {
-            replace: HashSet<MaterialRequistionSlipItemRow>,
-            remove: HashSet<string>
+            replace: Array<MaterialRequistionSlipItemRow>,
+            remove: Array<string>
         },
         BOM: {
-            replace: HashSet<BOMRow>,
-            remove: HashSet<string>
+            replace: Array<BOMRow>,
+            remove: Array<string>
         },
         BOMItem: {
-            replace: HashSet<BOMItemRow>,
-            remove: HashSet<string>
+            replace: Array<BOMItemRow>,
+            remove: Array<string>
         },
         ProductionPreparationSlip: {
-            replace: HashSet<ProductionPreparationSlipRow>,
-            remove: HashSet<string>
+            replace: Array<ProductionPreparationSlipRow>,
+            remove: Array<string>
         },
         ProductionPreparationSlipItem: {
-            replace: HashSet<ProductionPreparationSlipItemRow>,
-            remove: HashSet<string>
+            replace: Array<ProductionPreparationSlipItemRow>,
+            remove: Array<string>
         },
         ScrapMaterialSlip: {
-            replace: HashSet<ScrapMaterialSlipRow>,
-            remove: HashSet<string>
+            replace: Array<ScrapMaterialSlipRow>,
+            remove: Array<string>
         },
         TransferMaterialSlip: {
-            replace: HashSet<TransferMaterialSlipRow>,
-            remove: HashSet<string>
+            replace: Array<TransferMaterialSlipRow>,
+            remove: Array<string>
         },
         WarehouseAcceptanceSlip: {
-            replace: HashSet<WarehouseAcceptanceSlipRow>,
-            remove: HashSet<string>
+            replace: Array<WarehouseAcceptanceSlipRow>,
+            remove: Array<string>
         }
     }) {
         this.active = true
-        this.variables = {
-            Product: {
-                replace: variables.Product.replace.toArray(),
-                remove: variables.Product.remove.toArray()
-            },
-            UOM: {
-                replace: variables.UOM.replace.toArray(),
-                remove: variables.UOM.remove.toArray()
-            },
-            Indent: {
-                replace: variables.Indent.replace.toArray(),
-                remove: variables.Indent.remove.toArray()
-            },
-            IndentItem: {
-                replace: variables.IndentItem.replace.toArray(),
-                remove: variables.IndentItem.remove.toArray()
-            },
-            Supplier: {
-                replace: variables.Supplier.replace.toArray(),
-                remove: variables.Supplier.remove.toArray()
-            },
-            SupplierProduct: {
-                replace: variables.SupplierProduct.replace.toArray(),
-                remove: variables.SupplierProduct.remove.toArray()
-            },
-            Quotation: {
-                replace: variables.Quotation.replace.toArray(),
-                remove: variables.Quotation.remove.toArray()
-            },
-            QuotationItem: {
-                replace: variables.QuotationItem.replace.toArray(),
-                remove: variables.QuotationItem.remove.toArray()
-            },
-            PurchaseOrder: {
-                replace: variables.PurchaseOrder.replace.toArray(),
-                remove: variables.PurchaseOrder.remove.toArray()
-            },
-            PurchaseOrderItem: {
-                replace: variables.PurchaseOrderItem.replace.toArray(),
-                remove: variables.PurchaseOrderItem.remove.toArray()
-            },
-            PurchaseInvoice: {
-                replace: variables.PurchaseInvoice.replace.toArray(),
-                remove: variables.PurchaseInvoice.remove.toArray()
-            },
-            PurchaseInvoiceItem: {
-                replace: variables.PurchaseInvoiceItem.replace.toArray(),
-                remove: variables.PurchaseInvoiceItem.remove.toArray()
-            },
-            MaterialApprovalSlip: {
-                replace: variables.MaterialApprovalSlip.replace.toArray(),
-                remove: variables.MaterialApprovalSlip.remove.toArray()
-            },
-            MaterialApprovalSlipItem: {
-                replace: variables.MaterialApprovalSlipItem.replace.toArray(),
-                remove: variables.MaterialApprovalSlipItem.remove.toArray()
-            },
-            MaterialRejectionSlip: {
-                replace: variables.MaterialRejectionSlip.replace.toArray(),
-                remove: variables.MaterialRejectionSlip.remove.toArray()
-            },
-            MaterialRejectionSlipItem: {
-                replace: variables.MaterialRejectionSlipItem.replace.toArray(),
-                remove: variables.MaterialRejectionSlipItem.remove.toArray()
-            },
-            MaterialReturnSlip: {
-                replace: variables.MaterialReturnSlip.replace.toArray(),
-                remove: variables.MaterialReturnSlip.remove.toArray()
-            },
-            MaterialReturnSlipItem: {
-                replace: variables.MaterialReturnSlipItem.replace.toArray(),
-                remove: variables.MaterialReturnSlipItem.remove.toArray()
-            },
-            MaterialRequistionSlip: {
-                replace: variables.MaterialRequistionSlip.replace.toArray(),
-                remove: variables.MaterialRequistionSlip.remove.toArray()
-            },
-            MaterialRequistionSlipItem: {
-                replace: variables.MaterialRequistionSlipItem.replace.toArray(),
-                remove: variables.MaterialRequistionSlipItem.remove.toArray()
-            },
-            BOM: {
-                replace: variables.BOM.replace.toArray(),
-                remove: variables.BOM.remove.toArray()
-            },
-            BOMItem: {
-                replace: variables.BOMItem.replace.toArray(),
-                remove: variables.BOMItem.remove.toArray()
-            },
-            ProductionPreparationSlip: {
-                replace: variables.ProductionPreparationSlip.replace.toArray(),
-                remove: variables.ProductionPreparationSlip.remove.toArray()
-            },
-            ProductionPreparationSlipItem: {
-                replace: variables.ProductionPreparationSlipItem.replace.toArray(),
-                remove: variables.ProductionPreparationSlipItem.remove.toArray()
-            },
-            ScrapMaterialSlip: {
-                replace: variables.ScrapMaterialSlip.replace.toArray(),
-                remove: variables.ScrapMaterialSlip.remove.toArray()
-            },
-            TransferMaterialSlip: {
-                replace: variables.TransferMaterialSlip.replace.toArray(),
-                remove: variables.TransferMaterialSlip.remove.toArray()
-            },
-            WarehouseAcceptanceSlip: {
-                replace: variables.WarehouseAcceptanceSlip.replace.toArray(),
-                remove: variables.WarehouseAcceptanceSlip.remove.toArray()
-            }
-        }
+        this.variables = variables
     }
 
     static toVariable(diff: Immutable<DiffRow>): DiffVariable {
