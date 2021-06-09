@@ -70,7 +70,7 @@ function Component(props) {
     })
     const variables = w.filter(variable => applyFilter(state.query, variable))
     const [open, setOpen] = useState(false)
-
+    variables.forEach(v => console.log(v))
     const updateQuery = (args: Args) => {
         dispatch(['query', args])
     }
