@@ -144,6 +144,7 @@ async function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimit
     var symbolFlag = true
     if (symbolPaths.length !== 0 && symbolPaths.filter(x => x.length !== 0).length !== 0) {
         symbolValue.values = {}
+        // Note: Use overlay here
         const variable = await getVariable(typeName, variableName)
         if (variable === undefined) {
             symbolFlag = false
@@ -474,5 +475,6 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
             }
         })
     }
+    console.log('$$$3333', diffs)
     return [result, symbolFlag, mergeDiffs(diffs.toArray())]
 }

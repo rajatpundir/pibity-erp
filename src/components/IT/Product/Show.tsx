@@ -259,7 +259,7 @@ function Component(props) {
                 }
             })
         })
-        console.log(result, symbolFlag)
+        console.log('%%$$', result, symbolFlag, diff)
         if (symbolFlag) {
             db.diffs.put(diff.toRow())
         }

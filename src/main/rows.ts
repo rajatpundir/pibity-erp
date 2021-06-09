@@ -1,4 +1,4 @@
-import { immerable } from 'immer'
+import { immerable, Immutable } from 'immer'
 import { HashSet } from 'prelude-ts'
 import { DiffVariable } from './layers'
 import { Number, Decimal, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip, MaterialReturnSlipItem, BOMItem, ProductionPreparationSlipItem, ScrapMaterialSlip, WarehouseAcceptanceSlip, SupplierProduct } from './variables'
@@ -33,7 +33,6 @@ export type Row =
     | WarehouseAcceptanceSlipRow
 
 export class ProductRow {
-    [immerable] = true
     readonly typeName = 'Product'
     variableName: string
     values: {
@@ -49,28 +48,12 @@ export class ProductRow {
         this.values = values
     }
 
-    equals(other: ProductRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.variableName === other.variableName
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): ProductVariable {
-        return new ProductVariable(this.variableName, this.values)
+    static toVariable(row: ProductRow): ProductVariable {
+        return new ProductVariable(row.variableName, row.values)
     }
 }
 
 export class UOMRow {
-    [immerable] = true
     readonly typeName = 'UOM'
     readonly variableName: string
     readonly product: string
@@ -89,32 +72,16 @@ export class UOMRow {
         this.name = values.name
     }
 
-    equals(other: UOMRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.values.product === other.values.product && this.values.name === other.values.name
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): UOMVariable {
-        return new UOMVariable(this.variableName, {
-            product: new Product(this.values.product),
-            name: this.values.name,
-            conversionRate: this.values.conversionRate
+    static toVariable(row: UOMRow): UOMVariable {
+        return new UOMVariable(row.variableName, {
+            product: new Product(row.values.product),
+            name: row.values.name,
+            conversionRate: row.values.conversionRate
         })
     }
 }
 
 export class IndentRow {
-    [immerable] = true
     readonly typeName = 'Indent'
     readonly variableName: string
     values: {
@@ -129,28 +96,12 @@ export class IndentRow {
         this.values = values
     }
 
-    equals(other: IndentRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.variableName === other.variableName
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): IndentVariable {
-        return new IndentVariable(this.variableName, this.values)
+    static toVariable(row: IndentRow): IndentVariable {
+        return new IndentVariable(row.variableName, row.values)
     }
 }
 
 export class IndentItemRow {
-    [immerable] = true
     readonly typeName = 'IndentItem'
     readonly variableName: string
     readonly indent: string
@@ -185,40 +136,24 @@ export class IndentItemRow {
         this.product = values.product
     }
 
-    equals(other: IndentItemRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.values.indent === other.values.indent && this.values.product === other.values.product
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): IndentItemVariable {
-        return new IndentItemVariable(this.variableName, {
-            indent: new Indent(this.values.indent),
-            product: new Product(this.values.product),
-            quantity: this.values.quantity,
-            uom: new UOM(this.values.uom),
-            ordered: this.values.ordered,
-            received: this.values.received,
-            approved: this.values.approved,
-            rejected: this.values.rejected,
-            returned: this.values.returned,
-            requisted: this.values.requisted,
-            consumed: this.values.consumed
+    static toVariable(row: IndentItemRow): IndentItemVariable {
+        return new IndentItemVariable(row.variableName, {
+            indent: new Indent(row.values.indent),
+            product: new Product(row.values.product),
+            quantity: row.values.quantity,
+            uom: new UOM(row.values.uom),
+            ordered: row.values.ordered,
+            received: row.values.received,
+            approved: row.values.approved,
+            rejected: row.values.rejected,
+            returned: row.values.returned,
+            requisted: row.values.requisted,
+            consumed: row.values.consumed
         })
     }
 }
 
 export class SupplierRow {
-    [immerable] = true
     readonly typeName = 'Supplier'
     variableName: string
     values: {}
@@ -228,28 +163,12 @@ export class SupplierRow {
         this.values = values
     }
 
-    equals(other: SupplierRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.variableName === other.variableName
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): SupplierVariable {
-        return new SupplierVariable(this.variableName, this.values)
+    static toVariable(row: SupplierRow): SupplierVariable {
+        return new SupplierVariable(row.variableName, row.values)
     }
 }
 
 export class SupplierProductRow {
-    [immerable] = true
     readonly typeName = 'SupplierProduct'
     readonly variableName: string
     readonly supplier: string
@@ -267,31 +186,15 @@ export class SupplierProductRow {
         this.product = values.product
     }
 
-    equals(other: SupplierProductRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.values.supplier === other.values.supplier && this.values.product === other.values.product
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): SupplierProductVariable {
-        return new SupplierProductVariable(this.variableName, {
-            supplier: new Supplier(this.values.supplier),
-            product: new Product(this.values.product)
+    static toVariable(row: SupplierProductRow): SupplierProductVariable {
+        return new SupplierProductVariable(row.variableName, {
+            supplier: new Supplier(row.values.supplier),
+            product: new Product(row.values.product)
         })
     }
 }
 
 export class QuotationRow {
-    [immerable] = true
     readonly typeName = 'Quotation'
     readonly variableName: string
     values: {
@@ -304,31 +207,15 @@ export class QuotationRow {
         this.values = values
     }
 
-    equals(other: QuotationRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.variableName === other.variableName
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): QuotationVariable {
-        return new QuotationVariable(this.variableName, {
-            indent: new Indent(this.values.indent),
-            supplier: new Supplier(this.values.supplier)
+    static toVariable(row: QuotationRow): QuotationVariable {
+        return new QuotationVariable(row.variableName, {
+            indent: new Indent(row.values.indent),
+            supplier: new Supplier(row.values.supplier)
         })
     }
 }
 
 export class QuotationItemRow {
-    [immerable] = true
     readonly typeName = 'QuotationItem'
     readonly variableName: string
     readonly quotation: string
@@ -349,32 +236,16 @@ export class QuotationItemRow {
         this.indentItem = values.indentItem
     }
 
-    equals(other: QuotationItemRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.values.quotation === other.values.quotation && this.values.indentItem === other.values.indentItem
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): QuotationItemVariable {
-        return new QuotationItemVariable(this.variableName, {
-            quotation: new Quotation(this.values.quotation),
-            indentItem: new IndentItem(this.values.indentItem),
-            quantity: this.values.quantity
+    static toVariable(row: QuotationItemRow): QuotationItemVariable {
+        return new QuotationItemVariable(row.variableName, {
+            quotation: new Quotation(row.values.quotation),
+            indentItem: new IndentItem(row.values.indentItem),
+            quantity: row.values.quantity
         })
     }
 }
 
 export class PurchaseOrderRow {
-    [immerable] = true
     readonly typeName = 'PurchaseOrder'
     readonly variableName: string
     values: {
@@ -386,30 +257,14 @@ export class PurchaseOrderRow {
         this.values = values
     }
 
-    equals(other: PurchaseOrderRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.variableName === other.variableName
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): PurchaseOrderVariable {
-        return new PurchaseOrderVariable(this.variableName, {
-            quotation: new Quotation(this.values.quotation)
+    static toVariable(row: PurchaseOrderRow): PurchaseOrderVariable {
+        return new PurchaseOrderVariable(row.variableName, {
+            quotation: new Quotation(row.values.quotation)
         })
     }
 }
 
 export class PurchaseOrderItemRow {
-    [immerable] = true
     readonly typeName = 'PurchaseOrderItem'
     readonly variableName: string
     readonly purchaseOrder: string
@@ -433,34 +288,18 @@ export class PurchaseOrderItemRow {
         this.quotationItem = values.quotationItem
     }
 
-    equals(other: PurchaseOrderItemRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.values.purchaseOrder === other.values.purchaseOrder && this.values.quotationItem === other.values.quotationItem
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): PurchaseOrderItemVariable {
-        return new PurchaseOrderItemVariable(this.variableName, {
-            purchaseOrder: new PurchaseOrder(this.values.purchaseOrder),
-            quotationItem: new QuotationItem(this.values.quotationItem),
-            quantity: this.values.quantity,
-            price: this.values.price,
-            received: this.values.received
+    static toVariable(row: PurchaseOrderItemRow): PurchaseOrderItemVariable {
+        return new PurchaseOrderItemVariable(row.variableName, {
+            purchaseOrder: new PurchaseOrder(row.values.purchaseOrder),
+            quotationItem: new QuotationItem(row.values.quotationItem),
+            quantity: row.values.quantity,
+            price: row.values.price,
+            received: row.values.received
         })
     }
 }
 
 export class PurchaseInvoiceRow {
-    [immerable] = true
     readonly typeName = 'PurchaseInvoice'
     readonly variableName: string
     values: {
@@ -472,24 +311,9 @@ export class PurchaseInvoiceRow {
         this.values = values
     }
 
-    equals(other: PurchaseInvoiceRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.variableName === other.variableName
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): PurchaseInvoiceVariable {
-        return new PurchaseInvoiceVariable(this.variableName, {
-            purchaseOrder: new PurchaseOrder(this.values.purchaseOrder)
+    static toVariable(row: PurchaseInvoiceRow): PurchaseInvoiceVariable {
+        return new PurchaseInvoiceVariable(row.variableName, {
+            purchaseOrder: new PurchaseOrder(row.values.purchaseOrder)
         })
     }
 }
@@ -519,28 +343,13 @@ export class PurchaseInvoiceItemRow {
         this.purchaseOrderItem = values.purchaseOrderItem
     }
 
-    equals(other: PurchaseInvoiceItemRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.values.purchaseInvoice === other.values.purchaseInvoice && this.values.purchaseOrderItem === other.values.purchaseOrderItem
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): PurchaseInvoiceItemVariable {
-        return new PurchaseInvoiceItemVariable(this.variableName, {
-            purchaseInvoice: new PurchaseInvoice(this.values.purchaseInvoice),
-            purchaseOrderItem: new PurchaseOrderItem(this.values.purchaseOrderItem),
-            quantity: this.values.quantity,
-            approved: this.values.approved,
-            rejected: this.values.rejected
+    static toVariable(row: PurchaseInvoiceItemRow): PurchaseInvoiceItemVariable {
+        return new PurchaseInvoiceItemVariable(row.variableName, {
+            purchaseInvoice: new PurchaseInvoice(row.values.purchaseInvoice),
+            purchaseOrderItem: new PurchaseOrderItem(row.values.purchaseOrderItem),
+            quantity: row.values.quantity,
+            approved: row.values.approved,
+            rejected: row.values.rejected
         })
     }
 }
@@ -558,30 +367,14 @@ export class MaterialApprovalSlipRow {
         this.values = values
     }
 
-    equals(other: MaterialApprovalSlipRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.variableName === other.variableName
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): MaterialApprovalSlipVariable {
-        return new MaterialApprovalSlipVariable(this.variableName, {
-            purchaseInvoice: new PurchaseInvoice(this.values.purchaseInvoice)
+    static toVariable(row: MaterialApprovalSlipRow): MaterialApprovalSlipVariable {
+        return new MaterialApprovalSlipVariable(row.variableName, {
+            purchaseInvoice: new PurchaseInvoice(row.values.purchaseInvoice)
         })
     }
 }
 
 export class MaterialApprovalSlipItemRow {
-    [immerable] = true
     readonly typeName = 'MaterialApprovalSlipItem'
     readonly variableName: string
     readonly materialApprovalSlip: string
@@ -604,33 +397,17 @@ export class MaterialApprovalSlipItemRow {
         this.purchaseInvoiceItem = values.purchaseInvoiceItem
     }
 
-    equals(other: MaterialApprovalSlipItemRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.values.materialApprovalSlip === other.values.materialApprovalSlip && this.values.purchaseInvoiceItem === other.values.purchaseInvoiceItem
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): MaterialApprovalSlipItemVariable {
-        return new MaterialApprovalSlipItemVariable(this.variableName, {
-            materialApprovalSlip: new MaterialApprovalSlip(this.values.materialApprovalSlip),
-            purchaseInvoiceItem: new PurchaseInvoiceItem(this.values.purchaseInvoiceItem),
-            quantity: this.values.quantity,
-            requisted: this.values.requisted
+    static toVariable(row: MaterialApprovalSlipItemRow): MaterialApprovalSlipItemVariable {
+        return new MaterialApprovalSlipItemVariable(row.variableName, {
+            materialApprovalSlip: new MaterialApprovalSlip(row.values.materialApprovalSlip),
+            purchaseInvoiceItem: new PurchaseInvoiceItem(row.values.purchaseInvoiceItem),
+            quantity: row.values.quantity,
+            requisted: row.values.requisted
         })
     }
 }
 
 export class MaterialRejectionSlipRow {
-    [immerable] = true
     readonly typeName = 'MaterialRejectionSlip'
     readonly variableName: string
     values: {
@@ -642,30 +419,14 @@ export class MaterialRejectionSlipRow {
         this.values = values
     }
 
-    equals(other: MaterialRejectionSlipRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.variableName === other.variableName
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): MaterialRejectionSlipVariable {
-        return new MaterialRejectionSlipVariable(this.variableName, {
-            purchaseInvoice: new PurchaseInvoice(this.values.purchaseInvoice)
+    static toVariable(row: MaterialRejectionSlipRow): MaterialRejectionSlipVariable {
+        return new MaterialRejectionSlipVariable(row.variableName, {
+            purchaseInvoice: new PurchaseInvoice(row.values.purchaseInvoice)
         })
     }
 }
 
 export class MaterialRejectionSlipItemRow {
-    [immerable] = true
     readonly typeName = 'MaterialRejectionSlipItem'
     readonly variableName: string
     readonly materialRejectionSlip: string
@@ -688,33 +449,17 @@ export class MaterialRejectionSlipItemRow {
         this.purchaseInvoiceItem = values.purchaseInvoiceItem
     }
 
-    equals(other: MaterialRejectionSlipItemRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.values.materialRejectionSlip === other.values.materialRejectionSlip && this.values.purchaseInvoiceItem === other.values.purchaseInvoiceItem
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): MaterialRejectionSlipItemVariable {
-        return new MaterialRejectionSlipItemVariable(this.variableName, {
-            materialRejectionSlip: new MaterialRejectionSlip(this.values.materialRejectionSlip),
-            purchaseInvoiceItem: new PurchaseInvoiceItem(this.values.purchaseInvoiceItem),
-            quantity: this.values.quantity,
-            returned: this.values.returned
+    static toVariable(row: MaterialRejectionSlipItemRow): MaterialRejectionSlipItemVariable {
+        return new MaterialRejectionSlipItemVariable(row.variableName, {
+            materialRejectionSlip: new MaterialRejectionSlip(row.values.materialRejectionSlip),
+            purchaseInvoiceItem: new PurchaseInvoiceItem(row.values.purchaseInvoiceItem),
+            quantity: row.values.quantity,
+            returned: row.values.returned
         })
     }
 }
 
 export class MaterialReturnSlipRow {
-    [immerable] = true
     readonly typeName = 'MaterialReturnSlip'
     readonly variableName: string
     values: {
@@ -726,30 +471,14 @@ export class MaterialReturnSlipRow {
         this.values = values
     }
 
-    equals(other: MaterialReturnSlipRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.variableName === other.variableName
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): MaterialReturnSlipVariable {
-        return new MaterialReturnSlipVariable(this.variableName, {
-            materialRejectionSlip: new MaterialRejectionSlip(this.values.materialRejectionSlip)
+    static toVariable(row: MaterialReturnSlipRow): MaterialReturnSlipVariable {
+        return new MaterialReturnSlipVariable(row.variableName, {
+            materialRejectionSlip: new MaterialRejectionSlip(row.values.materialRejectionSlip)
         })
     }
 }
 
 export class MaterialReturnSlipItemRow {
-    [immerable] = true
     readonly typeName = 'MaterialReturnSlipItem'
     readonly variableName: string
     readonly materialReturnSlip: string
@@ -770,32 +499,16 @@ export class MaterialReturnSlipItemRow {
         this.materialRejectionSlipItem = values.materialRejectionSlipItem
     }
 
-    equals(other: MaterialReturnSlipItemRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.values.materialReturnSlip === other.values.materialReturnSlip && this.values.materialRejectionSlipItem === other.values.materialRejectionSlipItem
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): MaterialReturnSlipItemVariable {
-        return new MaterialReturnSlipItemVariable(this.variableName, {
-            materialReturnSlip: new MaterialReturnSlip(this.values.materialReturnSlip),
-            materialRejectionSlipItem: new MaterialRejectionSlipItem(this.values.materialRejectionSlipItem),
-            quantity: this.values.quantity
+    static toVariable(row: MaterialReturnSlipItemRow): MaterialReturnSlipItemVariable {
+        return new MaterialReturnSlipItemVariable(row.variableName, {
+            materialReturnSlip: new MaterialReturnSlip(row.values.materialReturnSlip),
+            materialRejectionSlipItem: new MaterialRejectionSlipItem(row.values.materialRejectionSlipItem),
+            quantity: row.values.quantity
         })
     }
 }
 
 export class MaterialRequistionSlipRow {
-    [immerable] = true
     readonly typeName = 'MaterialRequistionSlip'
     readonly variableName: string
     values: {
@@ -807,30 +520,14 @@ export class MaterialRequistionSlipRow {
         this.values = values
     }
 
-    equals(other: MaterialRequistionSlipRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.variableName === other.variableName
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): MaterialRequistionSlipVariable {
-        return new MaterialRequistionSlipVariable(this.variableName, {
-            materialApprovalSlip: new MaterialApprovalSlip(this.values.materialApprovalSlip)
+    static toVariable(row: MaterialRequistionSlipRow): MaterialRequistionSlipVariable {
+        return new MaterialRequistionSlipVariable(row.variableName, {
+            materialApprovalSlip: new MaterialApprovalSlip(row.values.materialApprovalSlip)
         })
     }
 }
 
 export class MaterialRequistionSlipItemRow {
-    [immerable] = true
     readonly typeName = 'MaterialRequistionSlipItem'
     readonly variableName: string
     readonly materialRequistionSlip: string
@@ -853,33 +550,17 @@ export class MaterialRequistionSlipItemRow {
         this.materialApprovalSlipItem = values.materialApprovalSlipItem
     }
 
-    equals(other: MaterialRequistionSlipItemRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.values.materialRequistionSlip === other.values.materialRequistionSlip && this.values.materialApprovalSlipItem === other.values.materialApprovalSlipItem
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): MaterialRequistionSlipItemVariable {
-        return new MaterialRequistionSlipItemVariable(this.variableName, {
-            materialRequistionSlip: new MaterialRequistionSlip(this.values.materialRequistionSlip),
-            materialApprovalSlipItem: new MaterialApprovalSlipItem(this.values.materialApprovalSlipItem),
-            quantity: this.values.quantity,
-            consumed: this.values.consumed
+    static toVariable(row: MaterialRequistionSlipItemRow): MaterialRequistionSlipItemVariable {
+        return new MaterialRequistionSlipItemVariable(row.variableName, {
+            materialRequistionSlip: new MaterialRequistionSlip(row.values.materialRequistionSlip),
+            materialApprovalSlipItem: new MaterialApprovalSlipItem(row.values.materialApprovalSlipItem),
+            quantity: row.values.quantity,
+            consumed: row.values.consumed
         })
     }
 }
 
 export class BOMRow {
-    [immerable] = true
     readonly typeName = 'BOM'
     readonly variableName: string
     values: {}
@@ -889,28 +570,12 @@ export class BOMRow {
         this.values = values
     }
 
-    equals(other: BOMRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.variableName === other.variableName
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): BOMVariable {
-        return new BOMVariable(this.variableName, this.values)
+    static toVariable(row: BOMRow): BOMVariable {
+        return new BOMVariable(row.variableName, row.values)
     }
 }
 
 export class BOMItemRow {
-    [immerable] = true
     readonly typeName = 'BOMItem'
     readonly variableName: string
     readonly bom: string
@@ -932,33 +597,17 @@ export class BOMItemRow {
         this.product = values.product
     }
 
-    equals(other: BOMItemRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.values.bom === other.values.bom && this.values.product === other.values.product
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): BOMItemVariable {
-        return new BOMItemVariable(this.variableName, {
-            bom: new BOM(this.values.bom),
-            product: new Product(this.values.product),
-            quantity: this.values.quantity,
-            uom: new UOM(this.values.uom)
+    static toVariable(row: BOMItemRow): BOMItemVariable {
+        return new BOMItemVariable(row.variableName, {
+            bom: new BOM(row.values.bom),
+            product: new Product(row.values.product),
+            quantity: row.values.quantity,
+            uom: new UOM(row.values.uom)
         })
     }
 }
 
 export class ProductionPreparationSlipRow {
-    [immerable] = true
     readonly typeName = 'ProductionPreparationSlip'
     readonly variableName: string
     values: {
@@ -973,32 +622,16 @@ export class ProductionPreparationSlipRow {
         this.values = values
     }
 
-    equals(other: ProductionPreparationSlipRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.variableName === other.variableName
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): ProductionPreparationSlipVariable {
-        return new ProductionPreparationSlipVariable(this.variableName, {
-            bom: new BOM(this.values.bom),
-            approved: this.values.approved,
-            scrapped: this.values.scrapped
+    static toVariable(row: ProductionPreparationSlipRow): ProductionPreparationSlipVariable {
+        return new ProductionPreparationSlipVariable(row.variableName, {
+            bom: new BOM(row.values.bom),
+            approved: row.values.approved,
+            scrapped: row.values.scrapped
         })
     }
 }
 
 export class ProductionPreparationSlipItemRow {
-    [immerable] = true
     readonly typeName = 'ProductionPreparationSlipItem'
     readonly variableName: string
     readonly productionPreparationSlip: string
@@ -1020,32 +653,16 @@ export class ProductionPreparationSlipItemRow {
         this.bomItem = values.bomItem
     }
 
-    equals(other: ProductionPreparationSlipItemRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.values.productionPreparationSlip === other.values.productionPreparationSlip && this.values.bomItem === other.values.bomItem
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): ProductionPreparationSlipItemVariable {
-        return new ProductionPreparationSlipItemVariable(this.variableName, {
-            productionPreparationSlip: new ProductionPreparationSlip(this.values.productionPreparationSlip),
-            bomItem: this.values.bomItem,
-            materialRequistionSlipItem: new MaterialRequistionSlipItem(this.values.materialRequistionSlipItem)
+    static toVariable(row: ProductionPreparationSlipItemRow): ProductionPreparationSlipItemVariable {
+        return new ProductionPreparationSlipItemVariable(row.variableName, {
+            productionPreparationSlip: new ProductionPreparationSlip(row.values.productionPreparationSlip),
+            bomItem: row.values.bomItem,
+            materialRequistionSlipItem: new MaterialRequistionSlipItem(row.values.materialRequistionSlipItem)
         })
     }
 }
 
 export class ScrapMaterialSlipRow {
-    [immerable] = true
     readonly typeName = 'ScrapMaterialSlip'
     readonly variableName: string
     values: {
@@ -1059,31 +676,15 @@ export class ScrapMaterialSlipRow {
         this.values = values
     }
 
-    equals(other: ScrapMaterialSlipRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.variableName === other.variableName
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): ScrapMaterialSlipVariable {
-        return new ScrapMaterialSlipVariable(this.variableName, {
-            productionPreparationSlip: new ProductionPreparationSlip(this.values.productionPreparationSlip),
-            quantity: this.values.quantity
+    static toVariable(row: ScrapMaterialSlipRow): ScrapMaterialSlipVariable {
+        return new ScrapMaterialSlipVariable(row.variableName, {
+            productionPreparationSlip: new ProductionPreparationSlip(row.values.productionPreparationSlip),
+            quantity: row.values.quantity
         })
     }
 }
 
 export class TransferMaterialSlipRow {
-    [immerable] = true
     readonly typeName = 'TransferMaterialSlip'
     readonly variableName: string
     values: {
@@ -1099,32 +700,16 @@ export class TransferMaterialSlipRow {
         this.values = values
     }
 
-    equals(other: TransferMaterialSlipRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.variableName === other.variableName
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): TransferMaterialSlipVariable {
-        return new TransferMaterialSlipVariable(this.variableName, {
-            productionPreparationSlip: new ProductionPreparationSlip(this.values.productionPreparationSlip),
-            quantity: this.values.quantity,
-            transferred: this.values.transferred
+    static toVariable(row: TransferMaterialSlipRow): TransferMaterialSlipVariable {
+        return new TransferMaterialSlipVariable(row.variableName, {
+            productionPreparationSlip: new ProductionPreparationSlip(row.values.productionPreparationSlip),
+            quantity: row.values.quantity,
+            transferred: row.values.transferred
         })
     }
 }
 
 export class WarehouseAcceptanceSlipRow {
-    [immerable] = true
     readonly typeName = 'WarehouseAcceptanceSlip'
     readonly variableName: string
     values: {
@@ -1138,31 +723,15 @@ export class WarehouseAcceptanceSlipRow {
         this.values = values
     }
 
-    equals(other: WarehouseAcceptanceSlipRow): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.variableName === other.variableName
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): WarehouseAcceptanceSlipVariable {
-        return new WarehouseAcceptanceSlipVariable(this.variableName, {
-            transferMaterialSlip: new TransferMaterialSlip(this.values.transferMaterialSlip),
-            quantity: this.values.quantity
+    static toVariable(row: WarehouseAcceptanceSlipRow): WarehouseAcceptanceSlipVariable {
+        return new WarehouseAcceptanceSlipVariable(row.variableName, {
+            transferMaterialSlip: new TransferMaterialSlip(row.values.transferMaterialSlip),
+            quantity: row.values.quantity
         })
     }
 }
 
 export class DiffRow {
-    [immerable] = true
     readonly id?: number
     active: boolean
     variables: {
@@ -1499,131 +1068,115 @@ export class DiffRow {
         }
     }
 
-    equals(other: DiffRow): boolean {
-        if (!other) {
-            return false;
-        }
-        // return this.id === other.id
-        return false
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toVariable(): DiffVariable {
-        return new DiffVariable(this.id, this.active, {
+    static toVariable(diff: Immutable<DiffRow>): DiffVariable {
+        return new DiffVariable(diff.id, diff.active, {
             Product: {
-                replace: HashSet.of<ProductVariable>().addAll(this.variables.Product.replace.map(x => x.toVariable())),
-                remove: HashSet.of<Product>().addAll(this.variables.Product.remove.map(x => new Product(x)))
+                replace: HashSet.of<ProductVariable>().addAll(diff.variables.Product.replace.map(x => ProductRow.toVariable(x))),
+                remove: HashSet.of<Product>().addAll(diff.variables.Product.remove.map(x => new Product(x)))
             },
             UOM: {
-                replace: HashSet.of<UOMVariable>().addAll(this.variables.UOM.replace.map(x => x.toVariable())),
-                remove: HashSet.of<UOM>().addAll(this.variables.UOM.remove.map(x => new UOM(x)))
+                replace: HashSet.of<UOMVariable>().addAll(diff.variables.UOM.replace.map(x => UOMRow.toVariable(x))),
+                remove: HashSet.of<UOM>().addAll(diff.variables.UOM.remove.map(x => new UOM(x)))
             },
             Indent: {
-                replace: HashSet.of<IndentVariable>().addAll(this.variables.Indent.replace.map(x => x.toVariable())),
-                remove: HashSet.of<Indent>().addAll(this.variables.Indent.remove.map(x => new Indent(x)))
+                replace: HashSet.of<IndentVariable>().addAll(diff.variables.Indent.replace.map(x => IndentRow.toVariable(x))),
+                remove: HashSet.of<Indent>().addAll(diff.variables.Indent.remove.map(x => new Indent(x)))
             },
             IndentItem: {
-                replace: HashSet.of<IndentItemVariable>().addAll(this.variables.IndentItem.replace.map(x => x.toVariable())),
-                remove: HashSet.of<IndentItem>().addAll(this.variables.IndentItem.remove.map(x => new IndentItem(x)))
+                replace: HashSet.of<IndentItemVariable>().addAll(diff.variables.IndentItem.replace.map(x => IndentItemRow.toVariable(x))),
+                remove: HashSet.of<IndentItem>().addAll(diff.variables.IndentItem.remove.map(x => new IndentItem(x)))
             },
             Supplier: {
-                replace: HashSet.of<SupplierVariable>().addAll(this.variables.Supplier.replace.map(x => x.toVariable())),
-                remove: HashSet.of<Supplier>().addAll(this.variables.Supplier.remove.map(x => new Supplier(x)))
+                replace: HashSet.of<SupplierVariable>().addAll(diff.variables.Supplier.replace.map(x => SupplierRow.toVariable(x))),
+                remove: HashSet.of<Supplier>().addAll(diff.variables.Supplier.remove.map(x => new Supplier(x)))
             },
             SupplierProduct: {
-                replace: HashSet.of<SupplierProductVariable>().addAll(this.variables.SupplierProduct.replace.map(x => x.toVariable())),
-                remove: HashSet.of<SupplierProduct>().addAll(this.variables.SupplierProduct.remove.map(x => new SupplierProduct(x)))
+                replace: HashSet.of<SupplierProductVariable>().addAll(diff.variables.SupplierProduct.replace.map(x => SupplierProductRow.toVariable(x))),
+                remove: HashSet.of<SupplierProduct>().addAll(diff.variables.SupplierProduct.remove.map(x => new SupplierProduct(x)))
             },
             Quotation: {
-                replace: HashSet.of<QuotationVariable>().addAll(this.variables.Quotation.replace.map(x => x.toVariable())),
-                remove: HashSet.of<Quotation>().addAll(this.variables.Quotation.remove.map(x => new Quotation(x)))
+                replace: HashSet.of<QuotationVariable>().addAll(diff.variables.Quotation.replace.map(x => QuotationRow.toVariable(x))),
+                remove: HashSet.of<Quotation>().addAll(diff.variables.Quotation.remove.map(x => new Quotation(x)))
             },
             QuotationItem: {
-                replace: HashSet.of<QuotationItemVariable>().addAll(this.variables.QuotationItem.replace.map(x => x.toVariable())),
-                remove: HashSet.of<QuotationItem>().addAll(this.variables.QuotationItem.remove.map(x => new QuotationItem(x)))
+                replace: HashSet.of<QuotationItemVariable>().addAll(diff.variables.QuotationItem.replace.map(x => QuotationItemRow.toVariable(x))),
+                remove: HashSet.of<QuotationItem>().addAll(diff.variables.QuotationItem.remove.map(x => new QuotationItem(x)))
             },
             PurchaseOrder: {
-                replace: HashSet.of<PurchaseOrderVariable>().addAll(this.variables.PurchaseOrder.replace.map(x => x.toVariable())),
-                remove: HashSet.of<PurchaseOrder>().addAll(this.variables.PurchaseOrder.remove.map(x => new PurchaseOrder(x)))
+                replace: HashSet.of<PurchaseOrderVariable>().addAll(diff.variables.PurchaseOrder.replace.map(x => PurchaseOrderRow.toVariable(x))),
+                remove: HashSet.of<PurchaseOrder>().addAll(diff.variables.PurchaseOrder.remove.map(x => new PurchaseOrder(x)))
             },
             PurchaseOrderItem: {
-                replace: HashSet.of<PurchaseOrderItemVariable>().addAll(this.variables.PurchaseOrderItem.replace.map(x => x.toVariable())),
-                remove: HashSet.of<PurchaseOrderItem>().addAll(this.variables.PurchaseOrderItem.remove.map(x => new PurchaseOrderItem(x)))
+                replace: HashSet.of<PurchaseOrderItemVariable>().addAll(diff.variables.PurchaseOrderItem.replace.map(x => PurchaseOrderItemRow.toVariable(x))),
+                remove: HashSet.of<PurchaseOrderItem>().addAll(diff.variables.PurchaseOrderItem.remove.map(x => new PurchaseOrderItem(x)))
             },
             PurchaseInvoice: {
-                replace: HashSet.of<PurchaseInvoiceVariable>().addAll(this.variables.PurchaseInvoice.replace.map(x => x.toVariable())),
-                remove: HashSet.of<PurchaseInvoice>().addAll(this.variables.PurchaseInvoice.remove.map(x => new PurchaseInvoice(x)))
+                replace: HashSet.of<PurchaseInvoiceVariable>().addAll(diff.variables.PurchaseInvoice.replace.map(x => PurchaseInvoiceRow.toVariable(x))),
+                remove: HashSet.of<PurchaseInvoice>().addAll(diff.variables.PurchaseInvoice.remove.map(x => new PurchaseInvoice(x)))
             },
             PurchaseInvoiceItem: {
-                replace: HashSet.of<PurchaseInvoiceItemVariable>().addAll(this.variables.PurchaseInvoiceItem.replace.map(x => x.toVariable())),
-                remove: HashSet.of<PurchaseInvoiceItem>().addAll(this.variables.PurchaseInvoiceItem.remove.map(x => new PurchaseInvoiceItem(x)))
+                replace: HashSet.of<PurchaseInvoiceItemVariable>().addAll(diff.variables.PurchaseInvoiceItem.replace.map(x => PurchaseInvoiceItemRow.toVariable(x))),
+                remove: HashSet.of<PurchaseInvoiceItem>().addAll(diff.variables.PurchaseInvoiceItem.remove.map(x => new PurchaseInvoiceItem(x)))
             },
             MaterialApprovalSlip: {
-                replace: HashSet.of<MaterialApprovalSlipVariable>().addAll(this.variables.MaterialApprovalSlip.replace.map(x => x.toVariable())),
-                remove: HashSet.of<MaterialApprovalSlip>().addAll(this.variables.MaterialApprovalSlip.remove.map(x => new MaterialApprovalSlip(x)))
+                replace: HashSet.of<MaterialApprovalSlipVariable>().addAll(diff.variables.MaterialApprovalSlip.replace.map(x => MaterialApprovalSlipRow.toVariable(x))),
+                remove: HashSet.of<MaterialApprovalSlip>().addAll(diff.variables.MaterialApprovalSlip.remove.map(x => new MaterialApprovalSlip(x)))
             },
             MaterialApprovalSlipItem: {
-                replace: HashSet.of<MaterialApprovalSlipItemVariable>().addAll(this.variables.MaterialApprovalSlipItem.replace.map(x => x.toVariable())),
-                remove: HashSet.of<MaterialApprovalSlipItem>().addAll(this.variables.MaterialApprovalSlipItem.remove.map(x => new MaterialApprovalSlipItem(x)))
+                replace: HashSet.of<MaterialApprovalSlipItemVariable>().addAll(diff.variables.MaterialApprovalSlipItem.replace.map(x => MaterialApprovalSlipItemRow.toVariable(x))),
+                remove: HashSet.of<MaterialApprovalSlipItem>().addAll(diff.variables.MaterialApprovalSlipItem.remove.map(x => new MaterialApprovalSlipItem(x)))
             },
             MaterialRejectionSlip: {
-                replace: HashSet.of<MaterialRejectionSlipVariable>().addAll(this.variables.MaterialRejectionSlip.replace.map(x => x.toVariable())),
-                remove: HashSet.of<MaterialRejectionSlip>().addAll(this.variables.MaterialRejectionSlip.remove.map(x => new MaterialRejectionSlip(x)))
+                replace: HashSet.of<MaterialRejectionSlipVariable>().addAll(diff.variables.MaterialRejectionSlip.replace.map(x => MaterialRejectionSlipRow.toVariable(x))),
+                remove: HashSet.of<MaterialRejectionSlip>().addAll(diff.variables.MaterialRejectionSlip.remove.map(x => new MaterialRejectionSlip(x)))
             },
             MaterialRejectionSlipItem: {
-                replace: HashSet.of<MaterialRejectionSlipItemVariable>().addAll(this.variables.MaterialRejectionSlipItem.replace.map(x => x.toVariable())),
-                remove: HashSet.of<MaterialRejectionSlipItem>().addAll(this.variables.MaterialRejectionSlipItem.remove.map(x => new MaterialRejectionSlipItem(x)))
+                replace: HashSet.of<MaterialRejectionSlipItemVariable>().addAll(diff.variables.MaterialRejectionSlipItem.replace.map(x => MaterialRejectionSlipItemRow.toVariable(x))),
+                remove: HashSet.of<MaterialRejectionSlipItem>().addAll(diff.variables.MaterialRejectionSlipItem.remove.map(x => new MaterialRejectionSlipItem(x)))
             },
             MaterialReturnSlip: {
-                replace: HashSet.of<MaterialReturnSlipVariable>().addAll(this.variables.MaterialReturnSlip.replace.map(x => x.toVariable())),
-                remove: HashSet.of<MaterialReturnSlip>().addAll(this.variables.MaterialReturnSlip.remove.map(x => new MaterialReturnSlip(x)))
+                replace: HashSet.of<MaterialReturnSlipVariable>().addAll(diff.variables.MaterialReturnSlip.replace.map(x => MaterialReturnSlipRow.toVariable(x))),
+                remove: HashSet.of<MaterialReturnSlip>().addAll(diff.variables.MaterialReturnSlip.remove.map(x => new MaterialReturnSlip(x)))
             },
             MaterialReturnSlipItem: {
-                replace: HashSet.of<MaterialReturnSlipItemVariable>().addAll(this.variables.MaterialReturnSlipItem.replace.map(x => x.toVariable())),
-                remove: HashSet.of<MaterialReturnSlipItem>().addAll(this.variables.MaterialReturnSlipItem.remove.map(x => new MaterialReturnSlipItem(x)))
+                replace: HashSet.of<MaterialReturnSlipItemVariable>().addAll(diff.variables.MaterialReturnSlipItem.replace.map(x => MaterialReturnSlipItemRow.toVariable(x))),
+                remove: HashSet.of<MaterialReturnSlipItem>().addAll(diff.variables.MaterialReturnSlipItem.remove.map(x => new MaterialReturnSlipItem(x)))
             },
             MaterialRequistionSlip: {
-                replace: HashSet.of<MaterialRequistionSlipVariable>().addAll(this.variables.MaterialRequistionSlip.replace.map(x => x.toVariable())),
-                remove: HashSet.of<MaterialRequistionSlip>().addAll(this.variables.MaterialRequistionSlip.remove.map(x => new MaterialRequistionSlip(x)))
+                replace: HashSet.of<MaterialRequistionSlipVariable>().addAll(diff.variables.MaterialRequistionSlip.replace.map(x => MaterialRequistionSlipRow.toVariable(x))),
+                remove: HashSet.of<MaterialRequistionSlip>().addAll(diff.variables.MaterialRequistionSlip.remove.map(x => new MaterialRequistionSlip(x)))
             },
             MaterialRequistionSlipItem: {
-                replace: HashSet.of<MaterialRequistionSlipItemVariable>().addAll(this.variables.MaterialRequistionSlipItem.replace.map(x => x.toVariable())),
-                remove: HashSet.of<MaterialRequistionSlipItem>().addAll(this.variables.MaterialRequistionSlipItem.remove.map(x => new MaterialRequistionSlipItem(x)))
+                replace: HashSet.of<MaterialRequistionSlipItemVariable>().addAll(diff.variables.MaterialRequistionSlipItem.replace.map(x => MaterialRequistionSlipItemRow.toVariable(x))),
+                remove: HashSet.of<MaterialRequistionSlipItem>().addAll(diff.variables.MaterialRequistionSlipItem.remove.map(x => new MaterialRequistionSlipItem(x)))
             },
             BOM: {
-                replace: HashSet.of<BOMVariable>().addAll(this.variables.BOM.replace.map(x => x.toVariable())),
-                remove: HashSet.of<BOM>().addAll(this.variables.BOM.remove.map(x => new BOM(x)))
+                replace: HashSet.of<BOMVariable>().addAll(diff.variables.BOM.replace.map(x => BOMRow.toVariable(x))),
+                remove: HashSet.of<BOM>().addAll(diff.variables.BOM.remove.map(x => new BOM(x)))
             },
             BOMItem: {
-                replace: HashSet.of<BOMItemVariable>().addAll(this.variables.BOMItem.replace.map(x => x.toVariable())),
-                remove: HashSet.of<BOMItem>().addAll(this.variables.BOMItem.remove.map(x => new BOMItem(x)))
+                replace: HashSet.of<BOMItemVariable>().addAll(diff.variables.BOMItem.replace.map(x => BOMItemRow.toVariable(x))),
+                remove: HashSet.of<BOMItem>().addAll(diff.variables.BOMItem.remove.map(x => new BOMItem(x)))
             },
             ProductionPreparationSlip: {
-                replace: HashSet.of<ProductionPreparationSlipVariable>().addAll(this.variables.ProductionPreparationSlip.replace.map(x => x.toVariable())),
-                remove: HashSet.of<ProductionPreparationSlip>().addAll(this.variables.ProductionPreparationSlip.remove.map(x => new ProductionPreparationSlip(x)))
+                replace: HashSet.of<ProductionPreparationSlipVariable>().addAll(diff.variables.ProductionPreparationSlip.replace.map(x => ProductionPreparationSlipRow.toVariable(x))),
+                remove: HashSet.of<ProductionPreparationSlip>().addAll(diff.variables.ProductionPreparationSlip.remove.map(x => new ProductionPreparationSlip(x)))
             },
             ProductionPreparationSlipItem: {
-                replace: HashSet.of<ProductionPreparationSlipItemVariable>().addAll(this.variables.ProductionPreparationSlipItem.replace.map(x => x.toVariable())),
-                remove: HashSet.of<ProductionPreparationSlipItem>().addAll(this.variables.ProductionPreparationSlipItem.remove.map(x => new ProductionPreparationSlipItem(x)))
+                replace: HashSet.of<ProductionPreparationSlipItemVariable>().addAll(diff.variables.ProductionPreparationSlipItem.replace.map(x => ProductionPreparationSlipItemRow.toVariable(x))),
+                remove: HashSet.of<ProductionPreparationSlipItem>().addAll(diff.variables.ProductionPreparationSlipItem.remove.map(x => new ProductionPreparationSlipItem(x)))
             },
             ScrapMaterialSlip: {
-                replace: HashSet.of<ScrapMaterialSlipVariable>().addAll(this.variables.ScrapMaterialSlip.replace.map(x => x.toVariable())),
-                remove: HashSet.of<ScrapMaterialSlip>().addAll(this.variables.ScrapMaterialSlip.remove.map(x => new ScrapMaterialSlip(x)))
+                replace: HashSet.of<ScrapMaterialSlipVariable>().addAll(diff.variables.ScrapMaterialSlip.replace.map(x => ScrapMaterialSlipRow.toVariable(x))),
+                remove: HashSet.of<ScrapMaterialSlip>().addAll(diff.variables.ScrapMaterialSlip.remove.map(x => new ScrapMaterialSlip(x)))
             },
             TransferMaterialSlip: {
-                replace: HashSet.of<TransferMaterialSlipVariable>().addAll(this.variables.TransferMaterialSlip.replace.map(x => x.toVariable())),
-                remove: HashSet.of<TransferMaterialSlip>().addAll(this.variables.TransferMaterialSlip.remove.map(x => new TransferMaterialSlip(x)))
+                replace: HashSet.of<TransferMaterialSlipVariable>().addAll(diff.variables.TransferMaterialSlip.replace.map(x => TransferMaterialSlipRow.toVariable(x))),
+                remove: HashSet.of<TransferMaterialSlip>().addAll(diff.variables.TransferMaterialSlip.remove.map(x => new TransferMaterialSlip(x)))
             },
             WarehouseAcceptanceSlip: {
-                replace: HashSet.of<WarehouseAcceptanceSlipVariable>().addAll(this.variables.WarehouseAcceptanceSlip.replace.map(x => x.toVariable())),
-                remove: HashSet.of<WarehouseAcceptanceSlip>().addAll(this.variables.WarehouseAcceptanceSlip.remove.map(x => new WarehouseAcceptanceSlip(x)))
+                replace: HashSet.of<WarehouseAcceptanceSlipVariable>().addAll(diff.variables.WarehouseAcceptanceSlip.replace.map(x => WarehouseAcceptanceSlipRow.toVariable(x))),
+                remove: HashSet.of<WarehouseAcceptanceSlip>().addAll(diff.variables.WarehouseAcceptanceSlip.remove.map(x => new WarehouseAcceptanceSlip(x)))
             }
         })
     }

@@ -2,7 +2,6 @@ import { HashSet } from 'prelude-ts'
 import { immerable, Immutable } from 'immer'
 import { Variable, VariableName, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, SupplierProduct, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialReturnSlipItem, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, BOMItem, ProductionPreparationSlip, ProductionPreparationSlipItem, ScrapMaterialSlip, TransferMaterialSlip, WarehouseAcceptanceSlip } from './variables'
 import { NonPrimitiveType } from './types'
-import { cloneDeep } from 'lodash'
 import { DiffRow } from './rows'
 import { db } from './dexie'
 import { when } from './utils'
@@ -1126,10 +1125,10 @@ export async function getVariables(typeName: NonPrimitiveType): Promise<Array<Im
 export function mergeDiffs(diffs: ReadonlyArray<DiffVariable>): DiffVariable {
     const result = diffs.reduce((acc, diff) => {
         Object.keys(diff.variables).forEach(typeName => {
-            acc.variables[typeName].replace = acc.variables[typeName].replace.filter((x: Variable) => !diff.variables[typeName].remove.anyMatch(y => x.variableName.equals(y))).addAll(diff.variables[typeName].replace)
-            acc.variables[typeName].remove = acc.variables[typeName].remove.filter((x: VariableName) => !diff.variables[typeName].replace.anyMatch(y => x.equals(y.variableName))).addAll(diff.variables[typeName].remove)
+            acc.variables[typeName].replace = acc.variables[typeName].replace.filter((x: Variable) => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[typeName].replace)
+            acc.variables[typeName].remove = acc.variables[typeName].remove.filter((x: VariableName) => !diff.variables[typeName].replace.anyMatch(y => x.toString() === y.variableName.toString())).addAll(diff.variables[typeName].remove)
         })
         return acc
-    }, cloneDeep(new DiffVariable()))
+    }, new DiffVariable())
     return result
 }

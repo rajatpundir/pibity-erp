@@ -63,7 +63,7 @@ export async function executeCircuit(circuit: Circuit, args: object, overlay: Ve
     const computationResults = {}
     var outputs = {}
     var diffs = Vector.of<DiffVariable>()
-    Object.keys(circuit.computations).forEach(async computationName => {
+    for (const computationName in circuit.computations) {
         console.log(computationName, '^^^^')
         const computation = circuit.computations[computationName]
         switch (computation.type) {
@@ -84,6 +84,7 @@ export async function executeCircuit(circuit: Circuit, args: object, overlay: Ve
                     }
                 })
                 const [result, symbolFlag, diff] = await executeFunction(fx, functionArgs, overlay.appendAll(diffs))
+                console.log('$$$@@@', diff)
                 if (!symbolFlag) {
                     return [outputs, false, mergeDiffs(diffs.toArray())]
                 }
@@ -199,7 +200,7 @@ export async function executeCircuit(circuit: Circuit, args: object, overlay: Ve
                 }
             }
         })
-    })
+    }
     console.log(outputs)
     return [outputs, true, mergeDiffs(diffs.toArray())]
 }
