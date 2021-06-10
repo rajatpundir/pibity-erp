@@ -600,8 +600,8 @@ export function getRemoveVariableDiff(typeName: NonPrimitiveType, variableName: 
 
 export async function getVariable(typeName: NonPrimitiveType, variableName: string, overlay: Vector<DiffVariable> = Vector.of()): Promise<Variable | undefined> {
     const diffs: Array<DiffVariable> = (await db.diffs.orderBy('id').reverse().toArray()).map(x => DiffRow.toVariable(x))
-    return when(typeName, {
-        'Product': async () => {
+    switch (typeName) {
+        case 'Product': {
             console.log('&', typeName, variableName)
             overlay.reverse().forEach(diff => {
                 console.log('&&&&&&', diff)
@@ -613,7 +613,7 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
                         console.log('&&&&&&1', typeName, variableName, variable)
                         return variable
                     }
-                    
+
                 })
                 if (diff.variables.Product.remove.anyMatch(x => x.toString() === variableName)) {
                     console.log('&&&&&&2', typeName, variableName, undefined)
@@ -638,12 +638,11 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             if (row !== undefined) {
                 console.log('&&&&&&3', typeName, variableName, row)
                 return ProductRow.toVariable(row) as Variable
-            } else {
-                console.log('&&&&&&4', typeName, variableName, row)
-                return undefined
             }
-        },
-        'UOM': async () => {
+            console.log('&&&&&&4', typeName, variableName, row)
+            return undefined
+        }
+        case 'UOM': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -657,11 +656,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.uoms.get(variableName)
             if (row !== undefined) {
                 return UOMRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'Indent': async () => {
+            return undefined
+        }
+        case 'Indent': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -675,11 +673,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.indents.get(variableName)
             if (row !== undefined) {
                 return IndentRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'IndentItem': async () => {
+            return undefined
+        }
+        case 'IndentItem': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -693,11 +690,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.indentItems.get(variableName)
             if (row !== undefined) {
                 return IndentItemRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'Supplier': async () => {
+            return undefined
+        }
+        case 'Supplier': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -711,11 +707,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.suppliers.get(variableName)
             if (row !== undefined) {
                 return SupplierRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'SupplierProduct': async () => {
+            return undefined
+        }
+        case 'SupplierProduct': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -729,11 +724,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.supplierProducts.get(variableName)
             if (row !== undefined) {
                 return SupplierProductRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'Quotation': async () => {
+            return undefined
+        }
+        case 'Quotation': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -747,11 +741,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.quotations.get(variableName)
             if (row !== undefined) {
                 return QuotationRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'QuotationItem': async () => {
+            return undefined
+        }
+        case 'QuotationItem': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -765,11 +758,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.quotationItems.get(variableName)
             if (row !== undefined) {
                 return QuotationItemRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'PurchaseOrder': async () => {
+            return undefined
+        }
+        case 'PurchaseOrder': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -783,11 +775,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.purchaseOrders.get(variableName)
             if (row !== undefined) {
                 return PurchaseOrderRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'PurchaseOrderItem': async () => {
+            return undefined
+        }
+        case 'PurchaseOrderItem': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -801,11 +792,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.purchaseOrderItems.get(variableName)
             if (row !== undefined) {
                 return PurchaseOrderItemRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'PurchaseInvoice': async () => {
+            return undefined
+        }
+        case 'PurchaseInvoice': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -819,11 +809,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.purchaseInvoices.get(variableName)
             if (row !== undefined) {
                 return PurchaseInvoiceRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'PurchaseInvoiceItem': async () => {
+            return undefined
+        }
+        case 'PurchaseInvoiceItem': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -837,11 +826,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.purchaseInvoiceItems.get(variableName)
             if (row !== undefined) {
                 return PurchaseInvoiceItemRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'MaterialApprovalSlip': async () => {
+            return undefined
+        }
+        case 'MaterialApprovalSlip': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -855,11 +843,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.materialApprovalSlips.get(variableName)
             if (row !== undefined) {
                 return MaterialApprovalSlipRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'MaterialApprovalSlipItem': async () => {
+            return undefined
+        }
+        case 'MaterialApprovalSlipItem': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -873,11 +860,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.materialApprovalSlipItems.get(variableName)
             if (row !== undefined) {
                 return MaterialApprovalSlipItemRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'MaterialRejectionSlip': async () => {
+            return undefined
+        }
+        case 'MaterialRejectionSlip': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -891,11 +877,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.materialRejectionSlips.get(variableName)
             if (row !== undefined) {
                 return MaterialRejectionSlipRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'MaterialRejectionSlipItem': async () => {
+            return undefined
+        }
+        case 'MaterialRejectionSlipItem': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -909,11 +894,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.materialRejectionSlipItems.get(variableName)
             if (row !== undefined) {
                 return MaterialRejectionSlipItemRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'MaterialReturnSlip': async () => {
+            return undefined
+        }
+        case 'MaterialReturnSlip': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -927,11 +911,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.materialReturnSlips.get(variableName)
             if (row !== undefined) {
                 return MaterialReturnSlipRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'MaterialReturnSlipItem': async () => {
+            return undefined
+        }
+        case 'MaterialReturnSlipItem': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -945,11 +928,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.materialReturnSlipItems.get(variableName)
             if (row !== undefined) {
                 return MaterialReturnSlipItemRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'MaterialRequistionSlip': async () => {
+            return undefined
+        }
+        case 'MaterialRequistionSlip': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -963,11 +945,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.materialRequistionSlips.get(variableName)
             if (row !== undefined) {
                 return MaterialRequistionSlipRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'MaterialRequistionSlipItem': async () => {
+            return undefined
+        }
+        case 'MaterialRequistionSlipItem': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -981,11 +962,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.materialRequistionSlipItems.get(variableName)
             if (row !== undefined) {
                 return MaterialRequistionSlipItemRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'BOM': async () => {
+            return undefined
+        }
+        case 'BOM': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -999,11 +979,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.boms.get(variableName)
             if (row !== undefined) {
                 return BOMRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'BOMItem': async () => {
+            return undefined
+        }
+        case 'BOMItem': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -1017,11 +996,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.bomItems.get(variableName)
             if (row !== undefined) {
                 return BOMItemRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'ProductionPreparationSlip': async () => {
+            return undefined
+        }
+        case 'ProductionPreparationSlip': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -1035,11 +1013,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.productionPreparationSlips.get(variableName)
             if (row !== undefined) {
                 return ProductionPreparationSlipRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'ProductionPreparationSlipItem': async () => {
+            return undefined
+        }
+        case 'ProductionPreparationSlipItem': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -1053,11 +1030,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.productionPreparationSlipItems.get(variableName)
             if (row !== undefined) {
                 return ProductionPreparationSlipItemRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'ScrapMaterialSlip': async () => {
+            return undefined
+        }
+        case 'ScrapMaterialSlip': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -1071,11 +1047,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.scrapMaterialSlips.get(variableName)
             if (row !== undefined) {
                 return ScrapMaterialSlipRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'TransferMaterialSlip': async () => {
+            return undefined
+        }
+        case 'TransferMaterialSlip': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -1089,11 +1064,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.transferMaterialSlips.get(variableName)
             if (row !== undefined) {
                 return TransferMaterialSlipRow.toVariable(row)
-            } else {
-                return undefined
             }
-        },
-        'WarehouseAcceptanceSlip': async () => {
+            return undefined
+        }
+        case 'WarehouseAcceptanceSlip': {
             diffs.forEach(diff => {
                 diff.variables[typeName].replace.forEach(variable => {
                     if (variable.variableName.toString() === variableName) {
@@ -1107,11 +1081,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             const row = await db.warehouseAcceptanceSlips.get(variableName)
             if (row !== undefined) {
                 return WarehouseAcceptanceSlipRow.toVariable(row)
-            } else {
-                return undefined
             }
+            return undefined
         }
-    })
+    }
 }
 
 export async function getVariables(typeName: NonPrimitiveType): Promise<Array<Immutable<Variable>>> {
