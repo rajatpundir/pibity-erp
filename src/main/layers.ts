@@ -607,10 +607,13 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
                 console.log('&&&&&&', diff)
                 diff.variables.Product.replace.forEach(variable => {
                     console.log('&$#', variable)
+                    console.log(variable.variableName.toString(), variableName)
+                    console.log('result----- ', variable.variableName.toString() === variableName)
                     if (variable.variableName.toString() === variableName) {
                         console.log('&&&&&&1', typeName, variableName, variable)
                         return variable
                     }
+                    
                 })
                 if (diff.variables.Product.remove.anyMatch(x => x.toString() === variableName)) {
                     console.log('&&&&&&2', typeName, variableName, undefined)

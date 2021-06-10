@@ -253,6 +253,9 @@ async function getSymbolsForFunction(fx: Function, args: object, overlay: Vector
 }
 
 export async function executeFunction(fx: Function, args: object, overlay: Vector<DiffVariable>): Promise<[object, boolean, DiffVariable]> {
+    console.log('llllllllllllllllllllllllll')
+    console.log(fx, args)
+    console.log(overlay)
     const [symbols, symbolFlag] = await getSymbolsForFunction(fx, args, overlay)
     console.log(args, symbols, symbolFlag)
     const result = {}
@@ -315,6 +318,7 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                                     }
                                     default: {
                                         const referencedVariable = await getVariable(key.type, String(evaluateExpression(fo.values[keyName], symbols)), overlay)
+                                       console.log(referencedVariable, key, String(evaluateExpression(fo.values[keyName], symbols)))
                                         if (referencedVariable !== undefined) {
                                             createdVariable.values[keyName] = referencedVariable.variableName.toString()
                                         } else {
