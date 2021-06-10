@@ -1,4 +1,4 @@
-import { HashSet } from 'prelude-ts'
+import { HashSet, Vector } from 'prelude-ts'
 import { immerable, Immutable } from 'immer'
 import { Variable, VariableName, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, SupplierProduct, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialReturnSlipItem, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, BOMItem, ProductionPreparationSlip, ProductionPreparationSlipItem, ScrapMaterialSlip, TransferMaterialSlip, WarehouseAcceptanceSlip } from './variables'
 import { NonPrimitiveType } from './types'
@@ -598,24 +598,45 @@ export function getRemoveVariableDiff(typeName: NonPrimitiveType, variableName: 
     return diff
 }
 
-export async function getVariable(typeName: NonPrimitiveType, variableName: string): Promise<Variable | undefined> {
+export async function getVariable(typeName: NonPrimitiveType, variableName: string, overlay: Vector<DiffVariable> = Vector.of()): Promise<Variable | undefined> {
     const diffs: Array<DiffVariable> = (await db.diffs.orderBy('id').reverse().toArray()).map(x => DiffRow.toVariable(x))
     return when(typeName, {
         'Product': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            console.log('&', typeName, variableName)
+            overlay.reverse().forEach(diff => {
+                console.log('&&&&&&', diff)
+                diff.variables.Product.replace.forEach(variable => {
+                    console.log('&$#', variable)
                     if (variable.variableName.toString() === variableName) {
+                        console.log('&&&&&&1', typeName, variableName, variable)
                         return variable
                     }
                 })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables.Product.remove.anyMatch(x => x.toString() === variableName)) {
+                    console.log('&&&&&&2', typeName, variableName, undefined)
+                    return undefined
+                }
+            })
+            diffs.forEach(diff => {
+                console.log('&&&&&&', diff)
+                diff.variables.Product.replace.forEach(variable => {
+                    console.log('&$#', variable)
+                    if (variable.variableName.toString() === variableName) {
+                        console.log('&&&&&&1', typeName, variableName, variable)
+                        return variable
+                    }
+                })
+                if (diff.variables.Product.remove.anyMatch(x => x.toString() === variableName)) {
+                    console.log('&&&&&&2', typeName, variableName, undefined)
                     return undefined
                 }
             })
             const row = await db.products.get(variableName)
             if (row !== undefined) {
+                console.log('&&&&&&3', typeName, variableName, row)
                 return ProductRow.toVariable(row) as Variable
             } else {
+                console.log('&&&&&&4', typeName, variableName, row)
                 return undefined
             }
         },

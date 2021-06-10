@@ -135,7 +135,7 @@ function getSymbolPathsForFunction(fx: Function): Array<ReadonlyArray<string>> {
     return symbolPaths
 }
 
-async function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveType, variableName: string): Promise<[SymbolValue, boolean]> {
+async function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveType, variableName: string, overlay: Vector<DiffVariable>): Promise<[SymbolValue, boolean]> {
     const type = types[typeName]
     const symbolValue: SymbolValue = {
         type: 'Text',
@@ -145,7 +145,7 @@ async function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimit
     if (symbolPaths.length !== 0 && symbolPaths.filter(x => x.length !== 0).length !== 0) {
         symbolValue.values = {}
         // Note: Use overlay here
-        const variable = await getVariable(typeName, variableName)
+        const variable = await getVariable(typeName, variableName, overlay)
         if (variable === undefined) {
             symbolFlag = false
         } else {
@@ -186,7 +186,7 @@ async function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimit
                                 break
                             }
                             default: {
-                                const subSymbols = await getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)), key.type, variable.values[keyName].toString())
+                                const subSymbols = await getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)), key.type, variable.values[keyName].toString(), overlay)
                                 symbolValue.values[keyName] = subSymbols[0]
                                 symbolFlag = symbolFlag && subSymbols[1]
                             }
@@ -240,7 +240,7 @@ async function getSymbolsForFunction(fx: Function, args: object, overlay: Vector
                 }
                 default: {
                     if (inputName in args || fi.default !== undefined) {
-                        const subSymbols = await getSymbols(symbolPaths.filter(x => x[0] === inputName).map(x => x.slice(1)), fi.type, inputName in args ? String(args[inputName]) : (fi.default ? fi.default : ''))
+                        const subSymbols = await getSymbols(symbolPaths.filter(x => x[0] === inputName).map(x => x.slice(1)), fi.type, inputName in args ? String(args[inputName]) : (fi.default ? fi.default : ''), overlay)
                         symbols[inputName] = subSymbols[0]
                         symbolFlag = symbolFlag && subSymbols[1]
                     }
@@ -314,7 +314,7 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                                         break
                                     }
                                     default: {
-                                        const referencedVariable = await getVariable(key.type, String(evaluateExpression(fo.values[keyName], symbols)))
+                                        const referencedVariable = await getVariable(key.type, String(evaluateExpression(fo.values[keyName], symbols)), overlay)
                                         if (referencedVariable !== undefined) {
                                             createdVariable.values[keyName] = referencedVariable.variableName.toString()
                                         } else {
@@ -337,7 +337,7 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                                 variableName: variableName,
                                 values: {}
                             }
-                            const variable = await getVariable(fo.type, variableName)
+                            const variable = await getVariable(fo.type, variableName, overlay)
                             if (variable !== undefined) {
                                 Object.keys(variable.values).forEach(keyName => {
                                     updatedVariable.values[keyName] = variable.values[keyName]
@@ -365,7 +365,7 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                                             break
                                         }
                                         default: {
-                                            const referencedVariable = await getVariable(key.type, String(evaluateExpression(fo.values[keyName], symbols)))
+                                            const referencedVariable = await getVariable(key.type, String(evaluateExpression(fo.values[keyName], symbols)), overlay)
                                             if (referencedVariable !== undefined) {
                                                 updatedVariable.values[keyName] = referencedVariable.variableName.toString()
                                             } else {
@@ -425,7 +425,7 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                             updatedVariable.variableName = String(evaluateExpression(fi.variableName, symbols))
                             diffs = diffs.append(getRemoveVariableDiff(fi.type, String(symbols[inputName].value)))
                         }
-                        const variable = await getVariable(fi.type, String(symbols[inputName].value))
+                        const variable = await getVariable(fi.type, String(symbols[inputName].value), overlay)
                         if (variable !== undefined) {
                             Object.keys(variable.values).forEach(keyName => {
                                 updatedVariable.values[keyName] = variable.values[keyName]
@@ -455,7 +455,7 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                                                 break
                                             }
                                             default: {
-                                                const referencedVariable = await getVariable(key.type, String(evaluateExpression(fi.values[keyName], symbols)))
+                                                const referencedVariable = await getVariable(key.type, String(evaluateExpression(fi.values[keyName], symbols)), overlay)
                                                 if (referencedVariable !== undefined) {
                                                     updatedVariable.values[keyName] = referencedVariable.variableName.toString()
                                                 } else {

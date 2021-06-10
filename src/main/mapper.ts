@@ -108,7 +108,7 @@ export function isNonPrimitive(typeName: string): typeName is NonPrimitiveType {
 export async function executeMapper(mapper: Mapper, args: MapperArgs, overlay: Vector<DiffVariable>): Promise<[Array<object>, boolean, DiffVariable]> {
     const fx = functions[mapper.functionName]
     const fi = fx.inputs[mapper.functionInput]
-    console.log(args, '--mapper--')
+    console.log(args, '--mapper--', overlay)
     var result = Vector.of<object>()
     var diffs = Vector.of<DiffVariable>()
     if (isNonPrimitive(fi.type)) {
@@ -149,6 +149,7 @@ export async function executeMapper(mapper: Mapper, args: MapperArgs, overlay: V
 
             const unfilteredVariables = await getVariables(fi.type)
             const variables: Array<Immutable<Variable>> = unfilteredVariables.filter(variable => applyFilter(query, variable))
+            // Note. Await does not work inside forEach loop.
             variables.forEach(async (variable, index) => {
                 if (index < args.args.length) {
                     const functionArgs = args.args[index]
@@ -171,14 +172,16 @@ export async function executeMapper(mapper: Mapper, args: MapperArgs, overlay: V
                 }
             })
         } else {
-            args.args.forEach(async arg => {
+            for (const key in args.args) {
+                const arg = args.args[key]
                 const [functionResult, symbolFlag, diff] = await executeFunction(fx, arg, overlay)
+                console.log('$$', functionResult, symbolFlag, diff)
                 if (!symbolFlag) {
-                    return [result, false, mergeDiffs(diffs.toArray())]
+                    return [result.toArray(), false, mergeDiffs(diffs.toArray())]
                 }
                 result = result.append(functionResult)
                 diffs = diffs.append(diff)
-            })
+            }
         }
     }
     return [result.toArray(), true, mergeDiffs(diffs.toArray())]
