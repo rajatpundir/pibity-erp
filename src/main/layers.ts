@@ -369,6 +369,7 @@ export class DiffVariable {
 }
 
 export function getReplaceVariableDiff(variable: Immutable<Variable>): DiffVariable {
+    console.log(variable.toString())
     const diff: DiffVariable = new DiffVariable()
     switch (variable.typeName) {
         case 'Product': {
@@ -603,23 +604,22 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
     switch (typeName) {
         case 'Product': {
             console.log('&', typeName, variableName)
-            overlay.reverse().forEach(diff => {
+            for (const diff of overlay.reverse().toArray()) {
                 console.log('&&&&&&', diff)
-                diff.variables.Product.replace.forEach(variable => {
+                for (const variable of diff.variables.Product.replace.toArray()) {
                     console.log('&$#', variable)
                     console.log(variable.variableName.toString(), variableName)
                     console.log('result----- ', variable.variableName.toString() === variableName)
                     if (variable.variableName.toString() === variableName) {
                         console.log('&&&&&&1', typeName, variableName, variable)
-                        return variable
-                    }
-
-                })
+                        return variable as Variable
+                    }                  
+                }
                 if (diff.variables.Product.remove.anyMatch(x => x.toString() === variableName)) {
                     console.log('&&&&&&2', typeName, variableName, undefined)
                     return undefined
                 }
-            })
+            }           
             diffs.forEach(diff => {
                 console.log('&&&&&&', diff)
                 diff.variables.Product.replace.forEach(variable => {
