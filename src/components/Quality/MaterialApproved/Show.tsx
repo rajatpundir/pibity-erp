@@ -18,7 +18,7 @@ import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { DiffRow, MaterialApprovalSlipItemRow } from '../../../main/rows'
+import { DiffRow, MaterialApprovalSlipItemRow, MaterialApprovalSlipRow } from '../../../main/rows'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -159,7 +159,7 @@ function Component(props) {
             if (props.match.params[0]){
                 console.log(props.match.params[0])
                 const rows = await db.materialApprovalSlips.toArray()
-                var composedVariables = HashSet.of<Immutable<MaterialApprovalSlipVariable>>().addAll(rows ? rows.map(x => MaterialApprovalSlipItemRow.toVariable(x)) : [])
+                var composedVariables = HashSet.of<Immutable<MaterialApprovalSlipVariable>>().addAll(rows ? rows.map(x => MaterialApprovalSlipRow.toVariable(x)) : [])
                 const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
                 diffs?.forEach(diff => {
                     composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
@@ -168,14 +168,14 @@ function Component(props) {
                 if (variables.length() === 1) {
                     const variable = variables.toArray()[0]
                     dispatch(['replace', 'variable', variable as MaterialApprovalSlipVariable])
-                    const itemRows = await db.uoms.toArray()
-                    var composedItemVariables = HashSet.of<Immutable<MaterialApprovalSlipVariable>>().addAll(itemRows ? itemRows.map(x => MaterialApprovalSlipItemRow.toVariable(x)) : [])
+                    const itemRows = await db.materialApprovalSlipItems.toArray()
+                    var composedItemVariables = HashSet.of<Immutable<MaterialApprovalSlipItemVariable>>().addAll(itemRows ? itemRows.map(x => MaterialApprovalSlipItemRow.toVariable(x)) : [])
                     diffs?.forEach(diff => {
                         composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
                     })
                     console.log('cc', composedItemVariables)
-                    const items = composedItemVariables.filter(variable => variable.values.purchaseInvoice.toString() === props.match.params[0])
-                    dispatch(['replace', 'items', items as HashSet<MaterialApprovalSlipVariable>])
+                    const items = composedItemVariables.filter(variable => variable.values.materialApprovalSlip.toString() === props.match.params[0])
+                    dispatch(['replace', 'items', items as HashSet<MaterialApprovalSlipItemVariable>])
                 }
             }
         }
