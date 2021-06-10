@@ -18,7 +18,7 @@ import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { IndentItemRow } from '../../../main/rows'
+import { DiffRow, IndentItemRow, IndentRow } from '../../../main/rows'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -49,7 +49,7 @@ export type Action =
     | ['items', 'addVariable']
 
     | ['replace', 'variable', IndentVariable]
-    | ['replace', 'items', Array<IndentItemVariable>]
+    | ['replace', 'items', HashSet<IndentItemVariable>]
 
 function Component(props) {
 
@@ -132,7 +132,7 @@ function Component(props) {
                         break
                     }
                     case 'items': {
-                        state.items.variables = HashSet.of<IndentItemVariable>().addAll(action[2])
+                        state.items.variables = action[2]
                         break
                     }
                 }
@@ -143,19 +143,33 @@ function Component(props) {
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    useEffect(() => {
+  useEffect(() => {
         async function setVariable() {
             if (props.match.params[0]) {
-                const variable = await getVariable('Indent', props.match.params[0])
-                const items = await db.indentItems.where({ indent: props.match.params[0] }).toArray()
-                if (variable !== undefined) {
+                console.log(props.match.params[0])
+                const rows = await db.indents.toArray()
+                var composedVariables = HashSet.of<Immutable<IndentVariable>>().addAll(rows ? rows.map(x => IndentRow.toVariable(x)) : [])
+                const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
+                diffs?.forEach(diff => {
+                    composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                })
+                const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
+                if (variables.length() === 1) {
+                    const variable = variables.toArray()[0]
                     dispatch(['replace', 'variable', variable as IndentVariable])
-                    dispatch(['replace', 'items', items.map(x => IndentItemRow.toVariable(x))])
+                    const itemRows = await db.indentItems.toArray()
+                    var composedItemVariables = HashSet.of<Immutable<IndentItemVariable>>().addAll(itemRows ? itemRows.map(x => IndentItemRow.toVariable(x)) : [])
+                    diffs?.forEach(diff => {
+                        composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    })
+                    const items = composedItemVariables.filter(variable => variable.values.product.toString() === props.match.params[0])
+                    dispatch(['replace', 'items', items as HashSet<IndentItemVariable>])
                 }
             }
         }
         setVariable()
-    }, [props.match.params, dispatch])
+    }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
+
 
     const products = useLiveQuery(() => db.products.toArray())
     const uoms = useLiveQuery(() => db.uoms.where({ product: state.items.variable.values.product.toString() }).toArray())
@@ -217,7 +231,7 @@ function Component(props) {
         }
     }
 
-    return iff(state.mode === 'create',
+    return iff(true,
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>

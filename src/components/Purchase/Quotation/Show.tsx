@@ -162,16 +162,30 @@ function Component(props) {
     useEffect(() => {
         async function setVariable() {
             if (props.match.params[0]) {
-                const variable = await getVariable('Quotation', props.match.params[0])
-                const items = await db.quotationItems.where({ quotation: props.match.params[0] }).toArray()
-                if (variable !== undefined) {
-                    dispatch(['replace', 'variable', variable as QuotationVariable])
-                    dispatch(['replace', 'items', items.map(x => QuotationItemRow.toVariable(x))])
+                console.log(props.match.params[0])
+                const rows = await db.products.toArray()
+                var composedVariables = HashSet.of<Immutable<ProductVariable>>().addAll(rows ? rows.map(x => ProductRow.toVariable(x)) : [])
+                const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
+                diffs?.forEach(diff => {
+                    composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                })
+                const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
+                if (variables.length() === 1) {
+                    const variable = variables.toArray()[0]
+                    dispatch(['replace', 'variable', variable as ProductVariable])
+                    const itemRows = await db.uoms.toArray()
+                    var composedItemVariables = HashSet.of<Immutable<UOMVariable>>().addAll(itemRows ? itemRows.map(x => UOMRow.toVariable(x)) : [])
+                    diffs?.forEach(diff => {
+                        composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.uoms.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.uoms.variable.typeName].replace)
+                    })
+                    console.log('cc', composedItemVariables)
+                    const items = composedItemVariables.filter(variable => variable.values.product.toString() === props.match.params[0])
+                    dispatch(['replace', 'uoms', items as HashSet<UOMVariable>])
                 }
             }
         }
         setVariable()
-    }, [props.match.params, dispatch])
+    }, [state.variable.typeName, state.uoms.variable.typeName, props.match.params, dispatch])
 
     const indents = useLiveQuery(() => db.indents.toArray())
     const suppliers = useLiveQuery(() => db.suppliers.toArray())
@@ -250,7 +264,7 @@ function Component(props) {
         }
     }
 
-    return iff(state.mode === 'create',
+    return iff(true,
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>

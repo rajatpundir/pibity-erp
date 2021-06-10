@@ -18,7 +18,7 @@ import { iff, when } from '../../../main/utils'
 import { db } from '../../../main/dexie'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { BOMItemRow } from '../../../main/rows'
+import { BOMItemRow, BOMRow, DiffRow } from '../../../main/rows'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -51,7 +51,7 @@ export type Action =
     | ['items', 'addVariable']
 
     | ['replace', 'variable', BOMVariable]
-    | ['replace', 'items', Array<BOMItemVariable>]
+    | ['replace', 'items', HashSet<BOMItemVariable>]
 
 function Component(props) {
 
@@ -143,7 +143,7 @@ function Component(props) {
                         break
                     }
                     case 'items': {
-                        state.items.variables = HashSet.of<BOMItemVariable>().addAll(action[2])
+                        state.items.variables = action[2]
                         break
                     }
                 }
@@ -157,16 +157,30 @@ function Component(props) {
     useEffect(() => {
         async function setVariable() {
             if (props.match.params[0]) {
-                const variable = await getVariable('BOM', props.match.params[0])
-                const items = await db.bomItems.where({ bom: props.match.params[0] }).toArray()
-                if (variable !== undefined) {
+                console.log(props.match.params[0])
+                const rows = await db.boms.toArray()
+                var composedVariables = HashSet.of<Immutable<BOMVariable>>().addAll(rows ? rows.map(x => BOMRow.toVariable(x)) : [])
+                const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
+                diffs?.forEach(diff => {
+                    composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                })
+                const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
+                if (variables.length() === 1) {
+                    const variable = variables.toArray()[0]
                     dispatch(['replace', 'variable', variable as BOMVariable])
-                    dispatch(['replace', 'items', items.map(x => BOMItemRow.toVariable(x))])
+                    const itemRows = await db.bomItems.toArray()
+                    var composedItemVariables = HashSet.of<Immutable<BOMItemVariable>>().addAll(itemRows ? itemRows.map(x => BOMItemRow.toVariable(x)) : [])
+                    diffs?.forEach(diff => {
+                        composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    })
+                    console.log('cc', composedItemVariables)
+                    const items = composedItemVariables.filter(variable => variable.values.product.toString() === props.match.params[0])
+                    dispatch(['replace', 'items', items as HashSet<BOMItemVariable>])
                 }
             }
         }
         setVariable()
-    }, [props.match.params, dispatch])
+    }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
 
     const products = useLiveQuery(() => db.products.toArray())
     const uoms = useLiveQuery(() => db.uoms.where({ product: state.items.variable.values.product.toString() }).toArray())
@@ -238,7 +252,7 @@ function Component(props) {
         }
     }
 
-    return iff(state.mode === 'create',
+    return iff(true,
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
