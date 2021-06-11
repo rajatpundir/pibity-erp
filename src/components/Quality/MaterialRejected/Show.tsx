@@ -8,7 +8,7 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { PurchaseInvoice, PurchaseInvoiceItem, MaterialRejectionSlip, MaterialRejectionSlipItemVariable, MaterialRejectionSlipVariable } from '../../../main/variables'
+import { PurchaseInvoice, PurchaseInvoiceItem, MaterialRejectionSlip, MaterialRejectionSlipItemVariable, MaterialRejectionSlipVariable, PurchaseInvoiceItemVariable, PurchaseInvoiceVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
@@ -18,7 +18,7 @@ import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { DiffRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow } from '../../../main/rows'
+import { DiffRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow } from '../../../main/rows'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -180,9 +180,19 @@ function Component(props) {
         }
         setVariable()
     }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
-    
-    const purchaseInvoices = useLiveQuery(() => db.purchaseInvoices.toArray())
-    const items = useLiveQuery(() => db.purchaseInvoiceItems.where({ purchaseInvoice: state.variable.values.purchaseInvoice.toString() }).toArray())
+
+    const rows = useLiveQuery(() => db.purchaseInvoices.toArray())?.map(x => PurchaseInvoiceRow.toVariable(x))
+    var purchaseInvoices = HashSet.of<Immutable<PurchaseInvoiceVariable>>().addAll(rows ? rows : [])     
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        purchaseInvoices = purchaseInvoices.filter(x => !diff.variables.PurchaseInvoice.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.PurchaseInvoice.replace)
+    })
+
+    const itemRows = useLiveQuery(() => db.purchaseInvoiceItems.where({ purchaseInvoice: state.variable.values.purchaseInvoice.toString() }).toArray())?.map(x => PurchaseInvoiceItemRow.toVariable(x))
+    var items = HashSet.of<Immutable<PurchaseInvoiceItemVariable>>().addAll(itemRows ? itemRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        items = items.filter(x => !diff.variables.PurchaseInvoiceItem.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.PurchaseInvoiceItem.replace)
+        items = items.filter(x => x.values.purchaseInvoice.toString() === state.variable.values.purchaseInvoice.toString())
+    })
 
     const materialRejectionSlip = types['MaterialRejectionSlip']
     const item = types['MaterialRejectionSlipItem']
@@ -233,7 +243,7 @@ function Component(props) {
         }
         return fx
     }
-    
+
     const saveVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createMaterialRejectionSlip, {
             purchaseInvoice: state.variable.values.purchaseInvoice,
@@ -245,9 +255,9 @@ function Component(props) {
             })
         })
         console.log(result, symbolFlag)
-       if (symbolFlag) {
-    db.diffs.put(diff.toRow())
-}
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
     }
 
     return iff(true,
@@ -288,7 +298,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.purchaseInvoice.toString()} name='purchaseInvoice'>
                                     <option value='' selected disabled hidden>Select item</option>
-                                    {(purchaseInvoices ? purchaseInvoices : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {purchaseInvoices.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.purchaseInvoice.toString()}</div>
                             )
@@ -318,7 +328,7 @@ function Component(props) {
                                         <Label>{item.keys.purchaseInvoiceItem.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.purchaseInvoiceItem.toString()} name='purchaseInvoiceItem'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                           {(items ? items : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                            {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>

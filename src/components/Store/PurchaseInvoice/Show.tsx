@@ -8,7 +8,7 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItemVariable, PurchaseInvoiceVariable } from '../../../main/variables'
+import { PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItemVariable, PurchaseInvoiceVariable, PurchaseOrderVariable, PurchaseOrderItemVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
@@ -18,7 +18,7 @@ import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { DiffRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow } from '../../../main/rows'
+import { DiffRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow, PurchaseOrderItemRow, PurchaseOrderRow } from '../../../main/rows'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -182,9 +182,20 @@ function Component(props) {
         setVariable()
     }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
 
-    const purchaseOrders = useLiveQuery(() => db.purchaseOrders.toArray())
-    const items = useLiveQuery(() => db.purchaseOrderItems.where({ purchaseOrder: state.variable.values.purchaseOrder.toString() }).toArray())
-  
+    
+    const rows = useLiveQuery(() => db.purchaseOrders.toArray())?.map(x => PurchaseOrderRow.toVariable(x))
+    var purchaseOrders = HashSet.of<Immutable<PurchaseOrderVariable>>().addAll(rows ? rows : [])   
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        purchaseOrders = purchaseOrders.filter(x => !diff.variables.PurchaseOrder.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.PurchaseOrder.replace)
+    })
+
+    const itemRows = useLiveQuery(() => db.purchaseOrderItems.where({ purchaseOrder: state.variable.values.purchaseOrder.toString() }).toArray())?.map(x => PurchaseOrderItemRow.toVariable(x))
+    var items = HashSet.of<Immutable<PurchaseOrderItemVariable>>().addAll(itemRows ? itemRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        items = items.filter(x => !diff.variables.PurchaseOrderItem.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.PurchaseOrderItem.replace)
+        items = items.filter(x => x.values.purchaseOrder.toString() === state.variable.values.purchaseOrder.toString())
+    })
+
     const purchaseInvoice = types['PurchaseInvoice']
     const item = types['PurchaseInvoiceItem']
 
@@ -288,7 +299,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.purchaseOrder.toString()} name='purchaseOrder'>
                                     <option value='' selected disabled hidden>Select item</option>
-                                    {(purchaseOrders ? purchaseOrders : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {purchaseOrders.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.purchaseOrder.toString()}</div>
                             )
@@ -318,7 +329,7 @@ function Component(props) {
                                         <Label>{item.keys.purchaseOrderItem.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.purchaseOrderItem.toString()} name='purchaseOrderItem'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                           {(items ? items : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                           {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>

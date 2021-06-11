@@ -8,7 +8,7 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialReturnSlipItemVariable, MaterialReturnSlipVariable } from '../../../main/variables'
+import { MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialRejectionSlipItemVariable, MaterialRejectionSlipVariable, MaterialReturnSlip, MaterialReturnSlipItemVariable, MaterialReturnSlipVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
@@ -18,7 +18,7 @@ import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { DiffRow, MaterialReturnSlipItemRow, MaterialReturnSlipRow } from '../../../main/rows'
+import { DiffRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow, MaterialReturnSlipItemRow, MaterialReturnSlipRow } from '../../../main/rows'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -152,6 +152,7 @@ function Component(props) {
     }
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
+    
     useEffect(() => {
         async function setVariable() {
             if (props.match.params[0]) {
@@ -180,8 +181,21 @@ function Component(props) {
         setVariable()
     }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
 
-    const materialRejectionSlips = useLiveQuery(() => db.materialRejectionSlips.toArray())
-    const items = useLiveQuery(() => db.materialRejectionSlipItems.where({ materialRejectionSlip: state.variable.values.materialRejectionSlip.toString() }).toArray())
+    const rows = useLiveQuery(() => db.materialRejectionSlips.toArray())?.map(x => MaterialRejectionSlipRow.toVariable(x))
+    var materialRejectionSlips = HashSet.of<Immutable<MaterialRejectionSlipVariable>>().addAll(rows ? rows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        materialRejectionSlips = materialRejectionSlips.filter(x => !diff.variables.MaterialRejectionSlip.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.MaterialRejectionSlip.replace)
+    })
+
+    const itemRows = useLiveQuery(() => db.materialRejectionSlipItems.where({ materialRejectionSlip: state.variable.values.materialRejectionSlip.toString() }).toArray())?.map(x => MaterialRejectionSlipItemRow.toVariable(x))
+    var items = HashSet.of<Immutable<MaterialRejectionSlipItemVariable>>().addAll(itemRows ? itemRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        items = items.filter(x => !diff.variables.MaterialRejectionSlipItem.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.MaterialRejectionSlipItem.replace)
+        items = items.filter(x => x.values.materialRejectionSlip.toString() === state.variable.values.materialRejectionSlip.toString())
+    })
+
+    // const materialRejectionSlips = useLiveQuery(() => db.materialRejectionSlips.toArray())
+    // const items = useLiveQuery(() => db.materialRejectionSlipItems.where({ materialRejectionSlip: state.variable.values.materialRejectionSlip.toString() }).toArray())
 
     const materialReturnSlip = types['MaterialReturnSlip']
     const item = types['MaterialReturnSlipItem']
@@ -249,7 +263,7 @@ function Component(props) {
         }
     }
 
-    return iff(state.mode === 'create',
+    return iff(true,
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
@@ -287,7 +301,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.materialRejectionSlip.toString()} name='materialRejectionSlip'>
                                     <option value='' selected disabled hidden>Select Material Rejection Slip</option>
-                                    {(materialRejectionSlips ? materialRejectionSlips : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {materialRejectionSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.materialRejectionSlip.toString()}</div>
                             )
@@ -317,7 +331,7 @@ function Component(props) {
                                         <Label>{item.keys.materialRejectionSlipItem.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.materialRejectionSlipItem.toString()} name='materialRejectionSlipItem'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                            {(items ? items : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                            {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>

@@ -4,7 +4,7 @@ import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
-import { TransferMaterialSlip, WarehouseAcceptanceSlipVariable } from '../../../main/variables'
+import { TransferMaterialSlip, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
@@ -14,7 +14,7 @@ import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
 import { HashSet } from 'prelude-ts'
-import { WarehouseAcceptanceSlipRow, DiffRow } from '../../../main/rows'
+import { WarehouseAcceptanceSlipRow, DiffRow, TransferMaterialSlipRow } from '../../../main/rows'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -102,7 +102,11 @@ function Component(props) {
         setVariable()
     }, [state.variable.typeName, props.match.params, dispatch])
 
-    const transferMaterialSlips = useLiveQuery(() => db.transferMaterialSlips.toArray())
+    const rows = useLiveQuery(() => db.transferMaterialSlips.toArray())?.map(x => TransferMaterialSlipRow.toVariable(x))
+    var transferMaterialSlips = HashSet.of<Immutable<TransferMaterialSlipVariable>>().addAll(rows ? rows : [])     
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        transferMaterialSlips = transferMaterialSlips.filter(x => !diff.variables.TransferMaterialSlip.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.TransferMaterialSlip.replace)
+    })   
 
     const warehouseAcceptanceSlip = types['WarehouseAcceptanceSlip']
 
@@ -172,7 +176,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.transferMaterialSlip.toString()} name='transferMaterialSlip'>
                                     <option value='' selected disabled hidden>Select item</option>
-                                    {(transferMaterialSlips ? transferMaterialSlips : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {transferMaterialSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.transferMaterialSlip.toString()}</div>
                             )

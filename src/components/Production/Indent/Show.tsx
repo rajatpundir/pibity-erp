@@ -170,7 +170,6 @@ function Component(props) {
         setVariable()
     }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
 
-
     const rows = useLiveQuery(() => db.products.toArray())?.map(x => ProductRow.toVariable(x))
     var products = HashSet.of<Immutable<ProductVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {

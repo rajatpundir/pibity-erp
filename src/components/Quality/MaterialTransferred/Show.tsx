@@ -4,7 +4,7 @@ import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
-import { ProductionPreparationSlip, TransferMaterialSlipVariable } from '../../../main/variables'
+import { ProductionPreparationSlip, ProductionPreparationSlipVariable, TransferMaterialSlipVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
@@ -14,7 +14,7 @@ import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
 import { HashSet } from 'prelude-ts'
-import { TransferMaterialSlipRow, DiffRow } from '../../../main/rows'
+import { TransferMaterialSlipRow, DiffRow, ProductionPreparationSlipRow } from '../../../main/rows'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -101,7 +101,11 @@ function Component(props) {
         setVariable()
     }, [state.variable.typeName, props.match.params, dispatch])
 
-    const productionPreparationSlips = useLiveQuery(() => db.productionPreparationSlips.toArray())
+    const rows = useLiveQuery(() => db.productionPreparationSlips.toArray())?.map(x => ProductionPreparationSlipRow.toVariable(x))
+    var productionPreparationSlips = HashSet.of<Immutable<ProductionPreparationSlipVariable>>().addAll(rows ? rows : [])     
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        productionPreparationSlips = productionPreparationSlips.filter(x => !diff.variables.ProductionPreparationSlip.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.ProductionPreparationSlip.replace)
+    })
     
     const transferMaterialSlip = types['TransferMaterialSlip']
 
@@ -171,7 +175,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.productionPreparationSlip.toString()} name='productionPreparationSlip'>
                                     <option value='' selected disabled hidden>Select item</option>
-                                    {(productionPreparationSlips ? productionPreparationSlips : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {productionPreparationSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.productionPreparationSlip.toString()}</div>
                             )
