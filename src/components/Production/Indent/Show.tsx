@@ -162,7 +162,7 @@ function Component(props) {
                     diffs?.forEach(diff => {
                         composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
                     })
-                    const items = composedItemVariables.filter(variable => variable.values.product.toString() === props.match.params[0])
+                    const items = composedItemVariables.filter(variable => variable.values.indent.toString() === props.match.params[0])
                     dispatch(['replace', 'items', items as HashSet<IndentItemVariable>])
                 }
             }
