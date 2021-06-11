@@ -8,7 +8,7 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { Indent, IndentItem, Quotation, QuotationItemVariable, QuotationVariable, Supplier } from '../../../main/variables'
+import { Indent, IndentItem, IndentItemVariable, IndentVariable, Quotation, QuotationItemVariable, QuotationVariable, Supplier, SupplierVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
@@ -18,7 +18,7 @@ import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { DiffRow, QuotationItemRow, QuotationRow } from '../../../main/rows'
+import { DiffRow, IndentItemRow, IndentRow, QuotationItemRow, QuotationRow, SupplierRow } from '../../../main/rows'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -187,9 +187,24 @@ function Component(props) {
         setVariable()
     }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
 
-    const indents = useLiveQuery(() => db.indents.toArray())
-    const suppliers = useLiveQuery(() => db.suppliers.toArray())
-    const items = useLiveQuery(() => db.quotationItems.where({ indent: state.variable.values.indent.toString() }).toArray())
+    const rows = useLiveQuery(() => db.indents.toArray())?.map(x => IndentRow.toVariable(x))
+    var indents = HashSet.of<Immutable<IndentVariable>>().addAll(rows ? rows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        indents = indents.filter(x => !diff.variables.Indent.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.Indent.replace)
+    })
+
+    const itemRows = useLiveQuery(() => db.indentItems.where({ indent: state.variable.values.indent.toString() }).toArray())?.map(x => IndentItemRow.toVariable(x))
+    var items = HashSet.of<Immutable<IndentItemVariable>>().addAll(itemRows ? itemRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        items = items.filter(x => !diff.variables.IndentItem.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.IndentItem.replace)
+        items = items.filter(x => x.values.indent.toString() === state.variable.values.indent.toString())
+    })
+
+    const supplierRows = useLiveQuery(() => db.suppliers.toArray())?.map(x => SupplierRow.toVariable(x))
+    var suppliers = HashSet.of<Immutable<SupplierVariable>>().addAll(supplierRows ? supplierRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        suppliers = suppliers.filter(x => !diff.variables.Supplier.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.Supplier.replace)
+    })
 
     const quotation = types['Quotation']
     const item = types['QuotationItem']
@@ -302,7 +317,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.indent.toString()} name='indent'>
                                     <option value='' selected disabled hidden>Select Indent</option>
-                                    {(indents ? indents : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {indents.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.indent.toString()}</div>
                             )
@@ -314,7 +329,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.supplier.toString()} name='supplier'>
                                     <option value='' selected disabled hidden>Select Supplier</option>
-                                    {(suppliers ? suppliers : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {suppliers.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.supplier.toString()}</div>
                             )
@@ -344,7 +359,7 @@ function Component(props) {
                                         <Label>{item.keys.indentItem.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.indentItem.toString()} name='indentItem'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                            {(items ? items : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                            {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>
