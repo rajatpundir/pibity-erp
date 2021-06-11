@@ -18,7 +18,7 @@ import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { MaterialRejectionSlipItemRow } from '../../../main/rows'
+import { DiffRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow } from '../../../main/rows'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -51,7 +51,7 @@ export type Action =
     | ['items', 'addVariable']
 
     | ['replace', 'variable', MaterialRejectionSlipVariable]
-    | ['replace', 'items', Array<MaterialRejectionSlipItemVariable>]
+    | ['replace', 'items', HashSet<MaterialRejectionSlipItemVariable>]
 
 function Component(props) {
 
@@ -157,8 +157,8 @@ function Component(props) {
         async function setVariable() {
             if (props.match.params[0]) {
                 console.log(props.match.params[0])
-                const rows = await db.products.toArray()
-                var composedVariables = HashSet.of<Immutable<ProductVariable>>().addAll(rows ? rows.map(x => ProductRow.toVariable(x)) : [])
+                const rows = await db.materialRejectionSlips.toArray()
+                var composedVariables = HashSet.of<Immutable<MaterialRejectionSlipVariable>>().addAll(rows ? rows.map(x => MaterialRejectionSlipRow.toVariable(x)) : [])
                 const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
                 diffs?.forEach(diff => {
                     composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
@@ -166,20 +166,20 @@ function Component(props) {
                 const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
                 if (variables.length() === 1) {
                     const variable = variables.toArray()[0]
-                    dispatch(['replace', 'variable', variable as ProductVariable])
-                    const itemRows = await db.uoms.toArray()
-                    var composedItemVariables = HashSet.of<Immutable<UOMVariable>>().addAll(itemRows ? itemRows.map(x => UOMRow.toVariable(x)) : [])
+                    dispatch(['replace', 'variable', variable as MaterialRejectionSlipVariable])
+                    const itemRows = await db.materialRejectionSlipItems.toArray()
+                    var composedItemVariables = HashSet.of<Immutable<MaterialRejectionSlipItemVariable>>().addAll(itemRows ? itemRows.map(x => MaterialRejectionSlipItemRow.toVariable(x)) : [])
                     diffs?.forEach(diff => {
-                        composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.uoms.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.uoms.variable.typeName].replace)
+                        composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
                     })
                     console.log('cc', composedItemVariables)
-                    const items = composedItemVariables.filter(variable => variable.values.product.toString() === props.match.params[0])
-                    dispatch(['replace', 'uoms', items as HashSet<UOMVariable>])
+                    const items = composedItemVariables.filter(variable => variable.values.materialRejectionSlip.toString() === props.match.params[0])
+                    dispatch(['replace', 'items', items as HashSet<MaterialRejectionSlipItemVariable>])
                 }
             }
         }
         setVariable()
-    }, [state.variable.typeName, state.uoms.variable.typeName, props.match.params, dispatch])
+    }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
     
     const purchaseInvoices = useLiveQuery(() => db.purchaseInvoices.toArray())
     const items = useLiveQuery(() => db.purchaseInvoiceItems.where({ purchaseInvoice: state.variable.values.purchaseInvoice.toString() }).toArray())
