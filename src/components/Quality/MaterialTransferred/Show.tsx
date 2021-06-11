@@ -83,7 +83,6 @@ function Component(props) {
     useEffect(() => {
         async function setVariable() {
             if (props.match.params[0]) {
-                console.log(props.match.params[0])
                 const rows = await db.transferMaterialSlips.toArray()
                 var composedVariables = HashSet.of<Immutable<TransferMaterialSlipVariable>>().addAll(rows ? rows.map(x => TransferMaterialSlipRow.toVariable(x)) : [])
                 const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))

@@ -84,7 +84,6 @@ function Component(props) {
     useEffect(() => {
         async function setVariable() {
             if (props.match.params[0]) {
-                console.log(props.match.params[0])
                 const rows = await db.warehouseAcceptanceSlips.toArray()
                 var composedVariables = HashSet.of<Immutable<WarehouseAcceptanceSlipVariable>>().addAll(rows ? rows.map(x => WarehouseAcceptanceSlipRow.toVariable(x)) : [])
                 const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))

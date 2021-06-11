@@ -175,7 +175,6 @@ function Component(props) {
     useEffect(() => {
         async function setVariable() {
             if (props.match.params[0]) {
-                console.log(props.match.params[0])
                 const rows = await db.products.toArray()
                 var composedVariables = HashSet.of<Immutable<ProductVariable>>().addAll(rows ? rows.map(x => ProductRow.toVariable(x)) : [])
                 const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
@@ -191,7 +190,6 @@ function Component(props) {
                     diffs?.forEach(diff => {
                         composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.uoms.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.uoms.variable.typeName].replace)
                     })
-                    console.log('cc', composedItemVariables)
                     const items = composedItemVariables.filter(variable => variable.values.product.toString() === props.match.params[0])
                     dispatch(['replace', 'uoms', items as HashSet<UOMVariable>])
                 }
@@ -273,7 +271,7 @@ function Component(props) {
                 }
             })
         })
-        console.log('%%$$', result, symbolFlag, diff)
+        console.log(result, symbolFlag, diff)
         if (symbolFlag) {
             db.diffs.put(diff.toRow())
         }

@@ -155,7 +155,6 @@ function Component(props) {
     useEffect(() => {
         async function setVariable() {
             if (props.match.params[0]) {
-                console.log(props.match.params[0])
                 const rows = await db.materialRejectionSlips.toArray()
                 var composedVariables = HashSet.of<Immutable<MaterialRejectionSlipVariable>>().addAll(rows ? rows.map(x => MaterialRejectionSlipRow.toVariable(x)) : [])
                 const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
@@ -171,7 +170,6 @@ function Component(props) {
                     diffs?.forEach(diff => {
                         composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
                     })
-                    console.log('cc', composedItemVariables)
                     const items = composedItemVariables.filter(variable => variable.values.materialRejectionSlip.toString() === props.match.params[0])
                     dispatch(['replace', 'items', items as HashSet<MaterialRejectionSlipItemVariable>])
                 }

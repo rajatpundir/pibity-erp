@@ -84,7 +84,6 @@ function Component(props) {
     useEffect(() => {
         async function setVariable() {
             if (props.match.params[0]) {
-                console.log(props.match.params[0])
                 const rows = await db.suppliers.toArray()
                 var composedVariables = HashSet.of<Immutable<SupplierVariable>>().addAll(rows ? rows.map(x => SupplierRow.toVariable(x)) : [])
                 const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
