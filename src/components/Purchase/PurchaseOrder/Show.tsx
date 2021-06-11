@@ -8,7 +8,7 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItemVariable, PurchaseOrderVariable } from '../../../main/variables'
+import { Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItemVariable, PurchaseOrderVariable, QuotationItemVariable, QuotationVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
@@ -18,7 +18,7 @@ import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { PurchaseOrderItemRow } from '../../../main/rows'
+import { DiffRow, PurchaseOrderItemRow, PurchaseOrderRow, QuotationItemRow, QuotationRow } from '../../../main/rows'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -51,7 +51,7 @@ export type Action =
     | ['items', 'addVariable']
 
     | ['replace', 'variable', PurchaseOrderVariable]
-    | ['replace', 'items', Array<PurchaseOrderItemVariable>]
+    | ['replace', 'items', HashSet<PurchaseOrderItemVariable>]
 
 function Component(props) {
 
@@ -143,7 +143,7 @@ function Component(props) {
                         break
                     }
                     case 'items': {
-                        state.items.variables = HashSet.of<PurchaseOrderItemVariable>().addAll(action[2])
+                        state.items.variables = action[2]
                         break
                     }
                 }
@@ -156,20 +156,46 @@ function Component(props) {
 
     useEffect(() => {
         async function setVariable() {
-            if (props.match.params[0]) {
-                const variable = await getVariable('PurchaseOrder', props.match.params[0])
-                const items = await db.purchaseOrderItems.where({ purchaseOrder: props.match.params[0] }).toArray()
-                if (variable !== undefined) {
+            if (props.match.params[0]) {               
+                const rows = await db.purchaseOrders.toArray()
+                var composedVariables = HashSet.of<Immutable<PurchaseOrderVariable>>().addAll(rows ? rows.map(x => PurchaseOrderRow.toVariable(x)) : [])
+                const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
+                diffs?.forEach(diff => {
+                    composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                })
+                const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
+                if (variables.length() === 1) {
+                    const variable = variables.toArray()[0]
                     dispatch(['replace', 'variable', variable as PurchaseOrderVariable])
-                    dispatch(['replace', 'items', items.map(x => PurchaseOrderItemRow.toVariable(x))])
+                    const itemRows = await db.purchaseOrderItems.toArray()
+                    var composedItemVariables = HashSet.of<Immutable<PurchaseOrderItemVariable>>().addAll(itemRows ? itemRows.map(x => PurchaseOrderItemRow.toVariable(x)) : [])
+                    diffs?.forEach(diff => {
+                        composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    })
+                    console.log('cc', composedItemVariables)
+                    const items = composedItemVariables.filter(variable => variable.values.purchaseOrder.toString() === props.match.params[0])
+                    dispatch(['replace', 'items', items as HashSet<PurchaseOrderItemVariable>])
                 }
             }
         }
         setVariable()
-    }, [props.match.params, dispatch])
+    }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
 
-    const quotations = useLiveQuery(() => db.quotations.toArray())
-    const items = useLiveQuery(() => db.quotationItems.where({ quotation: state.variable.values.quotation.toString() }).toArray())
+    const rows = useLiveQuery(() => db.quotations.toArray())?.map(x => QuotationRow.toVariable(x))
+    var quotations = HashSet.of<Immutable<QuotationVariable>>().addAll(rows ? rows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        quotations = quotations.filter(x => !diff.variables.Quotation.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.Quotation.replace)
+    })
+
+    const itemRows = useLiveQuery(() => db.quotationItems.where({ quotation: state.variable.values.quotation.toString() }).toArray())?.map(x => QuotationItemRow.toVariable(x))
+    var items = HashSet.of<Immutable<QuotationItemVariable>>().addAll(itemRows ? itemRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        items = items.filter(x => !diff.variables.IndentItem.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.QuotationItem.replace)
+        items = items.filter(x => x.values.quotation.toString() === state.variable.values.quotation.toString())
+    })
+
+    // const quotations = useLiveQuery(() => db.quotations.toArray())
+    // const items = useLiveQuery(() => db.quotationItems.where({ quotation: state.variable.values.quotation.toString() }).toArray())
 
     const purchaseOrder = types['PurchaseOrder']
     const item = types['PurchaseOrderItem']
@@ -237,7 +263,7 @@ function Component(props) {
         }
     }
 
-    return iff(state.mode === 'create',
+    return iff(true,
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
@@ -275,7 +301,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.quotation.toString()} name='quotation'>
                                     <option value='' selected disabled hidden>Select Quotation</option>
-                                    {(quotations ? quotations : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {quotations.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.quotation.toString()}</div>
                             )
@@ -305,7 +331,7 @@ function Component(props) {
                                         <Label>{item.keys.quotationItem.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.quotationItem.toString()} name='quotationItem'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                            {(items ? items : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                            {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>

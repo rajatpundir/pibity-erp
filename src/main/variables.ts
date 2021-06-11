@@ -156,7 +156,7 @@ export class UOMVariable {
 
     constructor(variableName: string, values: { product: Product, name: Text, conversionRate: Decimal }) {
         this.variableName = new UOM(variableName)
-        this.values = values
+        this.values = values       
     }
 
     equals(other: UOMVariable): boolean {
@@ -1663,6 +1663,7 @@ export class WarehouseAcceptanceSlipVariable {
 }
 
 export function replaceVariable(typeName: NonPrimitiveType, variableName: string, values: object) {
+    console.log(typeName, variableName, values )
     switch (typeName) {
         case 'Product': {
             return new ProductVariable(variableName, {
@@ -1672,7 +1673,10 @@ export function replaceVariable(typeName: NonPrimitiveType, variableName: string
                 producable: Boolean(values['producable']).valueOf()
             })
         }
-        case 'UOM': {
+        case 'UOM': {          
+            console.log("values....", values, values['product'] )
+            console.log(Object.values(values))
+            console.log(Object.values(values)[2])
             return new UOMVariable(variableName, {
                 product: new Product(values['product']),
                 name: String(values['name']),

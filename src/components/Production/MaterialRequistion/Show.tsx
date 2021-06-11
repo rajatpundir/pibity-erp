@@ -8,7 +8,7 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRequistionSlip, MaterialRequistionSlipItemVariable, MaterialRequistionSlipVariable } from '../../../main/variables'
+import { MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialApprovalSlipItemVariable, MaterialApprovalSlipVariable, MaterialRequistionSlip, MaterialRequistionSlipItemVariable, MaterialRequistionSlipVariable, UOMVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
@@ -18,7 +18,7 @@ import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { MaterialRequistionSlipItemRow } from '../../../main/rows'
+import { DiffRow, MaterialApprovalSlipItemRow, MaterialApprovalSlipRow, MaterialRequistionSlipItemRow, MaterialRequistionSlipRow, UOMRow } from '../../../main/rows'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -50,7 +50,7 @@ export type Action =
     | ['items', 'addVariable']
 
     | ['replace', 'variable', MaterialRequistionSlipVariable]
-    | ['replace', 'items', Array<MaterialRequistionSlipItemVariable>]
+    | ['replace', 'items', HashSet<MaterialRequistionSlipItemVariable>]
 
 function Component(props) {
 
@@ -142,7 +142,7 @@ function Component(props) {
                         break
                     }
                     case 'items': {
-                        state.items.variables = HashSet.of<MaterialRequistionSlipItemVariable>().addAll(action[2])
+                        state.items.variables = action[2]
                         break
                     }
                 }
@@ -152,23 +152,45 @@ function Component(props) {
     }
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-
+    
     useEffect(() => {
         async function setVariable() {
-            if (props.match.params[0]) {
-                const variable = await getVariable('MaterialRequistionSlip', props.match.params[0])
-                const items = await db.materialRequistionSlipItems.where({ aaterialRequistionSlip: props.match.params[0] }).toArray()
-                if (variable !== undefined) {
+            if (props.match.params[0]) {               
+                const rows = await db.materialRequistionSlips.toArray()
+                var composedVariables = HashSet.of<Immutable<MaterialRequistionSlipVariable>>().addAll(rows ? rows.map(x => MaterialRequistionSlipRow.toVariable(x)) : [])
+                const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
+                diffs?.forEach(diff => {
+                    composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                })
+                const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
+                if (variables.length() === 1) {
+                    const variable = variables.toArray()[0]
                     dispatch(['replace', 'variable', variable as MaterialRequistionSlipVariable])
-                    dispatch(['replace', 'items', items.map(x => MaterialRequistionSlipItemRow.toVariable(x))])
+                    const itemRows = await db.materialRequistionSlipItems.toArray()
+                    var composedItemVariables = HashSet.of<Immutable<MaterialRequistionSlipItemVariable>>().addAll(itemRows ? itemRows.map(x => MaterialRequistionSlipItemRow.toVariable(x)) : [])
+                    diffs?.forEach(diff => {
+                        composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    })                   
+                    const items = composedItemVariables.filter(variable => variable.values.materialRequistionSlip.toString() === props.match.params[0])
+                    dispatch(['replace', 'items', items as HashSet<MaterialRequistionSlipItemVariable>])
                 }
             }
         }
         setVariable()
-    }, [props.match.params, dispatch])
+    }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
 
-    const materialApprovalSlips = useLiveQuery(() => db.materialApprovalSlips.toArray())
-    const items = useLiveQuery(() => db.materialApprovalSlipItems.where({ materialApprovalSlip: state.variable.values.materialApprovalSlip.toString() }).toArray())
+    const rows = useLiveQuery(() => db.materialApprovalSlips.toArray())?.map(x => MaterialApprovalSlipRow.toVariable(x))
+    var materialApprovalSlips = HashSet.of<Immutable<MaterialApprovalSlipVariable>>().addAll(rows ? rows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        materialApprovalSlips = materialApprovalSlips.filter(x => !diff.variables.MaterialApprovalSlip.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.MaterialApprovalSlip.replace)
+    })
+
+    const itemRows = useLiveQuery(() => db.materialApprovalSlipItems.where({ materialApprovalSlip: state.variable.values.materialApprovalSlip.toString() }).toArray())?.map(x => MaterialApprovalSlipItemRow.toVariable(x))
+    var items = HashSet.of<Immutable<MaterialApprovalSlipItemVariable>>().addAll(itemRows ? itemRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        items = items.filter(x => !diff.variables.MaterialApprovalSlipItem.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.MaterialApprovalSlipItem.replace)
+        items = items.filter(x => x.values.materialApprovalSlip.toString() === state.variable.values.materialApprovalSlip.toString())
+    })
 
     const materialRequistionSlip = types['MaterialRequistionSlip']
     const item = types['MaterialRequistionSlipItem']
@@ -236,7 +258,7 @@ function Component(props) {
         }
     }
 
-    return iff(state.mode === 'create',
+    return iff(true,
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
@@ -274,7 +296,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.materialApprovalSlip.toString()} name='materialApprovalSlip'>
                                     <option value='' selected disabled hidden>Select Material Approval Slip</option>
-                                    {(materialApprovalSlips ? materialApprovalSlips : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {materialApprovalSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.materialApprovalSlip.toString()}</div>
                             )
@@ -304,7 +326,7 @@ function Component(props) {
                                         <Label>{item.keys.materialApprovalSlipItem.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.materialApprovalSlipItem.toString()} name='materialApprovalSlipItem'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                            {(items ? items : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                            {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>

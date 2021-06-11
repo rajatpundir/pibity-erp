@@ -106,9 +106,9 @@ export function isNonPrimitive(typeName: string): typeName is NonPrimitiveType {
 }
 
 export async function executeMapper(mapper: Mapper, args: MapperArgs, overlay: Vector<DiffVariable>): Promise<[Array<object>, boolean, DiffVariable]> {
+    console.log(mapper, args)
     const fx = functions[mapper.functionName]
     const fi = fx.inputs[mapper.functionInput]
-    console.log(args, '--mapper--', overlay)
     var result = Vector.of<object>()
     var diffs = Vector.of<DiffVariable>()
     if (isNonPrimitive(fi.type)) {
@@ -175,7 +175,6 @@ export async function executeMapper(mapper: Mapper, args: MapperArgs, overlay: V
             for (const key in args.args) {
                 const arg = args.args[key]
                 const [functionResult, symbolFlag, diff] = await executeFunction(fx, arg, overlay)
-                console.log('$$', functionResult, symbolFlag, diff)
                 if (!symbolFlag) {
                     return [result.toArray(), false, mergeDiffs(diffs.toArray())]
                 }

@@ -4,7 +4,7 @@ import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
-import { ProductionPreparationSlip, TransferMaterialSlipVariable } from '../../../main/variables'
+import { ProductionPreparationSlip, ProductionPreparationSlipVariable, TransferMaterialSlipVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
@@ -13,6 +13,8 @@ import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
+import { HashSet } from 'prelude-ts'
+import { TransferMaterialSlipRow, DiffRow, ProductionPreparationSlipRow } from '../../../main/rows'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -82,16 +84,28 @@ function Component(props) {
     useEffect(() => {
         async function setVariable() {
             if (props.match.params[0]) {
-                const variable = await getVariable('TransferMaterialSlip', props.match.params[0])
-                if (variable !== undefined) {
-                    dispatch(['replace', 'variable', variable as TransferMaterialSlipVariable])
+                console.log(props.match.params[0])
+                const rows = await db.transferMaterialSlips.toArray()
+                var composedVariables = HashSet.of<Immutable<TransferMaterialSlipVariable>>().addAll(rows ? rows.map(x => TransferMaterialSlipRow.toVariable(x)) : [])
+                const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
+                diffs?.forEach(diff => {
+                    composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                })
+                const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
+                if (variables.length() === 1) {
+                    const variable = variables.toArray()[0]
+                    dispatch(['replace', 'variable', variable as TransferMaterialSlipVariable])                   
                 }
             }
         }
         setVariable()
-    }, [props.match.params, dispatch])
+    }, [state.variable.typeName, props.match.params, dispatch])
 
-    const productionPreparationSlips = useLiveQuery(() => db.productionPreparationSlips.toArray())
+    const rows = useLiveQuery(() => db.productionPreparationSlips.toArray())?.map(x => ProductionPreparationSlipRow.toVariable(x))
+    var productionPreparationSlips = HashSet.of<Immutable<ProductionPreparationSlipVariable>>().addAll(rows ? rows : [])     
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        productionPreparationSlips = productionPreparationSlips.filter(x => !diff.variables.ProductionPreparationSlip.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.ProductionPreparationSlip.replace)
+    })
     
     const transferMaterialSlip = types['TransferMaterialSlip']
 
@@ -123,7 +137,7 @@ function Component(props) {
         }
     }
 
-    return iff(state.mode === 'create',
+    return iff(true,
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
@@ -161,7 +175,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.productionPreparationSlip.toString()} name='productionPreparationSlip'>
                                     <option value='' selected disabled hidden>Select item</option>
-                                    {(productionPreparationSlips ? productionPreparationSlips : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {productionPreparationSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.productionPreparationSlip.toString()}</div>
                             )

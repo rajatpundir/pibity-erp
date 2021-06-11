@@ -600,515 +600,737 @@ export function getRemoveVariableDiff(typeName: NonPrimitiveType, variableName: 
 
 export async function getVariable(typeName: NonPrimitiveType, variableName: string, overlay: Vector<DiffVariable> = Vector.of()): Promise<Variable | undefined> {
     const diffs: Array<DiffVariable> = (await db.diffs.orderBy('id').reverse().toArray()).map(x => DiffRow.toVariable(x))
-    return when(typeName, {
-        'Product': async () => {
-            console.log('&', typeName, variableName)
-            overlay.reverse().forEach(diff => {
-                console.log('&&&&&&', diff)
-                diff.variables.Product.replace.forEach(variable => {
-                    console.log('&$#', variable)
+    switch (typeName) {
+        case 'Product': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.Product.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        console.log('&&&&&&1', typeName, variableName, variable)
-                        return variable
+                        return variable as Variable
                     }
-                })
+                }
                 if (diff.variables.Product.remove.anyMatch(x => x.toString() === variableName)) {
-                    console.log('&&&&&&2', typeName, variableName, undefined)
                     return undefined
                 }
-            })
-            diffs.forEach(diff => {
-                console.log('&&&&&&', diff)
-                diff.variables.Product.replace.forEach(variable => {
-                    console.log('&$#', variable)
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.Product.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        console.log('&&&&&&1', typeName, variableName, variable)
-                        return variable
+                        return variable as Variable
                     }
-                })
+                }
                 if (diff.variables.Product.remove.anyMatch(x => x.toString() === variableName)) {
-                    console.log('&&&&&&2', typeName, variableName, undefined)
                     return undefined
                 }
-            })
+            }
             const row = await db.products.get(variableName)
             if (row !== undefined) {
-                console.log('&&&&&&3', typeName, variableName, row)
                 return ProductRow.toVariable(row) as Variable
-            } else {
-                console.log('&&&&&&4', typeName, variableName, row)
-                return undefined
             }
-        },
-        'UOM': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'UOM': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.UOM.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.UOM.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.UOM.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.UOM.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.uoms.get(variableName)
             if (row !== undefined) {
-                return UOMRow.toVariable(row)
-            } else {
-                return undefined
+                return UOMRow.toVariable(row) as Variable
             }
-        },
-        'Indent': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'Indent': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.Indent.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.Indent.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.Indent.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.Indent.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.indents.get(variableName)
             if (row !== undefined) {
-                return IndentRow.toVariable(row)
-            } else {
-                return undefined
+                return IndentRow.toVariable(row) as Variable
             }
-        },
-        'IndentItem': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'IndentItem': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.IndentItem.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.IndentItem.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.IndentItem.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.IndentItem.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.indentItems.get(variableName)
             if (row !== undefined) {
-                return IndentItemRow.toVariable(row)
-            } else {
-                return undefined
+                return IndentItemRow.toVariable(row) as Variable
             }
-        },
-        'Supplier': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'Supplier': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.Supplier.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.Supplier.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.Supplier.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.Supplier.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.suppliers.get(variableName)
             if (row !== undefined) {
-                return SupplierRow.toVariable(row)
-            } else {
-                return undefined
+                return SupplierRow.toVariable(row) as Variable
             }
-        },
-        'SupplierProduct': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'SupplierProduct': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.SupplierProduct.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.SupplierProduct.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.SupplierProduct.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.SupplierProduct.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.supplierProducts.get(variableName)
             if (row !== undefined) {
-                return SupplierProductRow.toVariable(row)
-            } else {
-                return undefined
+                return SupplierProductRow.toVariable(row) as Variable
             }
-        },
-        'Quotation': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'Quotation': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.Quotation.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.Quotation.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.Quotation.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.Quotation.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.quotations.get(variableName)
             if (row !== undefined) {
-                return QuotationRow.toVariable(row)
-            } else {
-                return undefined
+                return QuotationRow.toVariable(row) as Variable
             }
-        },
-        'QuotationItem': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'QuotationItem': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.QuotationItem.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.QuotationItem.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.QuotationItem.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.QuotationItem.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.quotationItems.get(variableName)
             if (row !== undefined) {
-                return QuotationItemRow.toVariable(row)
-            } else {
-                return undefined
+                return QuotationItemRow.toVariable(row) as Variable
             }
-        },
-        'PurchaseOrder': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'PurchaseOrder': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.PurchaseOrder.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.PurchaseOrder.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.PurchaseOrder.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.PurchaseOrder.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.purchaseOrders.get(variableName)
             if (row !== undefined) {
-                return PurchaseOrderRow.toVariable(row)
-            } else {
-                return undefined
+                return PurchaseOrderRow.toVariable(row) as Variable
             }
-        },
-        'PurchaseOrderItem': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'PurchaseOrderItem': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.PurchaseOrderItem.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.PurchaseOrderItem.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.PurchaseOrderItem.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.PurchaseOrderItem.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.purchaseOrderItems.get(variableName)
             if (row !== undefined) {
-                return PurchaseOrderItemRow.toVariable(row)
-            } else {
-                return undefined
+                return PurchaseOrderItemRow.toVariable(row) as Variable
             }
-        },
-        'PurchaseInvoice': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'PurchaseInvoice': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.PurchaseInvoice.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.PurchaseInvoice.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.PurchaseInvoice.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.PurchaseInvoice.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.purchaseInvoices.get(variableName)
             if (row !== undefined) {
-                return PurchaseInvoiceRow.toVariable(row)
-            } else {
-                return undefined
+                return PurchaseInvoiceRow.toVariable(row) as Variable
             }
-        },
-        'PurchaseInvoiceItem': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'PurchaseInvoiceItem': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.PurchaseInvoiceItem.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.PurchaseInvoiceItem.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.PurchaseInvoiceItem.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.PurchaseInvoiceItem.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.purchaseInvoiceItems.get(variableName)
             if (row !== undefined) {
-                return PurchaseInvoiceItemRow.toVariable(row)
-            } else {
-                return undefined
+                return PurchaseInvoiceItemRow.toVariable(row) as Variable
             }
-        },
-        'MaterialApprovalSlip': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'MaterialApprovalSlip': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.MaterialApprovalSlip.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.MaterialApprovalSlip.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.MaterialApprovalSlip.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.MaterialApprovalSlip.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.materialApprovalSlips.get(variableName)
             if (row !== undefined) {
-                return MaterialApprovalSlipRow.toVariable(row)
-            } else {
-                return undefined
+                return MaterialApprovalSlipRow.toVariable(row) as Variable
             }
-        },
-        'MaterialApprovalSlipItem': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'MaterialApprovalSlipItem': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.MaterialApprovalSlipItem.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.MaterialApprovalSlipItem.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.MaterialApprovalSlipItem.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.MaterialApprovalSlipItem.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.materialApprovalSlipItems.get(variableName)
             if (row !== undefined) {
-                return MaterialApprovalSlipItemRow.toVariable(row)
-            } else {
-                return undefined
+                return MaterialApprovalSlipItemRow.toVariable(row) as Variable
             }
-        },
-        'MaterialRejectionSlip': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'MaterialRejectionSlip': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.MaterialRejectionSlip.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.MaterialRejectionSlip.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.MaterialRejectionSlip.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.MaterialRejectionSlip.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.materialRejectionSlips.get(variableName)
             if (row !== undefined) {
-                return MaterialRejectionSlipRow.toVariable(row)
-            } else {
-                return undefined
+                return MaterialRejectionSlipRow.toVariable(row) as Variable
             }
-        },
-        'MaterialRejectionSlipItem': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'MaterialRejectionSlipItem': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.MaterialRejectionSlipItem.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.MaterialRejectionSlipItem.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.MaterialRejectionSlipItem.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.MaterialRejectionSlipItem.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.materialRejectionSlipItems.get(variableName)
             if (row !== undefined) {
-                return MaterialRejectionSlipItemRow.toVariable(row)
-            } else {
-                return undefined
+                return MaterialRejectionSlipItemRow.toVariable(row) as Variable
             }
-        },
-        'MaterialReturnSlip': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'MaterialReturnSlip': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.MaterialReturnSlip.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.MaterialReturnSlip.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.MaterialReturnSlip.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.MaterialReturnSlip.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.materialReturnSlips.get(variableName)
             if (row !== undefined) {
-                return MaterialReturnSlipRow.toVariable(row)
-            } else {
-                return undefined
+                return MaterialReturnSlipRow.toVariable(row) as Variable
             }
-        },
-        'MaterialReturnSlipItem': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'MaterialReturnSlipItem': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.MaterialReturnSlipItem.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.MaterialReturnSlipItem.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.MaterialReturnSlipItem.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.MaterialReturnSlipItem.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.materialReturnSlipItems.get(variableName)
             if (row !== undefined) {
-                return MaterialReturnSlipItemRow.toVariable(row)
-            } else {
-                return undefined
+                return MaterialReturnSlipItemRow.toVariable(row) as Variable
             }
-        },
-        'MaterialRequistionSlip': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'MaterialRequistionSlip': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.MaterialRequistionSlip.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.MaterialRequistionSlip.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.MaterialRequistionSlip.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.MaterialRequistionSlip.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.materialRequistionSlips.get(variableName)
             if (row !== undefined) {
-                return MaterialRequistionSlipRow.toVariable(row)
-            } else {
-                return undefined
+                return MaterialRequistionSlipRow.toVariable(row) as Variable
             }
-        },
-        'MaterialRequistionSlipItem': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'MaterialRequistionSlipItem': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.MaterialRequistionSlipItem.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.MaterialRequistionSlipItem.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.MaterialRequistionSlipItem.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.MaterialRequistionSlipItem.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.materialRequistionSlipItems.get(variableName)
             if (row !== undefined) {
-                return MaterialRequistionSlipItemRow.toVariable(row)
-            } else {
-                return undefined
+                return MaterialRequistionSlipItemRow.toVariable(row) as Variable
             }
-        },
-        'BOM': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'BOM': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.BOM.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.BOM.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.BOM.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.BOM.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.boms.get(variableName)
             if (row !== undefined) {
-                return BOMRow.toVariable(row)
-            } else {
-                return undefined
+                return BOMRow.toVariable(row) as Variable
             }
-        },
-        'BOMItem': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'BOMItem': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.BOMItem.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.BOMItem.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.BOMItem.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.BOMItem.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.bomItems.get(variableName)
             if (row !== undefined) {
-                return BOMItemRow.toVariable(row)
-            } else {
-                return undefined
+                return BOMItemRow.toVariable(row) as Variable
             }
-        },
-        'ProductionPreparationSlip': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'ProductionPreparationSlip': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.ProductionPreparationSlip.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.ProductionPreparationSlip.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.ProductionPreparationSlip.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.ProductionPreparationSlip.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.productionPreparationSlips.get(variableName)
             if (row !== undefined) {
-                return ProductionPreparationSlipRow.toVariable(row)
-            } else {
-                return undefined
+                return ProductionPreparationSlipRow.toVariable(row) as Variable
             }
-        },
-        'ProductionPreparationSlipItem': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'ProductionPreparationSlipItem': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.ProductionPreparationSlipItem.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.ProductionPreparationSlipItem.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.ProductionPreparationSlipItem.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.ProductionPreparationSlipItem.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.productionPreparationSlipItems.get(variableName)
             if (row !== undefined) {
-                return ProductionPreparationSlipItemRow.toVariable(row)
-            } else {
-                return undefined
+                return ProductionPreparationSlipItemRow.toVariable(row) as Variable
             }
-        },
-        'ScrapMaterialSlip': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'ScrapMaterialSlip': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.ScrapMaterialSlip.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.ScrapMaterialSlip.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.ScrapMaterialSlip.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.ScrapMaterialSlip.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.scrapMaterialSlips.get(variableName)
             if (row !== undefined) {
-                return ScrapMaterialSlipRow.toVariable(row)
-            } else {
-                return undefined
+                return ScrapMaterialSlipRow.toVariable(row) as Variable
             }
-        },
-        'TransferMaterialSlip': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'TransferMaterialSlip': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.TransferMaterialSlip.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.TransferMaterialSlip.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.TransferMaterialSlip.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.TransferMaterialSlip.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.transferMaterialSlips.get(variableName)
             if (row !== undefined) {
-                return TransferMaterialSlipRow.toVariable(row)
-            } else {
-                return undefined
+                return TransferMaterialSlipRow.toVariable(row) as Variable
             }
-        },
-        'WarehouseAcceptanceSlip': async () => {
-            diffs.forEach(diff => {
-                diff.variables[typeName].replace.forEach(variable => {
+            return undefined
+        }
+        case 'WarehouseAcceptanceSlip': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables.WarehouseAcceptanceSlip.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
-                        return variable
+                        return variable as Variable
                     }
-                })
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                }
+                if (diff.variables.WarehouseAcceptanceSlip.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
-            })
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables.WarehouseAcceptanceSlip.replace.toArray()) {
+                    if (variable.variableName.toString() === variableName) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables.WarehouseAcceptanceSlip.remove.anyMatch(x => x.toString() === variableName)) {
+                    return undefined
+                }
+            }
             const row = await db.warehouseAcceptanceSlips.get(variableName)
             if (row !== undefined) {
-                return WarehouseAcceptanceSlipRow.toVariable(row)
-            } else {
-                return undefined
+                return WarehouseAcceptanceSlipRow.toVariable(row) as Variable
             }
+            return undefined
         }
-    })
+    }
 }
 
 export async function getVariables(typeName: NonPrimitiveType): Promise<Array<Immutable<Variable>>> {
