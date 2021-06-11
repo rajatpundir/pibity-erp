@@ -8,7 +8,7 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { Indent, IndentItemVariable, IndentVariable, Product, UOM } from '../../../main/variables'
+import { Indent, IndentItemVariable, IndentVariable, Product, ProductVariable, UOM, UOMVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
@@ -18,7 +18,7 @@ import { iff, when } from '../../../main/utils'
 import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { DiffRow, IndentItemRow, IndentRow } from '../../../main/rows'
+import { DiffRow, IndentItemRow, IndentRow, ProductRow, UOMRow } from '../../../main/rows'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -143,7 +143,7 @@ function Component(props) {
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-  useEffect(() => {
+    useEffect(() => {
         async function setVariable() {
             if (props.match.params[0]) {
                 console.log(props.match.params[0])
@@ -171,8 +171,18 @@ function Component(props) {
     }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
 
 
-    const products = useLiveQuery(() => db.products.toArray())
-    const uoms = useLiveQuery(() => db.uoms.where({ product: state.items.variable.values.product.toString() }).toArray())
+    const rows = useLiveQuery(() => db.products.toArray())?.map(x => ProductRow.toVariable(x))
+    var products = HashSet.of<Immutable<ProductVariable>>().addAll(rows ? rows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        products = products.filter(x => !diff.variables.Product.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.Product.replace)
+    })
+
+    const itemRows = useLiveQuery(() => db.uoms.where({ product: state.items.variable.values.product.toString() }).toArray())?.map(x => UOMRow.toVariable(x))
+    var uoms = HashSet.of<Immutable<UOMVariable>>().addAll(itemRows ? itemRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        uoms = uoms.filter(x => !diff.variables.UOM.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.UOM.replace)
+        uoms = uoms.filter(x => x.values.product.toString() === state.items.variable.values.product.toString())
+    })
 
     const indent = types['Indent']
     const item = types['IndentItem']
@@ -285,7 +295,7 @@ function Component(props) {
                                         <Label>{item.keys.product.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.product.toString()} name='product'>
                                             <option value='' selected disabled hidden>Select Product</option>
-                                            {(products ? products : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                            {products.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>
@@ -296,7 +306,7 @@ function Component(props) {
                                         <Label>{item.keys.uom.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.uom.toString()} name='uom'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                            {(uoms ? uoms : []).map(x => <option value={x.variableName.toString()}>{x.values.name}</option>)}
+                                            {uoms.toArray().map(x => <option value={x.variableName.toString()}>{x.values.name}</option>)}
                                         </Select>
                                     </Item>
                                     <Item justify='center' align='center'>
