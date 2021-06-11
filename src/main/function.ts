@@ -254,6 +254,7 @@ async function getSymbolsForFunction(fx: Function, args: object, overlay: Vector
 
 export async function executeFunction(fx: Function, args: object, overlay: Vector<DiffVariable>): Promise<[object, boolean, DiffVariable]> {
     const [symbols, symbolFlag] = await getSymbolsForFunction(fx, args, overlay)
+    console.log('%%', symbols, symbolFlag)
     const result = {}
     var diffs: Vector<DiffVariable> = Vector.of()
     if (symbolFlag) {
@@ -316,6 +317,7 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                                             createdVariable.values[keyName] = referencedVariable.variableName.toString()
                                         } else {
                                             // Information is not present, return with symbolFlag as false
+                                            console.log(keyName, '----')
                                             result[outputName] = createdVariable
                                             return ([result, false, mergeDiffs(diffs.toArray())])
                                         }
@@ -323,7 +325,6 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                                 }
                             }
                             result[outputName] = createdVariable
-                            // Note. Generate Diff in Zustand Store to create variable
                             const replacedVariable = replaceVariable(createdVariable.typeName, createdVariable.variableName, createdVariable.values)
                             diffs = diffs.append(getReplaceVariableDiff(replacedVariable))
                             break
@@ -382,7 +383,6 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                                     variableName: updatedVariable.variableName.toString(),
                                     values: updatedVariable.values
                                 }
-                                // Note. Generate Diff in Zustand Store to update variable
                                 const replacedVariable = replaceVariable(updatedVariable.typeName, updatedVariable.variableName.toString(), updatedVariable.values)
                                 diffs = diffs.append(getReplaceVariableDiff(replacedVariable))
                             } else {
