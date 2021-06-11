@@ -11,7 +11,6 @@ import { circuits } from '../../../main/circuits'
 import { executeCircuit } from '../../../main/circuit'
 import { iff, when } from '../../../main/utils'
 import { db } from '../../../main/dexie'
-import { getVariable } from '../../../main/layers'
 import { DiffRow, SupplierRow } from '../../../main/rows'
 import { HashSet } from 'prelude-ts'
 

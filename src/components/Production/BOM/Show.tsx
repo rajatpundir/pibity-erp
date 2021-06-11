@@ -16,7 +16,6 @@ import { executeCircuit } from '../../../main/circuit'
 import { circuits } from '../../../main/circuits'
 import { iff, when } from '../../../main/utils'
 import { db } from '../../../main/dexie'
-import { getVariable } from '../../../main/layers'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { BOMItemRow, BOMRow, DiffRow } from '../../../main/rows'
 
