@@ -2,31 +2,82 @@ import { Function } from './function'
 
 export type FunctionName =
     | 'createProduct'
+    | 'deleteProduct'
+
     | 'createUOM'
+    | 'deleteUOM'
+
     | 'createSupplier'
+    | 'deleteSupplier'
+
     | 'createIndent'
+    | 'deleteIndent'
+
     | 'createIndentItem'
+    | 'deleteIndentItem'
+
     | 'createQuotation'
+    | 'deleteQuotation'
+
     | 'createQuotationItem'
+    | 'deleteQuotationItem'
+
     | 'createPurchaseOrder'
+    | 'deletePurchaseOrder'
+
     | 'createPurchaseOrderItem'
+    | 'deletePurchaseOrderItem'
+
     | 'createPurchaseInvoice'
+    | 'deletePurchaseInvoice'
+
     | 'createPurchaseInvoiceItem'
+    | 'deletePurchaseInvoiceItem'
+
     | 'createMaterialApprovalSlip'
+    | 'deleteMaterialApprovalSlip'
+
     | 'createMaterialApprovalSlipItem'
+    | 'deleteMaterialApprovalSlipItem'
+
     | 'createMaterialRejectionSlip'
+    | 'deleteMaterialRejectionSlip'
+
     | 'createMaterialRejectionSlipItem'
+    | 'deleteMaterialRejectionSlipItem'
+
     | 'createMaterialReturnSlip'
+    | 'deleteMaterialReturnSlip'
+
     | 'createMaterialReturnSlipItem'
+    | 'deleteMaterialReturnSlipItem'
+
     | 'createMaterialRequistionSlip'
+    | 'deleteMaterialRequistionSlip'
+
     | 'createMaterialRequistionSlipItem'
+    | 'deleteMaterialRequistionSlipItem'
+
     | 'createBOM'
+    | 'deleteBOM'
+
     | 'createBOMItem'
+    | 'deleteBOMItem'
+
     | 'createProductionPreparationSlip'
+    | 'deleteProductionPreparationSlip'
+
     | 'createProductionPreparationSlipItem'
+    | 'deleteProductionPreparationSlipItem'
+
     | 'createScrapMaterialSlip'
+    | 'deleteScrapMaterialSlip'
+
     | 'createTransferMaterialSlip'
+    | 'deleteTransferMaterialSlip'
+
     | 'createWarehouseAcceptanceSlip'
+    | 'deleteWarehouseAcceptanceSlip'
 
 export const functions: Record<FunctionName, Function> = {
     createProduct: {
@@ -86,6 +137,26 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
+    deleteProduct: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            product: {
+                type: 'Product',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
     createUOM: {
         inputs: {
             product: {
@@ -131,6 +202,26 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
+    deleteUOM: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            uom: {
+                type: 'UOM',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
     createSupplier: {
         inputs: {
             variableName: {
@@ -141,6 +232,26 @@ export const functions: Record<FunctionName, Function> = {
             supplier: {
                 type: 'Supplier',
                 op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    deleteSupplier: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            supplier: {
+                type: 'Supplier',
+                op: 'delete',
                 variableName: {
                     expectedReturnType: 'Text',
                     op: '.',
@@ -162,6 +273,26 @@ export const functions: Record<FunctionName, Function> = {
                     op: 'fake',
                     types: [],
                     args: ['{{datatype.uuid}}']
+                },
+                values: {}
+            }
+        }
+    },
+    deleteIndent: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            indent: {
+                type: 'Indent',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
                 },
                 values: {}
             }
@@ -263,6 +394,26 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
+    deleteIndentItem: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            indentItem: {
+                type: 'IndentItem',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
     createQuotation: {
         inputs: {
             indent: {
@@ -296,6 +447,26 @@ export const functions: Record<FunctionName, Function> = {
                         args: ['supplier']
                     }
                 }
+            }
+        }
+    },
+    deleteQuotation: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            quotation: {
+                type: 'Quotation',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
             }
         }
     },
@@ -344,6 +515,26 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
+    deleteQuotationItem: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            quotationItem: {
+                type: 'QuotationItem',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
     createPurchaseOrder: {
         inputs: {
             quotation: {
@@ -368,6 +559,26 @@ export const functions: Record<FunctionName, Function> = {
                         args: ['quotation']
                     }
                 }
+            }
+        }
+    },
+    deletePurchaseOrder: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            purchaseOrder: {
+                type: 'PurchaseOrder',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
             }
         }
     },
@@ -431,6 +642,26 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
+    deletePurchaseOrderItem: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            purchaseOrderItem: {
+                type: 'PurchaseOrderItem',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
     createPurchaseInvoice: {
         inputs: {
             purchaseOrder: {
@@ -455,6 +686,26 @@ export const functions: Record<FunctionName, Function> = {
                         args: ['purchaseOrder']
                     }
                 }
+            }
+        }
+    },
+    deletePurchaseInvoice: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            purchaseInvoice: {
+                type: 'PurchaseInvoice',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
             }
         }
     },
@@ -515,6 +766,26 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
+    deletePurchaseInvoiceItem: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            purchaseInvoiceItem: {
+                type: 'PurchaseInvoiceItem',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
     createMaterialApprovalSlip: {
         inputs: {
             purchaseInvoice: {
@@ -539,6 +810,26 @@ export const functions: Record<FunctionName, Function> = {
                         args: ['purchaseInvoice']
                     }
                 }
+            }
+        }
+    },
+    deleteMaterialApprovalSlip: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            materialApprovalSlip: {
+                type: 'MaterialApprovalSlip',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
             }
         }
     },
@@ -593,6 +884,26 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
+    deleteMaterialApprovalSlipItem: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            materialApprovalSlipItem: {
+                type: 'MaterialApprovalSlipItem',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
     createMaterialRejectionSlip: {
         inputs: {
             purchaseInvoice: {
@@ -617,6 +928,26 @@ export const functions: Record<FunctionName, Function> = {
                         args: ['purchaseInvoice']
                     }
                 }
+            }
+        }
+    },
+    deleteMaterialRejectionSlip: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            materialRejectionSlip: {
+                type: 'MaterialRejectionSlip',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
             }
         }
     },
@@ -671,6 +1002,26 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
+    deleteMaterialRejectionSlipItem: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            materialRejectionSlipItem: {
+                type: 'MaterialRejectionSlipItem',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
     createMaterialReturnSlip: {
         inputs: {
             materialRejectionSlip: {
@@ -695,6 +1046,26 @@ export const functions: Record<FunctionName, Function> = {
                         args: ['materialRejectionSlip']
                     }
                 }
+            }
+        }
+    },
+    deleteMaterialReturnSlip: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            materialReturnSlip: {
+                type: 'MaterialReturnSlip',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
             }
         }
     },
@@ -743,6 +1114,26 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
+    deleteMaterialReturnSlipItem: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            materialReturnSlipItem: {
+                type: 'MaterialReturnSlipItem',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
     createMaterialRequistionSlip: {
         inputs: {
             materialApprovalSlip: {
@@ -767,6 +1158,26 @@ export const functions: Record<FunctionName, Function> = {
                         args: ['materialApprovalSlip']
                     }
                 }
+            }
+        }
+    },
+    deleteMaterialRequistionSlip: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            materialRequistionSlip: {
+                type: 'MaterialRequistionSlip',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
             }
         }
     },
@@ -821,6 +1232,26 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
+    deleteMaterialRequistionSlipItem: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            materialRequistionSlipItem: {
+                type: 'MaterialRequistionSlipItem',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
     createBOM: {
         inputs: {
             variableName: {
@@ -831,6 +1262,26 @@ export const functions: Record<FunctionName, Function> = {
             bom: {
                 type: 'BOM',
                 op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    deleteBOM: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            bom: {
+                type: 'BOM',
+                op: 'delete',
                 variableName: {
                     expectedReturnType: 'Text',
                     op: '.',
@@ -895,6 +1346,26 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
+    deleteBOMItem: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            bomItem: {
+                type: 'BOMItem',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
     createProductionPreparationSlip: {
         inputs: {
             bom: {
@@ -934,6 +1405,26 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
+    deleteProductionPreparationSlip: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            productionPreparationSlip: {
+                type: 'ProductionPreparationSlip',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
     createProductionPreparationSlipItem: {
         inputs: {
             productionPreparationSlip: {
@@ -948,7 +1439,7 @@ export const functions: Record<FunctionName, Function> = {
         },
         outputs: {
             bomItem: {
-                type: 'BOMItem',
+                type: 'ProductionPreparationSlipItem',
                 op: 'create',
                 variableName: {
                     expectedReturnType: 'Text',
@@ -976,6 +1467,26 @@ export const functions: Record<FunctionName, Function> = {
                         args: ['materialRequistionSlipItem']
                     }
                 }
+            }
+        }
+    },
+    deleteProductionPreparationSlipItem: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            productionPreparationSlipItem: {
+                type: 'ProductionPreparationSlipItem',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
             }
         }
     },
@@ -1012,6 +1523,26 @@ export const functions: Record<FunctionName, Function> = {
                         args: ['quantity']
                     }
                 }
+            }
+        }
+    },
+    deleteScrapMaterialSlip: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            scrapMaterialSlip: {
+                type: 'ScrapMaterialSlip',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
             }
         }
     },
@@ -1057,6 +1588,26 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
+    deleteTransferMaterialSlip: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            transferMaterialSlip: {
+                type: 'TransferMaterialSlip',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
     createWarehouseAcceptanceSlip: {
         inputs: {
             transferMaterialSlip: {
@@ -1090,6 +1641,26 @@ export const functions: Record<FunctionName, Function> = {
                         args: ['quantity']
                     }
                 }
+            }
+        }
+    },
+    deleteWarehouseAcceptanceSlip: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            warehouseAcceptanceSlip: {
+                type: 'WarehouseAcceptanceSlip',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
             }
         }
     }

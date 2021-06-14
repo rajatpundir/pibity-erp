@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
@@ -153,8 +153,7 @@ function Component(props) {
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    useEffect(() => {
-        async function setVariable() {
+    const setVariable = useCallback(async () => {
             if (props.match.params[0]) {
                 const rows = await db.purchaseInvoices.toArray()
                 var composedVariables = HashSet.of<Immutable<PurchaseInvoiceVariable>>().addAll(rows ? rows.map(x => PurchaseInvoiceRow.toVariable(x)) : [])
@@ -175,13 +174,12 @@ function Component(props) {
                     dispatch(['replace', 'items', items as HashSet<PurchaseInvoiceItemVariable>])
                 }
             }
-        }
-        setVariable()
-    }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
+        }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
 
-    
+    useEffect(() => { setVariable() }, [setVariable])
+
     const rows = useLiveQuery(() => db.purchaseOrders.toArray())?.map(x => PurchaseOrderRow.toVariable(x))
-    var purchaseOrders = HashSet.of<Immutable<PurchaseOrderVariable>>().addAll(rows ? rows : [])   
+    var purchaseOrders = HashSet.of<Immutable<PurchaseOrderVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
         purchaseOrders = purchaseOrders.filter(x => !diff.variables.PurchaseOrder.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.PurchaseOrder.replace)
     })
@@ -254,10 +252,21 @@ function Component(props) {
             })
         })
         console.log(result, symbolFlag)
-       if (symbolFlag) {
-    db.diffs.put(diff.toRow())
-}
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
     }
+
+    const deleteVariable = async () => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.deletePurchaseInvoice, {
+            variableName: state.variable.variableName.toString()
+        })
+        console.log(result, symbolFlag, diff)
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
+    }
+
     return iff(true,
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
@@ -279,14 +288,20 @@ function Component(props) {
                                 <>
                                     <Button onClick={() => {
                                         dispatch(['toggleMode'])
-                                        dispatch(['resetVariable', initialState])
+                                        setVariable()
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
                                         await await saveVariable()
                                         props.history.push('/purchase-invoices')
                                     }}>Save</Button>
                                 </>,
-                                <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>))
+                                <>
+                                    <Button onClick={async () => {
+                                        await deleteVariable()
+                                        props.history.push('/purchase-invoices')
+                                    }}>Delete</Button>
+                                    <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>
+                                </>))
                     }
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>
@@ -326,7 +341,7 @@ function Component(props) {
                                         <Label>{item.keys.purchaseOrderItem.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.purchaseOrderItem.toString()} name='purchaseOrderItem'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                           {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                            {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>
@@ -340,7 +355,7 @@ function Component(props) {
                             </div>
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} columns={state['items'].columns.toArray()} />
+                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable)).toArray()} columns={state['items'].columns.toArray()} />
                 </Container >
             </Container>
         }, <div>Variable not found</div>)

@@ -1,4 +1,4 @@
-import { HashSet, Vector } from 'prelude-ts'
+import { Vector } from 'prelude-ts'
 import { Immutable } from 'immer'
 import tw from 'twin.macro'
 import { Container, Item, TableContainer, Cell, validateLayout, Area, GridLayout } from './commons'
@@ -274,14 +274,14 @@ type TableProps = {
         page: number
     }>
     updatePage: (args: ['limit', number] | ['offset', number] | ['page', number]) => void
-    variables: Immutable<HashSet<any>>
+    variables: Immutable<Array<any>>
     columns: Array<Array<string>>
 }
 
 export function Table(props: TableProps) {
     const [cells, setCells] = useState([] as Array<unknown>)
 
-    const start = Math.min(props.state.limit * props.state.offset, props.variables.length())
+    const start = Math.min(props.state.limit * props.state.offset, props.variables.length)
     const end = start + props.state.limit
 
     const firstPage = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -293,11 +293,11 @@ export function Table(props: TableProps) {
     }
 
     const nextPage = async (event: React.MouseEvent<HTMLButtonElement>) => {
-        props.updatePage(['offset', Math.min(Math.ceil(props.variables.length() / props.state.limit) - 1, props.state.offset + 1)])
+        props.updatePage(['offset', Math.min(Math.ceil(props.variables.length / props.state.limit) - 1, props.state.offset + 1)])
     }
 
     const lastPage = async (event: React.MouseEvent<HTMLButtonElement>) => {
-        props.updatePage(['offset', Math.ceil(props.variables.length() / props.state.limit) - 1])
+        props.updatePage(['offset', Math.ceil(props.variables.length / props.state.limit) - 1])
     }
 
     const changePage = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -305,7 +305,7 @@ export function Table(props: TableProps) {
     }
 
     const setPage = async (event: React.MouseEvent<HTMLButtonElement>) => {
-        props.updatePage(['offset', Math.min(Math.ceil(props.variables.length() / props.state.limit) - 1, parseInt(String(props.state.page)) - 1)])
+        props.updatePage(['offset', Math.min(Math.ceil(props.variables.length / props.state.limit) - 1, parseInt(String(props.state.page)) - 1)])
     }
 
     const rowUp = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -317,7 +317,7 @@ export function Table(props: TableProps) {
     }
 
     useEffect(() => {
-        const updateCells = async () => setCells(await getCells(props.columns, props.variables.toArray(), start, end))
+        const updateCells = async () => setCells(await getCells(props.columns, props.variables, start, end))
         updateCells()
     }, [props.columns, props.variables, start, end])
 
@@ -347,7 +347,7 @@ export function Table(props: TableProps) {
                 })
             }
             {
-                props.variables.length() !== 0 && start < props.variables.length()
+                props.variables.length !== 0 && start < props.variables.length
                     ? cells
                     : <Cell className="pt-4 pb-4 border-b-2 w-full font-bold text-center bg-gray-50" row="2/3" column={`1/${props.columns.length + 1}`}>No records found at specified page.</Cell>
             }
@@ -355,7 +355,7 @@ export function Table(props: TableProps) {
         <Container area={footer} layout={layouts.footer} className="bg-gray-100 border-l-2 border-r-2 border-b-2 border-gray-300">
             <Item align='center' className="mx-6 whitespace-nowrap">
                 <span className="mx-2">
-                    Page: <Input type='number' onChange={changePage} value={props.state.page} /> / {Math.ceil(props.variables.length() / props.state.limit)}
+                    Page: <Input type='number' onChange={changePage} value={props.state.page} /> / {Math.ceil(props.variables.length / props.state.limit)}
                     <button onClick={setPage} className="align-text-bottom focus:outline-none">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -363,7 +363,7 @@ export function Table(props: TableProps) {
                     </button>
                 </span>
                 <span className="mx-2">
-                    {props.variables.length() !== 0 ? start + 1 : 0}-{end} of {props.variables.length()}
+                    {props.variables.length !== 0 ? start + 1 : 0}-{end} of {props.variables.length}
                 </span>
                 <span className="mx-2">
                     Rows: {props.state.limit}

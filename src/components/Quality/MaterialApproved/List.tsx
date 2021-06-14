@@ -1,5 +1,5 @@
 import { Draft, Immutable } from 'immer'
-import { HashSet, Vector } from 'prelude-ts'
+import { Vector } from 'prelude-ts'
 import tw from 'twin.macro'
 import { useImmerReducer } from 'use-immer'
 import { Container, Item, none } from '../../../main/commons'
@@ -63,11 +63,11 @@ function reducer(state: Draft<State>, action: Action) {
 
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const rows = useLiveQuery(() => db.materialApprovalSlips.toArray())
-    var composedVariables = HashSet.of<Immutable<MaterialApprovalSlipVariable>>().addAll(rows ? rows.map(x => MaterialApprovalSlipRow.toVariable(x)) : [])
+    const rows = useLiveQuery(() => db.materialApprovalSlips.orderBy('variableName').toArray())
+    var composedVariables = Vector.of<Immutable<MaterialApprovalSlipVariable>>().appendAll(rows ? rows.map(x => MaterialApprovalSlipRow.toVariable(x)) : [])
     const diffs = useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
     diffs?.forEach(diff => {
-        composedVariables = composedVariables.filter(x => !diff.variables[state.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.typeName].replace)
+        composedVariables = composedVariables.filter(x => !diff.variables[state.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[state.typeName].replace)
     })
     const variables = composedVariables.filter(variable => applyFilter(state.query, variable))
     const [open, setOpen] = useState(false)
@@ -93,7 +93,7 @@ function Component(props) {
                     <Filter typeName={state.typeName} query={state.query} updateQuery={updateQuery} />
                 </Drawer>
             </Item>
-            <Table area={Grid.table} state={state} updatePage={updatePage} variables={HashSet.of().addAll(variables)} columns={state.columns.toArray()} />
+            <Table area={Grid.table} state={state} updatePage={updatePage} variables={variables.toArray()} columns={state.columns.toArray()} />
         </Container>
     )
 }

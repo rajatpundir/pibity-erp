@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
@@ -81,8 +81,7 @@ function Component(props) {
         }
     }
 
-    useEffect(() => {
-        async function setVariable() {
+    const setVariable = useCallback(async () => {
             if (props.match.params[0]) {
                 const rows = await db.suppliers.toArray()
                 var composedVariables = HashSet.of<Immutable<SupplierVariable>>().addAll(rows ? rows.map(x => SupplierRow.toVariable(x)) : [])
@@ -96,15 +95,25 @@ function Component(props) {
                     dispatch(['replace', 'variable', variable as SupplierVariable])                    
                 }
             }
-        }
-        setVariable()
-    }, [state.variable.typeName, props.match.params, dispatch])
+        }, [state.variable.typeName, props.match.params, dispatch])
+
+    useEffect(() => { setVariable() }, [setVariable])
 
     const saveVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createSupplier, {
             name: state.variable.variableName.toString()
         })
         console.log(result, symbolFlag)
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
+    }
+
+    const deleteVariable = async () => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteSupplier, {
+            variableName: state.variable.variableName.toString()
+        })
+        console.log(result, symbolFlag, diff)
         if (symbolFlag) {
             db.diffs.put(diff.toRow())
         }
@@ -131,14 +140,20 @@ function Component(props) {
                                 <>
                                     <Button onClick={() => {
                                         dispatch(['toggleMode'])
-                                        dispatch(['resetVariable', initialState])
+                                        setVariable()
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
                                         await saveVariable()
                                         props.history.push('/suppliers')
                                     }}>Save</Button>
                                 </>,
-                                <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>))
+                                <>
+                                    <Button onClick={async () => {
+                                        await deleteVariable()
+                                        props.history.push('/suppliers')
+                                    }}>Delete</Button>
+                                    <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>
+                                </>))
                     }
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>

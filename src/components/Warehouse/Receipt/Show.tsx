@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
@@ -81,30 +81,29 @@ function Component(props) {
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    useEffect(() => {
-        async function setVariable() {
-            if (props.match.params[0]) {
-                const rows = await db.warehouseAcceptanceSlips.toArray()
-                var composedVariables = HashSet.of<Immutable<WarehouseAcceptanceSlipVariable>>().addAll(rows ? rows.map(x => WarehouseAcceptanceSlipRow.toVariable(x)) : [])
-                const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
-                diffs?.forEach(diff => {
-                    composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
-                })
-                const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
-                if (variables.length() === 1) {
-                    const variable = variables.toArray()[0]
-                    dispatch(['replace', 'variable', variable as WarehouseAcceptanceSlipVariable])                   
-                }
+    const setVariable = useCallback(async () => {
+        if (props.match.params[0]) {
+            const rows = await db.warehouseAcceptanceSlips.toArray()
+            var composedVariables = HashSet.of<Immutable<WarehouseAcceptanceSlipVariable>>().addAll(rows ? rows.map(x => WarehouseAcceptanceSlipRow.toVariable(x)) : [])
+            const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+            })
+            const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
+            if (variables.length() === 1) {
+                const variable = variables.toArray()[0]
+                dispatch(['replace', 'variable', variable as WarehouseAcceptanceSlipVariable])
             }
         }
-        setVariable()
     }, [state.variable.typeName, props.match.params, dispatch])
 
+    useEffect(() => { setVariable() }, [setVariable])
+
     const rows = useLiveQuery(() => db.transferMaterialSlips.toArray())?.map(x => TransferMaterialSlipRow.toVariable(x))
-    var transferMaterialSlips = HashSet.of<Immutable<TransferMaterialSlipVariable>>().addAll(rows ? rows : [])     
+    var transferMaterialSlips = HashSet.of<Immutable<TransferMaterialSlipVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
         transferMaterialSlips = transferMaterialSlips.filter(x => !diff.variables.TransferMaterialSlip.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.TransferMaterialSlip.replace)
-    })   
+    })
 
     const warehouseAcceptanceSlip = types['WarehouseAcceptanceSlip']
 
@@ -136,6 +135,16 @@ function Component(props) {
         }
     }
 
+    const deleteVariable = async () => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteWarehouseAcceptanceSlip, {
+            variableName: state.variable.variableName.toString()
+        })
+        console.log(result, symbolFlag, diff)
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
+    }
+
     return iff(true,
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
@@ -157,14 +166,20 @@ function Component(props) {
                                 <>
                                     <Button onClick={() => {
                                         dispatch(['toggleMode'])
-                                        dispatch(['resetVariable', initialState])
+                                        setVariable()
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
                                         await saveVariable()
                                         props.history.push('/warehouse-receipts')
                                     }}>Save</Button>
                                 </>,
-                                <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>))
+                                <>
+                                    <Button onClick={async () => {
+                                        await deleteVariable()
+                                        props.history.push('/warehouse-receipts')
+                                    }}>Delete</Button>
+                                    <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>
+                                </>))
                     }
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>

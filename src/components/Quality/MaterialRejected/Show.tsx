@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
@@ -152,34 +152,33 @@ function Component(props) {
     }
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    useEffect(() => {
-        async function setVariable() {
-            if (props.match.params[0]) {
-                const rows = await db.materialRejectionSlips.toArray()
-                var composedVariables = HashSet.of<Immutable<MaterialRejectionSlipVariable>>().addAll(rows ? rows.map(x => MaterialRejectionSlipRow.toVariable(x)) : [])
-                const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
+    const setVariable = useCallback(async () => {
+        if (props.match.params[0]) {
+            const rows = await db.materialRejectionSlips.toArray()
+            var composedVariables = HashSet.of<Immutable<MaterialRejectionSlipVariable>>().addAll(rows ? rows.map(x => MaterialRejectionSlipRow.toVariable(x)) : [])
+            const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+            })
+            const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
+            if (variables.length() === 1) {
+                const variable = variables.toArray()[0]
+                dispatch(['replace', 'variable', variable as MaterialRejectionSlipVariable])
+                const itemRows = await db.materialRejectionSlipItems.toArray()
+                var composedItemVariables = HashSet.of<Immutable<MaterialRejectionSlipItemVariable>>().addAll(itemRows ? itemRows.map(x => MaterialRejectionSlipItemRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
                 })
-                const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
-                if (variables.length() === 1) {
-                    const variable = variables.toArray()[0]
-                    dispatch(['replace', 'variable', variable as MaterialRejectionSlipVariable])
-                    const itemRows = await db.materialRejectionSlipItems.toArray()
-                    var composedItemVariables = HashSet.of<Immutable<MaterialRejectionSlipItemVariable>>().addAll(itemRows ? itemRows.map(x => MaterialRejectionSlipItemRow.toVariable(x)) : [])
-                    diffs?.forEach(diff => {
-                        composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
-                    })
-                    const items = composedItemVariables.filter(variable => variable.values.materialRejectionSlip.toString() === props.match.params[0])
-                    dispatch(['replace', 'items', items as HashSet<MaterialRejectionSlipItemVariable>])
-                }
+                const items = composedItemVariables.filter(variable => variable.values.materialRejectionSlip.toString() === props.match.params[0])
+                dispatch(['replace', 'items', items as HashSet<MaterialRejectionSlipItemVariable>])
             }
         }
-        setVariable()
     }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
 
+    useEffect(() => { setVariable() }, [setVariable])
+
     const rows = useLiveQuery(() => db.purchaseInvoices.toArray())?.map(x => PurchaseInvoiceRow.toVariable(x))
-    var purchaseInvoices = HashSet.of<Immutable<PurchaseInvoiceVariable>>().addAll(rows ? rows : [])     
+    var purchaseInvoices = HashSet.of<Immutable<PurchaseInvoiceVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
         purchaseInvoices = purchaseInvoices.filter(x => !diff.variables.PurchaseInvoice.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.PurchaseInvoice.replace)
     })
@@ -257,6 +256,16 @@ function Component(props) {
         }
     }
 
+    const deleteVariable = async () => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteMaterialRejectionSlip, {
+            variableName: state.variable.variableName.toString()
+        })
+        console.log(result, symbolFlag, diff)
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
+    }
+
     return iff(true,
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
@@ -278,14 +287,20 @@ function Component(props) {
                                 <>
                                     <Button onClick={() => {
                                         dispatch(['toggleMode'])
-                                        dispatch(['resetVariable', initialState])
+                                        setVariable()
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
                                         await saveVariable()
                                         props.history.push('/materials-rejected')
                                     }}>Save</Button>
                                 </>,
-                                <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>))
+                                <>
+                                    <Button onClick={async () => {
+                                        await deleteVariable()
+                                        props.history.push('/materials-rejected')
+                                    }}>Delete</Button>
+                                    <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>
+                                </>))
                     }
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>
@@ -339,7 +354,7 @@ function Component(props) {
                             </div>
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} columns={state['items'].columns.toArray()} />
+                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable)).toArray()} columns={state['items'].columns.toArray()} />
                 </Container >
             </Container>
         }, <div>Variable not found</div>)

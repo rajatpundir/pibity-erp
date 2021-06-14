@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
@@ -158,31 +158,30 @@ function Component(props) {
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    useEffect(() => {
-        async function setVariable() {
-            if (props.match.params[0]) {
-                const rows = await db.quotations.toArray()
-                var composedVariables = HashSet.of<Immutable<QuotationVariable>>().addAll(rows ? rows.map(x => QuotationRow.toVariable(x)) : [])
-                const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
+    const setVariable = useCallback(async () => {
+        if (props.match.params[0]) {
+            const rows = await db.quotations.toArray()
+            var composedVariables = HashSet.of<Immutable<QuotationVariable>>().addAll(rows ? rows.map(x => QuotationRow.toVariable(x)) : [])
+            const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+            })
+            const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
+            if (variables.length() === 1) {
+                const variable = variables.toArray()[0]
+                dispatch(['replace', 'variable', variable as QuotationVariable])
+                const itemRows = await db.quotationItems.toArray()
+                var composedItemVariables = HashSet.of<Immutable<QuotationItemVariable>>().addAll(itemRows ? itemRows.map(x => QuotationItemRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
                 })
-                const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
-                if (variables.length() === 1) {
-                    const variable = variables.toArray()[0]
-                    dispatch(['replace', 'variable', variable as QuotationVariable])
-                    const itemRows = await db.quotationItems.toArray()
-                    var composedItemVariables = HashSet.of<Immutable<QuotationItemVariable>>().addAll(itemRows ? itemRows.map(x => QuotationItemRow.toVariable(x)) : [])
-                    diffs?.forEach(diff => {
-                        composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
-                    })
-                    const items = composedItemVariables.filter(variable => variable.values.quotation.toString() === props.match.params[0])
-                    dispatch(['replace', 'items', items as HashSet<QuotationItemVariable>])
-                }
+                const items = composedItemVariables.filter(variable => variable.values.quotation.toString() === props.match.params[0])
+                dispatch(['replace', 'items', items as HashSet<QuotationItemVariable>])
             }
         }
-        setVariable()
     }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
+
+    useEffect(() => { setVariable() }, [setVariable])
 
     const rows = useLiveQuery(() => db.indents.toArray())?.map(x => IndentRow.toVariable(x))
     var indents = HashSet.of<Immutable<IndentVariable>>().addAll(rows ? rows : [])
@@ -276,6 +275,16 @@ function Component(props) {
         }
     }
 
+    const deleteVariable = async () => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteQuotation, {
+            variableName: state.variable.variableName.toString()
+        })
+        console.log(result, symbolFlag, diff)
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
+    }
+
     return iff(true,
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
@@ -297,14 +306,20 @@ function Component(props) {
                                 <>
                                     <Button onClick={() => {
                                         dispatch(['toggleMode'])
-                                        dispatch(['resetVariable', initialState])
+                                        setVariable()
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
                                         await saveVariable()
                                         props.history.push('/quotations')
                                     }}>Save</Button>
                                 </>,
-                                <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>))
+                                <>
+                                    <Button onClick={async () => {
+                                        await deleteVariable()
+                                        props.history.push('/quotations')
+                                    }}>Delete</Button>
+                                    <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>
+                                </>))
                     }
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>
@@ -370,7 +385,7 @@ function Component(props) {
                             </div>
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} columns={state['items'].columns.toArray()} />
+                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable)).toArray()} columns={state['items'].columns.toArray()} />
                 </Container >
             </Container>
         }, <div>Variable not found</div>)

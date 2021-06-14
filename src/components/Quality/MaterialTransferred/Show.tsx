@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
@@ -80,31 +80,30 @@ function Component(props) {
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    useEffect(() => {
-        async function setVariable() {
-            if (props.match.params[0]) {
-                const rows = await db.transferMaterialSlips.toArray()
-                var composedVariables = HashSet.of<Immutable<TransferMaterialSlipVariable>>().addAll(rows ? rows.map(x => TransferMaterialSlipRow.toVariable(x)) : [])
-                const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
-                diffs?.forEach(diff => {
-                    composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
-                })
-                const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
-                if (variables.length() === 1) {
-                    const variable = variables.toArray()[0]
-                    dispatch(['replace', 'variable', variable as TransferMaterialSlipVariable])                   
-                }
+    const setVariable = useCallback(async () => {
+        if (props.match.params[0]) {
+            const rows = await db.transferMaterialSlips.toArray()
+            var composedVariables = HashSet.of<Immutable<TransferMaterialSlipVariable>>().addAll(rows ? rows.map(x => TransferMaterialSlipRow.toVariable(x)) : [])
+            const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+            })
+            const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
+            if (variables.length() === 1) {
+                const variable = variables.toArray()[0]
+                dispatch(['replace', 'variable', variable as TransferMaterialSlipVariable])
             }
         }
-        setVariable()
     }, [state.variable.typeName, props.match.params, dispatch])
 
+    useEffect(() => { setVariable() }, [setVariable])
+
     const rows = useLiveQuery(() => db.productionPreparationSlips.toArray())?.map(x => ProductionPreparationSlipRow.toVariable(x))
-    var productionPreparationSlips = HashSet.of<Immutable<ProductionPreparationSlipVariable>>().addAll(rows ? rows : [])     
+    var productionPreparationSlips = HashSet.of<Immutable<ProductionPreparationSlipVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
         productionPreparationSlips = productionPreparationSlips.filter(x => !diff.variables.ProductionPreparationSlip.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.ProductionPreparationSlip.replace)
     })
-    
+
     const transferMaterialSlip = types['TransferMaterialSlip']
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -135,6 +134,16 @@ function Component(props) {
         }
     }
 
+    const deleteVariable = async () => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteTransferMaterialSlip, {
+            variableName: state.variable.variableName.toString()
+        })
+        console.log(result, symbolFlag, diff)
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
+    }
+
     return iff(true,
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
@@ -156,14 +165,20 @@ function Component(props) {
                                 <>
                                     <Button onClick={() => {
                                         dispatch(['toggleMode'])
-                                        dispatch(['resetVariable', initialState])
+                                        setVariable()
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
                                         await saveVariable()
                                         props.history.push('/materials-transferred')
                                     }}>Save</Button>
                                 </>,
-                                <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>))
+                                <>
+                                    <Button onClick={async () => {
+                                        await deleteVariable()
+                                        props.history.push('/materials-transferred')
+                                    }}>Delete</Button>
+                                    <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>
+                                </>))
                     }
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>

@@ -2,20 +2,35 @@ import { Circuit } from "./circuit"
 
 export type CircuitName =
     | 'createProduct'
+    | 'deleteProduct'
     | 'createIndent'
+    | 'deleteIndent'
     | 'createSupplier'
+    | 'deleteSupplier'
     | 'createQuotation'
+    | 'deleteQuotation'
     | 'createPurchaseOrder'
+    | 'deletePurchaseOrder'
     | 'createPurchaseInvoice'
+    | 'deletePurchaseInvoice'
     | 'createMaterialApprovalSlip'
+    | 'deleteMaterialApprovalSlip'
     | 'createMaterialRejectionSlip'
+    | 'deleteMaterialRejectionSlip'
     | 'createMaterialReturnSlip'
+    | 'deleteMaterialReturnSlip'
     | 'createMaterialRequistionSlip'
+    | 'deleteMaterialRequistionSlip'
     | 'createBOM'
+    | 'deleteBOM'
     | 'createProductionPreparationSlip'
+    | 'deleteProductionPreparationSlip'
     | 'createScrapMaterialSlip'
+    | 'deleteScrapMaterialSlip'
     | 'createTransferMaterialSlip'
+    | 'deleteTransferMaterialSlip'
     | 'createWarehouseAcceptanceSlip'
+    | 'deleteWarehouseAcceptanceSlip'
 
 export const circuits: Record<CircuitName, Circuit> = {
     createProduct: {
@@ -70,9 +85,9 @@ export const circuits: Record<CircuitName, Circuit> = {
             uoms: ['c2', '']
         }
     },
-    createSupplier: {
+    deleteProduct: {
         inputs: {
-            name: {
+            variableName: {
                 type: 'Text'
             }
         },
@@ -80,14 +95,14 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'function',
-                exec: 'createSupplier',
+                exec: 'deleteProduct',
                 connect: {
-                    variableName: ['input', 'name']
+                    variableName: ['input', 'variableName']
                 }
             }
         },
         outputs: {
-            supplier: ['c1', 'supplier']
+            product: ['c1', 'product']
         }
     },
     createIndent: {
@@ -119,6 +134,66 @@ export const circuits: Record<CircuitName, Circuit> = {
         outputs: {
             indent: ['c1', 'indent'],
             items: ['c2', '']
+        }
+    },
+    deleteIndent: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'deleteIndent',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            indent: ['c1', 'indent']
+        }
+    },
+    createSupplier: {
+        inputs: {
+            name: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'createSupplier',
+                connect: {
+                    variableName: ['input', 'name']
+                }
+            }
+        },
+        outputs: {
+            supplier: ['c1', 'supplier']
+        }
+    },
+    deleteSupplier: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'deleteSupplier',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            supplier: ['c1', 'supplier']
         }
     },
     createQuotation: {
@@ -161,6 +236,26 @@ export const circuits: Record<CircuitName, Circuit> = {
             items: ['c2', '']
         }
     },
+    deleteQuotation: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'deleteQuotation',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            quotation: ['c1', 'quotation']
+        }
+    },
     createPurchaseOrder: {
         inputs: {
             quotation: {
@@ -195,6 +290,26 @@ export const circuits: Record<CircuitName, Circuit> = {
         outputs: {
             purchaseOrder: ['c1', 'purchaseOrder'],
             items: ['c2', '']
+        }
+    },
+    deletePurchaseOrder: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'deletePurchaseOrder',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            purchaseOrder: ['c1', 'purchaseOrder']
         }
     },
     createPurchaseInvoice: {
@@ -233,6 +348,26 @@ export const circuits: Record<CircuitName, Circuit> = {
             items: ['c2', '']
         }
     },
+    deletePurchaseInvoice: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'deletePurchaseInvoice',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            purchaseInvoice: ['c1', 'purchaseInvoice']
+        }
+    },
     createMaterialApprovalSlip: {
         inputs: {
             purchaseInvoice: {
@@ -267,6 +402,26 @@ export const circuits: Record<CircuitName, Circuit> = {
         outputs: {
             materialApprovalSlip: ['c1', 'materialApprovalSlip'],
             items: ['c2', '']
+        }
+    },
+    deleteMaterialApprovalSlip: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'deleteMaterialApprovalSlip',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            materialApprovalSlip: ['c1', 'materialApprovalSlip']
         }
     },
     createMaterialRejectionSlip: {
@@ -305,6 +460,26 @@ export const circuits: Record<CircuitName, Circuit> = {
             items: ['c2', '']
         }
     },
+    deleteMaterialRejectionSlip: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'deleteMaterialRejectionSlip',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            materialRejectionSlip: ['c1', 'materialRejectionSlip']
+        }
+    },
     createMaterialReturnSlip: {
         inputs: {
             materialRejectionSlip: {
@@ -339,6 +514,26 @@ export const circuits: Record<CircuitName, Circuit> = {
         outputs: {
             materialReturnSlip: ['c1', 'materialReturnSlip'],
             items: ['c2', '']
+        }
+    },
+    deleteMaterialReturnSlip: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'deleteMaterialReturnSlip',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            materialReturnSlip: ['c1', 'materialReturnSlip']
         }
     },
     createMaterialRequistionSlip: {
@@ -377,6 +572,26 @@ export const circuits: Record<CircuitName, Circuit> = {
             items: ['c2', '']
         }
     },
+    deleteMaterialRequistionSlip: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'deleteMaterialRequistionSlip',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            materialRequistionSlip: ['c1', 'materialRequistionSlip']
+        }
+    },
     createBOM: {
         inputs: {
             variableName: {
@@ -411,6 +626,26 @@ export const circuits: Record<CircuitName, Circuit> = {
         outputs: {
             bom: ['c1', 'bom'],
             items: ['c2', '']
+        }
+    },
+    deleteBOM: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'deleteBOM',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            bom: ['c1', 'bom']
         }
     },
     createProductionPreparationSlip: {
@@ -449,6 +684,26 @@ export const circuits: Record<CircuitName, Circuit> = {
             items: ['c2', '']
         }
     },
+    deleteProductionPreparationSlip: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'deleteProductionPreparationSlip',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            productionPreparationSlip: ['c1', 'productionPreparationSlip']
+        }
+    },
     createScrapMaterialSlip: {
         inputs: {
             productionPreparationSlip: {
@@ -466,6 +721,26 @@ export const circuits: Record<CircuitName, Circuit> = {
                 connect: {
                     productionPreparationSlip: ['input', 'productionPreparationSlip'],
                     quantity: ['input', 'quantity']
+                }
+            }
+        },
+        outputs: {
+            scrapMaterialSlip: ['c1', 'scrapMaterialSlip']
+        }
+    },
+    deleteScrapMaterialSlip: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'deleteScrapMaterialSlip',
+                connect: {
+                    variableName: ['input', 'variableName']
                 }
             }
         },
@@ -497,6 +772,26 @@ export const circuits: Record<CircuitName, Circuit> = {
             transferMaterialSlip: ['c1', 'transferMaterialSlip']
         }
     },
+    deleteTransferMaterialSlip: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'deleteTransferMaterialSlip',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            transferMaterialSlip: ['c1', 'transferMaterialSlip']
+        }
+    },
     createWarehouseAcceptanceSlip: {
         inputs: {
             transferMaterialSlip: {
@@ -514,6 +809,26 @@ export const circuits: Record<CircuitName, Circuit> = {
                 connect: {
                     transferMaterialSlip: ['input', 'transferMaterialSlip'],
                     quantity: ['input', 'quantity']
+                }
+            }
+        },
+        outputs: {
+            warehouseAcceptanceSlip: ['c1', 'warehouseAcceptanceSlip']
+        }
+    },
+    deleteWarehouseAcceptanceSlip: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'deleteWarehouseAcceptanceSlip',
+                connect: {
+                    variableName: ['input', 'variableName']
                 }
             }
         },

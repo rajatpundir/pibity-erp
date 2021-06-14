@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
@@ -8,7 +8,7 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { BOM, BOMItemVariable, BOMVariable, Product, UOM } from '../../../main/variables'
+import { BOM, BOMItemVariable, BOMVariable, Product, ProductVariable, UOM, UOMVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
@@ -17,7 +17,7 @@ import { circuits } from '../../../main/circuits'
 import { iff, when } from '../../../main/utils'
 import { db } from '../../../main/dexie'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { BOMItemRow, BOMRow, DiffRow } from '../../../main/rows'
+import { BOMItemRow, BOMRow, DiffRow, ProductRow, UOMRow } from '../../../main/rows'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -153,34 +153,43 @@ function Component(props) {
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    useEffect(() => {
-        async function setVariable() {
-            if (props.match.params[0]) {
-                const rows = await db.boms.toArray()
-                var composedVariables = HashSet.of<Immutable<BOMVariable>>().addAll(rows ? rows.map(x => BOMRow.toVariable(x)) : [])
-                const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
+    const setVariable = useCallback(async () => {
+        if (props.match.params[0]) {
+            const rows = await db.boms.toArray()
+            var composedVariables = HashSet.of<Immutable<BOMVariable>>().addAll(rows ? rows.map(x => BOMRow.toVariable(x)) : [])
+            const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+            })
+            const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
+            if (variables.length() === 1) {
+                const variable = variables.toArray()[0]
+                dispatch(['replace', 'variable', variable as BOMVariable])
+                const itemRows = await db.bomItems.toArray()
+                var composedItemVariables = HashSet.of<Immutable<BOMItemVariable>>().addAll(itemRows ? itemRows.map(x => BOMItemRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
                 })
-                const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
-                if (variables.length() === 1) {
-                    const variable = variables.toArray()[0]
-                    dispatch(['replace', 'variable', variable as BOMVariable])
-                    const itemRows = await db.bomItems.toArray()
-                    var composedItemVariables = HashSet.of<Immutable<BOMItemVariable>>().addAll(itemRows ? itemRows.map(x => BOMItemRow.toVariable(x)) : [])
-                    diffs?.forEach(diff => {
-                        composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
-                    })
-                    const items = composedItemVariables.filter(variable => variable.values.product.toString() === props.match.params[0])
-                    dispatch(['replace', 'items', items as HashSet<BOMItemVariable>])
-                }
+                const items = composedItemVariables.filter(variable => variable.values.bom.toString() === props.match.params[0])
+                dispatch(['replace', 'items', items as HashSet<BOMItemVariable>])
             }
         }
-        setVariable()
     }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
 
-    const products = useLiveQuery(() => db.products.toArray())
-    const uoms = useLiveQuery(() => db.uoms.where({ product: state.items.variable.values.product.toString() }).toArray())
+    useEffect(() => { setVariable() }, [setVariable])
+
+    const rows = useLiveQuery(() => db.products.toArray())?.map(x => ProductRow.toVariable(x))
+    var products = HashSet.of<Immutable<ProductVariable>>().addAll(rows ? rows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        products = products.filter(x => !diff.variables.Product.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.Product.replace)
+    })
+
+    const itemRows = useLiveQuery(() => db.uoms.where({ product: state.items.variable.values.product.toString() }).toArray())?.map(x => UOMRow.toVariable(x))
+    var uoms = HashSet.of<Immutable<UOMVariable>>().addAll(itemRows ? itemRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        uoms = uoms.filter(x => !diff.variables.UOM.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.UOM.replace)
+        uoms = uoms.filter(x => x.values.product.toString() === state.items.variable.values.product.toString())
+    })
 
     const bom = types['BOM']
     const item = types['BOMItem']
@@ -249,6 +258,16 @@ function Component(props) {
         }
     }
 
+    const deleteVariable = async () => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteBOM, {
+            variableName: state.variable.variableName.toString()
+        })
+        console.log(result, symbolFlag, diff)
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
+    }
+
     return iff(true,
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
@@ -270,14 +289,20 @@ function Component(props) {
                                 <>
                                     <Button onClick={() => {
                                         dispatch(['toggleMode'])
-                                        dispatch(['resetVariable', initialState])
+                                        setVariable()
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
                                         await saveVariable()
                                         props.history.push('/boms')
                                     }}>Save</Button>
                                 </>,
-                                <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>))
+                                <>
+                                    <Button onClick={async () => {
+                                        await deleteVariable()
+                                        props.history.push('/boms')
+                                    }}>Delete</Button>
+                                    <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>
+                                </>))
                     }
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>
@@ -314,7 +339,7 @@ function Component(props) {
                                         <Label>{item.keys.product.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.product.toString()} name='product'>
                                             <option value='' selected disabled hidden>Select Product</option>
-                                            {(products ? products : []).map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                            {products.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>
@@ -325,7 +350,7 @@ function Component(props) {
                                         <Label>{item.keys.uom.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.uom.toString()} name='uom'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                            {(uoms ? uoms : []).map(x => <option value={x.variableName.toString()}>{x.values.name}</option>)}
+                                            {uoms.toArray().map(x => <option value={x.variableName.toString()}>{x.values.name}</option>)}
                                         </Select>
                                     </Item>
                                     <Item justify='center' align='center'>
@@ -335,7 +360,7 @@ function Component(props) {
                             </div>
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable))} columns={state['items'].columns.toArray()} />
+                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable)).toArray()} columns={state['items'].columns.toArray()} />
                 </Container >
             </Container>
         }, <div>Variable not found</div>)

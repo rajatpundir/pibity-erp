@@ -16,6 +16,7 @@ export type Mapper = {
 
 export type MapperName =
     | 'createUOMs'
+    | 'deleteProductUOMs'
     | 'createIndentItems'
     | 'createQuotationItems'
     | 'createPurchaseOrderItems'
@@ -33,6 +34,12 @@ export const mappers: Record<MapperName, Mapper> = {
         queryParams: [],
         functionName: 'createUOM',
         functionInput: 'product'
+    },
+    deleteProductUOMs: {
+        query: true,
+        queryParams: ['product'],
+        functionName: 'deleteUOM',
+        functionInput: 'variableName'
     },
     createIndentItems: {
         query: false,
@@ -109,12 +116,12 @@ export async function executeMapper(mapper: Mapper, args: MapperArgs, overlay: V
     console.log(mapper, args)
     const fx = functions[mapper.functionName]
     const fi = fx.inputs[mapper.functionInput]
-    var result = Vector.of<object>()
+    var result = [] as Array<object>
     var diffs = Vector.of<DiffVariable>()
     if (isNonPrimitive(fi.type)) {
         if (mapper.query) {
             const query: Query = getQuery(fi.type)
-            Object.keys(args.queryParams).forEach(queryParam => {
+            for(const queryParam in args.queryParams) {
                 if (mapper.queryParams.includes(queryParam) && Object.keys(query.values).includes(queryParam)) {
                     const value = query.values[queryParam]
                     value.checked = true
@@ -145,12 +152,11 @@ export async function executeMapper(mapper: Mapper, args: MapperArgs, overlay: V
                     }
                     query[queryParam] = value
                 }
-            })
-
+            }
             const unfilteredVariables = await getVariables(fi.type)
             const variables: Array<Immutable<Variable>> = unfilteredVariables.filter(variable => applyFilter(query, variable))
-            // Note. Await does not work inside forEach loop.
-            variables.forEach(async (variable, index) => {
+            for(let index = 0; index < variables.length; index++) {
+                const variable = variables[index]
                 if (index < args.args.length) {
                     const functionArgs = args.args[index]
                     functionArgs[mapper.functionInput] = variable.variableName.toString()
@@ -158,7 +164,7 @@ export async function executeMapper(mapper: Mapper, args: MapperArgs, overlay: V
                     if (!symbolFlag) {
                         return [result, false, mergeDiffs(diffs.toArray())]
                     }
-                    result = result.append(functionResult)
+                    result.push(functionResult)
                     diffs = diffs.append(diff)
                 } else {
                     const functionArgs = args.args[args.args.length - 1]
@@ -167,21 +173,21 @@ export async function executeMapper(mapper: Mapper, args: MapperArgs, overlay: V
                     if (!symbolFlag) {
                         return [result, false, mergeDiffs(diffs.toArray())]
                     }
-                    result = result.append(functionResult)
+                    result.push(functionResult)
                     diffs = diffs.append(diff)
                 }
-            })
+            }
         } else {
             for (const key in args.args) {
                 const arg = args.args[key]
                 const [functionResult, symbolFlag, diff] = await executeFunction(fx, arg, overlay)
                 if (!symbolFlag) {
-                    return [result.toArray(), false, mergeDiffs(diffs.toArray())]
+                    return [result, false, mergeDiffs(diffs.toArray())]
                 }
-                result = result.append(functionResult)
+                result.push(functionResult)
                 diffs = diffs.append(diff)
             }
         }
     }
-    return [result.toArray(), true, mergeDiffs(diffs.toArray())]
+    return [result, true, mergeDiffs(diffs.toArray())]
 }

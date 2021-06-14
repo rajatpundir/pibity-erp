@@ -18,6 +18,7 @@ import { circuits } from '../../../main/circuits'
 import { iff, when } from '../../../main/utils'
 import { db } from '../../../main/dexie'
 import { DiffRow, ProductRow, UOMRow } from '../../../main/rows'
+import { useCallback } from 'react'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -172,31 +173,31 @@ function Component(props) {
     const [addUOMDrawer, toggleAddUOMDrawer] = useState(false)
     const [uomFilter, toggleUOMFilter] = useState(false)
 
-    useEffect(() => {
-        async function setVariable() {
-            if (props.match.params[0]) {
-                const rows = await db.products.toArray()
-                var composedVariables = HashSet.of<Immutable<ProductVariable>>().addAll(rows ? rows.map(x => ProductRow.toVariable(x)) : [])
-                const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
+
+    const setVariable = useCallback(async () => {
+        if (props.match.params[0]) {
+            const rows = await db.products.toArray()
+            var composedVariables = HashSet.of<Immutable<ProductVariable>>().addAll(rows ? rows.map(x => ProductRow.toVariable(x)) : [])
+            const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+            })
+            const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
+            if (variables.length() === 1) {
+                const variable = variables.toArray()[0]
+                dispatch(['replace', 'variable', variable as ProductVariable])
+                const itemRows = await db.uoms.toArray()
+                var composedItemVariables = HashSet.of<Immutable<UOMVariable>>().addAll(itemRows ? itemRows.map(x => UOMRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.uoms.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.uoms.variable.typeName].replace)
                 })
-                const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
-                if (variables.length() === 1) {
-                    const variable = variables.toArray()[0]
-                    dispatch(['replace', 'variable', variable as ProductVariable])
-                    const itemRows = await db.uoms.toArray()
-                    var composedItemVariables = HashSet.of<Immutable<UOMVariable>>().addAll(itemRows ? itemRows.map(x => UOMRow.toVariable(x)) : [])
-                    diffs?.forEach(diff => {
-                        composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.uoms.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.uoms.variable.typeName].replace)
-                    })
-                    const items = composedItemVariables.filter(variable => variable.values.product.toString() === props.match.params[0])
-                    dispatch(['replace', 'uoms', items as HashSet<UOMVariable>])
-                }
+                const items = composedItemVariables.filter(variable => variable.values.product.toString() === props.match.params[0])
+                dispatch(['replace', 'uoms', items as HashSet<UOMVariable>])
             }
         }
-        setVariable()
     }, [state.variable.typeName, state.uoms.variable.typeName, props.match.params, dispatch])
+
+    useEffect(() => { setVariable() }, [setVariable])
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         switch (event.target.name) {
@@ -277,14 +278,24 @@ function Component(props) {
         }
     }
 
+    const deleteVariable = async () => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteProduct, {
+            variableName: state.variable.variableName.toString()
+        })
+        console.log(result, symbolFlag, diff)
+        if (symbolFlag) {
+            db.diffs.put(diff.toRow())
+        }
+    }
+
     return iff(true,
         () => {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
                     <Title>{when(state.mode, {
-                        'create': `Create ${product.name}`,
-                        'update': `Update ${product.name}`,
-                        'show': `${product.name}`
+                        'create': `Create Product`,
+                        'update': `Update Product`,
+                        'show': `Product`
                     })}</Title>
                 </Item>
                 <Item area={Grid.button} justify='end' align='center' className='flex'>
@@ -298,14 +309,20 @@ function Component(props) {
                                 <>
                                     <Button onClick={() => {
                                         dispatch(['toggleMode'])
-                                        dispatch(['resetVariable', initialState])
+                                        setVariable()
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
                                         await saveVariable()
                                         props.history.push('/products')
                                     }}>Save</Button>
                                 </>,
-                                <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>))
+                                <>
+                                    <Button onClick={async () => {
+                                        await deleteVariable()
+                                        props.history.push('/products')
+                                    }}>Delete</Button>
+                                    <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>
+                                </>))
                     }
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>
@@ -389,7 +406,7 @@ function Component(props) {
                             </div>
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={state['uoms']} updatePage={updatePage('uoms')} variables={state.uoms.variables.filter(variable => applyFilter(state['uoms'].query, variable))} columns={state['uoms'].columns.toArray()} />
+                    <Table area={Grid2.table} state={state['uoms']} updatePage={updatePage('uoms')} variables={state.uoms.variables.filter(variable => applyFilter(state['uoms'].query, variable)).toArray()} columns={state['uoms'].columns.toArray()} />
                 </Container >
             </Container>
         }, <div>Variable not found</div>)
