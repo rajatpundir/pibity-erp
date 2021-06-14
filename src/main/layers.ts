@@ -4,7 +4,6 @@ import { Variable, VariableName, ProductVariable, UOMVariable, IndentVariable, I
 import { NonPrimitiveType } from './types'
 import { BOMItemRow, BOMRow, DiffRow, IndentItemRow, IndentRow, MaterialApprovalSlipItemRow, MaterialApprovalSlipRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow, MaterialRequistionSlipItemRow, MaterialRequistionSlipRow, MaterialReturnSlipItemRow, MaterialReturnSlipRow, ProductionPreparationSlipItemRow, ProductionPreparationSlipRow, ProductRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow, PurchaseOrderItemRow, PurchaseOrderRow, QuotationItemRow, QuotationRow, ScrapMaterialSlipRow, SupplierProductRow, SupplierRow, TransferMaterialSlipRow, UOMRow, WarehouseAcceptanceSlipRow } from './rows'
 import { db } from './dexie'
-import { when } from './utils'
 
 type DiffVariables = {
     Product: {
@@ -1333,36 +1332,226 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
     }
 }
 
-export async function getVariables(typeName: NonPrimitiveType): Promise<Array<Immutable<Variable>>> {
-    return when(typeName, {
-        'Product': (await db.products.toArray()).map(x => ProductRow.toVariable(x)),
-        'UOM': (await db.uoms.toArray()).map(x => UOMRow.toVariable(x)),
-        'Indent': (await db.indents.toArray()).map(x => IndentRow.toVariable(x)),
-        'IndentItem': (await db.indentItems.toArray()).map(x => IndentItemRow.toVariable(x)),
-        'Supplier': (await db.suppliers.toArray()).map(x => SupplierRow.toVariable(x)),
-        'SupplierProduct': (await db.supplierProducts.toArray()).map(x => SupplierProductRow.toVariable(x)),
-        'Quotation': (await db.quotations.toArray()).map(x => QuotationRow.toVariable(x)),
-        'QuotationItem': (await db.quotationItems.toArray()).map(x => QuotationItemRow.toVariable(x)),
-        'PurchaseOrder': (await db.purchaseOrders.toArray()).map(x => PurchaseOrderRow.toVariable(x)),
-        'PurchaseOrderItem': (await db.purchaseOrderItems.toArray()).map(x => PurchaseOrderItemRow.toVariable(x)),
-        'PurchaseInvoice': (await db.purchaseInvoices.toArray()).map(x => PurchaseInvoiceRow.toVariable(x)),
-        'PurchaseInvoiceItem': (await db.purchaseInvoiceItems.toArray()).map(x => PurchaseInvoiceItemRow.toVariable(x)),
-        'MaterialApprovalSlip': (await db.materialApprovalSlips.toArray()).map(x => MaterialApprovalSlipRow.toVariable(x)),
-        'MaterialApprovalSlipItem': (await db.materialApprovalSlipItems.toArray()).map(x => MaterialApprovalSlipItemRow.toVariable(x)),
-        'MaterialRejectionSlip': (await db.materialRejectionSlips.toArray()).map(x => MaterialRejectionSlipRow.toVariable(x)),
-        'MaterialRejectionSlipItem': (await db.materialRejectionSlipItems.toArray()).map(x => MaterialRejectionSlipItemRow.toVariable(x)),
-        'MaterialReturnSlip': (await db.materialReturnSlips.toArray()).map(x => MaterialReturnSlipRow.toVariable(x)),
-        'MaterialReturnSlipItem': (await db.materialReturnSlipItems.toArray()).map(x => MaterialReturnSlipItemRow.toVariable(x)),
-        'MaterialRequistionSlip': (await db.materialRequistionSlips.toArray()).map(x => MaterialRequistionSlipRow.toVariable(x)),
-        'MaterialRequistionSlipItem': (await db.materialRequistionSlipItems.toArray()).map(x => MaterialRequistionSlipItemRow.toVariable(x)),
-        'BOM': (await db.boms.toArray()).map(x => BOMRow.toVariable(x)),
-        'BOMItem': (await db.bomItems.toArray()).map(x => BOMItemRow.toVariable(x)),
-        'ProductionPreparationSlip': (await db.productionPreparationSlips.toArray()).map(x => ProductionPreparationSlipRow.toVariable(x)),
-        'ProductionPreparationSlipItem': (await db.productionPreparationSlipItems.toArray()).map(x => ProductionPreparationSlipItemRow.toVariable(x)),
-        'ScrapMaterialSlip': (await db.scrapMaterialSlips.toArray()).map(x => ScrapMaterialSlipRow.toVariable(x)),
-        'TransferMaterialSlip': (await db.transferMaterialSlips.toArray()).map(x => TransferMaterialSlipRow.toVariable(x)),
-        'WarehouseAcceptanceSlip': (await db.warehouseAcceptanceSlips.toArray()).map(x => WarehouseAcceptanceSlipRow.toVariable(x))
-    })
+export async function getVariables(typeName: NonPrimitiveType, overlay: Vector<DiffVariable> = Vector.of()): Promise<Vector<Immutable<Variable>>> {
+    const diffs: Array<DiffVariable> = (await db.diffs.orderBy('id').reverse().toArray()).map(x => DiffRow.toVariable(x))
+    switch (typeName) {
+        case 'Product': {
+            const rows = await db.products.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<ProductVariable>>().appendAll(rows ? rows.map(x => ProductRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'UOM': {
+            const rows = await db.uoms.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<UOMVariable>>().appendAll(rows ? rows.map(x => UOMRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'Indent': {
+            const rows = await db.indents.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<IndentVariable>>().appendAll(rows ? rows.map(x => IndentRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'IndentItem': {
+            const rows = await db.indentItems.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<IndentItemVariable>>().appendAll(rows ? rows.map(x => IndentItemRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'Supplier': {
+            const rows = await db.suppliers.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<SupplierVariable>>().appendAll(rows ? rows.map(x => SupplierRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'SupplierProduct': {
+            const rows = await db.supplierProducts.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<SupplierProductVariable>>().appendAll(rows ? rows.map(x => SupplierProductRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'Quotation': {
+            const rows = await db.quotations.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<QuotationVariable>>().appendAll(rows ? rows.map(x => QuotationRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'QuotationItem': {
+            const rows = await db.quotationItems.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<QuotationItemVariable>>().appendAll(rows ? rows.map(x => QuotationItemRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'PurchaseOrder': {
+            const rows = await db.purchaseOrders.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<PurchaseOrderVariable>>().appendAll(rows ? rows.map(x => PurchaseOrderRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'PurchaseOrderItem': {
+            const rows = await db.purchaseOrderItems.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<PurchaseOrderItemVariable>>().appendAll(rows ? rows.map(x => PurchaseOrderItemRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'PurchaseInvoice': {
+            const rows = await db.purchaseInvoices.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<PurchaseInvoiceVariable>>().appendAll(rows ? rows.map(x => PurchaseInvoiceRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'PurchaseInvoiceItem': {
+            const rows = await db.purchaseInvoiceItems.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<PurchaseInvoiceItemVariable>>().appendAll(rows ? rows.map(x => PurchaseInvoiceItemRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'MaterialApprovalSlip': {
+            const rows = await db.materialApprovalSlips.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<MaterialApprovalSlipVariable>>().appendAll(rows ? rows.map(x => MaterialApprovalSlipRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'MaterialApprovalSlipItem': {
+            const rows = await db.materialApprovalSlipItems.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<MaterialApprovalSlipItemVariable>>().appendAll(rows ? rows.map(x => MaterialApprovalSlipItemRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'MaterialRejectionSlip': {
+            const rows = await db.materialRejectionSlips.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<MaterialRejectionSlipVariable>>().appendAll(rows ? rows.map(x => MaterialRejectionSlipRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'MaterialRejectionSlipItem': {
+            const rows = await db.materialRejectionSlipItems.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<MaterialRejectionSlipItemVariable>>().appendAll(rows ? rows.map(x => MaterialRejectionSlipItemRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'MaterialReturnSlip': {
+            const rows = await db.materialReturnSlips.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<MaterialReturnSlipVariable>>().appendAll(rows ? rows.map(x => MaterialReturnSlipRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'MaterialReturnSlipItem': {
+            const rows = await db.materialReturnSlipItems.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<MaterialReturnSlipItemVariable>>().appendAll(rows ? rows.map(x => MaterialReturnSlipItemRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'MaterialRequistionSlip': {
+            const rows = await db.materialRequistionSlips.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<MaterialRequistionSlipVariable>>().appendAll(rows ? rows.map(x => MaterialRequistionSlipRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'MaterialRequistionSlipItem': {
+            const rows = await db.materialRequistionSlipItems.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<MaterialRequistionSlipItemVariable>>().appendAll(rows ? rows.map(x => MaterialRequistionSlipItemRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'BOM': {
+            const rows = await db.boms.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<BOMVariable>>().appendAll(rows ? rows.map(x => BOMRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'BOMItem': {
+            const rows = await db.bomItems.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<BOMItemVariable>>().appendAll(rows ? rows.map(x => BOMItemRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'ProductionPreparationSlip': {
+            const rows = await db.productionPreparationSlips.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<ProductionPreparationSlipVariable>>().appendAll(rows ? rows.map(x => ProductionPreparationSlipRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'ProductionPreparationSlipItem': {
+            const rows = await db.productionPreparationSlipItems.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<ProductionPreparationSlipItemVariable>>().appendAll(rows ? rows.map(x => ProductionPreparationSlipItemRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'ScrapMaterialSlip': {
+            const rows = await db.scrapMaterialSlips.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<ScrapMaterialSlipVariable>>().appendAll(rows ? rows.map(x => ScrapMaterialSlipRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'TransferMaterialSlip': {
+            const rows = await db.transferMaterialSlips.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<TransferMaterialSlipVariable>>().appendAll(rows ? rows.map(x => TransferMaterialSlipRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+        case 'WarehouseAcceptanceSlip': {
+            const rows = await db.warehouseAcceptanceSlips.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<WarehouseAcceptanceSlipVariable>>().appendAll(rows ? rows.map(x => WarehouseAcceptanceSlipRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
+    }
 }
 
 export function mergeDiffs(diffs: ReadonlyArray<DiffVariable>): DiffVariable {

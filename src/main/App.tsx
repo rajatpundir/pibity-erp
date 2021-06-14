@@ -30,9 +30,6 @@ import ShowMaterialScrapped from '../components/Quality/MaterialScrapped/Show'
 import ListMaterialScrapped from '../components/Quality/MaterialScrapped/List'
 import ShowWarehouseReceipt from '../components/Warehouse/Receipt/Show'
 import ListWarehouseReceipt from '../components/Warehouse/Receipt/List'
-// import createDemoData from './createDemoData'
-
-// createDemoData()
 
 function App() {
   return (

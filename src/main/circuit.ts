@@ -59,12 +59,10 @@ export type Circuit = {
 }
 
 export async function executeCircuit(circuit: Circuit, args: object, overlay: Vector<DiffVariable> = Vector.of()): Promise<[object, boolean, DiffVariable]> {
-    console.log('$', args)
     const computationResults = {}
     var outputs = {}
     var diffs = Vector.of<DiffVariable>()
     for (const computationName in circuit.computations) {
-        console.log(computationName, '^^^^')
         const computation = circuit.computations[computationName]
         switch (computation.type) {
             case 'function': {
@@ -84,7 +82,6 @@ export async function executeCircuit(circuit: Circuit, args: object, overlay: Ve
                     }
                 })
                 const [result, symbolFlag, diff] = await executeFunction(fx, functionArgs, overlay.appendAll(diffs))
-                console.log('$$$@@@', diff)
                 if (!symbolFlag) {
                     return [outputs, false, mergeDiffs(diffs.toArray())]
                 }
@@ -120,7 +117,7 @@ export async function executeCircuit(circuit: Circuit, args: object, overlay: Ve
                 const mapper = mappers[computation.exec]
                 const queryParams = {}
                 const queryParamsConnections = computation.connect.queryParams
-                Object.keys(mapper.queryParams).forEach(queryParam => {
+                for (const queryParam of mapper.queryParams) {
                     const connection = queryParamsConnections[queryParam]
                     switch (connection[0]) {
                         case 'input': {
@@ -132,7 +129,7 @@ export async function executeCircuit(circuit: Circuit, args: object, overlay: Ve
                             break
                         }
                     }
-                })
+                }
                 var mapperArgs: Array<object> = []
                 const argsConnections = computation.connect.args
                 switch (argsConnections[0]) {
@@ -186,7 +183,6 @@ export async function executeCircuit(circuit: Circuit, args: object, overlay: Ve
                     return [outputs, false, mergeDiffs(diffs.toArray())]
                 }
                 computationResults[computationName] = result
-                console.log('$$$###', diff)
                 diffs = diffs.append(diff)
                 break
             }
@@ -202,6 +198,5 @@ export async function executeCircuit(circuit: Circuit, args: object, overlay: Ve
             }
         })
     }
-    console.log(outputs)
     return [outputs, true, mergeDiffs(diffs.toArray())]
 }

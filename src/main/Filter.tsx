@@ -10,7 +10,6 @@ import React from 'react'
 import { Cell, none, TableContainer } from './commons'
 import tw from 'twin.macro'
 import { evaluateExpression, LispExpression, Symbols } from './lisp'
-import { Vector } from 'prelude-ts'
 import { Key, NonPrimitiveType, types } from './types'
 import { Variable } from './variables'
 import { isNonPrimitive } from './mapper'
@@ -1921,7 +1920,7 @@ function getSymbols(symbolPaths: Array<ReadonlyArray<string>>, variable: Immutab
     return {
         variableName: {
             type: 'Text',
-            value: variable.toString(),
+            value: variable.variableName.toString(),
         },
         values: {
             type: 'Text',
@@ -1956,7 +1955,12 @@ function getSymbols(symbolPaths: Array<ReadonlyArray<string>>, variable: Immutab
                             break
                         }
                         default: {
-                            symbolPaths.filter(x => x[0] === 'values' && x[1] === keyName).map(x => Vector.of().appendAll(x.slice(2)))
+                            acc[keyName] = {
+                                type: 'Text',
+                                value: variable.values[keyName].toString()
+                            }
+                            // Note. Do recursive symbol creation with symbolFlag
+                            // symbolPaths.filter(x => x[0] === 'values' && x[1] === keyName).map(x => Vector.of().appendAll(x.slice(2)))
                         }
                     }
                 }

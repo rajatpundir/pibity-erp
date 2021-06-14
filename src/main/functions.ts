@@ -140,7 +140,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteProduct: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'Product'
             }
         },
         outputs: {
@@ -205,7 +205,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteUOM: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'UOM'
             }
         },
         outputs: {
@@ -245,7 +245,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteSupplier: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'Supplier'
             }
         },
         outputs: {
@@ -281,7 +281,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteIndent: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'Indent'
             }
         },
         outputs: {
@@ -397,7 +397,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteIndentItem: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'IndentItem'
             }
         },
         outputs: {
@@ -453,7 +453,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteQuotation: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'Quotation'
             }
         },
         outputs: {
@@ -518,7 +518,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteQuotationItem: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'QuotationItem'
             }
         },
         outputs: {
@@ -565,7 +565,7 @@ export const functions: Record<FunctionName, Function> = {
     deletePurchaseOrder: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'PurchaseOrder'
             }
         },
         outputs: {
@@ -645,7 +645,7 @@ export const functions: Record<FunctionName, Function> = {
     deletePurchaseOrderItem: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'PurchaseOrderItem'
             }
         },
         outputs: {
@@ -692,7 +692,7 @@ export const functions: Record<FunctionName, Function> = {
     deletePurchaseInvoice: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'PurchaseInvoice'
             }
         },
         outputs: {
@@ -769,7 +769,7 @@ export const functions: Record<FunctionName, Function> = {
     deletePurchaseInvoiceItem: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'PurchaseInvoiceItem'
             }
         },
         outputs: {
@@ -816,7 +816,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteMaterialApprovalSlip: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'MaterialApprovalSlip'
             }
         },
         outputs: {
@@ -887,7 +887,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteMaterialApprovalSlipItem: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'MaterialApprovalSlipItem'
             }
         },
         outputs: {
@@ -934,7 +934,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteMaterialRejectionSlip: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'MaterialRejectionSlip'
             }
         },
         outputs: {
@@ -1005,7 +1005,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteMaterialRejectionSlipItem: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'MaterialRejectionSlipItem'
             }
         },
         outputs: {
@@ -1052,7 +1052,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteMaterialReturnSlip: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'MaterialReturnSlip'
             }
         },
         outputs: {
@@ -1117,7 +1117,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteMaterialReturnSlipItem: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'MaterialReturnSlipItem'
             }
         },
         outputs: {
@@ -1164,7 +1164,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteMaterialRequistionSlip: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'MaterialRequistionSlip'
             }
         },
         outputs: {
@@ -1235,7 +1235,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteMaterialRequistionSlipItem: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'MaterialRequistionSlipItem'
             }
         },
         outputs: {
@@ -1275,7 +1275,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteBOM: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'BOM'
             }
         },
         outputs: {
@@ -1349,7 +1349,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteBOMItem: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'BOMItem'
             }
         },
         outputs: {
@@ -1408,7 +1408,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteProductionPreparationSlip: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'ProductionPreparationSlip'
             }
         },
         outputs: {
@@ -1473,7 +1473,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteProductionPreparationSlipItem: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'ProductionPreparationSlipItem'
             }
         },
         outputs: {
@@ -1529,7 +1529,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteScrapMaterialSlip: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'ScrapMaterialSlip'
             }
         },
         outputs: {
@@ -1591,7 +1591,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteTransferMaterialSlip: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'TransferMaterialSlip'
             }
         },
         outputs: {
@@ -1647,7 +1647,7 @@ export const functions: Record<FunctionName, Function> = {
     deleteWarehouseAcceptanceSlip: {
         inputs: {
             variableName: {
-                type: 'Text'
+                type: 'WarehouseAcceptanceSlip'
             }
         },
         outputs: {

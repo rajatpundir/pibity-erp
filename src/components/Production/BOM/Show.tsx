@@ -260,7 +260,8 @@ function Component(props) {
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteBOM, {
-            variableName: state.variable.variableName.toString()
+            variableName: state.variable.variableName.toString(),
+            items: [{}]
         })
         console.log(result, symbolFlag, diff)
         if (symbolFlag) {
