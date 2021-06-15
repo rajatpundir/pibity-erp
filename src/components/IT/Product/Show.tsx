@@ -173,7 +173,6 @@ function Component(props) {
     const [addUOMDrawer, toggleAddUOMDrawer] = useState(false)
     const [uomFilter, toggleUOMFilter] = useState(false)
 
-
     const setVariable = useCallback(async () => {
         if (props.match.params[0]) {
             const rows = await db.products.toArray()
