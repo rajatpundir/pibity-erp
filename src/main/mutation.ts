@@ -343,6 +343,7 @@ export function updateVariable(variable: Immutable<Variable>, values: object, up
             break
         }
     }
+    // Note. Also update references if variable name was updated and include the updates in diff.
     return [updatedVariable, mergeDiffs([getRemoveVariableDiff(variable.typeName, variable.variableName.toString()), getReplaceVariableDiff(updatedVariable)])]
 }
 

@@ -66,6 +66,7 @@ function Component(props) {
     var composedVariables = Vector.of<Immutable<ProductVariable>>().appendAll(rows ? rows.map(x => ProductRow.toVariable(x)) : [])
     const diffs = useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
     diffs?.forEach(diff => {
+        // Note. To apply in Show.tsx files as well.
         composedVariables = composedVariables.filter(x => !diff.variables[state.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables[state.typeName].replace)
     })
     const variables = composedVariables.filter(variable => applyFilter(state.query, variable))
@@ -91,7 +92,7 @@ function Component(props) {
                     <Filter typeName={state.typeName} query={state.query} updateQuery={updateQuery} />
                 </Drawer>
             </Item>
-            <Table area={Grid.table} state={state} updatePage={updatePage} variables={variables.toArray()} columns={state.columns.toArray()} />
+            <Table area={Grid.table} state={state} updatePage={updatePage} variables={variables.reverse().toArray()} columns={state.columns.toArray()} />
         </Container>
     )
 }
