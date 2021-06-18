@@ -149,7 +149,7 @@ async function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimit
         if (variable === undefined) {
             symbolFlag = false
         } else {
-            for (const keyName in type){
+            for (const keyName in type) {
                 if (symbolFlag && symbolPaths.filter(x => x[0] === keyName)) {
                     const key: Key = type[keyName]
                     if (symbolValue['values'] !== undefined) {
@@ -193,7 +193,7 @@ async function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimit
                         }
                     }
                 }
-            }          
+            }
         }
     }
     return [symbolValue, symbolFlag]
@@ -257,8 +257,8 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
     const result = {}
     var diffs: Vector<DiffVariable> = Vector.of()
     if (symbolFlag) {
-        for(const outputName in fx.outputs) {
-            const fo = fx.outputs[outputName]           
+        for (const outputName in fx.outputs) {
+            const fo = fx.outputs[outputName]
             switch (fo.type) {
                 case 'Text': {
                     result[outputName] = String(evaluateExpression(fo.value, symbols))
@@ -289,7 +289,7 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                                 values: {}
                             }
                             for (const keyName in types[fo.type].keys) {
-                                const key: Key = types[fo.type].keys[keyName]                             
+                                const key: Key = types[fo.type].keys[keyName]
                                 switch (key.type) {
                                     case 'Text': {
                                         createdVariable.values[keyName] = String(evaluateExpression(fo.values[keyName], symbols))
@@ -310,9 +310,9 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                                         createdVariable.values[keyName] = Boolean(evaluateExpression(fo.values[keyName], symbols)).valueOf()
                                         break
                                     }
-                                    default: {                                       
+                                    default: {
                                         const referencedVariable = await getVariable(key.type, String(evaluateExpression(fo.values[keyName], symbols)), overlay)
-                                         if (referencedVariable !== undefined) {                                         
+                                        if (referencedVariable !== undefined) {
                                             createdVariable.values[keyName] = referencedVariable.variableName.toString()
                                         } else {
                                             // Information is not present, return with symbolFlag as false
@@ -334,11 +334,11 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                                 values: {}
                             }
                             const variable = await getVariable(fo.type, variableName, overlay)
-                            if (variable !== undefined) {                                                    
+                            if (variable !== undefined) {
                                 Object.keys(variable.values).forEach(keyName => {
                                     updatedVariable.values[keyName] = variable.values[keyName]
                                 })
-                                for(const keyName in fo.values){
+                                for (const keyName in fo.values) {
                                     const key: Key = types[fo.type].keys[keyName]
                                     switch (key.type) {
                                         case 'Text': {
@@ -375,7 +375,7 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                                             }
                                         }
                                     }
-                                }                              
+                                }
                                 result[outputName] = {
                                     typeName: updatedVariable.typeName,
                                     variableName: updatedVariable.variableName.toString(),
@@ -398,7 +398,7 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                     }
                 }
             }
-        }      
+        }
         Object.keys(fx.inputs).forEach(async inputName => {
             const fi = fx.inputs[inputName]
             switch (fi.type) {
@@ -426,7 +426,7 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                                 updatedVariable.values[keyName] = variable.values[keyName]
                             })
                             if (fi.values !== undefined) {
-                                for(const keyName in fi.values){
+                                for (const keyName in fi.values) {
                                     const key: Key = types[fi.type].keys[keyName]
                                     if (fi.values !== undefined) {
                                         switch (key.type) {
@@ -469,6 +469,6 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                 }
             }
         })
-    }    
+    }
     return [result, symbolFlag, mergeDiffs(diffs.toArray())]
 }

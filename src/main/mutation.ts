@@ -1,7 +1,8 @@
-import { DiffVariable, getRemoveVariableDiff, getReplaceVariableDiff, getVariable, mergeDiffs } from "./layers";
-import { NonPrimitiveType } from "./types";
-import { when } from "./utils";
-import { ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip, Variable, MaterialReturnSlipItem, SupplierProduct, BOMItem, ProductionPreparationSlipItem, ScrapMaterialSlip, WarehouseAcceptanceSlip } from './variables'
+import { Immutable } from 'immer';
+import { DiffVariable, getRemoveVariableDiff, getReplaceVariableDiff, getVariable, mergeDiffs } from './layers'
+import { NonPrimitiveType } from './types';
+import { when } from './utils';
+import { Variable, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip } from './variables'
 
 export function createVariable(typeName: NonPrimitiveType, variableName: string, values: object): [Variable, DiffVariable] {
     const variable: Variable = when(typeName, {
@@ -133,215 +134,212 @@ export function createVariable(typeName: NonPrimitiveType, variableName: string,
     return [variable, getReplaceVariableDiff(variable)]
 }
 
-export function updateVariable(variable: Variable, values: object, updatedVariableName?: string): [Variable, DiffVariable] {
+export function updateVariable(variable: Immutable<Variable>, values: object, updatedVariableName?: string): [Variable, DiffVariable] {
     let updatedVariable: Variable
     switch (variable.typeName) {
         case 'Product': {
-            updatedVariable = variable
-            updatedVariable.variableName = new Product(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['name'] !== undefined) updatedVariable.values.name = String(values['name'])
-            if (values['orderable'] !== undefined) updatedVariable.values.orderable = Boolean(values['orderable']).valueOf()
-            if (values['consumable'] !== undefined) updatedVariable.values.consumable = Boolean(values['consumable']).valueOf()
-            if (values['producable'] !== undefined) updatedVariable.values.producable = Boolean(values['producable']).valueOf()
+            updatedVariable = new ProductVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                name: values['name'] !== undefined ? String(values['name']) : variable.values.name,
+                orderable: values['orderable'] !== undefined ? Boolean(values['orderable']).valueOf() : variable.values.orderable,
+                consumable: values['consumable'] !== undefined ? Boolean(values['consumable']).valueOf() : variable.values.consumable,
+                producable: values['producable'] !== undefined ? Boolean(values['producable']).valueOf() : variable.values.orderable,
+            })
             break
         }
         case 'UOM': {
-            updatedVariable = variable
-            updatedVariable.variableName = new UOM(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['product'] !== undefined) updatedVariable.values.product = new Product(String(values['product']))
-            if (values['name'] !== undefined) updatedVariable.values.name = String(values['name'])
-            if (values['conversionRate'] !== undefined) updatedVariable.values.conversionRate = parseInt(values['conversionRate'])
+            updatedVariable = new UOMVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                product: values['product'] !== undefined ? new Product(String(values['product'])) : new Product(variable.values.product.toString()),
+                name: values['name'] !== undefined ? String(values['name']) : variable.values.name,
+                conversionRate: values['conversionRate'] !== undefined ? parseInt(values['conversionRate']) : variable.values.conversionRate
+            })
             break
         }
         case 'Indent': {
-            updatedVariable = variable
-            updatedVariable.variableName = new Indent(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
+            updatedVariable = new IndentVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {})
             break
         }
         case 'IndentItem': {
-            updatedVariable = variable
-            updatedVariable.variableName = new IndentItem(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['indent'] !== undefined) updatedVariable.values.indent = new Indent(String(values['indent']))
-            if (values['product'] !== undefined) updatedVariable.values.product = new Product(String(values['product']))
-            if (values['quantity'] !== undefined) updatedVariable.values.quantity = parseInt(values['quantity'])
-            if (values['uom'] !== undefined) updatedVariable.values.uom = new UOM(String(values['uom']))
-            if (values['ordered'] !== undefined) updatedVariable.values.ordered = parseInt(values['ordered'])
-            if (values['received'] !== undefined) updatedVariable.values.received = parseInt(values['received'])
-            if (values['approved'] !== undefined) updatedVariable.values.approved = parseInt(values['approved'])
-            if (values['rejected'] !== undefined) updatedVariable.values.rejected = parseInt(values['rejected'])
-            if (values['returned'] !== undefined) updatedVariable.values.returned = parseInt(values['returned'])
-            if (values['requisted'] !== undefined) updatedVariable.values.requisted = parseInt(values['requisted'])
-            if (values['consumed'] !== undefined) updatedVariable.values.consumed = parseInt(values['consumed'])
+            updatedVariable = new IndentItemVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                indent: values['indent'] !== undefined ? new Indent(String(values['indent'])) : new Indent(variable.values.indent.toString()),
+                product: values['product'] !== undefined ? new Product(String(values['product'])) : new Product(variable.values.product.toString()),
+                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity,
+                uom: values['uom'] !== undefined ? new UOM(String(values['uom'])) : new UOM(variable.values.uom.toString()),
+                ordered: values['ordered'] !== undefined ? parseInt(values['ordered']) : variable.values.ordered,
+                received: values['received'] !== undefined ? parseInt(values['received']) : variable.values.received,
+                approved: values['approved'] !== undefined ? parseInt(values['approved']) : variable.values.approved,
+                rejected: values['rejected'] !== undefined ? parseInt(values['rejected']) : variable.values.rejected,
+                returned: values['returned'] !== undefined ? parseInt(values['returned']) : variable.values.returned,
+                requisted: values['requisted'] !== undefined ? parseInt(values['requisted']) : variable.values.requisted,
+                consumed: values['consumed'] !== undefined ? parseInt(values['consumed']) : variable.values.consumed
+            })
             break
         }
         case 'Supplier': {
-            updatedVariable = variable
-            updatedVariable.variableName = new Supplier(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
+            updatedVariable = new SupplierVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {})
             break
         }
         case 'SupplierProduct': {
-            updatedVariable = variable
-            updatedVariable.variableName = new SupplierProduct(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['supplier'] !== undefined) updatedVariable.values.supplier = new Supplier(String(values['supplier']))
-            if (values['product'] !== undefined) updatedVariable.values.product = new Product(String(values['product']))
+            updatedVariable = new SupplierProductVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                supplier: values['supplier'] !== undefined ? new Supplier(String(values['supplier'])) : new Supplier(variable.values.supplier.toString()),
+                product: values['product'] !== undefined ? new Product(String(values['product'])) : new Product(variable.values.product.toString())
+            })
             break
         }
         case 'Quotation': {
-            updatedVariable = variable
-            updatedVariable.variableName = new Quotation(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['indent'] !== undefined) updatedVariable.values.indent = new Indent(String(values['indent']))
-            if (values['supplier'] !== undefined) updatedVariable.values.supplier = new Supplier(String(values['supplier']))
+            updatedVariable = new QuotationVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                indent: values['indent'] !== undefined ? new Indent(String(values['indent'])) : new Indent(variable.values.indent.toString()),
+                supplier: values['supplier'] !== undefined ? new Supplier(String(values['supplier'])) : new Supplier(variable.values.supplier.toString())
+            })
             break
         }
         case 'QuotationItem': {
-            updatedVariable = variable
-            updatedVariable.variableName = new QuotationItem(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['quotation'] !== undefined) updatedVariable.values.quotation = new Quotation(String(values['quotation']))
-            if (values['indentItem'] !== undefined) updatedVariable.values.indentItem = new IndentItem(String(values['indentItem']))
-            if (values['quantity'] !== undefined) updatedVariable.values.quantity = parseInt(values['quantity'])
+            updatedVariable = new QuotationItemVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                quotation: values['quotation'] !== undefined ? new Quotation(String(values['quotation'])) : new Quotation(variable.values.quotation.toString()),
+                indentItem: values['indentItem'] !== undefined ? new IndentItem(String(values['indentItem'])) : new IndentItem(variable.values.indentItem.toString()),
+                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity
+            })
             break
         }
         case 'PurchaseOrder': {
-            updatedVariable = variable
-            updatedVariable.variableName = new PurchaseOrder(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['quotation'] !== undefined) updatedVariable.values.quotation = new Quotation(String(values['quotation']))
+            updatedVariable = new PurchaseOrderVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                quotation: values['quotation'] !== undefined ? new Quotation(String(values['quotation'])) : new Quotation(variable.values.quotation.toString())
+            })
             break
         }
         case 'PurchaseOrderItem': {
-            updatedVariable = variable
-            updatedVariable.variableName = new PurchaseOrderItem(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['purchaseOrder'] !== undefined) updatedVariable.values.purchaseOrder = new PurchaseOrder(String(values['purchaseOrder']))
-            if (values['quotationItem'] !== undefined) updatedVariable.values.quotationItem = new QuotationItem(String(values['quotationItem']))
-            if (values['quantity'] !== undefined) updatedVariable.values.quantity = parseInt(values['quantity'])
-            if (values['price'] !== undefined) updatedVariable.values.price = parseFloat(values['price'])
-            if (values['received'] !== undefined) updatedVariable.values.received = parseInt(values['received'])
+            updatedVariable = new PurchaseOrderItemVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                purchaseOrder: values['purchaseOrder'] !== undefined ? new PurchaseOrder(String(values['purchaseOrder'])) : new PurchaseOrder(variable.values.purchaseOrder.toString()),
+                quotationItem: values['quotationItem'] !== undefined ? new QuotationItem(String(values['quotationItem'])) : new QuotationItem(variable.values.quotationItem.toString()),
+                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity,
+                price: values['price'] !== undefined ? parseFloat(values['price']) : variable.values.price,
+                received: values['received'] !== undefined ? parseInt(values['received']) : variable.values.received
+            })
             break
         }
         case 'PurchaseInvoice': {
-            updatedVariable = variable
-            updatedVariable.variableName = new PurchaseInvoice(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['purchaseOrder'] !== undefined) updatedVariable.values.purchaseOrder = new PurchaseOrder(String(values['purchaseOrder']))
+            updatedVariable = new PurchaseInvoiceVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                purchaseOrder: values['purchaseOrder'] !== undefined ? new PurchaseOrder(String(values['purchaseOrder'])) : new PurchaseOrder(variable.values.purchaseOrder.toString())
+            })
             break
         }
         case 'PurchaseInvoiceItem': {
-            updatedVariable = variable
-            updatedVariable.variableName = new PurchaseInvoiceItem(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['purchaseInvoice'] !== undefined) updatedVariable.values.purchaseInvoice = new PurchaseInvoice(String(values['purchaseInvoice']))
-            if (values['purchaseOrderItem'] !== undefined) updatedVariable.values.purchaseOrderItem = new PurchaseOrderItem(String(values['purchaseOrderItem']))
-            if (values['quantity'] !== undefined) updatedVariable.values.quantity = parseInt(values['quantity'])
-            if (values['approved'] !== undefined) updatedVariable.values.approved = parseInt(values['approved'])
-            if (values['rejected'] !== undefined) updatedVariable.values.rejected = parseInt(values['rejected'])
+            updatedVariable = new PurchaseInvoiceItemVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                purchaseInvoice: values['purchaseInvoice'] !== undefined ? new PurchaseInvoice(String(values['purchaseInvoice'])) : new PurchaseInvoice(variable.values.purchaseInvoice.toString()),
+                purchaseOrderItem: values['purchaseOrderItem'] !== undefined ? new PurchaseOrderItem(String(values['purchaseOrderItem'])) : new PurchaseOrderItem(variable.values.purchaseOrderItem.toString()),
+                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity,
+                approved: values['approved'] !== undefined ? parseInt(values['approved']) : variable.values.approved,
+                rejected: values['rejected'] !== undefined ? parseInt(values['rejected']) : variable.values.rejected
+            })
             break
         }
         case 'MaterialApprovalSlip': {
-            updatedVariable = variable
-            updatedVariable.variableName = new MaterialApprovalSlip(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['purchaseInvoice'] !== undefined) updatedVariable.values.purchaseInvoice = new PurchaseInvoice(String(values['purchaseInvoice']))
+            updatedVariable = new MaterialApprovalSlipVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                purchaseInvoice: values['purchaseInvoice'] !== undefined ? new PurchaseInvoice(String(values['purchaseInvoice'])) : new PurchaseInvoice(variable.values.purchaseInvoice.toString())
+            })
             break
         }
         case 'MaterialApprovalSlipItem': {
-            updatedVariable = variable
-            updatedVariable.variableName = new MaterialApprovalSlipItem(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['materialApprovalSlip'] !== undefined) updatedVariable.values.materialApprovalSlip = new MaterialApprovalSlip(String(values['materialApprovalSlip']))
-            if (values['purchaseInvoiceItem'] !== undefined) updatedVariable.values.purchaseInvoiceItem = new PurchaseInvoiceItem(String(values['purchaseInvoiceItem']))
-            if (values['quantity'] !== undefined) updatedVariable.values.quantity = parseInt(values['quantity'])
-            if (values['requisted'] !== undefined) updatedVariable.values.requisted = parseInt(values['requisted'])
+            updatedVariable = new MaterialApprovalSlipItemVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                materialApprovalSlip: values['materialApprovalSlip'] !== undefined ? new MaterialApprovalSlip(String(values['materialApprovalSlip'])) : new MaterialApprovalSlip(variable.values.materialApprovalSlip.toString()),
+                purchaseInvoiceItem: values['purchaseInvoiceItem'] !== undefined ? new PurchaseInvoiceItem(String(values['purchaseInvoiceItem'])) : new PurchaseInvoiceItem(variable.values.purchaseInvoiceItem.toString()),
+                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity,
+                requisted: values['requisted'] !== undefined ? parseInt(values['requisted']) : variable.values.requisted
+            })
             break
         }
         case 'MaterialRejectionSlip': {
-            updatedVariable = variable
-            updatedVariable.variableName = new MaterialRejectionSlip(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['purchaseInvoice'] !== undefined) updatedVariable.values.purchaseInvoice = new PurchaseInvoice(String(values['purchaseInvoice']))
+            updatedVariable = new MaterialRejectionSlipVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                purchaseInvoice: values['purchaseInvoice'] !== undefined ? new PurchaseInvoice(String(values['purchaseInvoice'])) : new PurchaseInvoice(variable.values.purchaseInvoice.toString())
+            })
             break
         }
         case 'MaterialRejectionSlipItem': {
-            updatedVariable = variable
-            updatedVariable.variableName = new MaterialRejectionSlipItem(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['materialRejectionSlip'] !== undefined) updatedVariable.values.materialRejectionSlip = new MaterialRejectionSlip(String(values['materialRejectionSlip']))
-            if (values['purchaseInvoiceItem'] !== undefined) updatedVariable.values.purchaseInvoiceItem = new PurchaseInvoiceItem(String(values['purchaseInvoiceItem']))
-            if (values['quantity'] !== undefined) updatedVariable.values.quantity = parseInt(values['quantity'])
-            if (values['returned'] !== undefined) updatedVariable.values.returned = parseInt(values['returned'])
+            updatedVariable = new MaterialRejectionSlipItemVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                materialRejectionSlip: values['materialRejectionSlip'] !== undefined ? new MaterialRejectionSlip(String(values['materialRejectionSlip'])) : new MaterialRejectionSlip(variable.values.materialRejectionSlip.toString()),
+                purchaseInvoiceItem: values['purchaseInvoiceItem'] !== undefined ? new PurchaseInvoiceItem(String(values['purchaseInvoiceItem'])) : new PurchaseInvoiceItem(variable.values.purchaseInvoiceItem.toString()),
+                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity,
+                returned: values['returned'] !== undefined ? parseInt(values['returned']) : variable.values.returned
+            })
             break
         }
         case 'MaterialReturnSlip': {
-            updatedVariable = variable
-            updatedVariable.variableName = new MaterialReturnSlip(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['materialRejectionSlip'] !== undefined) updatedVariable.values.materialRejectionSlip = new MaterialRejectionSlip(String(values['materialRejectionSlip']))
+            updatedVariable = new MaterialReturnSlipVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                materialRejectionSlip: values['materialRejectionSlip'] !== undefined ? new MaterialRejectionSlip(String(values['materialRejectionSlip'])) : new MaterialRejectionSlip(variable.values.materialRejectionSlip.toString())
+            })
             break
         }
         case 'MaterialReturnSlipItem': {
-            updatedVariable = variable
-            updatedVariable.variableName = new MaterialReturnSlipItem(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['materialReturnSlip'] !== undefined) updatedVariable.values.materialReturnSlip = new MaterialReturnSlip(String(values['materialReturnSlip']))
-            if (values['materialRejectionSlipItem'] !== undefined) updatedVariable.values.materialRejectionSlipItem = new MaterialRejectionSlipItem(String(values['materialRejectionSlipItem']))
-            if (values['quantity'] !== undefined) updatedVariable.values.quantity = parseInt(values['quantity'])
+            updatedVariable = new MaterialReturnSlipItemVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                materialReturnSlip: values['materialReturnSlip'] !== undefined ? new MaterialReturnSlip(String(values['materialReturnSlip'])) : new MaterialReturnSlip(variable.values.materialReturnSlip.toString()),
+                materialRejectionSlipItem: values['materialRejectionSlipItem'] !== undefined ? new MaterialRejectionSlipItem(String(values['materialRejectionSlipItem'])) : new MaterialRejectionSlipItem(variable.values.materialRejectionSlipItem.toString()),
+                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity
+            })
             break
         }
         case 'MaterialRequistionSlip': {
-            updatedVariable = variable
-            updatedVariable.variableName = new MaterialRequistionSlip(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['materialApprovalSlip'] !== undefined) updatedVariable.values.materialApprovalSlip = new MaterialApprovalSlip(String(values['materialApprovalSlip']))
+            updatedVariable = new MaterialRequistionSlipVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                materialApprovalSlip: values['materialApprovalSlip'] !== undefined ? new MaterialApprovalSlip(String(values['materialApprovalSlip'])) : new MaterialApprovalSlip(variable.values.materialApprovalSlip.toString())
+            })
             break
         }
         case 'MaterialRequistionSlipItem': {
-            updatedVariable = variable
-            updatedVariable.variableName = new MaterialRequistionSlipItem(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['materialRequistionSlip'] !== undefined) updatedVariable.values.materialRequistionSlip = new MaterialRequistionSlip(String(values['materialRequistionSlip']))
-            if (values['materialApprovalSlipItem'] !== undefined) updatedVariable.values.materialApprovalSlipItem = new MaterialApprovalSlipItem(String(values['materialApprovalSlipItem']))
-            if (values['quantity'] !== undefined) updatedVariable.values.quantity = parseInt(values['quantity'])
-            if (values['consumed'] !== undefined) updatedVariable.values.consumed = parseInt(values['consumed'])
+            updatedVariable = new MaterialRequistionSlipItemVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                materialRequistionSlip: values['materialRequistionSlip'] !== undefined ? new MaterialRequistionSlip(String(values['materialRequistionSlip'])) : new MaterialRequistionSlip(variable.values.materialRequistionSlip.toString()),
+                materialApprovalSlipItem: values['materialApprovalSlipItem'] !== undefined ? new MaterialApprovalSlipItem(String(values['materialApprovalSlipItem'])) : new MaterialApprovalSlipItem(variable.values.materialApprovalSlipItem.toString()),
+                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity,
+                consumed: values['consumed'] !== undefined ? parseInt(values['consumed']) : variable.values.consumed
+            })
             break
         }
         case 'BOM': {
-            updatedVariable = variable
-            updatedVariable.variableName = new BOM(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
+            updatedVariable = new BOMVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {})
             break
         }
         case 'BOMItem': {
-            updatedVariable = variable
-            updatedVariable.variableName = new BOMItem(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['bom'] !== undefined) updatedVariable.values.bom = new BOM(String(values['bom']))
-            if (values['product'] !== undefined) updatedVariable.values.product = new Product(String(values['product']))
-            if (values['quantity'] !== undefined) updatedVariable.values.quantity = parseInt(values['quantity'])
-            if (values['uom'] !== undefined) updatedVariable.values.uom = new UOM(String(values['uom']))
+            updatedVariable = new BOMItemVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                bom: values['bom'] !== undefined ? new BOM(String(values['bom'])) : new BOM(variable.values.bom.toString()),
+                product: values['product'] !== undefined ? new Product(String(values['product'])) : new Product(variable.values.product.toString()),
+                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity,
+                uom: values['uom'] !== undefined ? new UOM(String(values['uom'])) : new UOM(variable.values.uom.toString())
+            })
             break
         }
         case 'ProductionPreparationSlip': {
-            updatedVariable = variable
-            updatedVariable.variableName = new ProductionPreparationSlip(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['bom'] !== undefined) updatedVariable.values.bom = new BOM(String(values['bom']))
-            if (values['approved'] !== undefined) updatedVariable.values.approved = parseInt(values['approved'])
-            if (values['scrapped'] !== undefined) updatedVariable.values.scrapped = parseInt(values['scrapped'])
+            updatedVariable = new ProductionPreparationSlipVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                bom: values['bom'] !== undefined ? new BOM(String(values['bom'])) : new BOM(variable.values.bom.toString()),
+                approved: values['approved'] !== undefined ? parseInt(values['approved']) : variable.values.approved,
+                scrapped: values['scrapped'] !== undefined ? parseInt(values['scrapped']) : variable.values.scrapped
+            })
             break
         }
         case 'ProductionPreparationSlipItem': {
-            updatedVariable = variable
-            updatedVariable.variableName = new ProductionPreparationSlipItem(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['productionPreparationSlip'] !== undefined) updatedVariable.values.productionPreparationSlip = new ProductionPreparationSlip(String(values['productionPreparationSlip']))
-            if (values['bomItem'] !== undefined) updatedVariable.values.bomItem = String(values['bomItem'])
-            if (values['materialRequistionSlipItem'] !== undefined) updatedVariable.values.materialRequistionSlipItem = new MaterialRequistionSlipItem(String(values['materialRequistionSlipItem']))
+            updatedVariable = new ProductionPreparationSlipItemVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                productionPreparationSlip: values['productionPreparationSlip'] !== undefined ? new ProductionPreparationSlip(String(values['productionPreparationSlip'])) : new ProductionPreparationSlip(variable.values.productionPreparationSlip.toString()),
+                bomItem: values['bomItem'] !== undefined ? String(values['bomItem']) : variable.values.bomItem,
+                materialRequistionSlipItem: values['materialRequistionSlipItem'] !== undefined ? new MaterialRequistionSlipItem(String(values['materialRequistionSlipItem'])) : new MaterialRequistionSlipItem(variable.values.materialRequistionSlipItem.toString())
+            })
             break
         }
         case 'ScrapMaterialSlip': {
-            updatedVariable = variable
-            updatedVariable.variableName = new ScrapMaterialSlip(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['productionPreparationSlip'] !== undefined) updatedVariable.values.productionPreparationSlip = new ProductionPreparationSlip(String(values['productionPreparationSlip']))
-            if (values['quantity'] !== undefined) updatedVariable.values.quantity = parseInt(values['quantity'])
+            updatedVariable = new ScrapMaterialSlipVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                productionPreparationSlip: values['productionPreparationSlip'] !== undefined ? new ProductionPreparationSlip(String(values['productionPreparationSlip'])) : new ProductionPreparationSlip(variable.values.productionPreparationSlip.toString()),
+                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity
+            })
             break
         }
         case 'TransferMaterialSlip': {
-            updatedVariable = variable
-            updatedVariable.variableName = new TransferMaterialSlip(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['productionPreparationSlip'] !== undefined) updatedVariable.values.productionPreparationSlip = new ProductionPreparationSlip(String(values['productionPreparationSlip']))
-            if (values['quantity'] !== undefined) updatedVariable.values.quantity = parseInt(values['quantity'])
-            if (values['transferred'] !== undefined) updatedVariable.values.transferred = parseInt(values['transferred'])
+            updatedVariable = new TransferMaterialSlipVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                productionPreparationSlip: values['productionPreparationSlip'] !== undefined ? new ProductionPreparationSlip(String(values['productionPreparationSlip'])) : new ProductionPreparationSlip(variable.values.productionPreparationSlip.toString()),
+                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity,
+                transferred: values['transferred'] !== undefined ? parseInt(values['transferred']) : variable.values.transferred
+            })
             break
         }
         case 'WarehouseAcceptanceSlip': {
-            updatedVariable = variable
-            updatedVariable.variableName = new WarehouseAcceptanceSlip(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
-            if (values['transferMaterialSlip'] !== undefined) updatedVariable.values.transferMaterialSlip = new TransferMaterialSlip(String(values['transferMaterialSlip']))
-            if (values['quantity'] !== undefined) updatedVariable.values.quantity = parseInt(values['quantity'])
+            updatedVariable = new WarehouseAcceptanceSlipVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                transferMaterialSlip: values['transferMaterialSlip'] !== undefined ? new TransferMaterialSlip(String(values['transferMaterialSlip'])) : new TransferMaterialSlip(variable.values.transferMaterialSlip.toString()),
+                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity
+            })
             break
         }
     }

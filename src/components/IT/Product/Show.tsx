@@ -19,10 +19,12 @@ import { iff, when } from '../../../main/utils'
 import { db } from '../../../main/dexie'
 import { DiffRow, ProductRow, UOMRow } from '../../../main/rows'
 import { useCallback } from 'react'
+import { updateVariable } from '../../../main/mutation'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: ProductVariable
+    updatedVariableName: Product
     uoms: {
         typeName: 'UOM'
         query: Query
@@ -61,6 +63,7 @@ function Component(props) {
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
         variable: new ProductVariable('', { name: '', orderable: true, consumable: true, producable: false }),
+        updatedVariableName: new Product(''),
         uoms: {
             typeName: 'UOM',
             query: getQuery('UOM'),
@@ -89,7 +92,10 @@ function Component(props) {
             case 'variable': {
                 switch (action[1]) {
                     case 'variableName': {
-                        state[action[0]][action[1]] = action[2]
+                        if (state.mode === 'create') {
+                            state[action[0]][action[1]] = action[2]
+                        }
+                        state.updatedVariableName = action[2]
                         break
                     }
                     case 'values': {
@@ -153,6 +159,7 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
+                        state.updatedVariableName = action[2].variableName
                         break
                     }
                     case 'uoms': {
@@ -257,7 +264,7 @@ function Component(props) {
         return fx
     }
 
-    const saveVariable = async () => {
+    const createVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createProduct, {
             sku: state.variable.variableName.toString(),
             name: state.variable.values.name,
@@ -275,6 +282,14 @@ function Component(props) {
         if (symbolFlag) {
             db.diffs.put(diff.toRow())
         }
+    }
+
+    const updateValues = async () => {
+        const [updatedVariable, diff] = iff(state.variable.variableName.toString() !== state.updatedVariableName.toString(),
+            updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
+            updateVariable(state.variable, state.variable.toRow().values)
+        )
+        db.diffs.put(diff.toRow())
     }
 
     const deleteVariable = async () => {
@@ -302,7 +317,7 @@ function Component(props) {
                     {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
-                                await saveVariable()
+                                await createVariable()
                                 props.history.push('/products')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
@@ -312,9 +327,9 @@ function Component(props) {
                                         setVariable()
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
-                                        await saveVariable()
+                                        await updateValues()
                                         props.history.push('/products')
-                                    }}>Save</Button>
+                                    }}>Update</Button>
                                 </>,
                                 <>
                                     <Button onClick={async () => {
@@ -330,7 +345,7 @@ function Component(props) {
                         <Label>{product.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Input type='text' onChange={onVariableInputChange} value={state.variable.variableName.toString()} name='variableName' />,
+                                <Input type='text' onChange={onVariableInputChange} value={state.updatedVariableName.toString()} name='variableName' />,
                                 <div className='font-bold text-xl'>{state.variable.variableName.toString()}</div>
                             )
                         }
