@@ -284,8 +284,8 @@ function Component(props) {
         }
     }
 
-    const updateValues = async () => {
-        const [updatedVariable, diff] = iff(state.variable.variableName.toString() !== state.updatedVariableName.toString(),
+    const modifyVariable = async () => {
+        const [, diff] = iff(state.variable.variableName.toString() !== state.updatedVariableName.toString(),
             updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
             updateVariable(state.variable, state.variable.toRow().values)
         )
@@ -327,7 +327,7 @@ function Component(props) {
                                         setVariable()
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
-                                        await updateValues()
+                                        await modifyVariable()
                                         props.history.push('/products')
                                     }}>Update</Button>
                                 </>,
