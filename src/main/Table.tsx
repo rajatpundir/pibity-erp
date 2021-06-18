@@ -183,7 +183,7 @@ async function Q(variable: Immutable<Variable>, path: Array<string>): Promise<[s
 
 async function getCells(columns: Array<Array<string>>, variables: Immutable<Array<Variable>>, start: number, end: number) {
     var cells: Array<unknown> = []
-    for (let i = start; i <= Math.min(end, variables.length - 1); i++) {
+    for (let i = start; i < Math.min(end, variables.length); i++) {
         const variable = variables[i]
         const rowIndex = i - start
         if (rowIndex % 2 !== 0) {
