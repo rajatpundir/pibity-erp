@@ -18,10 +18,12 @@ import { iff, when } from '../../../main/utils'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
 import { DiffRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow, PurchaseOrderItemRow, PurchaseOrderRow } from '../../../main/rows'
+import { updateVariable } from '../../../main/mutation'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: PurchaseInvoiceVariable
+    updatedVariableName: PurchaseInvoice
     items: {
         typeName: 'PurchaseInvoiceItem'
         query: Query
@@ -53,10 +55,10 @@ export type Action =
 
 function Component(props) {
 
-
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
         variable: new PurchaseInvoiceVariable('', { purchaseOrder: new PurchaseOrder('') }),
+        updatedVariableName: new PurchaseInvoice(''),
         items: {
             typeName: 'PurchaseInvoiceItem',
             query: getQuery('PurchaseInvoiceItem'),
@@ -139,6 +141,7 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
+                        state.updatedVariableName = action[2].variableName
                         break
                     }
                     case 'items': {
@@ -159,7 +162,7 @@ function Component(props) {
                 var composedVariables = HashSet.of<Immutable<PurchaseInvoiceVariable>>().addAll(rows ? rows.map(x => PurchaseInvoiceRow.toVariable(x)) : [])
                 const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
                 diffs?.forEach(diff => {
-                    composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                    composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.variable.typeName].replace)
                 })
                 const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
                 if (variables.length() === 1) {
@@ -168,7 +171,7 @@ function Component(props) {
                     const itemRows = await db.purchaseInvoiceItems.toArray()
                     var composedItemVariables = HashSet.of<Immutable<PurchaseInvoiceItemVariable>>().addAll(itemRows ? itemRows.map(x => PurchaseInvoiceItemRow.toVariable(x)) : [])
                     diffs?.forEach(diff => {
-                        composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
+                        composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
                     })
                     const items = composedItemVariables.filter(variable => variable.values.purchaseInvoice.toString() === props.match.params[0])
                     dispatch(['replace', 'items', items as HashSet<PurchaseInvoiceItemVariable>])
@@ -181,13 +184,13 @@ function Component(props) {
     const rows = useLiveQuery(() => db.purchaseOrders.toArray())?.map(x => PurchaseOrderRow.toVariable(x))
     var purchaseOrders = HashSet.of<Immutable<PurchaseOrderVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        purchaseOrders = purchaseOrders.filter(x => !diff.variables.PurchaseOrder.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.PurchaseOrder.replace)
+        purchaseOrders = purchaseOrders.filter(x => !diff.variables.PurchaseOrder.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.PurchaseOrder.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.PurchaseOrder.replace)
     })
 
     const itemRows = useLiveQuery(() => db.purchaseOrderItems.where({ purchaseOrder: state.variable.values.purchaseOrder.toString() }).toArray())?.map(x => PurchaseOrderItemRow.toVariable(x))
     var items = HashSet.of<Immutable<PurchaseOrderItemVariable>>().addAll(itemRows ? itemRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        items = items.filter(x => !diff.variables.PurchaseOrderItem.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.PurchaseOrderItem.replace)
+        items = items.filter(x => !diff.variables.PurchaseOrderItem.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.PurchaseOrderItem.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.PurchaseOrderItem.replace)
         items = items.filter(x => x.values.purchaseOrder.toString() === state.variable.values.purchaseOrder.toString())
     })
 
@@ -241,7 +244,7 @@ function Component(props) {
         return fx
     }
 
-    const saveVariable = async () => {
+    const createVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createPurchaseInvoice, {
             purchaseOrder: state.variable.values.purchaseOrder,
             items: state.items.variables.toArray().map(item => {
@@ -255,6 +258,15 @@ function Component(props) {
         if (symbolFlag) {
             db.diffs.put(diff.toRow())
         }
+    }
+
+    const modifyVariable = async () => {
+        const [, diff] = await iff(state.variable.variableName.toString() !== state.updatedVariableName.toString(),
+            updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
+            updateVariable(state.variable, state.variable.toRow().values)
+        )
+        console.log(diff)
+        db.diffs.put(diff.toRow())
     }
 
     const deleteVariable = async () => {
@@ -282,7 +294,7 @@ function Component(props) {
                     {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
-                                await await saveVariable()
+                                await createVariable()
                                 props.history.push('/purchase-invoices')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
@@ -292,7 +304,7 @@ function Component(props) {
                                         setVariable()
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
-                                        await await saveVariable()
+                                        await modifyVariable()
                                         props.history.push('/purchase-invoices')
                                     }}>Save</Button>
                                 </>,

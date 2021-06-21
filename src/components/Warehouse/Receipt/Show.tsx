@@ -4,7 +4,7 @@ import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
-import { TransferMaterialSlip, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable } from '../../../main/variables'
+import { TransferMaterialSlip, TransferMaterialSlipVariable, WarehouseAcceptanceSlip, WarehouseAcceptanceSlipVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
@@ -14,10 +14,12 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
 import { HashSet } from 'prelude-ts'
 import { WarehouseAcceptanceSlipRow, DiffRow, TransferMaterialSlipRow } from '../../../main/rows'
+import { updateVariable } from '../../../main/mutation'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: WarehouseAcceptanceSlipVariable
+    updatedVariableName: WarehouseAcceptanceSlip
 }>
 
 export type Action =
@@ -31,10 +33,10 @@ export type Action =
 
 function Component(props) {
 
-
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
         variable: new WarehouseAcceptanceSlipVariable('', { transferMaterialSlip: new TransferMaterialSlip(''), quantity: 0 }),
+        updatedVariableName: new WarehouseAcceptanceSlip('')
     }
 
     function reducer(state: Draft<State>, action: Action) {
@@ -71,6 +73,7 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
+                        state.updatedVariableName = action[2].variableName
                         break
                     }
                 }
@@ -87,7 +90,7 @@ function Component(props) {
             var composedVariables = HashSet.of<Immutable<WarehouseAcceptanceSlipVariable>>().addAll(rows ? rows.map(x => WarehouseAcceptanceSlipRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.variable.typeName].replace)
             })
             const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
             if (variables.length() === 1) {
@@ -102,7 +105,7 @@ function Component(props) {
     const rows = useLiveQuery(() => db.transferMaterialSlips.toArray())?.map(x => TransferMaterialSlipRow.toVariable(x))
     var transferMaterialSlips = HashSet.of<Immutable<TransferMaterialSlipVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        transferMaterialSlips = transferMaterialSlips.filter(x => !diff.variables.TransferMaterialSlip.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.TransferMaterialSlip.replace)
+        transferMaterialSlips = transferMaterialSlips.filter(x => !diff.variables.TransferMaterialSlip.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.TransferMaterialSlip.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.TransferMaterialSlip.replace)
     })
 
     const warehouseAcceptanceSlip = types['WarehouseAcceptanceSlip']
@@ -124,7 +127,7 @@ function Component(props) {
         }
     }
 
-    const saveVariable = async () => {
+    const createVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createWarehouseAcceptanceSlip, {
             transferMaterialSlip: state.variable.values.transferMaterialSlip,
             quantity: state.variable.values.quantity
@@ -133,6 +136,15 @@ function Component(props) {
         if (symbolFlag) {
             db.diffs.put(diff.toRow())
         }
+    }
+
+    const modifyVariable = async () => {
+        const [, diff] = await iff(state.variable.variableName.toString() !== state.updatedVariableName.toString(),
+            updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
+            updateVariable(state.variable, state.variable.toRow().values)
+        )
+        console.log(diff)
+        db.diffs.put(diff.toRow())
     }
 
     const deleteVariable = async () => {
@@ -159,7 +171,7 @@ function Component(props) {
                     {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
-                                await saveVariable()
+                                await createVariable()
                                 props.history.push('/warehouse-receipts')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
@@ -169,7 +181,7 @@ function Component(props) {
                                         setVariable()
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
-                                        await saveVariable()
+                                        await modifyVariable()
                                         props.history.push('/warehouse-receipts')
                                     }}>Save</Button>
                                 </>,

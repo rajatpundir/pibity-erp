@@ -597,6 +597,193 @@ export function getRemoveVariableDiff(typeName: NonPrimitiveType, variableName: 
     return diff
 }
 
+export async function getRenameVariableDiff(typeName: NonPrimitiveType, variableName: string, updatedVariableName: string): Promise<DiffVariable> {
+    const diff: DiffVariable = new DiffVariable()
+    const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
+    switch (typeName) {
+        case 'Product': {
+            // Updated variableName affects references in UOM, IndentItem, SupplierProduct, BOMItem
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Product(variableName))
+
+            const uomRows = await db.uoms.toArray()
+            let uoms = Vector.of<Immutable<UOMVariable>>().appendAll(uomRows ? uomRows.map(x => UOMRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                uoms = uoms.filter(x => !diff.variables.UOM.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.UOM.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables.UOM.replace)
+            })
+            diff.variables.UOM.replace = diff.variables.UOM.replace.addAll(uoms.filter(x => x.values.product.toString() === variableName).map(x => new UOMVariable(x.variableName.toString(), {
+                product: new Product(updatedVariableName),
+                name: x.values.name,
+                conversionRate: x.values.conversionRate
+            })))
+            diff.variables.UOM.remove = diff.variables.UOM.remove.addAll(uoms.filter(x => x.values.product.toString() === variableName).map(x => new UOM(x.variableName.toString())))
+
+            const indentItemRows = await db.indentItems.toArray()
+            let indentItems: Vector<Immutable<IndentItemVariable>> = Vector.of<Immutable<IndentItemVariable>>().appendAll(indentItemRows ? indentItemRows.map(x => IndentItemRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                indentItems = indentItems.filter(x => !diff.variables.IndentItem.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.IndentItem.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables.IndentItem.replace)
+            })
+            diff.variables.IndentItem.replace = diff.variables.IndentItem.replace.addAll(indentItems.filter(x => x.values.product.toString() === variableName).map(x => new IndentItemVariable(x.variableName.toString(), {
+                indent: new Indent(x.values.indent.toString()),
+                product: new Product(updatedVariableName),
+                quantity: x.values.quantity,
+                uom: new UOM(x.values.indent.toString()),
+                ordered: x.values.ordered,
+                received: x.values.received,
+                approved: x.values.approved,
+                rejected: x.values.rejected,
+                returned: x.values.returned,
+                requisted: x.values.requisted,
+                consumed: x.values.consumed
+            })))
+            diff.variables.IndentItem.remove = diff.variables.IndentItem.remove.addAll(indentItems.filter(x => x.values.product.toString() === variableName).map(x => new IndentItem(x.variableName.toString())))
+
+            const supplierProductRows = await db.supplierProducts.toArray()
+            let supplierProductItems: Vector<Immutable<SupplierProductVariable>> = Vector.of<Immutable<SupplierProductVariable>>().appendAll(supplierProductRows ? supplierProductRows.map(x => SupplierProductRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                supplierProductItems = supplierProductItems.filter(x => !diff.variables.SupplierProduct.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.SupplierProduct.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables.SupplierProduct.replace)
+            })
+            diff.variables.SupplierProduct.replace = diff.variables.SupplierProduct.replace.addAll(supplierProductItems.filter(x => x.values.product.toString() === variableName).map(x => new SupplierProductVariable(x.variableName.toString(), {
+                supplier: new Supplier(x.values.supplier.toString()),
+                product: new Product(updatedVariableName)
+            })))
+            diff.variables.SupplierProduct.remove = diff.variables.SupplierProduct.remove.addAll(supplierProductItems.filter(x => x.values.product.toString() === variableName).map(x => new SupplierProduct(x.variableName.toString())))
+
+            const bomItemRows = await db.bomItems.toArray()
+            let bomItems: Vector<Immutable<BOMItemVariable>> = Vector.of<Immutable<BOMItemVariable>>().appendAll(bomItemRows ? bomItemRows.map(x => BOMItemRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                bomItems = bomItems.filter(x => !diff.variables.BOMItem.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.BOMItem.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables.BOMItem.replace)
+            })
+            diff.variables.BOMItem.replace = diff.variables.BOMItem.replace.addAll(bomItems.filter(x => x.values.product.toString() === variableName).map(x => new BOMItemVariable(x.variableName.toString(), {
+                bom: new BOM(x.values.bom.toString()),
+                product: new Product(updatedVariableName),
+                quantity: x.values.quantity,
+                uom: new UOM(x.values.uom.toString())
+            })))
+            diff.variables.BOMItem.remove = diff.variables.BOMItem.remove.addAll(bomItems.filter(x => x.values.product.toString() === variableName).map(x => new BOMItem(x.variableName.toString())))
+
+            break
+        }
+        case 'UOM': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new UOM(variableName))
+            break
+        }
+        case 'Indent': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Indent(variableName))
+            break
+        }
+        case 'IndentItem': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new IndentItem(variableName))
+            break
+        }
+        case 'Supplier': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Supplier(variableName))
+            break
+        }
+        case 'SupplierProduct': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new SupplierProduct(variableName))
+            break
+        }
+        case 'Quotation': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Quotation(variableName))
+            break
+        }
+        case 'QuotationItem': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new QuotationItem(variableName))
+            break
+        }
+        case 'PurchaseOrder': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new PurchaseOrder(variableName))
+            break
+        }
+        case 'PurchaseOrderItem': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new PurchaseOrderItem(variableName))
+            break
+        }
+        case 'PurchaseInvoice': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new PurchaseInvoice(variableName))
+            break
+        }
+        case 'PurchaseInvoiceItem': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new PurchaseInvoiceItem(variableName))
+            break
+        }
+        case 'MaterialApprovalSlip': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialApprovalSlip(variableName))
+            break
+        }
+        case 'MaterialApprovalSlipItem': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialApprovalSlipItem(variableName))
+            break
+        }
+        case 'MaterialRejectionSlip': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialRejectionSlip(variableName))
+            break
+        }
+        case 'MaterialRejectionSlipItem': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialRejectionSlipItem(variableName))
+            break
+        }
+        case 'MaterialReturnSlip': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialReturnSlip(variableName))
+            break
+        }
+        case 'MaterialReturnSlipItem': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialReturnSlipItem(variableName))
+            break
+        }
+        case 'MaterialRequistionSlip': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialRequistionSlip(variableName))
+            break
+        }
+        case 'MaterialRequistionSlipItem': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialRequistionSlipItem(variableName))
+            break
+        }
+        case 'BOM': {
+            // Updated variableName affects references in BOMItem
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new BOM(variableName))
+            const bomItemRows = await db.bomItems.toArray()
+            let bomItems: Vector<Immutable<BOMItemVariable>> = Vector.of<Immutable<BOMItemVariable>>().appendAll(bomItemRows ? bomItemRows.map(x => BOMItemRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                bomItems = bomItems.filter(x => !diff.variables.BOMItem.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.BOMItem.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables.BOMItem.replace)
+            })
+            diff.variables.BOMItem.replace = diff.variables.BOMItem.replace.addAll(bomItems.filter(x => x.values.bom.toString() === variableName).map(x => new BOMItemVariable(x.variableName.toString(), {
+                bom: new BOM(updatedVariableName),
+                product: new Product(x.values.product.toString()),
+                quantity: x.values.quantity,
+                uom: new UOM(x.values.uom.toString())
+            })))
+            diff.variables.BOMItem.remove = diff.variables.BOMItem.remove.addAll(bomItems.filter(x => x.values.bom.toString() === variableName).map(x => new BOMItem(x.variableName.toString())))
+            break
+        }
+        case 'BOMItem': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new BOMItem(variableName))
+            break
+        }
+        case 'ProductionPreparationSlip': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ProductionPreparationSlip(variableName))
+            break
+        }
+        case 'ProductionPreparationSlipItem': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ProductionPreparationSlipItem(variableName))
+            break
+        }
+        case 'ScrapMaterialSlip': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ScrapMaterialSlip(variableName))
+            break
+        }
+        case 'TransferMaterialSlip': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new TransferMaterialSlip(variableName))
+            break
+        }
+        case 'WarehouseAcceptanceSlip': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new WarehouseAcceptanceSlip(variableName))
+            break
+        }
+    }
+    return diff
+}
+
 export async function getVariable(typeName: NonPrimitiveType, variableName: string, overlay: Vector<DiffVariable> = Vector.of()): Promise<Variable | undefined> {
     const diffs: Array<DiffVariable> = (await db.diffs.orderBy('id').reverse().toArray()).map(x => DiffRow.toVariable(x))
     switch (typeName) {

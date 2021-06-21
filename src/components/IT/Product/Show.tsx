@@ -186,7 +186,7 @@ function Component(props) {
             var composedVariables = HashSet.of<Immutable<ProductVariable>>().addAll(rows ? rows.map(x => ProductRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.variable.typeName].replace)
             })
             const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
             if (variables.length() === 1) {
@@ -195,7 +195,7 @@ function Component(props) {
                 const itemRows = await db.uoms.toArray()
                 var composedItemVariables = HashSet.of<Immutable<UOMVariable>>().addAll(itemRows ? itemRows.map(x => UOMRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.uoms.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.uoms.variable.typeName].replace)
+                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.uoms.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.uoms.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.uoms.variable.typeName].replace)
                 })
                 const items = composedItemVariables.filter(variable => variable.values.product.toString() === props.match.params[0])
                 dispatch(['replace', 'uoms', items as HashSet<UOMVariable>])
@@ -285,10 +285,11 @@ function Component(props) {
     }
 
     const modifyVariable = async () => {
-        const [, diff] = iff(state.variable.variableName.toString() !== state.updatedVariableName.toString(),
+        const [, diff] = await iff(state.variable.variableName.toString() !== state.updatedVariableName.toString(),
             updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
             updateVariable(state.variable, state.variable.toRow().values)
         )
+        console.log(diff)
         db.diffs.put(diff.toRow())
     }
 

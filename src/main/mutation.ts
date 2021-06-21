@@ -1,7 +1,7 @@
 import { Immutable } from 'immer';
-import { DiffVariable, getRemoveVariableDiff, getReplaceVariableDiff, getVariable, mergeDiffs } from './layers'
+import { DiffVariable, getRemoveVariableDiff, getRenameVariableDiff, getReplaceVariableDiff, getVariable, mergeDiffs } from './layers'
 import { NonPrimitiveType } from './types';
-import { when } from './utils';
+import { iff, when } from './utils';
 import { Variable, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip } from './variables'
 
 export function createVariable(typeName: NonPrimitiveType, variableName: string, values: object): [Variable, DiffVariable] {
@@ -134,7 +134,7 @@ export function createVariable(typeName: NonPrimitiveType, variableName: string,
     return [variable, getReplaceVariableDiff(variable)]
 }
 
-export function updateVariable(variable: Immutable<Variable>, values: object, updatedVariableName?: string): [Variable, DiffVariable] {
+export async function updateVariable(variable: Immutable<Variable>, values: object, updatedVariableName?: string): Promise<[Variable, DiffVariable]> {
     let updatedVariable: Variable
     switch (variable.typeName) {
         case 'Product': {
@@ -344,7 +344,9 @@ export function updateVariable(variable: Immutable<Variable>, values: object, up
         }
     }
     // Note. Also update references if variable name was updated and include the updates in diff.
-    return [updatedVariable, mergeDiffs([getRemoveVariableDiff(variable.typeName, variable.variableName.toString()), getReplaceVariableDiff(updatedVariable)])]
+    return (iff(updatedVariableName === undefined,
+        [updatedVariable, mergeDiffs([getRemoveVariableDiff(variable.typeName, variable.variableName.toString()), getReplaceVariableDiff(updatedVariable)])],
+        [updatedVariable, mergeDiffs([await getRenameVariableDiff(variable.typeName, variable.variableName.toString(), String(updatedVariableName)), getReplaceVariableDiff(updatedVariable)])]))
 }
 
 export function deleteVariable(typeName: NonPrimitiveType, variableName: string): DiffVariable {
@@ -389,7 +391,7 @@ export async function executeQueue(multiqueue: Multiqueue): Promise<[Record<stri
                     case 'update': {
                         const variable = await getVariable(mutation.typeName, mutation.variableName)
                         if (variable !== undefined) {
-                            const [updatedVariable, diff] = updateVariable(variable, mutation.values, mutation.updatedVariableName)
+                            const [updatedVariable, diff] = await updateVariable(variable, mutation.values, mutation.updatedVariableName)
                             result[queueName].push(updatedVariable)
                             diffs.push(diff)
                         } else {

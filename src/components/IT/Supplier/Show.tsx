@@ -13,10 +13,12 @@ import { iff, when } from '../../../main/utils'
 import { db } from '../../../main/dexie'
 import { DiffRow, SupplierRow } from '../../../main/rows'
 import { HashSet } from 'prelude-ts'
+import { updateVariable } from '../../../main/mutation'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: SupplierVariable
+    updatedVariableName: Supplier
 }>
 
 export type Action =
@@ -31,7 +33,8 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new SupplierVariable('', {})
+        variable: new SupplierVariable('', {}),
+        updatedVariableName: new Supplier('')
     }
 
     function reducer(state: Draft<State>, action: Action) {
@@ -50,7 +53,10 @@ function Component(props) {
             case 'variable': {
                 switch (action[1]) {
                     case 'variableName': {
-                        state[action[0]][action[1]] = action[2]
+                        if (state.mode === 'create') {
+                            state[action[0]][action[1]] = action[2]
+                        }
+                        state.updatedVariableName = action[2]
                         break
                     }
                 }
@@ -60,6 +66,7 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
+                        state.updatedVariableName = action[2].variableName
                         break
                     }
                 }
@@ -87,7 +94,7 @@ function Component(props) {
                 var composedVariables = HashSet.of<Immutable<SupplierVariable>>().addAll(rows ? rows.map(x => SupplierRow.toVariable(x)) : [])
                 const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
                 diffs?.forEach(diff => {
-                    composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                    composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.variable.typeName].replace)
                 })
                 const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
                 if (variables.length() === 1) {
@@ -99,7 +106,7 @@ function Component(props) {
 
     useEffect(() => { setVariable() }, [setVariable])
 
-    const saveVariable = async () => {
+    const createVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createSupplier, {
             name: state.variable.variableName.toString()
         })
@@ -107,6 +114,15 @@ function Component(props) {
         if (symbolFlag) {
             db.diffs.put(diff.toRow())
         }
+    }
+
+    const modifyVariable = async () => {
+        const [, diff] = await iff(state.variable.variableName.toString() !== state.updatedVariableName.toString(),
+            updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
+            updateVariable(state.variable, state.variable.toRow().values)
+        )
+        console.log(diff)
+        db.diffs.put(diff.toRow())
     }
 
     const deleteVariable = async () => {
@@ -133,7 +149,7 @@ function Component(props) {
                     {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
-                                await saveVariable()
+                                await createVariable()
                                 props.history.push('/suppliers')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
@@ -143,7 +159,7 @@ function Component(props) {
                                         setVariable()
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
-                                        await saveVariable()
+                                        await modifyVariable()
                                         props.history.push('/suppliers')
                                     }}>Save</Button>
                                 </>,
@@ -161,7 +177,7 @@ function Component(props) {
                         <Label>{supplier.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Input type='text' onChange={onVariableInputChange} value={state.variable.variableName.toString()} name='variableName' />,
+                                <Input type='text' onChange={onVariableInputChange} value={state.updatedVariableName.toString()} name='variableName' />,
                                 <div className='font-bold text-xl'>{state.variable.variableName.toString()}</div>
                             )
                         }

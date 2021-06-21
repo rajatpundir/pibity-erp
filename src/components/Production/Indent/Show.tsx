@@ -18,10 +18,12 @@ import { iff, when } from '../../../main/utils'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
 import { DiffRow, IndentItemRow, IndentRow, ProductRow, UOMRow } from '../../../main/rows'
+import { updateVariable } from '../../../main/mutation'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: IndentVariable
+    updatedVariableName: Indent
     items: {
         typeName: 'IndentItem'
         query: Query
@@ -55,6 +57,7 @@ function Component(props) {
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
         variable: new IndentVariable('', {}),
+        updatedVariableName: new Indent(''),
         items: {
             typeName: 'IndentItem',
             query: getQuery('IndentItem'),
@@ -128,6 +131,7 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
+                        state.updatedVariableName = action[2].variableName
                         break
                     }
                     case 'items': {
@@ -148,7 +152,7 @@ function Component(props) {
             var composedVariables = HashSet.of<Immutable<IndentVariable>>().addAll(rows ? rows.map(x => IndentRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.variable.typeName].replace)
             })
             const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
             if (variables.length() === 1) {
@@ -157,7 +161,7 @@ function Component(props) {
                 const itemRows = await db.indentItems.toArray()
                 var composedItemVariables = HashSet.of<Immutable<IndentItemVariable>>().addAll(itemRows ? itemRows.map(x => IndentItemRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
                 })
                 const items = composedItemVariables.filter(variable => variable.values.indent.toString() === props.match.params[0])
                 dispatch(['replace', 'items', items as HashSet<IndentItemVariable>])
@@ -170,13 +174,13 @@ function Component(props) {
     const rows = useLiveQuery(() => db.products.toArray())?.map(x => ProductRow.toVariable(x))
     var products = HashSet.of<Immutable<ProductVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        products = products.filter(x => !diff.variables.Product.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.Product.replace)
+        products = products.filter(x => !diff.variables.Product.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.Product.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.Product.replace)
     })
 
     const itemRows = useLiveQuery(() => db.uoms.where({ product: state.items.variable.values.product.toString() }).toArray())?.map(x => UOMRow.toVariable(x))
     var uoms = HashSet.of<Immutable<UOMVariable>>().addAll(itemRows ? itemRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        uoms = uoms.filter(x => !diff.variables.UOM.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.UOM.replace)
+        uoms = uoms.filter(x => !diff.variables.UOM.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.UOM.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.UOM.replace)
         uoms = uoms.filter(x => x.values.product.toString() === state.items.variable.values.product.toString())
     })
 
@@ -221,7 +225,7 @@ function Component(props) {
         return fx
     }
 
-    const saveVariable = async () => {
+    const createVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createIndent, {
             items: state.items.variables.toArray().map(item => {
                 return {
@@ -235,6 +239,15 @@ function Component(props) {
         if (symbolFlag) {
             db.diffs.put(diff.toRow())
         }
+    }
+
+    const modifyVariable = async () => {
+        const [, diff] = await iff(state.variable.variableName.toString() !== state.updatedVariableName.toString(),
+            updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
+            updateVariable(state.variable, state.variable.toRow().values)
+        )
+        console.log(diff)
+        db.diffs.put(diff.toRow())
     }
 
     const deleteVariable = async () => {
@@ -262,7 +275,7 @@ function Component(props) {
                     {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
-                                await saveVariable()
+                                await createVariable()
                                 props.history.push('/indents')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
@@ -272,7 +285,7 @@ function Component(props) {
                                         setVariable()
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
-                                        await saveVariable()
+                                        await modifyVariable()
                                         props.history.push('/indents')
                                     }}>Save</Button>
                                 </>,

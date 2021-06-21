@@ -4,7 +4,7 @@ import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
-import { ProductionPreparationSlip, ProductionPreparationSlipVariable, ScrapMaterialSlipVariable } from '../../../main/variables'
+import { ProductionPreparationSlip, ProductionPreparationSlipVariable, ScrapMaterialSlip, ScrapMaterialSlipVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
@@ -14,10 +14,12 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
 import { DiffRow, ProductionPreparationSlipRow, ScrapMaterialSlipRow } from '../../../main/rows'
 import { HashSet } from 'prelude-ts'
+import { updateVariable } from '../../../main/mutation'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: ScrapMaterialSlipVariable
+    updatedVariableName: ScrapMaterialSlip
 }>
 
 export type Action =
@@ -33,7 +35,8 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new ScrapMaterialSlipVariable('', { productionPreparationSlip: new ProductionPreparationSlip(''), quantity: 0 })
+        variable: new ScrapMaterialSlipVariable('', { productionPreparationSlip: new ProductionPreparationSlip(''), quantity: 0 }),
+        updatedVariableName: new ScrapMaterialSlip('')
     }
 
     function reducer(state: Draft<State>, action: Action) {
@@ -77,7 +80,7 @@ function Component(props) {
             var composedVariables = HashSet.of<Immutable<ScrapMaterialSlipVariable>>().addAll(rows ? rows.map(x => ScrapMaterialSlipRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.variable.typeName].replace)
             })
             const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
             if (variables.length() === 1) {
@@ -92,7 +95,7 @@ function Component(props) {
     const rows = useLiveQuery(() => db.productionPreparationSlips.toArray())?.map(x => ProductionPreparationSlipRow.toVariable(x))
     var productionPreparationSlips = HashSet.of<Immutable<ProductionPreparationSlipVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        productionPreparationSlips = productionPreparationSlips.filter(x => !diff.variables.ProductionPreparationSlip.remove.anyMatch(y => x.variableName.toString() === y.toString())).addAll(diff.variables.ProductionPreparationSlip.replace)
+        productionPreparationSlips = productionPreparationSlips.filter(x => !diff.variables.ProductionPreparationSlip.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.ProductionPreparationSlip.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.ProductionPreparationSlip.replace)
     })
 
     const scrapMaterialSlip = types['ScrapMaterialSlip']
@@ -115,7 +118,7 @@ function Component(props) {
     }
 
 
-    const saveVariable = async () => {
+    const createVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createScrapMaterialSlip, {
             productionPreparationSlip: state.variable.values.productionPreparationSlip,
             quantity: state.variable.values.quantity
@@ -124,6 +127,15 @@ function Component(props) {
         if (symbolFlag) {
             db.diffs.put(diff.toRow())
         }
+    }
+
+    const modifyVariable = async () => {
+        const [, diff] = await iff(state.variable.variableName.toString() !== state.updatedVariableName.toString(),
+            updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
+            updateVariable(state.variable, state.variable.toRow().values)
+        )
+        console.log(diff)
+        db.diffs.put(diff.toRow())
     }
 
     const deleteVariable = async () => {
@@ -150,7 +162,7 @@ function Component(props) {
                     {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
-                                await saveVariable()
+                                await createVariable()
                                 props.history.push('/materials-scrapped')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
@@ -160,7 +172,7 @@ function Component(props) {
                                         setVariable()
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
-                                        await saveVariable()
+                                        await modifyVariable()
                                         props.history.push('/materials-scrapped')
                                     }}>Save</Button>
                                 </>,

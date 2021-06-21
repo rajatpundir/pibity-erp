@@ -68,7 +68,7 @@ function Component(props) {
     diffs?.forEach(diff => {
         composedVariables = composedVariables.filter(x => !diff.variables[state.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables[state.typeName].replace)
     })
-    const variables = composedVariables.filter(variable => applyFilter(state.query, variable))
+    const variables = composedVariables.filter(variable => applyFilter(state.query, variable)).reverse().toArray()
     const [open, setOpen] = useState(false)
 
     const updateQuery = (args: Args) => {
@@ -91,7 +91,7 @@ function Component(props) {
                     <Filter typeName={state.typeName} query={state.query} updateQuery={updateQuery} />
                 </Drawer>
             </Item>
-            <Table area={Grid.table} state={state} updatePage={updatePage} variables={variables.toArray()} columns={state.columns.toArray()} />
+            <Table area={Grid.table} state={state} updatePage={updatePage} variables={variables} columns={state.columns.toArray()} />
         </Container>
     )
 }
