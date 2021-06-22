@@ -59,6 +59,10 @@ function Component(props) {
                         state.updatedVariableName = action[2]
                         break
                     }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
+                    }
                 }
                 break
             }
@@ -69,8 +73,16 @@ function Component(props) {
                         state.updatedVariableName = action[2].variableName
                         break
                     }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
+                    }
                 }
                 break
+            }
+            default: {
+                const _exhaustiveCheck: never = action;
+                return _exhaustiveCheck;
             }
         }
     }

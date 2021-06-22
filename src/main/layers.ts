@@ -478,6 +478,10 @@ export function getReplaceVariableDiff(variable: Immutable<Variable>): DiffVaria
             diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
+        default: {
+            const _exhaustiveCheck: never = variable
+            return _exhaustiveCheck
+        }
     }
     return diff
 }
@@ -592,6 +596,10 @@ export function getRemoveVariableDiff(typeName: NonPrimitiveType, variableName: 
         case 'WarehouseAcceptanceSlip': {
             diff.variables[typeName].remove = diff.variables[typeName].remove.add(new WarehouseAcceptanceSlip(variableName))
             break
+        }
+        default: {
+            const _exhaustiveCheck: never = typeName
+            return _exhaustiveCheck
         }
     }
     return diff
@@ -779,6 +787,10 @@ export async function getRenameVariableDiff(typeName: NonPrimitiveType, variable
         case 'WarehouseAcceptanceSlip': {
             diff.variables[typeName].remove = diff.variables[typeName].remove.add(new WarehouseAcceptanceSlip(variableName))
             break
+        }
+        default: {
+            const _exhaustiveCheck: never = typeName
+            return _exhaustiveCheck
         }
     }
     return diff
@@ -1516,6 +1528,10 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             }
             return undefined
         }
+        default: {
+            const _exhaustiveCheck: never = typeName
+            return _exhaustiveCheck
+        }
     }
 }
 
@@ -1737,6 +1753,10 @@ export async function getVariables(typeName: NonPrimitiveType, overlay: Vector<D
                 composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
+        }
+        default: {
+            const _exhaustiveCheck: never = typeName
+            return _exhaustiveCheck
         }
     }
 }

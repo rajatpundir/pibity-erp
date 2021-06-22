@@ -1842,5 +1842,9 @@ export function replaceVariable(typeName: NonPrimitiveType, variableName: string
                 quantity: parseInt(String(values['quantity']))
             })
         }
+        default: {
+            const _exhaustiveCheck: never = typeName
+            return _exhaustiveCheck
+        }
     }
 }

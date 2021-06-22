@@ -342,8 +342,11 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
             })
             break
         }
+        default: {
+            const _exhaustiveCheck: never = variable
+            return _exhaustiveCheck
+        }
     }
-    // Note. Also update references if variable name was updated and include the updates in diff.
     return (iff(updatedVariableName === undefined,
         [updatedVariable, mergeDiffs([getRemoveVariableDiff(variable.typeName, variable.variableName.toString()), getReplaceVariableDiff(updatedVariable)])],
         [updatedVariable, mergeDiffs([await getRenameVariableDiff(variable.typeName, variable.variableName.toString(), String(updatedVariableName)), getReplaceVariableDiff(updatedVariable)])]))
@@ -410,6 +413,10 @@ export async function executeQueue(multiqueue: Multiqueue): Promise<[Record<stri
                         const diff = deleteVariable(mutation.typeName, mutation.variableName)
                         diffs.push(diff)
                         break
+                    }
+                    default: {
+                        const _exhaustiveCheck: never = mutation
+                        return _exhaustiveCheck
                     }
                 }
             }

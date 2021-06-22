@@ -92,6 +92,10 @@ function Component(props) {
                                 state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
+                            default: {
+                                const _exhaustiveCheck: never = action;
+                                return _exhaustiveCheck;
+                            }
                         }
                     }
                 }
@@ -126,6 +130,10 @@ function Component(props) {
                                 state[action[0]][action[1]][action[2]][action[3]] = action[4]
                                 break
                             }
+                            default: {
+                                const _exhaustiveCheck: never = action;
+                                return _exhaustiveCheck;
+                            }
                         }
                         break
                     }
@@ -133,6 +141,10 @@ function Component(props) {
                         state.items.variables = state.items.variables.add(new PurchaseInvoiceItemVariable('', { purchaseInvoice: new PurchaseInvoice(state.items.variable.values.purchaseInvoice.toString()), purchaseOrderItem: new PurchaseOrderItem(state.items.variable.values.purchaseOrderItem.toString()), quantity: 0, approved: 0, rejected: 0 }))
                         state.items.variable = initialState.items.variable
                         break
+                    }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
                     }
                 }
                 break
@@ -148,8 +160,16 @@ function Component(props) {
                         state.items.variables = HashSet.of<PurchaseInvoiceItemVariable>().addAll(action[2])
                         break
                     }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
+                    }
                 }
                 break
+            }
+            default: {
+                const _exhaustiveCheck: never = action;
+                return _exhaustiveCheck;
             }
         }
     }

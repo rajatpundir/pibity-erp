@@ -98,6 +98,10 @@ function Component(props) {
                                 state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
+                            default: {
+                                const _exhaustiveCheck: never = action;
+                                return _exhaustiveCheck;
+                            }
                         }
                     }
                 }
@@ -132,6 +136,10 @@ function Component(props) {
                                 state[action[0]][action[1]][action[2]][action[3]] = action[4]
                                 break
                             }
+                            default: {
+                                const _exhaustiveCheck: never = action;
+                                return _exhaustiveCheck;
+                            }
                         }
                         break
                     }
@@ -139,6 +147,10 @@ function Component(props) {
                         state.items.variables = state.items.variables.add(new QuotationItemVariable('', { quotation: new Quotation(state.items.variable.values.quotation.toString()), indentItem: new IndentItem(state.items.variable.values.indentItem.toString()), quantity: state.items.variable.values.quantity }))
                         state.items.variable = initialState.items.variable
                         break
+                    }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
                     }
                 }
                 break
@@ -154,8 +166,16 @@ function Component(props) {
                         state.items.variables = HashSet.of<QuotationItemVariable>().addAll(action[2])
                         break
                     }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
+                    }
                 }
                 break
+            }
+            default: {
+                const _exhaustiveCheck: never = action;
+                return _exhaustiveCheck;
             }
         }
     }

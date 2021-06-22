@@ -59,6 +59,10 @@ function reducer(state: Draft<State>, action: Action) {
             state.page = action[1]
             return;
         }
+        default: {
+            const _exhaustiveCheck: never = action;
+            return _exhaustiveCheck;
+        }
     }
 }
 

@@ -116,6 +116,10 @@ function Component(props) {
                                 state[action[0]][action[1]][action[2]][action[3]] = action[4]
                                 break
                             }
+                            default: {
+                                const _exhaustiveCheck: never = action;
+                                return _exhaustiveCheck;
+                            }
                         }
                         break
                     }
@@ -123,6 +127,10 @@ function Component(props) {
                         state.items.variables = state.items.variables.add(new IndentItemVariable('', { indent: new Indent(state.items.variable.values.indent.toString()), product: new Product(state.items.variable.values.product.toString()), quantity: state.items.variable.values.quantity, uom: new UOM(state.items.variable.values.uom.toString()), ordered: state.items.variable.values.ordered, received: state.items.variable.values.received, approved: state.items.variable.values.approved, rejected: state.items.variable.values.rejected, returned: state.items.variable.values.returned, requisted: state.items.variable.values.requisted, consumed: state.items.variable.values.consumed }))
                         state.items.variable = initialState.items.variable
                         break
+                    }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
                     }
                 }
                 break
@@ -138,8 +146,16 @@ function Component(props) {
                         state.items.variables = action[2]
                         break
                     }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
+                    }
                 }
                 break
+            }
+            default: {
+                const _exhaustiveCheck: never = action;
+                return _exhaustiveCheck;
             }
         }
     }

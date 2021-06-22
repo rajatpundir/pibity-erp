@@ -79,6 +79,10 @@ export async function executeCircuit(circuit: Circuit, args: object, overlay: Ve
                             functionArgs[inputName] = computationResults[connection[1]][connection[2]]
                             break
                         }
+                        default: {
+                            const _exhaustiveCheck: never = connection;
+                            return _exhaustiveCheck;
+                        }
                     }
                 })
                 const [result, symbolFlag, diff] = await executeFunction(fx, functionArgs, overlay.appendAll(diffs))
@@ -102,6 +106,10 @@ export async function executeCircuit(circuit: Circuit, args: object, overlay: Ve
                         case 'computation': {
                             circuitArgs[inputName] = computationResults[connection[1]][connection[2]]
                             break
+                        }
+                        default: {
+                            const _exhaustiveCheck: never = connection;
+                            return _exhaustiveCheck;
                         }
                     }
                 })
@@ -127,6 +135,10 @@ export async function executeCircuit(circuit: Circuit, args: object, overlay: Ve
                         case 'computation': {
                             queryParams[queryParam] = computationResults[connection[1]][connection[2]]
                             break
+                        }
+                        default: {
+                            const _exhaustiveCheck: never = connection;
+                            return _exhaustiveCheck;
                         }
                     }
                 }
