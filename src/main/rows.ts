@@ -1,14 +1,29 @@
 import { immerable, Immutable } from 'immer'
 import { HashSet } from 'prelude-ts'
 import { DiffVariable } from './layers'
-import { Number, Decimal, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip, MaterialReturnSlipItem, BOMItem, ProductionPreparationSlipItem, ScrapMaterialSlip, WarehouseAcceptanceSlip, SupplierProduct } from './variables'
+import { Number, Decimal, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip, MaterialReturnSlipItem, BOMItem, ProductionPreparationSlipItem, ScrapMaterialSlip, WarehouseAcceptanceSlip, SupplierProduct, RegionVariable, CountryVariable, Text, Region, StateVariable, Country, DistrictVariable, State, SubdistrictVariable, District, PostalCodeVariable, Subdistrict, AddressVariable, PostalCode, ServiceAreaVariable, CompanyTypeVariable, BankVariable, BankBranchVariable, Bank, Address, BankAccountVariable, BankBranch, CompanyType, ServiceArea, SupplierAddressVariable, SupplierContactVariable, SupplierBankAccountVariable, BankAccount } from './variables'
 
 export type Row =
+    | RegionRow
+    | CountryRow
+    | StateRow
+    | DistrictRow
+    | SubdistrictRow
+    | PostalCodeRow
+    | AddressRow
+    | ServiceAreaRow
+    | CountryRow
+    | BankRow
+    | BankBranchRow
+    | BankAccountRow
+    | SupplierRow
+    | SupplierAddressRow
+    | SupplierContactRow
+    | SupplierBankAccountRow
     | ProductRow
     | UOMRow
     | IndentRow
     | IndentItemRow
-    | SupplierRow
     | SupplierProductRow
     | QuotationRow
     | QuotationItemRow
@@ -32,9 +47,402 @@ export type Row =
     | TransferMaterialSlipRow
     | WarehouseAcceptanceSlipRow
 
+export class RegionRow {
+    readonly typeName = 'Region'
+    readonly variableName: string
+    values: {}
+
+    constructor(variableName: string, values: {}) {
+        this.variableName = variableName
+        this.values = values
+    }
+
+    static toVariable(row: RegionRow): RegionVariable {
+        return new RegionVariable(row.variableName, row.values)
+    }
+}
+
+export class CountryRow {
+    readonly typeName = 'Country'
+    readonly variableName: string
+    readonly region: string
+    values: {
+        // UNQ(region, name)
+        region: string
+        name: string
+    }
+
+    constructor(variableName: string, values: { region: string, name: string }) {
+        this.variableName = variableName
+        this.values = values
+        this.region = values.region
+    }
+
+    static toVariable(row: CountryRow): CountryVariable {
+        return new CountryVariable(row.variableName, {
+            region: new Region(row.values.region),
+            name: row.values.name
+        })
+    }
+}
+
+export class StateRow {
+    readonly typeName = 'State'
+    readonly variableName: string
+    readonly country: string
+    values: {
+        // UNQ(country, name)
+        country: string
+        name: string
+    }
+
+    constructor(variableName: string, values: { country: string, name: string }) {
+        this.variableName = variableName
+        this.values = values
+        this.country = values.country
+    }
+
+    static toVariable(row: StateRow): StateVariable {
+        return new StateVariable(row.variableName, {
+            country: new Country(row.values.country),
+            name: row.values.name
+        })
+    }
+}
+
+export class DistrictRow {
+    readonly typeName = 'District'
+    readonly variableName: string
+    readonly state: string
+    values: {
+        // UNQ(state, name)
+        state: string
+        name: string
+    }
+
+    constructor(variableName: string, values: { state: string, name: string }) {
+        this.variableName = variableName
+        this.values = values
+        this.state = values.state
+    }
+
+    static toVariable(row: DistrictRow): DistrictVariable {
+        return new DistrictVariable(row.variableName, {
+            state: new State(row.values.state),
+            name: row.values.name
+        })
+    }
+}
+
+export class SubdistrictRow {
+    readonly typeName = 'Subdistrict'
+    readonly variableName: string
+    readonly district: string
+    values: {
+        // UNQ(district, name)
+        district: string
+        name: string
+    }
+
+    constructor(variableName: string, values: { district: string, name: string }) {
+        this.variableName = variableName
+        this.values = values
+        this.district = values.district
+    }
+
+    static toVariable(row: SubdistrictRow): SubdistrictVariable {
+        return new SubdistrictVariable(row.variableName, {
+            district: new District(row.values.district),
+            name: row.values.name
+        })
+    }
+}
+
+export class PostalCodeRow {
+    readonly typeName = 'PostalCode'
+    readonly variableName: string
+    readonly subdistrict: string
+    values: {
+        // UNQ(subdistrict, name)
+        subdistrict: string
+        name: string
+    }
+
+    constructor(variableName: string, values: { subdistrict: string, name: string }) {
+        this.variableName = variableName
+        this.values = values
+        this.subdistrict = values.subdistrict
+    }
+
+    static toVariable(row: PostalCodeRow): PostalCodeVariable {
+        return new PostalCodeVariable(row.variableName, {
+            subdistrict: new Subdistrict(row.values.subdistrict),
+            name: row.values.name
+        })
+    }
+}
+
+export class AddressRow {
+    readonly typeName = 'Address'
+    readonly variableName: string
+    readonly postalCode: string
+    values: {
+        // UNQ(postalCode, line1, line2)
+        postalCode: string
+        line1: string
+        line2: string
+        latitude: number
+        longitude: number
+    }
+
+    constructor(variableName: string, values: { postalCode: string, line1: string, line2: string, latitude: number, longitude: number }) {
+        this.variableName = variableName
+        this.values = values
+        this.postalCode = values.postalCode
+    }
+
+    static toVariable(row: AddressRow): AddressVariable {
+        return new AddressVariable(row.variableName, {
+            postalCode: new PostalCode(row.values.postalCode),
+            line1: row.values.line1,
+            line2: row.values.line2,
+            latitude: row.values.latitude,
+            longitude: row.values.longitude
+        })
+    }
+}
+
+export class ServiceAreaRow {
+    readonly typeName = 'ServiceArea'
+    readonly variableName: string
+    values: {}
+
+    constructor(variableName: string, values: {}) {
+        this.variableName = variableName
+        this.values = values
+    }
+
+    static toVariable(row: ServiceAreaRow): ServiceAreaVariable {
+        return new ServiceAreaVariable(row.variableName)
+    }
+}
+
+export class CompanyTypeRow {
+    readonly typeName = 'CompanyType'
+    readonly variableName: string
+    values: {}
+
+    constructor(variableName: string, values: {}) {
+        this.variableName = variableName
+        this.values = values
+    }
+
+    static toVariable(row: CompanyTypeRow): CompanyTypeVariable {
+        return new CompanyTypeVariable(row.variableName)
+    }
+}
+
+export class BankRow {
+    readonly typeName = 'Bank'
+    readonly variableName: string
+    values: {
+        // UNQ(country, name)
+        country: string
+        name: string
+        website: string
+    }
+
+    constructor(variableName: string, values: { country: string, name: string, website: string }) {
+        this.variableName = variableName
+        this.values = values
+    }
+
+    static toVariable(row: BankRow): BankVariable {
+        return new BankVariable(row.variableName, {
+            country: new Country(row.values.country),
+            name: row.values.name,
+            website: row.values.website
+        })
+    }
+}
+
+export class BankBranchRow {
+    readonly typeName = 'BankBranch'
+    readonly variableName: string
+    values: {
+        // UNQ(bank, name)
+        bank: string
+        name: string
+        ifsc: string
+        address: string
+    }
+
+    constructor(variableName: string, values: { bank: string, name: string, ifsc: string, address: string }) {
+        this.variableName = variableName
+        this.values = values
+    }
+
+    static toVariable(row: BankBranchRow): BankBranchVariable {
+        return new BankBranchVariable(row.variableName, {
+            bank: new Bank(row.values.bank),
+            name: row.values.name,
+            ifsc: row.values.ifsc,
+            address: new Address(row.values.address)
+        })
+    }
+}
+
+export class BankAccountRow {
+    readonly typeName = 'BankAccount'
+    readonly variableName: string
+    values: {
+        // UNQ(bank, accountNumber)
+        bank: string
+        bankBranch: string
+        accountNumber: string
+    }
+
+    constructor(variableName: string, values: { bank: string, bankBranch: string, accountNumber: string }) {
+        this.variableName = variableName
+        this.values = values
+    }
+
+    static toVariable(row: BankAccountRow): BankAccountVariable {
+        return new BankAccountVariable(row.variableName, {
+            bank: new Bank(row.values.bank),
+            bankBranch: new BankBranch(row.values.bankBranch),
+            accountNumber: row.values.accountNumber
+        })
+    }
+}
+
+export class SupplierRow {
+    readonly typeName = 'Supplier'
+    readonly variableName: string
+    values: {
+        email: string
+        telephone: string
+        mobile: string
+        website: string
+        companyType: string
+        serviceArea: string
+        gstin: string
+        pan: string
+        iec: string
+    }
+
+    constructor(variableName: string, values: { email: string, telephone: string, mobile: string, website: string, companyType: string, serviceArea: string, gstin: string, pan: string, iec: string }) {
+        this.variableName = variableName
+        this.values = values
+    }
+
+    static toVariable(row: SupplierRow): SupplierVariable {
+        return new SupplierVariable(row.variableName, {
+            email: row.values.email,
+            telephone: row.values.telephone,
+            mobile: row.values.mobile,
+            website: row.values.website,
+            companyType: new CompanyType(row.values.companyType),
+            serviceArea: new ServiceArea(row.values.serviceArea),
+            gstin: row.values.gstin,
+            pan: row.values.pan,
+            iec: row.values.iec,
+        })
+    }
+}
+
+export class SupplierAddressRow {
+    readonly typeName = 'SupplierAddress'
+    readonly variableName: string
+    readonly supplier: string
+    readonly address: string
+    values: {
+        // UNQ(supplier, name)
+        // UNQ(supplier, address)
+        supplier: string
+        name: string
+        address: string
+    }
+
+    constructor(variableName: string, values: { supplier: string, name: string, address: string }) {
+        this.variableName = variableName
+        this.values = values
+        this.supplier = values.supplier
+        this.address = values.address
+    }
+
+    static toVariable(row: SupplierAddressRow): SupplierAddressVariable {
+        return new SupplierAddressVariable(row.variableName, {
+            supplier: new Supplier(row.values.supplier),
+            name: row.values.name,
+            address: new Address(row.values.address)
+        })
+    }
+}
+
+export class SupplierContactRow {
+    readonly typeName = 'SupplierContact'
+    readonly variableName: string
+    readonly supplier: string
+    readonly name: string
+    values: {
+        // UNQ(supplier, name)
+        supplier: string
+        name: string
+        designation: string
+        email: string
+        telephone: string
+        mobile: string
+    }
+
+    constructor(variableName: string, values: { supplier: string, name: string, designation: string, email: string, telephone: string, mobile: string }) {
+        this.variableName = variableName
+        this.values = values
+        this.supplier = values.supplier
+        this.name = values.name
+    }
+
+    static toVariable(row: SupplierContactRow): SupplierContactVariable {
+        return new SupplierContactVariable(row.variableName, {
+            supplier: new Supplier(row.values.supplier),
+            name: row.values.name,
+            designation: row.values.designation,
+            email: row.values.email,
+            telephone: row.values.telephone,
+            mobile: row.values.mobile
+        })
+    }
+}
+
+export class SupplierBankAccountRow {
+    readonly typeName = 'SupplierBankAccount'
+    readonly variableName: string
+    readonly supplier: string
+    readonly bankAccount: string
+    values: {
+        // UNQ(supplier, bankAccount)
+        supplier: string
+        bankAccount: string
+    }
+
+    constructor(variableName: string, values: { supplier: string, bankAccount: string }) {
+        this.variableName = variableName
+        this.values = values
+        this.supplier = values.supplier
+        this.bankAccount = values.bankAccount
+    }
+
+    static toVariable(row: SupplierBankAccountRow): SupplierBankAccountVariable {
+        return new SupplierBankAccountVariable(row.variableName, {
+            supplier: new Supplier(row.values.supplier),
+            bankAccount: new BankAccount(row.values.bankAccount)
+        })
+    }
+}
+
 export class ProductRow {
     readonly typeName = 'Product'
-    variableName: string
+    readonly variableName: string
     values: {
         // UNQ(SKU)
         name: string
@@ -150,21 +558,6 @@ export class IndentItemRow {
             requisted: row.values.requisted,
             consumed: row.values.consumed
         })
-    }
-}
-
-export class SupplierRow {
-    readonly typeName = 'Supplier'
-    variableName: string
-    values: {}
-
-    constructor(variableName: string, values: {}) {
-        this.variableName = variableName
-        this.values = values
-    }
-
-    static toVariable(row: SupplierRow): SupplierVariable {
-        return new SupplierVariable(row.variableName, row.values)
     }
 }
 
@@ -735,6 +1128,70 @@ export class DiffRow {
     readonly id?: number
     active: boolean
     variables: {
+        Region: {
+            replace: Array<RegionRow>
+            remove: Array<string>
+        }
+        Country: {
+            replace: Array<CountryRow>
+            remove: Array<string>
+        }
+        State: {
+            replace: Array<StateRow>
+            remove: Array<string>
+        }
+        District: {
+            replace: Array<DistrictRow>
+            remove: Array<string>
+        }
+        Subdistrict: {
+            replace: Array<SubdistrictRow>
+            remove: Array<string>
+        }
+        PostalCode: {
+            replace: Array<PostalCodeRow>
+            remove: Array<string>
+        }
+        Address: {
+            replace: Array<AddressRow>
+            remove: Array<string>
+        }
+        ServiceArea: {
+            replace: Array<ServiceAreaRow>
+            remove: Array<string>
+        }
+        CompanyType: {
+            replace: Array<CompanyTypeRow>
+            remove: Array<string>
+        }
+        Bank: {
+            replace: Array<BankRow>
+            remove: Array<string>
+        }
+        BankBranch: {
+            replace: Array<BankBranchRow>
+            remove: Array<string>
+        }
+        BankAccount: {
+            replace: Array<BankAccountRow>
+            remove: Array<string>
+        }
+        Supplier: {
+            replace: Array<SupplierRow>
+            remove: Array<string>
+        }
+        SupplierAddress: {
+            replace: Array<SupplierAddressRow>
+            remove: Array<string>
+        }
+        SupplierContact: {
+            replace: Array<SupplierContactRow>
+            remove: Array<string>
+        }
+        SupplierBankAccount: {
+            replace: Array<SupplierBankAccountRow>
+            remove: Array<string>
+        }
         Product: {
             replace: Array<ProductRow>
             remove: Array<string>
@@ -749,10 +1206,6 @@ export class DiffRow {
         },
         IndentItem: {
             replace: Array<IndentItemRow>
-            remove: Array<string>
-        },
-        Supplier: {
-            replace: Array<SupplierRow>
             remove: Array<string>
         },
         SupplierProduct: {
@@ -846,8 +1299,72 @@ export class DiffRow {
     }
 
     constructor(variables: {
+        Region: {
+            replace: Array<RegionRow>
+            remove: Array<string>
+        }
+        Country: {
+            replace: Array<CountryRow>
+            remove: Array<string>
+        }
+        State: {
+            replace: Array<StateRow>
+            remove: Array<string>
+        }
+        District: {
+            replace: Array<DistrictRow>
+            remove: Array<string>
+        }
+        Subdistrict: {
+            replace: Array<SubdistrictRow>
+            remove: Array<string>
+        }
+        PostalCode: {
+            replace: Array<PostalCodeRow>
+            remove: Array<string>
+        }
+        Address: {
+            replace: Array<AddressRow>
+            remove: Array<string>
+        }
+        ServiceArea: {
+            replace: Array<ServiceAreaRow>
+            remove: Array<string>
+        }
+        CompanyType: {
+            replace: Array<CompanyTypeRow>
+            remove: Array<string>
+        }
+        Bank: {
+            replace: Array<BankRow>
+            remove: Array<string>
+        }
+        BankBranch: {
+            replace: Array<BankBranchRow>
+            remove: Array<string>
+        }
+        BankAccount: {
+            replace: Array<BankAccountRow>
+            remove: Array<string>
+        }
+        Supplier: {
+            replace: Array<SupplierRow>
+            remove: Array<string>
+        }
+        SupplierAddress: {
+            replace: Array<SupplierAddressRow>
+            remove: Array<string>
+        }
+        SupplierContact: {
+            replace: Array<SupplierContactRow>
+            remove: Array<string>
+        }
+        SupplierBankAccount: {
+            replace: Array<SupplierBankAccountRow>
+            remove: Array<string>
+        }
         Product: {
-            replace: Array<ProductRow>,
+            replace: Array<ProductRow>
             remove: Array<string>
         },
         UOM: {
@@ -860,10 +1377,6 @@ export class DiffRow {
         },
         IndentItem: {
             replace: Array<IndentItemRow>,
-            remove: Array<string>
-        },
-        Supplier: {
-            replace: Array<SupplierRow>,
             remove: Array<string>
         },
         SupplierProduct: {
@@ -961,6 +1474,10 @@ export class DiffRow {
 
     static toVariable(diff: Immutable<DiffRow>): DiffVariable {
         return new DiffVariable(diff.id, diff.active, {
+            Supplier: {
+                replace: HashSet.of<SupplierVariable>().addAll(diff.variables.Supplier.replace.map(x => SupplierRow.toVariable(x))),
+                remove: HashSet.of<Supplier>().addAll(diff.variables.Supplier.remove.map(x => new Supplier(x)))
+            },
             Product: {
                 replace: HashSet.of<ProductVariable>().addAll(diff.variables.Product.replace.map(x => ProductRow.toVariable(x))),
                 remove: HashSet.of<Product>().addAll(diff.variables.Product.remove.map(x => new Product(x)))
@@ -976,10 +1493,6 @@ export class DiffRow {
             IndentItem: {
                 replace: HashSet.of<IndentItemVariable>().addAll(diff.variables.IndentItem.replace.map(x => IndentItemRow.toVariable(x))),
                 remove: HashSet.of<IndentItem>().addAll(diff.variables.IndentItem.remove.map(x => new IndentItem(x)))
-            },
-            Supplier: {
-                replace: HashSet.of<SupplierVariable>().addAll(diff.variables.Supplier.replace.map(x => SupplierRow.toVariable(x))),
-                remove: HashSet.of<Supplier>().addAll(diff.variables.Supplier.remove.map(x => new Supplier(x)))
             },
             SupplierProduct: {
                 replace: HashSet.of<SupplierProductVariable>().addAll(diff.variables.SupplierProduct.replace.map(x => SupplierProductRow.toVariable(x))),

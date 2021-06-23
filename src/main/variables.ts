@@ -1,5 +1,5 @@
 import { immerable } from 'immer'
-import { BOMItemRow, BOMRow, IndentItemRow, IndentRow, MaterialApprovalSlipItemRow, MaterialApprovalSlipRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow, MaterialRequistionSlipItemRow, MaterialRequistionSlipRow, MaterialReturnSlipItemRow, MaterialReturnSlipRow, ProductionPreparationSlipItemRow, ProductionPreparationSlipRow, ProductRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow, PurchaseOrderItemRow, PurchaseOrderRow, QuotationItemRow, QuotationRow, ScrapMaterialSlipRow, SupplierProductRow, SupplierRow, TransferMaterialSlipRow, UOMRow, WarehouseAcceptanceSlipRow } from './rows'
+import { AddressRow, BankAccountRow, BankBranchRow, BankRow, BOMItemRow, BOMRow, CompanyTypeRow, CountryRow, DistrictRow, IndentItemRow, IndentRow, MaterialApprovalSlipItemRow, MaterialApprovalSlipRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow, MaterialRequistionSlipItemRow, MaterialRequistionSlipRow, MaterialReturnSlipItemRow, MaterialReturnSlipRow, PostalCodeRow, ProductionPreparationSlipItemRow, ProductionPreparationSlipRow, ProductRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow, PurchaseOrderItemRow, PurchaseOrderRow, QuotationItemRow, QuotationRow, RegionRow, ScrapMaterialSlipRow, ServiceAreaRow, StateRow, SubdistrictRow, SupplierAddressRow, SupplierBankAccountRow, SupplierContactRow, SupplierProductRow, SupplierRow, TransferMaterialSlipRow, UOMRow, WarehouseAcceptanceSlipRow } from './rows'
 import { NonPrimitiveType } from './types'
 
 export type Text = string
@@ -11,11 +11,26 @@ export type Timestamp = number
 export type Time = number
 
 export type Variable =
+    | RegionVariable
+    | CountryVariable
+    | StateVariable
+    | DistrictVariable
+    | SubdistrictVariable
+    | PostalCodeVariable
+    | AddressVariable
+    | ServiceAreaVariable
+    | CountryVariable
+    | BankVariable
+    | BankBranchVariable
+    | BankAccountVariable
+    | SupplierVariable
+    | SupplierAddressVariable
+    | SupplierContactVariable
+    | SupplierBankAccountVariable
     | ProductVariable
     | UOMVariable
     | IndentVariable
     | IndentItemVariable
-    | SupplierVariable
     | SupplierProductVariable
     | QuotationVariable
     | QuotationItemVariable
@@ -40,11 +55,25 @@ export type Variable =
     | WarehouseAcceptanceSlipVariable
 
 export type VariableName =
+    | Region
+    | Country
+    | State
+    | District
+    | Subdistrict
+    | PostalCode
+    | Address
+    | ServiceArea
+    | CompanyType
+    | Bank
+    | BankAccount
+    | Supplier
+    | SupplierAddress
+    | SupplierContact
+    | SupplierBankAccount
     | Product
     | UOM
     | Indent
     | IndentItem
-    | Supplier
     | SupplierProduct
     | Quotation
     | QuotationItem
@@ -67,6 +96,935 @@ export type VariableName =
     | ScrapMaterialSlip
     | TransferMaterialSlip
     | WarehouseAcceptanceSlip
+
+export class Region {
+    constructor(private variableName: string) { }
+
+    equals(other: Region): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return this.variableName
+    }
+}
+
+export class RegionVariable {
+    [immerable] = true
+    readonly typeName = 'Region'
+    variableName: Region
+    values: {}
+
+    constructor(variableName: string, values: {}) {
+        this.variableName = new Region(variableName)
+        this.values = values
+    }
+
+    equals(other: RegionVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName.equals(other.variableName)
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): RegionRow {
+        return new RegionRow(this.variableName.toString(), this.values)
+    }
+}
+
+export class Country {
+    constructor(private variableName: string) { }
+
+    equals(other: Country): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return this.variableName
+    }
+}
+
+export class CountryVariable {
+    [immerable] = true
+    readonly typeName = 'Country'
+    variableName: Country
+    values: {
+        // UNQ(region, name)
+        region: Region
+        name: Text
+    }
+
+    constructor(variableName: string, values: { region: Region, name: Text }) {
+        this.variableName = new Country(variableName)
+        this.values = values
+    }
+
+    equals(other: CountryVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.values.region.equals(other.values.region) && this.values.name === other.values.name
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): CountryRow {
+        return new CountryRow(this.variableName.toString(), {
+            region: this.values.region.toString(),
+            name: this.values.name
+        })
+    }
+}
+
+export class State {
+    constructor(private variableName: string) { }
+
+    equals(other: State): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return this.variableName
+    }
+}
+
+export class StateVariable {
+    [immerable] = true
+    readonly typeName = 'State'
+    variableName: State
+    values: {
+        // UNQ(country, name)
+        country: Country
+        name: Text
+    }
+
+    constructor(variableName: string, values: { country: Country, name: Text }) {
+        this.variableName = new State(variableName)
+        this.values = values
+    }
+
+    equals(other: StateVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.values.country.equals(other.values.country) && this.values.name === other.values.name
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): StateRow {
+        return new StateRow(this.variableName.toString(), {
+            country: this.values.country.toString(),
+            name: this.values.name
+        })
+    }
+}
+
+export class District {
+    constructor(private variableName: string) { }
+
+    equals(other: District): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return this.variableName
+    }
+}
+
+export class DistrictVariable {
+    [immerable] = true
+    readonly typeName = 'District'
+    variableName: District
+    values: {
+        // UNQ(state, name)
+        state: State
+        name: Text
+    }
+
+    constructor(variableName: string, values: { state: State, name: Text }) {
+        this.variableName = new District(variableName)
+        this.values = values
+    }
+
+    equals(other: DistrictVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.values.state.equals(other.values.state) && this.values.name === other.values.name
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): DistrictRow {
+        return new DistrictRow(this.variableName.toString(), {
+            state: this.values.state.toString(),
+            name: this.values.name
+        })
+    }
+}
+
+export class Subdistrict {
+    constructor(private variableName: string) { }
+
+    equals(other: Subdistrict): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return this.variableName
+    }
+}
+
+export class SubdistrictVariable {
+    [immerable] = true
+    readonly typeName = 'Subdistrict'
+    variableName: Subdistrict
+    values: {
+        // UNQ(district, name)
+        district: District
+        name: Text
+    }
+
+    constructor(variableName: string, values: { district: District, name: Text }) {
+        this.variableName = new Subdistrict(variableName)
+        this.values = values
+    }
+
+    equals(other: SubdistrictVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.values.district.equals(other.values.district) && this.values.name === other.values.name
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): SubdistrictRow {
+        return new SubdistrictRow(this.variableName.toString(), {
+            district: this.values.district.toString(),
+            name: this.values.name
+        })
+    }
+}
+
+export class PostalCode {
+    constructor(private variableName: string) { }
+
+    equals(other: PostalCode): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return this.variableName
+    }
+}
+
+export class PostalCodeVariable {
+    [immerable] = true
+    readonly typeName = 'PostalCode'
+    variableName: PostalCode
+    values: {
+        // UNQ(subdistrict, name)
+        subdistrict: Subdistrict
+        name: Text
+    }
+
+    constructor(variableName: string, values: { subdistrict: Subdistrict, name: Text }) {
+        this.variableName = new PostalCode(variableName)
+        this.values = values
+    }
+
+    equals(other: PostalCodeVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.values.subdistrict.equals(other.values.subdistrict) && this.values.name === other.values.name
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): PostalCodeRow {
+        return new PostalCodeRow(this.variableName.toString(), {
+            subdistrict: this.values.subdistrict.toString(),
+            name: this.values.name
+        })
+    }
+}
+
+export class Address {
+    constructor(private variableName: string) { }
+
+    equals(other: Address): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return this.variableName
+    }
+}
+
+export class AddressVariable {
+    [immerable] = true
+    readonly typeName = 'Address'
+    variableName: Address
+    values: {
+        // UNQ(postalCode, line1, line2)
+        postalCode: PostalCode
+        line1: Text
+        line2: Text
+        latitude: Decimal
+        longitude: Decimal
+    }
+
+    constructor(variableName: string, values: { postalCode: PostalCode, line1: Text, line2: Text, latitude: Decimal, longitude: Decimal }) {
+        this.variableName = new Address(variableName)
+        this.values = values
+    }
+
+    equals(other: AddressVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.values.postalCode.equals(other.values.postalCode) && this.values.line1 === other.values.line1 && this.values.line2 === other.values.line2
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): AddressRow {
+        return new AddressRow(this.variableName.toString(), {
+            postalCode: this.values.postalCode.toString(),
+            line1: this.values.line1,
+            line2: this.values.line2,
+            latitude: this.values.latitude,
+            longitude: this.values.longitude
+        })
+    }
+}
+
+export class ServiceArea {
+    constructor(private variableName: string) { }
+
+    equals(other: ServiceArea): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return this.variableName
+    }
+}
+
+export class ServiceAreaVariable {
+    [immerable] = true
+    readonly typeName = 'ServiceArea'
+    variableName: ServiceArea
+    values: {}
+
+    constructor(variableName: string) {
+        this.variableName = new ServiceArea(variableName)
+        this.values = {}
+    }
+
+    equals(other: ServiceAreaVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName.equals(other.variableName)
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): ServiceAreaRow {
+        return new ServiceAreaRow(this.variableName.toString(), this.values)
+    }
+}
+
+export class CompanyType {
+    constructor(private variableName: string) { }
+
+    equals(other: CompanyType): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return this.variableName
+    }
+}
+
+export class CompanyTypeVariable {
+    [immerable] = true
+    readonly typeName = 'CompanyType'
+    variableName: CompanyType
+    values: {}
+
+    constructor(variableName: string) {
+        this.variableName = new CompanyType(variableName)
+        this.values = {}
+    }
+
+    equals(other: CompanyTypeVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName.equals(other.variableName)
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): CompanyTypeRow {
+        return new CompanyTypeRow(this.variableName.toString(), this.values)
+    }
+}
+
+export class Bank {
+    constructor(private variableName: string) { }
+
+    equals(other: Bank): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return this.variableName
+    }
+}
+
+export class BankVariable {
+    [immerable] = true
+    readonly typeName = 'Bank'
+    variableName: Bank
+    values: {
+        // UNQ(country, name)
+        country: Country
+        name: Text
+        website: Text
+    }
+
+    constructor(variableName: string, values: { country: Country, name: Text, website: Text }) {
+        this.variableName = new Bank(variableName)
+        this.values = values
+    }
+
+    equals(other: BankVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName.equals(other.variableName)
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): BankRow {
+        return new BankRow(this.variableName.toString(), {
+            country: this.values.country.toString(),
+            name: this.values.name,
+            website: this.values.website
+        })
+    }
+}
+
+export class BankBranch {
+    constructor(private variableName: string) { }
+
+    equals(other: BankBranch): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return this.variableName
+    }
+}
+
+export class BankBranchVariable {
+    [immerable] = true
+    readonly typeName = 'BankBranch'
+    variableName: BankBranch
+    values: {
+        // UNQ(bank, name)
+        bank: Bank
+        name: Text
+        ifsc: Text
+        address: Address
+    }
+
+    constructor(variableName: string, values: { bank: Bank, name: Text, ifsc: Text, address: Address }) {
+        this.variableName = new BankBranch(variableName)
+        this.values = values
+    }
+
+    equals(other: BankBranchVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName.equals(other.variableName)
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): BankBranchRow {
+        return new BankBranchRow(this.variableName.toString(), {
+            bank: this.values.bank.toString(),
+            name: this.values.name,
+            ifsc: this.values.ifsc,
+            address: this.values.address.toString()
+        })
+    }
+}
+
+export class BankAccount {
+    constructor(private variableName: string) { }
+
+    equals(other: BankAccount): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return this.variableName
+    }
+}
+
+export class BankAccountVariable {
+    [immerable] = true
+    readonly typeName = 'BankAccount'
+    variableName: BankAccount
+    values: {
+        // UNQ(bank, accountNumber)
+        bank: Bank
+        bankBranch: BankBranch
+        accountNumber: Text
+    }
+
+    constructor(variableName: string, values: { bank: Bank, bankBranch: BankBranch, accountNumber: Text }) {
+        this.variableName = new BankAccount(variableName)
+        this.values = values
+    }
+
+    equals(other: BankAccountVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName.equals(other.variableName)
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): BankAccountRow {
+        return new BankAccountRow(this.variableName.toString(), {
+            bank: this.values.bank.toString(),
+            bankBranch: this.values.bankBranch.toString(),
+            accountNumber: this.values.accountNumber
+        })
+    }
+}
+
+export class Supplier {
+    constructor(private variableName: string) { }
+
+    equals(other: Supplier): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return this.variableName
+    }
+}
+
+export class SupplierVariable {
+    [immerable] = true
+    readonly typeName = 'Supplier'
+    variableName: Supplier
+    values: {
+        email: Text
+        telephone: Text
+        mobile: Text
+        website: Text
+        companyType: CompanyType
+        serviceArea: ServiceArea
+        gstin: Text
+        pan: Text
+        iec: Text
+    }
+
+    constructor(variableName: string, values: { email: Text, telephone: Text, mobile: Text, website: Text, companyType: CompanyType, serviceArea: ServiceArea, gstin: Text, pan: Text, iec: Text }) {
+        this.variableName = new Supplier(variableName)
+        this.values = values
+    }
+
+    equals(other: SupplierVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName.equals(other.variableName) || this.values.gstin === other.values.gstin || this.values.pan === other.values.pan || this.values.iec === other.values.iec
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): SupplierRow {
+        return new SupplierRow(this.variableName.toString(), {
+            email: this.values.email,
+            telephone: this.values.telephone,
+            mobile: this.values.mobile,
+            website: this.values.website,
+            companyType: this.values.companyType.toString(),
+            serviceArea: this.values.serviceArea.toString(),
+            gstin: this.values.gstin,
+            pan: this.values.pan,
+            iec: this.values.iec
+        })
+    }
+}
+
+export class SupplierAddress {
+    constructor(private variableName: string) { }
+
+    equals(other: SupplierAddress): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return this.variableName
+    }
+}
+
+export class SupplierAddressVariable {
+    [immerable] = true
+    readonly typeName = 'SupplierAddress'
+    variableName: SupplierAddress
+    values: {
+        // UNQ(supplier, name)
+        // UNQ(supplier, address)
+        supplier: Supplier
+        name: Text
+        address: Address
+    }
+
+    constructor(variableName: string, values: { supplier: Supplier, name: Text, address: Address }) {
+        this.variableName = new SupplierAddress(variableName)
+        this.values = values
+    }
+
+    equals(other: SupplierAddressVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.values.supplier.equals(other.values.supplier) && this.values.name === other.values.name && this.values.address.equals(other.values.address)
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): SupplierAddressRow {
+        return new SupplierAddressRow(this.variableName.toString(), {
+            supplier: this.values.supplier.toString(),
+            name: this.values.name,
+            address: this.values.address.toString()
+        })
+    }
+}
+
+export class SupplierContact {
+    constructor(private variableName: string) { }
+
+    equals(other: SupplierContact): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return this.variableName
+    }
+}
+
+export class SupplierContactVariable {
+    [immerable] = true
+    readonly typeName = 'SupplierContact'
+    variableName: SupplierContact
+    values: {
+        // UNQ(supplier, name)
+        supplier: Supplier
+        name: Text
+        designation: Text
+        email: Text
+        telephone: Text
+        mobile: Text
+    }
+
+    constructor(variableName: string, values: { supplier: Supplier, name: Text, designation: Text, email: Text, telephone: Text, mobile: Text }) {
+        this.variableName = new SupplierContact(variableName)
+        this.values = values
+    }
+
+    equals(other: SupplierContactVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.values.supplier.equals(other.values.supplier) && this.values.name === other.values.name
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): SupplierContactRow {
+        return new SupplierContactRow(this.variableName.toString(), {
+            supplier: this.values.supplier.toString(),
+            name: this.values.name,
+            designation: this.values.designation,
+            email: this.values.email,
+            telephone: this.values.telephone,
+            mobile: this.values.mobile
+        })
+    }
+}
+
+export class SupplierBankAccount {
+    constructor(private variableName: string) { }
+
+    equals(other: SupplierBankAccount): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.variableName === other.variableName
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return this.variableName
+    }
+}
+
+export class SupplierBankAccountVariable {
+    [immerable] = true
+    readonly typeName = 'SupplierBankAccount'
+    variableName: SupplierBankAccount
+    values: {
+        // UNQ(supplier, bankAccount)
+        supplier: Supplier
+        bankAccount: BankAccount
+    }
+
+    constructor(variableName: string, values: { supplier: Supplier, bankAccount: BankAccount }) {
+        this.variableName = new SupplierBankAccount(variableName)
+        this.values = values
+    }
+
+    equals(other: SupplierBankAccountVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.values.supplier.equals(other.values.supplier) && this.values.bankAccount.equals(other.values.bankAccount)
+    }
+
+    hashCode(): number {
+        return 0
+    }
+
+    toString(): string {
+        return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): SupplierBankAccountRow {
+        return new SupplierBankAccountRow(this.variableName.toString(), {
+            supplier: this.values.supplier.toString(),
+            bankAccount: this.values.bankAccount.toString()
+        })
+    }
+}
 
 export class Product {
     constructor(private variableName: string) { }
@@ -156,7 +1114,7 @@ export class UOMVariable {
 
     constructor(variableName: string, values: { product: Product, name: Text, conversionRate: Decimal }) {
         this.variableName = new UOM(variableName)
-        this.values = values       
+        this.values = values
     }
 
     equals(other: UOMVariable): boolean {
@@ -318,56 +1276,6 @@ export class IndentItemVariable {
             requisted: this.values.requisted,
             consumed: this.values.consumed,
         })
-    }
-}
-
-export class Supplier {
-    constructor(private variableName: string) { }
-
-    equals(other: Supplier): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.variableName === other.variableName
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return this.variableName
-    }
-}
-
-export class SupplierVariable {
-    [immerable] = true
-    readonly typeName = 'Supplier'
-    variableName: Supplier
-    values: {}
-
-    constructor(variableName: string, values: {}) {
-        this.variableName = new Supplier(variableName)
-        this.values = values
-    }
-
-    equals(other: SupplierVariable): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.variableName.equals(other.variableName)
-    }
-
-    hashCode(): number {
-        return 0
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toRow(): SupplierRow {
-        return new SupplierRow(this.variableName.toString(), this.values)
     }
 }
 
@@ -1664,6 +2572,112 @@ export class WarehouseAcceptanceSlipVariable {
 
 export function replaceVariable(typeName: NonPrimitiveType, variableName: string, values: object) {
     switch (typeName) {
+        case 'Region': {
+            return new RegionVariable(variableName, {})
+        }
+        case 'Country': {
+            return new CountryVariable(variableName, {
+                region: new Region(String(values['region'])),
+                name: String(values['name'])
+            })
+        }
+        case 'State': {
+            return new StateVariable(variableName, {
+                country: new Country(String(values['country'])),
+                name: String(values['name'])
+            })
+        }
+        case 'District': {
+            return new DistrictVariable(variableName, {
+                state: new State(String(values['state'])),
+                name: String(values['name'])
+            })
+        }
+        case 'Subdistrict': {
+            return new SubdistrictVariable(variableName, {
+                district: new District(String(values['district'])),
+                name: String(values['name'])
+            })
+        }
+        case 'PostalCode': {
+            return new PostalCodeVariable(variableName, {
+                subdistrict: new Subdistrict(String(values['subdistrict'])),
+                name: String(values['name'])
+            })
+        }
+        case 'Address': {
+            return new AddressVariable(variableName, {
+                postalCode: new PostalCode(String(values['postalCode'])),
+                line1: String(values['line1']),
+                line2: String(values['line2']),
+                latitude: parseFloat(String(values['latitude'])),
+                longitude: parseFloat(String(values['longitude']))
+            })
+        }
+        case 'ServiceArea': {
+            return new ServiceAreaVariable(variableName)
+        }
+        case 'CompanyType': {
+            return new CompanyTypeVariable(variableName)
+        }
+        case 'Bank': {
+            return new BankVariable(variableName, {
+                country: new Country(String(values['country'])),
+                name: String(values['name']),
+                website: String(values['website'])
+            })
+        }
+        case 'BankBranch': {
+            return new BankBranchVariable(variableName, {
+                bank: new Bank(String(values['bank'])),
+                name: String(values['name']),
+                ifsc: String(values['ifsc']),
+                address: new Address(String(values['address']))
+            })
+        }
+        case 'BankAccount': {
+            return new BankAccountVariable(variableName, {
+                bank: new Bank(String(values['bank'])),
+                bankBranch: new BankBranch(String(values['bankBranch'])),
+                accountNumber: String(values['accountNumber'])
+            })
+        }
+        case 'Supplier': {
+            return new SupplierVariable(variableName, {
+                email: String(values['email']),
+                telephone: String(values['telephone']),
+                mobile: String(values['mobile']),
+                website: String(values['website']),
+                companyType: new CompanyType(String(values['companyType'])),
+                serviceArea: new ServiceArea(String(values['serviceArea'])),
+                gstin: String(values['gstin']),
+                pan: String(values['pan']),
+                iec: String(values['iec'])
+            })
+        }
+        case 'SupplierAddress': {
+            return new SupplierAddressVariable(variableName, {
+                supplier: new Supplier(String(values['supplier'])),
+                name: String(values['name']),
+                address: new Address(String(values['address']))
+            })
+        }
+        case 'SupplierContact': {
+            return new SupplierContactVariable(variableName, {
+                supplier: new Supplier(String(values['supplier'])),
+                name: String(values['name']),
+                designation: String(values['designation']),
+                email: String(values['email']),
+                telephone: String(values['telephone']),
+                mobile: String(values['mobile'])
+            })
+        }
+        case 'SupplierBankAccount': {
+            return new SupplierBankAccountVariable(variableName, {
+                supplier: new Supplier(String(values['supplier'])),
+                bankAccount: new BankAccount(String(values['bankAccount']))
+            })
+        }
         case 'Product': {
             return new ProductVariable(variableName, {
                 name: String(values['name']),
@@ -1696,9 +2710,6 @@ export function replaceVariable(typeName: NonPrimitiveType, variableName: string
                 requisted: parseInt(String(values['requisted'])),
                 consumed: parseInt(String(values['consumed']))
             })
-        }
-        case 'Supplier': {
-            return new SupplierVariable(variableName, {})
         }
         case 'SupplierProduct': {
             return new SupplierProductVariable(variableName, {

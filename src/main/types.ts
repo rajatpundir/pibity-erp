@@ -13,12 +13,27 @@ export type PrimitiveType =
 // | 'Blob'
 
 export type NonPrimitiveType =
+    | 'Region'
+    | 'Country'
+    | 'State'
+    | 'District'
+    | 'Subdistrict'
+    | 'PostalCode'
+    | 'Address'
+    | 'ServiceArea'
+    | 'CompanyType'
+    | 'Bank'
+    | 'BankBranch'
+    | 'BankAccount'
+    | 'Supplier'
+    | 'SupplierAddress'
+    | 'SupplierContact'
+    | 'SupplierBankAccount'
     | 'Product'
     | 'UOM'
+    | 'SupplierProduct'
     | 'Indent'
     | 'IndentItem'
-    | 'Supplier'
-    | 'SupplierProduct'
     | 'Quotation'
     | 'QuotationItem'
     | 'PurchaseOrder'
@@ -55,6 +70,332 @@ export type Type = {
 }
 
 export const types = {
+    Region: {
+        name: 'Region',
+        autoId: false,
+        url: 'region',
+        keys: {}
+    },
+    Country: {
+        name: 'Country',
+        autoId: false,
+        url: 'country',
+        keys: {
+            region: {
+                order: 0,
+                name: 'Region',
+                type: 'Region'
+            },
+            name: {
+                order: 1,
+                name: 'Name',
+                type: 'Text'
+            }
+        }
+    },
+    State: {
+        name: 'State',
+        autoId: true,
+        url: 'state',
+        keys: {
+            country: {
+                order: 0,
+                name: 'Country',
+                type: 'Country'
+            },
+            name: {
+                order: 1,
+                name: 'Name',
+                type: 'Text'
+            }
+        }
+    },
+    District: {
+        name: 'District',
+        autoId: true,
+        url: 'district',
+        keys: {
+            state: {
+                order: 0,
+                name: 'State',
+                type: 'State'
+            },
+            name: {
+                order: 1,
+                name: 'Name',
+                type: 'Text'
+            }
+        }
+    },
+    Subdistrict: {
+        name: 'Subdistrict',
+        autoId: true,
+        url: 'subdistrict',
+        keys: {
+            district: {
+                order: 0,
+                name: 'District',
+                type: 'District'
+            },
+            name: {
+                order: 1,
+                name: 'Name',
+                type: 'Text'
+            }
+        }
+    },
+    PostalCode: {
+        name: 'Postal Code',
+        autoId: true,
+        url: 'pincode',
+        keys: {
+            subdistrict: {
+                order: 0,
+                name: 'Subdistrict',
+                type: 'Subdistrict'
+            },
+            name: {
+                order: 1,
+                name: 'Name',
+                type: 'Text'
+            }
+        }
+    },
+    Address: {
+        name: 'Address',
+        autoId: true,
+        url: 'address',
+        keys: {
+            postalCode: {
+                order: 0,
+                name: 'Postal Code',
+                type: 'PostalCode'
+            },
+            line1: {
+                order: 1,
+                name: 'Address Line 1',
+                type: 'Text'
+            },
+            line2: {
+                order: 2,
+                name: 'Address Line 2',
+                type: 'Text'
+            },
+            latitude: {
+                order: 3,
+                name: 'Latitude',
+                type: 'Number'
+            },
+            longitude: {
+                order: 4,
+                name: 'Longitude',
+                type: 'Number'
+            }
+        }
+    },
+    ServiceArea: {
+        name: 'Service Area',
+        autoId: false,
+        url: 'service-area',
+        keys: {}
+    },
+    CompanyType: {
+        name: 'Company Type',
+        autoId: false,
+        url: 'company-type',
+        keys: {}
+    },
+    Bank: {
+        name: 'Bank',
+        autoId: false,
+        url: 'bank',
+        keys: {
+            country: {
+                order: 0,
+                name: 'Country',
+                type: 'Country'
+            },
+            website: {
+                order: 1,
+                name: 'Website',
+                type: 'Text'
+            }
+        }
+    },
+    BankBranch: {
+        name: 'Bank Branch',
+        autoId: true,
+        url: 'bank-branch',
+        keys: {
+            bank: {
+                order: 0,
+                name: 'Bank',
+                type: 'Bank'
+            },
+            name: {
+                order: 1,
+                name: 'Name',
+                type: 'Text'
+            },
+            ifsc: {
+                order: 2,
+                name: 'IFSC',
+                type: 'Text'
+            },
+            address: {
+                order: 3,
+                name: 'Address',
+                type: 'Address'
+            }
+        }
+    },
+    BankAccount: {
+        name: 'Bank Account',
+        autoId: true,
+        url: 'bank-account',
+        keys: {
+            bankBranch: {
+                order: 0,
+                name: 'Bank Branch',
+                type: 'BankBranch'
+            },
+            bank: {
+                order: 1,
+                name: 'Bank',
+                type: 'Bank'
+            },
+            accountNumber: {
+                order: 2,
+                name: 'Name',
+                type: 'Text'
+            }
+        }
+    },
+    Supplier: {
+        name: 'Supplier',
+        autoId: false,
+        url: 'supplier',
+        keys: {
+            email: {
+                order: 0,
+                name: 'Email',
+                type: 'Text'
+            },
+            telephone: {
+                order: 1,
+                name: 'Telephone',
+                type: 'Text'
+            },
+            mobile: {
+                order: 2,
+                name: 'Name',
+                type: 'Text'
+            },
+            website: {
+                order: 3,
+                name: 'Website',
+                type: 'Text'
+            },
+            companyType: {
+                order: 4,
+                name: 'Compnay Type',
+                type: 'CompanyType'
+            },
+            serviceArea: {
+                order: 5,
+                name: 'Service Area',
+                type: 'ServiceArea'
+            },
+            gstin: {
+                order: 6,
+                name: 'GSTIN',
+                type: 'Text'
+            },
+            pan: {
+                order: 7,
+                name: 'PAN',
+                type: 'Text'
+            },
+            iec: {
+                order: 8,
+                name: 'IEC',
+                type: 'Text'
+            }
+        }
+    },
+    SupplierAddress: {
+        name: 'Supplier Address',
+        autoId: true,
+        keys: {
+            supplier: {
+                order: 0,
+                name: 'Supplier',
+                type: 'Supplier'
+            },
+            name: {
+                order: 1,
+                name: 'Name',
+                type: 'Text'
+            },
+            address: {
+                order: 2,
+                name: 'Address',
+                type: 'Address'
+            }
+        }
+    },
+    SupplierContact: {
+        name: 'Supplier Contact',
+        autoId: true,
+        keys: {
+            supplier: {
+                order: 0,
+                name: 'Supplier',
+                type: 'Supplier'
+            },
+            name: {
+                order: 1,
+                name: 'Name',
+                type: 'Text'
+            },
+            designation: {
+                order: 2,
+                name: 'Designation',
+                type: 'Text'
+            },
+            email: {
+                order: 3,
+                name: 'Email',
+                type: 'Text'
+            },
+            telephone: {
+                order: 4,
+                name: 'Telephone',
+                type: 'Text'
+            },
+            mobile: {
+                order: 5,
+                name: 'Name',
+                type: 'Text'
+            }
+        }
+    },
+    SupplierBankAccount: {
+        name: 'Supplier Bank Account',
+        autoId: true,
+        keys: {
+            supplier: {
+                order: 0,
+                name: 'Supplier',
+                type: 'Supplier'
+            },
+            bankAccount: {
+                order: 1,
+                name: 'Bank Account',
+                type: 'BankAccount'
+            }
+        }
+    },
     Product: {
         name: 'SKU',
         autoId: false,
@@ -169,12 +510,6 @@ export const types = {
                 type: 'Number'
             }
         }
-    },
-    Supplier: {
-        name: 'Supplier',
-        autoId: false,
-        url: 'supplier',
-        keys: {}
     },
     SupplierProduct: {
         name: 'Supplier Product',
