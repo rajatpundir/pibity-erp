@@ -17,7 +17,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 1
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(c2)
 
@@ -30,7 +31,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 2
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(c3)
 
@@ -43,7 +45,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 1
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(c4)
 
@@ -56,7 +59,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 2
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(c5)
 
@@ -69,7 +73,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 1
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(c6)
 
@@ -82,7 +87,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 1
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(c8)
 
@@ -95,7 +101,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 2
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(c9)
 
@@ -108,7 +115,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 2
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(p1)
 
@@ -121,7 +129,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 2
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(p2)
 
@@ -134,7 +143,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 2
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(p3)
 
@@ -147,7 +157,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 2
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(p4)
 
@@ -160,7 +171,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 2
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(p5)
 
@@ -173,7 +185,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 2
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(p6)
 
@@ -186,7 +199,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 2
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(p7)
 
@@ -199,7 +213,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 2
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(p8)
 
@@ -212,7 +227,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 2
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(p9)
 
@@ -225,7 +241,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 2
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(p10)
 
@@ -238,7 +255,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 2
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(pr1)
 
@@ -251,7 +269,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 2
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(pr2)
 
@@ -264,7 +283,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 2
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(pr3)
 
@@ -277,7 +297,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 2
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(pr4)
 
@@ -290,7 +311,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 2
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(pr5)
 
@@ -303,7 +325,8 @@ export default async function createDemoData() {
         uoms: [{
             name: 'No',
             conversionRate: 2
-        }]
+        }],
+        suppliers: []
     })
     diffs = diffs.append(pr6)
 
