@@ -66,6 +66,7 @@ export class CountryRow {
     readonly typeName = 'Country'
     readonly variableName: string
     readonly region: string
+    readonly name: string
     values: {
         // UNQ(region, name)
         region: string
@@ -76,6 +77,7 @@ export class CountryRow {
         this.variableName = variableName
         this.values = values
         this.region = values.region
+        this.name = values.name
     }
 
     static toVariable(row: CountryRow): CountryVariable {
@@ -90,6 +92,7 @@ export class StateRow {
     readonly typeName = 'State'
     readonly variableName: string
     readonly country: string
+    readonly name: string
     values: {
         // UNQ(country, name)
         country: string
@@ -100,6 +103,7 @@ export class StateRow {
         this.variableName = variableName
         this.values = values
         this.country = values.country
+        this.name = values.name
     }
 
     static toVariable(row: StateRow): StateVariable {
@@ -114,6 +118,7 @@ export class DistrictRow {
     readonly typeName = 'District'
     readonly variableName: string
     readonly state: string
+    readonly name: string
     values: {
         // UNQ(state, name)
         state: string
@@ -124,6 +129,7 @@ export class DistrictRow {
         this.variableName = variableName
         this.values = values
         this.state = values.state
+        this.name = values.name
     }
 
     static toVariable(row: DistrictRow): DistrictVariable {
@@ -138,6 +144,7 @@ export class SubdistrictRow {
     readonly typeName = 'Subdistrict'
     readonly variableName: string
     readonly district: string
+    readonly name: string
     values: {
         // UNQ(district, name)
         district: string
@@ -148,6 +155,7 @@ export class SubdistrictRow {
         this.variableName = variableName
         this.values = values
         this.district = values.district
+        this.name = values.name
     }
 
     static toVariable(row: SubdistrictRow): SubdistrictVariable {
@@ -162,6 +170,7 @@ export class PostalCodeRow {
     readonly typeName = 'PostalCode'
     readonly variableName: string
     readonly subdistrict: string
+    readonly name: string
     values: {
         // UNQ(subdistrict, name)
         subdistrict: string
@@ -172,6 +181,7 @@ export class PostalCodeRow {
         this.variableName = variableName
         this.values = values
         this.subdistrict = values.subdistrict
+        this.name = values.name
     }
 
     static toVariable(row: PostalCodeRow): PostalCodeVariable {
@@ -186,6 +196,8 @@ export class AddressRow {
     readonly typeName = 'Address'
     readonly variableName: string
     readonly postalCode: string
+    readonly line1: string
+    readonly line2: string
     values: {
         // UNQ(postalCode, line1, line2)
         postalCode: string
@@ -199,6 +211,8 @@ export class AddressRow {
         this.variableName = variableName
         this.values = values
         this.postalCode = values.postalCode
+        this.line1 = values.line1
+        this.line2 = values.line2
     }
 
     static toVariable(row: AddressRow): AddressVariable {
@@ -245,6 +259,8 @@ export class CompanyTypeRow {
 export class BankRow {
     readonly typeName = 'Bank'
     readonly variableName: string
+    readonly country: string
+    readonly name: string
     values: {
         // UNQ(country, name)
         country: string
@@ -255,6 +271,8 @@ export class BankRow {
     constructor(variableName: string, values: { country: string, name: string, website: string }) {
         this.variableName = variableName
         this.values = values
+        this.country = values.country
+        this.name = values.name
     }
 
     static toVariable(row: BankRow): BankVariable {
@@ -269,6 +287,8 @@ export class BankRow {
 export class BankBranchRow {
     readonly typeName = 'BankBranch'
     readonly variableName: string
+    readonly bank: string
+    readonly name: string
     values: {
         // UNQ(bank, name)
         bank: string
@@ -280,6 +300,8 @@ export class BankBranchRow {
     constructor(variableName: string, values: { bank: string, name: string, ifsc: string, address: string }) {
         this.variableName = variableName
         this.values = values
+        this.bank = values.bank
+        this.name = values.name
     }
 
     static toVariable(row: BankBranchRow): BankBranchVariable {
@@ -295,6 +317,8 @@ export class BankBranchRow {
 export class BankAccountRow {
     readonly typeName = 'BankAccount'
     readonly variableName: string
+    readonly bank: string
+    readonly accountNumber: string
     values: {
         // UNQ(bank, accountNumber)
         bank: string
@@ -305,6 +329,8 @@ export class BankAccountRow {
     constructor(variableName: string, values: { bank: string, bankBranch: string, accountNumber: string }) {
         this.variableName = variableName
         this.values = values
+        this.bank = values.bank
+        this.accountNumber = values.accountNumber
     }
 
     static toVariable(row: BankAccountRow): BankAccountVariable {
