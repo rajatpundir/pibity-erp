@@ -1,38 +1,945 @@
 import { Circuit } from "./circuit"
 
 export type CircuitName =
-    | 'createProduct'
-    | 'deleteProduct'
-    | 'createIndent'
-    | 'deleteIndent'
+
+    | 'createRegion'
+    | 'deleteRegion'
+
+    | 'createCountry'
+    | 'deleteCountry'
+
+    | 'createState'
+    | 'deleteState'
+
+    | 'createDistrict'
+    | 'deleteDistrict'
+
+    | 'createSubdistrict'
+    | 'deleteSubdistrict'
+
+    | 'createPostalCode'
+    | 'deletePostalCode'
+
+    | 'createAddress'
+    | 'deleteAddress'
+
+    | 'createServiceArea'
+    | 'deleteServiceArea'
+
+    | 'createCompanyType'
+    | 'deleteCompanyType'
+
+    | 'createBank'
+    | 'deleteBank'
+
+    | 'createBankBranch'
+    | 'deleteBankBranch'
+
     | 'createSupplier'
     | 'deleteSupplier'
+
+    | 'createProduct'
+    | 'deleteProduct'
+
+    | 'createIndent'
+    | 'deleteIndent'
+
     | 'createQuotation'
     | 'deleteQuotation'
+
     | 'createPurchaseOrder'
     | 'deletePurchaseOrder'
+
     | 'createPurchaseInvoice'
     | 'deletePurchaseInvoice'
+
     | 'createMaterialApprovalSlip'
     | 'deleteMaterialApprovalSlip'
+
     | 'createMaterialRejectionSlip'
     | 'deleteMaterialRejectionSlip'
+
     | 'createMaterialReturnSlip'
     | 'deleteMaterialReturnSlip'
+
     | 'createMaterialRequistionSlip'
     | 'deleteMaterialRequistionSlip'
+
     | 'createBOM'
     | 'deleteBOM'
+
     | 'createProductionPreparationSlip'
     | 'deleteProductionPreparationSlip'
+
     | 'createScrapMaterialSlip'
     | 'deleteScrapMaterialSlip'
+
     | 'createTransferMaterialSlip'
     | 'deleteTransferMaterialSlip'
+
     | 'createWarehouseAcceptanceSlip'
     | 'deleteWarehouseAcceptanceSlip'
 
 export const circuits: Record<CircuitName, Circuit> = {
+    createRegion: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'createRegion',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'mapper',
+                exec: 'createCountries',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'items'],
+                    overrides: {
+                        region: ['input', 'variableName']
+                    }
+                }
+            }
+        },
+        outputs: {
+            region: ['c1', 'region'],
+            countries: ['c2', '']
+        }
+    },
+    deleteRegion: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'mapper',
+                exec: 'deleteCountries',
+                connect: {
+                    queryParams: {
+                        region: ['input', 'variableName']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'function',
+                exec: 'deleteRegion',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            region: ['c2', 'region']
+        }
+    },
+    createCountry: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'createCountry',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'mapper',
+                exec: 'createStates',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'items'],
+                    overrides: {
+                        country: ['input', 'variableName']
+                    }
+                }
+            }
+        },
+        outputs: {
+            country: ['c1', 'country'],
+            states: ['c2', '']
+        }
+    },
+    deleteCountry: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'mapper',
+                exec: 'deleteStates',
+                connect: {
+                    queryParams: {
+                        country: ['input', 'variableName']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'function',
+                exec: 'deleteCountry',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            country: ['c2', 'country']
+        }
+    },
+    createState: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'createState',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'mapper',
+                exec: 'createDistricts',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'items'],
+                    overrides: {
+                        state: ['input', 'variableName']
+                    }
+                }
+            }
+        },
+        outputs: {
+            state: ['c1', 'state'],
+            districts: ['c2', '']
+        }
+    },
+    deleteState: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'mapper',
+                exec: 'deleteDistricts',
+                connect: {
+                    queryParams: {
+                        state: ['input', 'variableName']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'function',
+                exec: 'deleteState',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            state: ['c2', 'state']
+        }
+    },
+    createDistrict: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'createDistrict',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'mapper',
+                exec: 'createSubdistricts',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'items'],
+                    overrides: {
+                        district: ['input', 'variableName']
+                    }
+                }
+            }
+        },
+        outputs: {
+            district: ['c1', 'district'],
+            subdistricts: ['c2', '']
+        }
+    },
+    deleteDistrict: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'mapper',
+                exec: 'deleteSubdistricts',
+                connect: {
+                    queryParams: {
+                        'district': ['input', 'variableName']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'function',
+                exec: 'deleteDistrict',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            district: ['c2', 'district']
+        }
+    },
+    createSubdistrict: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'createSubdistrict',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'mapper',
+                exec: 'createPostalCodes',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'items'],
+                    overrides: {
+                        subdistrict: ['input', 'variableName']
+                    }
+                }
+            }
+        },
+        outputs: {
+            subdistrict: ['c1', 'subdistrict'],
+            postalCodes: ['c2', '']
+        }
+    },
+    deleteSubdistrict: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'mapper',
+                exec: 'deletePostalCodes',
+                connect: {
+                    queryParams: {
+                        subdistrict: ['input', 'variableName']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'function',
+                exec: 'deleteSubdistrict',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            subdistrict: ['c2', 'subdistrict']
+        }
+    },
+    createPostalCode: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'createPostalCode',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'mapper',
+                exec: 'createAddresses',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'items'],
+                    overrides: {
+                        postalCode: ['input', 'variableName']
+                    }
+                }
+            }
+        },
+        outputs: {
+            postalCode: ['c1', 'postalCode'],
+            addresses: ['c2', '']
+        }
+    },
+    deletePostalCode: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'mapper',
+                exec: 'deleteAddresses',
+                connect: {
+                    queryParams: {
+                        region: ['input', 'variableName']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'function',
+                exec: 'deletePostalCode',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            postalCode: ['c2', 'postalCode']
+        }
+    },
+    createAddress: {
+        inputs: {
+            postalCode: {
+                type: 'PostalCode'
+            },
+            line1: {
+                type: 'Text'
+            },
+            line2: {
+                type: 'Text'
+            },
+            latitude: {
+                type: 'Decimal'
+            },
+            longitude: {
+                type: 'Decimal'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'createAddress',
+                connect: {
+                    postalCode: ['input', 'postalCode'],
+                    line1: ['input', 'line1'],
+                    line2: ['input', 'line2'],
+                    latitude: ['input', 'latitude'],
+                    longitude: ['input', 'longitude']
+                }
+            }
+        },
+        outputs: {
+            address: ['c1', 'address']
+        }
+    },
+    deleteAddress: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'deleteAddress',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            address: ['c1', 'address']
+        }
+    },
+    createServiceArea: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'createServiceArea',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            serviceArea: ['c1', 'serviceArea']
+        }
+    },
+    deleteServiceArea: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'deleteServiceArea',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            serviceArea: ['c1', 'serviceArea']
+        }
+    },
+    createCompanyType: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'createCompanyType',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            companyType: ['c1', 'companyType']
+        }
+    },
+    deleteCompanyType: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'deleteCompanyType',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            companyType: ['c1', 'companyType']
+        }
+    },
+    createBank: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'createBank',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'mapper',
+                exec: 'createBankBranches',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'items'],
+                    overrides: {
+                        bank: ['input', 'variableName']
+                    }
+                }
+            }
+        },
+        outputs: {
+            bank: ['c1', 'bank'],
+            bankBranches: ['c2', '']
+        }
+    },
+    deleteBank: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'mapper',
+                exec: 'deleteBankBranches',
+                connect: {
+                    queryParams: {
+                        bank: ['input', 'variableName']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'function',
+                exec: 'deleteBank',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            bank: ['c2', 'bank']
+        }
+    },
+    createBankBranch: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'createBankBranch',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'mapper',
+                exec: 'createBankAccounts',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'items'],
+                    overrides: {
+                        bankBranch: ['input', 'variableName']
+                    }
+                }
+            }
+        },
+        outputs: {
+            bankBranch: ['c1', 'bankBranch'],
+            bankAccounts: ['c2', '']
+        }
+    },
+    deleteBankBranch: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'mapper',
+                exec: 'deleteBankAccounts',
+                connect: {
+                    queryParams: {
+                        bankBranch: ['input', 'variableName']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'function',
+                exec: 'deleteBankBranch',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            bankBranch: ['c2', 'bankBranch']
+        }
+    },
+    createSupplier: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            },
+            addresses: {
+                type: []
+            },
+            contacts: {
+                type: []
+            },
+            bankAccounts: {
+                type: []
+            },
+            products: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'createSupplier',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'mapper',
+                exec: 'createSupplierAddresses',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'addresses'],
+                    overrides: {
+                        supplier: ['input', 'variableName']
+                    }
+                }
+            },
+            c3: {
+                order: 3,
+                type: 'mapper',
+                exec: 'createSupplierContacts',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'contacts'],
+                    overrides: {
+                        supplier: ['input', 'variableName']
+                    }
+                }
+            },
+            c4: {
+                order: 4,
+                type: 'mapper',
+                exec: 'createSupplierBankAccounts',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'bankAccounts'],
+                    overrides: {
+                        supplier: ['input', 'variableName']
+                    }
+                }
+            },
+            c5: {
+                order: 5,
+                type: 'mapper',
+                exec: 'createSupplierProducts',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'products'],
+                    overrides: {
+                        supplier: ['input', 'variableName']
+                    }
+                }
+            }
+        },
+        outputs: {
+            supplier: ['c1', 'supplier'],
+            addresses: ['c2', ''],
+            contacts: ['c3', ''],
+            bankAccounts: ['c4', ''],
+            products: ['c5', '']
+        }
+    },
+    deleteSupplier: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'mapper',
+                exec: 'deleteSupplierAddresses',
+                connect: {
+                    queryParams: {
+                        supplier: ['input', 'variableName']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'mapper',
+                exec: 'deleteSupplierContacts',
+                connect: {
+                    queryParams: {
+                        supplier: ['input', 'variableName']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c3: {
+                order: 3,
+                type: 'mapper',
+                exec: 'deleteSupplierBankAccounts',
+                connect: {
+                    queryParams: {
+                        supplier: ['input', 'variableName']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c4: {
+                order: 4,
+                type: 'mapper',
+                exec: 'deleteSupplierProducts',
+                connect: {
+                    queryParams: {
+                        supplier: ['input', 'variableName']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c5: {
+                order: 5,
+                type: 'function',
+                exec: 'deleteSupplier',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            supplier: ['c5', 'supplier']
+        }
+    },
     createProduct: {
         inputs: {
             sku: {
@@ -51,6 +958,9 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'Boolean'
             },
             uoms: {
+                type: []
+            },
+            suppliers: {
                 type: []
             }
         },
@@ -78,11 +988,24 @@ export const circuits: Record<CircuitName, Circuit> = {
                         product: ['input', 'sku']
                     }
                 }
+            },
+            c3: {
+                order: 3,
+                type: 'mapper',
+                exec: 'createProductSuppliers',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'suppliers'],
+                    overrides: {
+                        product: ['input', 'sku']
+                    }
+                }
             }
         },
         outputs: {
             product: ['c1', 'product'],
-            uoms: ['c2', '']
+            uoms: ['c2', ''],
+            suppliers: ['c3', '']
         }
     },
     deleteProduct: {
@@ -109,6 +1032,18 @@ export const circuits: Record<CircuitName, Circuit> = {
             },
             c2: {
                 order: 2,
+                type: 'mapper',
+                exec: 'deleteProductSuppliers',
+                connect: {
+                    queryParams: {
+                        'product': ['input', 'variableName']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c3: {
+                order: 3,
                 type: 'function',
                 exec: 'deleteProduct',
                 connect: {
@@ -117,7 +1052,7 @@ export const circuits: Record<CircuitName, Circuit> = {
             }
         },
         outputs: {
-            product: ['c2', 'product']
+            product: ['c3', 'product']
         }
     },
     createIndent: {
@@ -184,46 +1119,6 @@ export const circuits: Record<CircuitName, Circuit> = {
         },
         outputs: {
             indent: ['c2', 'indent']
-        }
-    },
-    createSupplier: {
-        inputs: {
-            name: {
-                type: 'Text'
-            }
-        },
-        computations: {
-            c1: {
-                order: 1,
-                type: 'function',
-                exec: 'createSupplier',
-                connect: {
-                    variableName: ['input', 'name']
-                }
-            }
-        },
-        outputs: {
-            supplier: ['c1', 'supplier']
-        }
-    },
-    deleteSupplier: {
-        inputs: {
-            variableName: {
-                type: 'Text'
-            }
-        },
-        computations: {
-            c1: {
-                order: 1,
-                type: 'function',
-                exec: 'deleteSupplier',
-                connect: {
-                    variableName: ['input', 'variableName']
-                }
-            }
-        },
-        outputs: {
-            supplier: ['c1', 'supplier']
         }
     },
     createQuotation: {
