@@ -809,10 +809,6 @@ export function getRemoveVariableDiff(typeName: NonPrimitiveType, variableName: 
             diff.variables[typeName].remove = diff.variables[typeName].remove.add(new IndentItem(variableName))
             break
         }
-        case 'Supplier': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Supplier(variableName))
-            break
-        }
         case 'SupplierProduct': {
             diff.variables[typeName].remove = diff.variables[typeName].remove.add(new SupplierProduct(variableName))
             break

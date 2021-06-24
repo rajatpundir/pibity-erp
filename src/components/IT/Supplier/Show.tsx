@@ -4,7 +4,7 @@ import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
-import { Supplier, SupplierVariable } from '../../../main/variables'
+import { CompanyType, ServiceArea, Supplier, SupplierVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import { withRouter } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
@@ -33,7 +33,7 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new SupplierVariable('', {}),
+        variable: new SupplierVariable('', { email: '', telephone: '', mobile: '', website: '', companyType: new CompanyType(''), serviceArea: new ServiceArea(''), gstin: '', pan: '', iec: '' }),
         updatedVariableName: new Supplier('')
     }
 
