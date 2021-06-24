@@ -2,10 +2,84 @@ import { Immutable } from 'immer';
 import { DiffVariable, getRemoveVariableDiff, getRenameVariableDiff, getReplaceVariableDiff, getVariable, mergeDiffs } from './layers'
 import { NonPrimitiveType } from './types';
 import { iff, when } from './utils';
-import { Variable, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip } from './variables'
+import { Variable, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip, RegionVariable, CountryVariable, Region, StateVariable, DistrictVariable, SubdistrictVariable, PostalCodeVariable, AddressVariable, ServiceAreaVariable, CompanyTypeVariable, BankVariable, BankBranchVariable, BankAccountVariable, SupplierAddressVariable, SupplierContactVariable, SupplierBankAccountVariable, Country, State, District, Subdistrict, PostalCode, Bank, Address, BankBranch, CompanyType, ServiceArea, BankAccount } from './variables'
 
 export function createVariable(typeName: NonPrimitiveType, variableName: string, values: object): [Variable, DiffVariable] {
     const variable: Variable = when(typeName, {
+        'Region': () => new RegionVariable(variableName, {}),
+        'Country': () => new CountryVariable(variableName, {
+            region: new Region(String(values['region'])),
+            name: String(values['name'])
+        }),
+        'State': () => new StateVariable(variableName, {
+            country: new Country(String(values['country'])),
+            name: String(values['name'])
+        }),
+        'District': () => new DistrictVariable(variableName, {
+            state: new State(String(values['state'])),
+            name: String(values['name'])
+        }),
+        'Subdistrict': () => new SubdistrictVariable(variableName, {
+            district: new District(String(values['district'])),
+            name: String(values['name'])
+        }),
+        'PostalCode': () => new PostalCodeVariable(variableName, {
+            subdistrict: new Subdistrict(String(values['subdistrict'])),
+            name: String(values['name'])
+        }),
+        'Address': () => new AddressVariable(variableName, {
+            postalCode: new PostalCode(String(values['postalCode'])),
+            line1: String(values['line1']),
+            line2: String(values['line2']),
+            latitude: parseFloat(String(values['latitude'])),
+            longitude: parseFloat(String(values['longitude']))
+        }),
+        'ServiceArea': () => new ServiceAreaVariable(variableName),
+        'CompanyType': () => new CompanyTypeVariable(variableName),
+        'Bank': () => new BankVariable(variableName, {
+            country: new Country(String(values['country'])),
+            name: String(values['name']),
+            website: String(values['website'])
+        }),
+        'BankBranch': () => new BankBranchVariable(variableName, {
+            bank: new Bank(String(values['bank'])),
+            name: String(values['name']),
+            ifsc: String(values['ifsc']),
+            address: new Address(String(values['address']))
+        }),
+        'BankAccount': () => new BankAccountVariable(variableName, {
+            bank: new Bank(String(values['bank'])),
+            bankBranch: new BankBranch(String(values['bankBranch'])),
+            accountNumber: String(values['accountNumber'])
+        }),
+        'Supplier': () => new SupplierVariable(variableName, {
+            email: String(values['email']),
+            telephone: String(values['telephone']),
+            mobile: String(values['mobile']),
+            website: String(values['website']),
+            companyType: new CompanyType(String(values['companyType'])),
+            serviceArea: new ServiceArea(String(values['name'])),
+            gstin: String(values['gstin']),
+            pan: String(values['pan']),
+            iec: String(values['iec'])
+        }),
+        'SupplierAddress': () => new SupplierAddressVariable(variableName, {
+            supplier: new Supplier(String(values['supplier'])),
+            name: String(values['name']),
+            address: new Address(String(values['address']))
+        }),
+        'SupplierContact': () => new SupplierContactVariable(variableName, {
+            supplier: new Supplier(String(values['supplier'])),
+            name: String(values['name']),
+            designation: String(values['designation']),
+            email: String(values['email']),
+            telephone: String(values['telephone']),
+            mobile: String(values['mobile'])
+        }),
+        'SupplierBankAccount': () => new SupplierBankAccountVariable(variableName, {
+            supplier: new Supplier(String(values['supplier'])),
+            bankAccount: new BankAccount(String(values['bankAccount']))
+        }),
         'Product': () => new ProductVariable(variableName, {
             name: String(values['name']),
             orderable: Boolean(values['orderable']).valueOf(),
@@ -31,7 +105,6 @@ export function createVariable(typeName: NonPrimitiveType, variableName: string,
             requisted: parseInt(String(values['requisted'])),
             consumed: parseInt(String(values['consumed']))
         }),
-        'Supplier': () => new SupplierVariable(variableName, {}),
         'SupplierProduct': () => new SupplierProductVariable(variableName, {
             supplier: new Supplier(values['supplier']),
             product: new Product(values['product'])
@@ -137,6 +210,128 @@ export function createVariable(typeName: NonPrimitiveType, variableName: string,
 export async function updateVariable(variable: Immutable<Variable>, values: object, updatedVariableName?: string): Promise<[Variable, DiffVariable]> {
     let updatedVariable: Variable
     switch (variable.typeName) {
+        case 'Region': {
+            updatedVariable = new RegionVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {})
+            break
+        }
+        case 'Country': {
+            updatedVariable = new CountryVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                region: values['region'] !== undefined ? new Region(String(values['region'])) : new Region(variable.values.region.toString()),
+                name: values['name'] !== undefined ? String(values['name']) : variable.values.name
+            })
+            break
+        }
+        case 'State': {
+            updatedVariable = new StateVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                country: values['country'] !== undefined ? new Country(String(values['country'])) : new Country(variable.values.country.toString()),
+                name: values['name'] !== undefined ? String(values['name']) : variable.values.name
+            })
+            break
+        }
+        case 'District': {
+            updatedVariable = new DistrictVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                state: values['state'] !== undefined ? new State(String(values['state'])) : new State(variable.values.state.toString()),
+                name: values['name'] !== undefined ? String(values['name']) : variable.values.name
+            })
+            break
+        }
+        case 'Subdistrict': {
+            updatedVariable = new SubdistrictVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                district: values['district'] !== undefined ? new District(String(values['district'])) : new District(variable.values.district.toString()),
+                name: values['name'] !== undefined ? String(values['name']) : variable.values.name
+            })
+            break
+        }
+        case 'PostalCode': {
+            updatedVariable = new PostalCodeVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                subdistrict: values['subdistrict'] !== undefined ? new Subdistrict(String(values['subdistrict'])) : new Subdistrict(variable.values.subdistrict.toString()),
+                name: values['name'] !== undefined ? String(values['name']) : variable.values.name
+            })
+            break
+        }
+        case 'Address': {
+            updatedVariable = new AddressVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                postalCode: values['postalCode'] !== undefined ? new PostalCode(String(values['postalCode'])) : new PostalCode(variable.values.postalCode.toString()),
+                line1: values['line1'] !== undefined ? String(values['line1']) : variable.values.line1,
+                line2: values['line1'] !== undefined ? String(values['line2']) : variable.values.line2,
+                latitude: values['latitude'] !== undefined ? parseFloat(String(values['latitude'])) : variable.values.latitude,
+                longitude: values['longitude'] !== undefined ? parseFloat(String(values['longitude'])) : variable.values.longitude
+            })
+            break
+        }
+        case 'ServiceArea': {
+            updatedVariable = new ServiceAreaVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
+            break
+        }
+        case 'CompanyType': {
+            updatedVariable = new CompanyTypeVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString())
+            break
+        }
+        case 'Bank': {
+            updatedVariable = new BankVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                country: values['country'] !== undefined ? new Country(String(values['country'])) : new Country(variable.values.country.toString()),
+                name: values['name'] !== undefined ? String(values['name']) : variable.values.name,
+                website: values['website'] !== undefined ? String(values['website']) : variable.values.website
+            })
+            break
+        }
+        case 'BankBranch': {
+            updatedVariable = new BankBranchVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                bank: values['bank'] !== undefined ? new Bank(String(values['bank'])) : new Bank(variable.values.bank.toString()),
+                name: values['name'] !== undefined ? String(values['name']) : variable.values.name,
+                ifsc: values['ifsc'] !== undefined ? String(values['ifsc']) : variable.values.ifsc,
+                address: values['address'] !== undefined ? new Address(String(values['address'])) : new Address(variable.values.address.toString())
+            })
+            break
+        }
+        case 'BankAccount': {
+            updatedVariable = new BankAccountVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                bank: values['bank'] !== undefined ? new Bank(String(values['bank'])) : new Bank(variable.values.bank.toString()),
+                bankBranch: values['bankBranch'] !== undefined ? new BankBranch(String(values['bankBranch'])) : new BankBranch(variable.values.bankBranch.toString()),
+                accountNumber: values['accountNumber'] !== undefined ? String(values['accountNumber']) : variable.values.accountNumber
+            })
+            break
+        }
+        case 'Supplier': {
+            updatedVariable = new SupplierVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                email: values['email'] !== undefined ? String(values['email']) : variable.values.email,
+                telephone: values['telephone'] !== undefined ? String(values['telephone']) : variable.values.telephone,
+                mobile: values['mobile'] !== undefined ? String(values['mobile']) : variable.values.mobile,
+                website: values['website'] !== undefined ? String(values['website']) : variable.values.website,
+                companyType: values['companyType'] !== undefined ? new CompanyType(String(values['companyType'])) : new CompanyType(variable.values.companyType.toString()),
+                serviceArea: values['serviceArea'] !== undefined ? new ServiceArea(String(values['serviceArea'])) : new ServiceArea(variable.values.serviceArea.toString()),
+                gstin: values['gstin'] !== undefined ? String(values['gstin']) : variable.values.gstin,
+                pan: values['pan'] !== undefined ? String(values['pan']) : variable.values.pan,
+                iec: values['iec'] !== undefined ? String(values['iec']) : variable.values.iec,
+            })
+            break
+        }
+        case 'SupplierAddress': {
+            updatedVariable = new SupplierAddressVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                supplier: values['supplier'] !== undefined ? new Supplier(String(values['supplier'])) : new Supplier(variable.values.supplier.toString()),
+                name: values['name'] !== undefined ? String(values['name']) : variable.values.name,
+                address: values['address'] !== undefined ? new Address(String(values['address'])) : new Address(variable.values.address.toString())
+            })
+            break
+        }
+        case 'SupplierContact': {
+            updatedVariable = new SupplierContactVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                supplier: values['supplier'] !== undefined ? new Supplier(String(values['supplier'])) : new Supplier(variable.values.supplier.toString()),
+                name: values['name'] !== undefined ? String(values['name']) : variable.values.name,
+                designation: values['designation'] !== undefined ? String(values['designation']) : variable.values.designation,
+                email: values['email'] !== undefined ? String(values['email']) : variable.values.email,
+                telephone: values['telephone'] !== undefined ? String(values['telephone']) : variable.values.telephone,
+                mobile: values['mobile'] !== undefined ? String(values['mobile']) : variable.values.mobile
+            })
+            break
+        }
+        case 'SupplierBankAccount': {
+            updatedVariable = new SupplierBankAccountVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                supplier: values['supplier'] !== undefined ? new Supplier(String(values['supplier'])) : new Supplier(variable.values.supplier.toString()),
+                bankAccount: values['bankAccount'] !== undefined ? new BankAccount(String(values['bankAccount'])) : new BankAccount(variable.values.bankAccount.toString())
+            })
+            break
+        }
         case 'Product': {
             updatedVariable = new ProductVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name,
@@ -172,10 +367,6 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
                 requisted: values['requisted'] !== undefined ? parseInt(values['requisted']) : variable.values.requisted,
                 consumed: values['consumed'] !== undefined ? parseInt(values['consumed']) : variable.values.consumed
             })
-            break
-        }
-        case 'Supplier': {
-            updatedVariable = new SupplierVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {})
             break
         }
         case 'SupplierProduct': {

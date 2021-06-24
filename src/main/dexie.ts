@@ -1,14 +1,29 @@
 import Dexie from 'dexie'
 import { Immutable } from 'immer'
-import { BOMItemRow, BOMRow, DiffRow, IndentItemRow, IndentRow, MaterialApprovalSlipItemRow, MaterialApprovalSlipRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow, MaterialRequistionSlipItemRow, MaterialRequistionSlipRow, MaterialReturnSlipItemRow, MaterialReturnSlipRow, ProductionPreparationSlipItemRow, ProductionPreparationSlipRow, ProductRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow, PurchaseOrderItemRow, PurchaseOrderRow, QuotationItemRow, QuotationRow, ScrapMaterialSlipRow, SupplierProductRow, SupplierRow, TransferMaterialSlipRow, UOMRow, WarehouseAcceptanceSlipRow } from './rows'
+import { AddressRow, BankAccountRow, BankBranchRow, BankRow, BOMItemRow, BOMRow, CompanyTypeRow, CountryRow, DiffRow, DistrictRow, IndentItemRow, IndentRow, MaterialApprovalSlipItemRow, MaterialApprovalSlipRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow, MaterialRequistionSlipItemRow, MaterialRequistionSlipRow, MaterialReturnSlipItemRow, MaterialReturnSlipRow, PostalCodeRow, ProductionPreparationSlipItemRow, ProductionPreparationSlipRow, ProductRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow, PurchaseOrderItemRow, PurchaseOrderRow, QuotationItemRow, QuotationRow, RegionRow, ScrapMaterialSlipRow, ServiceAreaRow, StateRow, SubdistrictRow, SupplierAddressRow, SupplierBankAccountRow, SupplierContactRow, SupplierProductRow, SupplierRow, TransferMaterialSlipRow, UOMRow, WarehouseAcceptanceSlipRow } from './rows'
 
 class Database extends Dexie {
     diffs: Dexie.Table<Immutable<DiffRow>, number>
+    regions: Dexie.Table<Immutable<RegionRow>, string>
+    countries: Dexie.Table<Immutable<CountryRow>, string>
+    states: Dexie.Table<Immutable<StateRow>, string>
+    districts: Dexie.Table<Immutable<DistrictRow>, string>
+    subdistricts: Dexie.Table<Immutable<SubdistrictRow>, string>
+    postalCodes: Dexie.Table<Immutable<PostalCodeRow>, string>
+    addresses: Dexie.Table<Immutable<AddressRow>, string>
+    serviceAreas: Dexie.Table<Immutable<ServiceAreaRow>, string>
+    companyTypes: Dexie.Table<Immutable<CompanyTypeRow>, string>
+    banks: Dexie.Table<Immutable<BankRow>, string>
+    bankBranches: Dexie.Table<Immutable<BankBranchRow>, string>
+    bankAccounts: Dexie.Table<Immutable<BankAccountRow>, string>
+    suppliers: Dexie.Table<Immutable<SupplierRow>, string>
+    supplierAddresses: Dexie.Table<Immutable<SupplierAddressRow>, string>
+    supplierContacts: Dexie.Table<Immutable<SupplierContactRow>, string>
+    supplierBankAccounts: Dexie.Table<Immutable<SupplierBankAccountRow>, string>
     products: Dexie.Table<Immutable<ProductRow>, string>
     uoms: Dexie.Table<Immutable<UOMRow>, string>
     indents: Dexie.Table<Immutable<IndentRow>, string>
     indentItems: Dexie.Table<Immutable<IndentItemRow>, string>
-    suppliers: Dexie.Table<Immutable<SupplierRow>, string>
     supplierProducts: Dexie.Table<Immutable<SupplierProductRow>, string>
     quotations: Dexie.Table<Immutable<QuotationRow>, string>
     quotationItems: Dexie.Table<Immutable<QuotationItemRow>, string>
@@ -36,11 +51,26 @@ class Database extends Dexie {
         super('Database')
         this.version(1).stores({
             diffs: '++id',
+            regions: '&variableName',
+            countries: 'variableName, [region + name], region',
+            states: 'variableName, [country + name], country',
+            districts: 'variableName, [state + name], state',
+            subdistricts: 'variableName, [district + name], district',
+            postalCodes: 'variableName, [subdistrict + name], subdistrict',
+            addresses: 'variableName, [postalCode + line1 + line2], postalCode',
+            serviceAreas: '&variableName',
+            companyTypes: '&variableName',
+            banks: 'variableName, [country + name], country',
+            bankBranches: 'variableName, [bank + name], bank',
+            bankAccounts: 'variableName, [bank + accountNumber], bank',
+            suppliers: '&variableName',
+            supplierAddresses: 'variableName, [supplier + name], [supplier + address]',
+            supplierContacts: 'variableName, [supplier + name]',
+            supplierBankAccounts: 'variableName, [supplier + bankAccount]',
             products: '&variableName',
             uoms: 'variableName, [product+name], product',
             indents: '&variableName',
             indentItems: 'variableName, [indent+product], indent',
-            suppliers: '&variableName',
             supplierProducts: 'variableName, [supplier+product], supplier',
             quotations: '&variableName',
             quotationItems: 'variableName, [quotation+indentItem], quotation',
@@ -66,11 +96,26 @@ class Database extends Dexie {
         })
 
         this.diffs = this.table('diffs')
+        this.regions = this.table('regions')
+        this.countries = this.table('countries')
+        this.states = this.table('states')
+        this.districts = this.table('districts')
+        this.subdistricts = this.table('subdistricts')
+        this.postalCodes = this.table('postalCodes')
+        this.addresses = this.table('addresses')
+        this.serviceAreas = this.table('serviceAreas')
+        this.companyTypes = this.table('companyTypes')
+        this.banks = this.table('banks')
+        this.bankBranches = this.table('bankBranches')
+        this.bankAccounts = this.table('bankAccounts')
+        this.suppliers = this.table('suppliers')
+        this.supplierAddresses = this.table('supplierAddresses')
+        this.supplierContacts = this.table('supplierContacts')
+        this.supplierBankAccounts = this.table('supplierBankAccounts')
         this.products = this.table('products')
         this.uoms = this.table('uoms')
         this.indents = this.table('indents')
         this.indentItems = this.table('indentItems')
-        this.suppliers = this.table('suppliers')
         this.supplierProducts = this.table('supplierProducts')
         this.quotations = this.table('quotations')
         this.quotationItems = this.table('quotationItems')
@@ -95,6 +140,22 @@ class Database extends Dexie {
         this.warehouseAcceptanceSlips = this.table('warehouseAcceptanceSlips')
 
         this.diffs.mapToClass(DiffRow)
+        this.regions.mapToClass(RegionRow)
+        this.countries.mapToClass(CountryRow)
+        this.states.mapToClass(StateRow)
+        this.districts.mapToClass(DistrictRow)
+        this.subdistricts.mapToClass(SubdistrictRow)
+        this.postalCodes.mapToClass(PostalCodeRow)
+        this.addresses.mapToClass(AddressRow)
+        this.serviceAreas.mapToClass(ServiceAreaRow)
+        this.companyTypes.mapToClass(CompanyTypeRow)
+        this.banks.mapToClass(BankRow)
+        this.bankBranches.mapToClass(BankBranchRow)
+        this.bankAccounts.mapToClass(BankAccountRow)
+        this.suppliers.mapToClass(SupplierRow)
+        this.supplierAddresses.mapToClass(SupplierAddressRow)
+        this.supplierContacts.mapToClass(SupplierContactRow)
+        this.supplierBankAccounts.mapToClass(SupplierBankAccountRow)
         this.products.mapToClass(ProductRow)
         this.uoms.mapToClass(UOMRow)
         this.indents.mapToClass(IndentRow)

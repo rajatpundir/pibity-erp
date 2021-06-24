@@ -1,7 +1,7 @@
 import { immerable, Immutable } from 'immer'
 import { HashSet } from 'prelude-ts'
 import { DiffVariable } from './layers'
-import { Number, Decimal, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip, MaterialReturnSlipItem, BOMItem, ProductionPreparationSlipItem, ScrapMaterialSlip, WarehouseAcceptanceSlip, SupplierProduct, RegionVariable, CountryVariable, Text, Region, StateVariable, Country, DistrictVariable, State, SubdistrictVariable, District, PostalCodeVariable, Subdistrict, AddressVariable, PostalCode, ServiceAreaVariable, CompanyTypeVariable, BankVariable, BankBranchVariable, Bank, Address, BankAccountVariable, BankBranch, CompanyType, ServiceArea, SupplierAddressVariable, SupplierContactVariable, SupplierBankAccountVariable, BankAccount } from './variables'
+import { Number, Decimal, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip, MaterialReturnSlipItem, BOMItem, ProductionPreparationSlipItem, ScrapMaterialSlip, WarehouseAcceptanceSlip, SupplierProduct, RegionVariable, CountryVariable, Text, Region, StateVariable, Country, DistrictVariable, State, SubdistrictVariable, District, PostalCodeVariable, Subdistrict, AddressVariable, PostalCode, ServiceAreaVariable, CompanyTypeVariable, BankVariable, BankBranchVariable, Bank, Address, BankAccountVariable, BankBranch, CompanyType, ServiceArea, SupplierAddressVariable, SupplierContactVariable, SupplierBankAccountVariable, BankAccount, SupplierAddress, SupplierContact, SupplierBankAccount } from './variables'
 
 export type Row =
     | RegionRow
@@ -355,6 +355,7 @@ export class SupplierAddressRow {
     readonly typeName = 'SupplierAddress'
     readonly variableName: string
     readonly supplier: string
+    readonly name: string
     readonly address: string
     values: {
         // UNQ(supplier, name)
@@ -368,6 +369,7 @@ export class SupplierAddressRow {
         this.variableName = variableName
         this.values = values
         this.supplier = values.supplier
+        this.name = values.name
         this.address = values.address
     }
 
@@ -1474,9 +1476,69 @@ export class DiffRow {
 
     static toVariable(diff: Immutable<DiffRow>): DiffVariable {
         return new DiffVariable(diff.id, diff.active, {
+            Region: {
+                replace: HashSet.of<RegionVariable>().addAll(diff.variables.Region.replace.map(x => RegionRow.toVariable(x))),
+                remove: HashSet.of<Region>().addAll(diff.variables.Region.remove.map(x => new Region(x)))
+            },
+            Country: {
+                replace: HashSet.of<CountryVariable>().addAll(diff.variables.Country.replace.map(x => CountryRow.toVariable(x))),
+                remove: HashSet.of<Country>().addAll(diff.variables.Country.remove.map(x => new Country(x)))
+            },
+            State: {
+                replace: HashSet.of<StateVariable>().addAll(diff.variables.State.replace.map(x => StateRow.toVariable(x))),
+                remove: HashSet.of<State>().addAll(diff.variables.State.remove.map(x => new State(x)))
+            },
+            District: {
+                replace: HashSet.of<DistrictVariable>().addAll(diff.variables.District.replace.map(x => DistrictRow.toVariable(x))),
+                remove: HashSet.of<District>().addAll(diff.variables.District.remove.map(x => new District(x)))
+            },
+            Subdistrict: {
+                replace: HashSet.of<SubdistrictVariable>().addAll(diff.variables.Subdistrict.replace.map(x => SubdistrictRow.toVariable(x))),
+                remove: HashSet.of<Subdistrict>().addAll(diff.variables.Subdistrict.remove.map(x => new Subdistrict(x)))
+            },
+            PostalCode: {
+                replace: HashSet.of<PostalCodeVariable>().addAll(diff.variables.PostalCode.replace.map(x => PostalCodeRow.toVariable(x))),
+                remove: HashSet.of<PostalCode>().addAll(diff.variables.PostalCode.remove.map(x => new PostalCode(x)))
+            },
+            Address: {
+                replace: HashSet.of<AddressVariable>().addAll(diff.variables.Address.replace.map(x => AddressRow.toVariable(x))),
+                remove: HashSet.of<Address>().addAll(diff.variables.Address.remove.map(x => new Address(x)))
+            },
+            ServiceArea: {
+                replace: HashSet.of<ServiceAreaVariable>().addAll(diff.variables.ServiceArea.replace.map(x => ServiceAreaRow.toVariable(x))),
+                remove: HashSet.of<ServiceArea>().addAll(diff.variables.ServiceArea.remove.map(x => new ServiceArea(x)))
+            },
+            CompanyType: {
+                replace: HashSet.of<CompanyTypeVariable>().addAll(diff.variables.CompanyType.replace.map(x => CompanyTypeRow.toVariable(x))),
+                remove: HashSet.of<CompanyType>().addAll(diff.variables.CompanyType.remove.map(x => new CompanyType(x)))
+            },
+            Bank: {
+                replace: HashSet.of<BankVariable>().addAll(diff.variables.Bank.replace.map(x => BankRow.toVariable(x))),
+                remove: HashSet.of<Bank>().addAll(diff.variables.Bank.remove.map(x => new Bank(x)))
+            },
+            BankBranch: {
+                replace: HashSet.of<BankBranchVariable>().addAll(diff.variables.BankBranch.replace.map(x => BankBranchRow.toVariable(x))),
+                remove: HashSet.of<BankBranch>().addAll(diff.variables.BankBranch.remove.map(x => new BankBranch(x)))
+            },
+            BankAccount: {
+                replace: HashSet.of<BankAccountVariable>().addAll(diff.variables.BankAccount.replace.map(x => BankAccountRow.toVariable(x))),
+                remove: HashSet.of<BankAccount>().addAll(diff.variables.BankAccount.remove.map(x => new BankAccount(x)))
+            },
             Supplier: {
                 replace: HashSet.of<SupplierVariable>().addAll(diff.variables.Supplier.replace.map(x => SupplierRow.toVariable(x))),
                 remove: HashSet.of<Supplier>().addAll(diff.variables.Supplier.remove.map(x => new Supplier(x)))
+            },
+            SupplierAddress: {
+                replace: HashSet.of<SupplierAddressVariable>().addAll(diff.variables.SupplierAddress.replace.map(x => SupplierAddressRow.toVariable(x))),
+                remove: HashSet.of<SupplierAddress>().addAll(diff.variables.SupplierAddress.remove.map(x => new SupplierAddress(x)))
+            },
+            SupplierContact: {
+                replace: HashSet.of<SupplierContactVariable>().addAll(diff.variables.SupplierContact.replace.map(x => SupplierContactRow.toVariable(x))),
+                remove: HashSet.of<SupplierContact>().addAll(diff.variables.SupplierContact.remove.map(x => new SupplierContact(x)))
+            },
+            SupplierBankAccount: {
+                replace: HashSet.of<SupplierBankAccountVariable>().addAll(diff.variables.SupplierBankAccount.replace.map(x => SupplierBankAccountRow.toVariable(x))),
+                remove: HashSet.of<SupplierBankAccount>().addAll(diff.variables.SupplierBankAccount.remove.map(x => new SupplierBankAccount(x)))
             },
             Product: {
                 replace: HashSet.of<ProductVariable>().addAll(diff.variables.Product.replace.map(x => ProductRow.toVariable(x))),

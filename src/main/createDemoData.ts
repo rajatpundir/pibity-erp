@@ -308,155 +308,155 @@ export default async function createDemoData() {
     diffs = diffs.append(pr6)
 
     //createSupplier
-    const [, , s1] = await executeCircuit(circuits.createSupplier, {
-        name: 'Royal'
-    })
-    diffs = diffs.append(s1)
+    // const [, , s1] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Royal'
+    // })
+    // diffs = diffs.append(s1)
 
-    const [, , s11] = await executeCircuit(circuits.createSupplier, {
-        name: 'Fenghua'
-    })
-    diffs = diffs.append(s11)
+    // const [, , s11] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Fenghua'
+    // })
+    // diffs = diffs.append(s11)
 
-    const [, , s12] = await executeCircuit(circuits.createSupplier, {
-        name: 'Yageo'
-    })
-    diffs = diffs.append(s12)
+    // const [, , s12] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Yageo'
+    // })
+    // diffs = diffs.append(s12)
 
-    const [, , s13] = await executeCircuit(circuits.createSupplier, {
-        name: 'Samsung'
-    })
-    diffs = diffs.append(s13)
+    // const [, , s13] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Samsung'
+    // })
+    // diffs = diffs.append(s13)
 
-    const [, , s14] = await executeCircuit(circuits.createSupplier, {
-        name: 'CCTC'
-    })
-    diffs = diffs.append(s14)
+    // const [, , s14] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'CCTC'
+    // })
+    // diffs = diffs.append(s14)
 
-    const [, , s21] = await executeCircuit(circuits.createSupplier, {
-        name: 'Dafu'
-    })
-    diffs = diffs.append(s21)
+    // const [, , s21] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Dafu'
+    // })
+    // diffs = diffs.append(s21)
 
-    const [, , s22] = await executeCircuit(circuits.createSupplier, {
-        name: 'Keming'
-    })
-    diffs = diffs.append(s22)
+    // const [, , s22] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Keming'
+    // })
+    // diffs = diffs.append(s22)
 
-    const [, , s23] = await executeCircuit(circuits.createSupplier, {
-        name: 'Nicholed'
-    })
-    diffs = diffs.append(s23)
+    // const [, , s23] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Nicholed'
+    // })
+    // diffs = diffs.append(s23)
 
-    const [, , s24] = await executeCircuit(circuits.createSupplier, {
-        name: 'CCO'
-    })
-    diffs = diffs.append(s24)
+    // const [, , s24] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'CCO'
+    // })
+    // diffs = diffs.append(s24)
 
-    const [, , s3] = await executeCircuit(circuits.createSupplier, {
-        name: 'Chengdong'
-    })
-    diffs = diffs.append(s3)
+    // const [, , s3] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Chengdong'
+    // })
+    // diffs = diffs.append(s3)
 
-    const [, , s31] = await executeCircuit(circuits.createSupplier, {
-        name: 'Weidy'
-    })
-    diffs = diffs.append(s31)
+    // const [, , s31] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Weidy'
+    // })
+    // diffs = diffs.append(s31)
 
-    const [, , s32] = await executeCircuit(circuits.createSupplier, {
-        name: 'Yinyan'
-    })
-    diffs = diffs.append(s32)
+    // const [, , s32] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Yinyan'
+    // })
+    // diffs = diffs.append(s32)
 
-    const [, , s5] = await executeCircuit(circuits.createSupplier, {
-        name: 'TBOR'
-    })
-    diffs = diffs.append(s5)
+    // const [, , s5] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'TBOR'
+    // })
+    // diffs = diffs.append(s5)
 
-    const [, , s51] = await executeCircuit(circuits.createSupplier, {
-        name: 'Topaz'
-    })
-    diffs = diffs.append(s51)
+    // const [, , s51] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Topaz'
+    // })
+    // diffs = diffs.append(s51)
 
-    const [, , s6] = await executeCircuit(circuits.createSupplier, {
-        name: 'Aishi'
-    })
-    diffs = diffs.append(s6)
+    // const [, , s6] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Aishi'
+    // })
+    // diffs = diffs.append(s6)
 
-    const [, , s7] = await executeCircuit(circuits.createSupplier, {
-        name: 'Weisheng'
-    })
-    diffs = diffs.append(s7)
+    // const [, , s7] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Weisheng'
+    // })
+    // diffs = diffs.append(s7)
 
-    const [, , s8] = await executeCircuit(circuits.createSupplier, {
-        name: 'Xinhaifu'
-    })
-    diffs = diffs.append(s8)
+    // const [, , s8] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Xinhaifu'
+    // })
+    // diffs = diffs.append(s8)
 
-    const [, , s81] = await executeCircuit(circuits.createSupplier, {
-        name: 'Shibiyou'
-    })
-    diffs = diffs.append(s81)
+    // const [, , s81] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Shibiyou'
+    // })
+    // diffs = diffs.append(s81)
 
-    const [, , s9] = await executeCircuit(circuits.createSupplier, {
-        name: 'Gelvshi'
-    })
-    diffs = diffs.append(s9)
+    // const [, , s9] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Gelvshi'
+    // })
+    // diffs = diffs.append(s9)
 
-    const [, , su6] = await executeCircuit(circuits.createSupplier, {
-        name: 'DLUE'
-    })
-    diffs = diffs.append(su6)
+    // const [, , su6] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'DLUE'
+    // })
+    // diffs = diffs.append(su6)
 
-    const [, , su61] = await executeCircuit(circuits.createSupplier, {
-        name: 'BL'
-    })
-    diffs = diffs.append(su61)
+    // const [, , su61] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'BL'
+    // })
+    // diffs = diffs.append(su61)
 
-    const [, , su62] = await executeCircuit(circuits.createSupplier, {
-        name: 'STS'
-    })
-    diffs = diffs.append(su62)
+    // const [, , su62] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'STS'
+    // })
+    // diffs = diffs.append(su62)
 
-    const [, , su64] = await executeCircuit(circuits.createSupplier, {
-        name: 'Jilin Sino'
-    })
-    diffs = diffs.append(su64)
+    // const [, , su64] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Jilin Sino'
+    // })
+    // diffs = diffs.append(su64)
 
-    const [, , su63] = await executeCircuit(circuits.createSupplier, {
-        name: 'Goodark'
-    })
-    diffs = diffs.append(su63)
+    // const [, , su63] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Goodark'
+    // })
+    // diffs = diffs.append(su63)
 
-    const [, , su7] = await executeCircuit(circuits.createSupplier, {
-        name: 'Richteck'
-    })
-    diffs = diffs.append(su7)
+    // const [, , su7] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Richteck'
+    // })
+    // diffs = diffs.append(su7)
 
-    const [, , su8] = await executeCircuit(circuits.createSupplier, {
-        name: 'Edison'
-    })
-    diffs = diffs.append(su8)
+    // const [, , su8] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Edison'
+    // })
+    // diffs = diffs.append(su8)
 
-    const [, , su9] = await executeCircuit(circuits.createSupplier, {
-        name: 'Everlight'
-    })
-    diffs = diffs.append(su9)
+    // const [, , su9] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Everlight'
+    // })
+    // diffs = diffs.append(su9)
 
-    const [, , sup1] = await executeCircuit(circuits.createSupplier, {
-        name: 'Quanyou'
-    })
-    diffs = diffs.append(sup1)
+    // const [, , sup1] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Quanyou'
+    // })
+    // diffs = diffs.append(sup1)
 
-    const [, , sup11] = await executeCircuit(circuits.createSupplier, {
-        name: 'zhonghe'
-    })
-    diffs = diffs.append(sup11)
+    // const [, , sup11] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'zhonghe'
+    // })
+    // diffs = diffs.append(sup11)
 
-    const [, , sup12] = await executeCircuit(circuits.createSupplier, {
-        name: 'Qinda'
-    })
-    diffs = diffs.append(sup12)
+    // const [, , sup12] = await executeCircuit(circuits.createSupplier, {
+    //     name: 'Qinda'
+    // })
+    // diffs = diffs.append(sup12)
 
     db.diffs.put(mergeDiffs(diffs.toArray()).toRow())
 

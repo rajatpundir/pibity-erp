@@ -19,6 +19,7 @@ export type Variable =
     | PostalCodeVariable
     | AddressVariable
     | ServiceAreaVariable
+    | CompanyTypeVariable
     | CountryVariable
     | BankVariable
     | BankBranchVariable
