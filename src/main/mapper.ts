@@ -15,30 +15,211 @@ export type Mapper = {
 }
 
 export type MapperName =
+    | 'createCountries'
+    | 'deleteCountries'
+
+    | 'createStates'
+    | 'deleteStates'
+
+    | 'createDistricts'
+    | 'deleteDistricts'
+
+    | 'createSubdistricts'
+    | 'deleteSubdistricts'
+
+    | 'createPostalCodes'
+    | 'deletePostalCodes'
+
+    | 'createAddresses'
+    | 'deleteAddresses'
+
+    | 'createBankBranches'
+    | 'deleteBankBranches'
+
+    | 'createBankAccounts'
+    | 'deleteBankAccounts'
+
+    | 'createSupplierAddresses'
+    | 'deleteSupplierAddresses'
+
+    | 'createSupplierContacts'
+    | 'deleteSupplierContacts'
+
+    | 'createSupplierBankAccounts'
+    | 'deleteSupplierBankAccounts'
+
     | 'createUOMs'
     | 'deleteUOMs'
+
     | 'createIndentItems'
     | 'deleteIndentItems'
+
+    | 'createProductSuppliers'
+    | 'deleteProductSuppliers'
+
+    | 'createSupplierProducts'
+    | 'deleteSupplierProducts'
+
     | 'createQuotationItems'
     | 'deleteQuotationItems'
+
     | 'createPurchaseOrderItems'
     | 'deletePurchaseOrderItems'
+
     | 'createPurchaseInvoiceItems'
     | 'deletePurchaseInvoiceItems'
+
     | 'createMaterialApprovalSlipItems'
     | 'deleteMaterialApprovalSlipItems'
+
     | 'createMaterialRejectionSlipItems'
     | 'deleteMaterialRejectionSlipItems'
+
     | 'createMaterialReturnSlipItems'
     | 'deleteMaterialReturnSlipItems'
+
     | 'createMaterialRequistionSlipItems'
     | 'deleteMaterialRequistionSlipItems'
+
     | 'createBOMItems'
     | 'deleteBOMItems'
+
     | 'createProductionPreparationSlipItems'
     | 'deleteProductionPreparationSlipItems'
 
 export const mappers: Record<MapperName, Mapper> = {
+    createCountries: {
+        query: false,
+        queryParams: [],
+        functionName: 'createCountry',
+        functionInput: 'region'
+    },
+    deleteCountries: {
+        query: true,
+        queryParams: ['region'],
+        functionName: 'deleteCountry',
+        functionInput: 'variableName'
+    },
+    createStates: {
+        query: false,
+        queryParams: [],
+        functionName: 'createState',
+        functionInput: 'country'
+    },
+    deleteStates: {
+        query: true,
+        queryParams: ['country'],
+        functionName: 'deleteState',
+        functionInput: 'variableName'
+    },
+    createDistricts: {
+        query: false,
+        queryParams: [],
+        functionName: 'createDistrict',
+        functionInput: 'state'
+    },
+    deleteDistricts: {
+        query: true,
+        queryParams: ['state'],
+        functionName: 'deleteDistrict',
+        functionInput: 'variableName'
+    },
+    createSubdistricts: {
+        query: false,
+        queryParams: [],
+        functionName: 'createSubdistrict',
+        functionInput: 'district'
+    },
+    deleteSubdistricts: {
+        query: true,
+        queryParams: ['district'],
+        functionName: 'deleteSubdistrict',
+        functionInput: 'variableName'
+    },
+    createPostalCodes: {
+        query: false,
+        queryParams: [],
+        functionName: 'createPostalCode',
+        functionInput: 'subdistrict'
+    },
+    deletePostalCodes: {
+        query: true,
+        queryParams: ['subdistrict'],
+        functionName: 'deletePostalCode',
+        functionInput: 'variableName'
+    },
+    createAddresses: {
+        query: false,
+        queryParams: [],
+        functionName: 'createAddress',
+        functionInput: 'postalCode'
+    },
+    deleteAddresses: {
+        query: true,
+        queryParams: ['postalCode'],
+        functionName: 'deleteAddress',
+        functionInput: 'variableName'
+    },
+    createBankBranches: {
+        query: false,
+        queryParams: [],
+        functionName: 'createBankBranch',
+        functionInput: 'bank'
+    },
+    deleteBankBranches: {
+        query: true,
+        queryParams: ['bank'],
+        functionName: 'deleteBankBranch',
+        functionInput: 'variableName'
+    },
+    createBankAccounts: {
+        query: false,
+        queryParams: [],
+        functionName: 'createBankAccount',
+        functionInput: 'bankBranch'
+    },
+    deleteBankAccounts: {
+        query: true,
+        queryParams: ['bankBranch'],
+        functionName: 'deleteBankAccount',
+        functionInput: 'variableName'
+    },
+    createSupplierAddresses: {
+        query: false,
+        queryParams: [],
+        functionName: 'createSupplierAddress',
+        functionInput: 'supplier'
+    },
+    deleteSupplierAddresses: {
+        query: true,
+        queryParams: ['supplier'],
+        functionName: 'deleteSupplierAddress',
+        functionInput: 'variableName'
+    },
+    createSupplierContacts: {
+        query: false,
+        queryParams: [],
+        functionName: 'createSupplierContact',
+        functionInput: 'supplier'
+    },
+    deleteSupplierContacts: {
+        query: true,
+        queryParams: ['supplier'],
+        functionName: 'deleteSupplierContact',
+        functionInput: 'variableName'
+    },
+    createSupplierBankAccounts: {
+        query: false,
+        queryParams: [],
+        functionName: 'createSupplierBankAccount',
+        functionInput: 'supplier'
+    },
+    deleteSupplierBankAccounts: {
+        query: true,
+        queryParams: ['region'],
+        functionName: 'deleteSupplierBankAccount',
+        functionInput: 'supplier'
+    },
     createUOMs: {
         query: false,
         queryParams: [],
@@ -61,6 +242,30 @@ export const mappers: Record<MapperName, Mapper> = {
         query: true,
         queryParams: ['indent'],
         functionName: 'deleteIndentItem',
+        functionInput: 'variableName'
+    },
+    createSupplierProducts: {
+        query: false,
+        queryParams: [],
+        functionName: 'createSupplierProduct',
+        functionInput: 'supplier'
+    },
+    deleteSupplierProducts: {
+        query: true,
+        queryParams: ['supplier'],
+        functionName: 'deleteSupplierProduct',
+        functionInput: 'variableName'
+    },
+    createProductSuppliers: {
+        query: false,
+        queryParams: [],
+        functionName: 'createSupplierProduct',
+        functionInput: 'product'
+    },
+    deleteProductSuppliers: {
+        query: true,
+        queryParams: ['product'],
+        functionName: 'deleteSupplierProduct',
         functionInput: 'variableName'
     },
     createQuotationItems: {
