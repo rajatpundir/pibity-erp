@@ -1,20 +1,69 @@
 import { Function } from './function'
 
 export type FunctionName =
+
+    | 'createRegion'
+    | 'deleteRegion'
+
+    | 'createCountry'
+    | 'deleteCountry'
+
+    | 'createState'
+    | 'deleteState'
+
+    | 'createDistrict'
+    | 'deleteDistrict'
+
+    | 'createSubdistrict'
+    | 'deleteSubdistrict'
+
+    | 'createPostalCode'
+    | 'deletePostalCode'
+
+    | 'createAddress'
+    | 'deleteAddress'
+
+    | 'createServiceArea'
+    | 'deleteServiceArea'
+
+    | 'createCompanyType'
+    | 'deleteCompanyType'
+
+    | 'createBank'
+    | 'deleteBank'
+
+    | 'createBankBranch'
+    | 'deleteBankBranch'
+
+    | 'createBankAccount'
+    | 'deleteBankAccount'
+
+    | 'createSupplier'
+    | 'deleteSupplier'
+
+    | 'createSupplierAddress'
+    | 'deleteSupplierAddress'
+
+    | 'createSupplierContact'
+    | 'deleteSupplierContact'
+
+    | 'createSupplierBankAccount'
+    | 'deleteSupplierBankAccount'
+
     | 'createProduct'
     | 'deleteProduct'
 
     | 'createUOM'
     | 'deleteUOM'
 
-    | 'createSupplier'
-    | 'deleteSupplier'
-
     | 'createIndent'
     | 'deleteIndent'
 
     | 'createIndentItem'
     | 'deleteIndentItem'
+
+    | 'createSupplierProduct'
+    | 'deleteSupplierProduct'
 
     | 'createQuotation'
     | 'deleteQuotation'
@@ -80,6 +129,1031 @@ export type FunctionName =
     | 'deleteWarehouseAcceptanceSlip'
 
 export const functions: Record<FunctionName, Function> = {
+    createRegion: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            region: {
+                type: 'Region',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    deleteRegion: {
+        inputs: {
+            variableName: {
+                type: 'Region'
+            }
+        },
+        outputs: {
+            region: {
+                type: 'Region',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    createCountry: {
+        inputs: {
+            region: {
+                type: 'Region'
+            },
+            name: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            country: {
+                type: 'Country',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: 'fake',
+                    types: [],
+                    args: ['{{datatype.uuid}}']
+                },
+                values: {
+                    region: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['region']
+                    },
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    }
+                }
+            }
+        }
+    },
+    deleteCountry: {
+        inputs: {
+            variableName: {
+                type: 'Country'
+            }
+        },
+        outputs: {
+            country: {
+                type: 'Country',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    createState: {
+        inputs: {
+            country: {
+                type: 'Country'
+            },
+            name: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            state: {
+                type: 'State',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: 'fake',
+                    types: [],
+                    args: ['{{datatype.uuid}}']
+                },
+                values: {
+                    country: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['country']
+                    },
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    }
+                }
+            }
+        }
+    },
+    deleteState: {
+        inputs: {
+            variableName: {
+                type: 'State'
+            }
+        },
+        outputs: {
+            state: {
+                type: 'State',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    createDistrict: {
+        inputs: {
+            state: {
+                type: 'State'
+            },
+            name: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            district: {
+                type: 'District',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: 'fake',
+                    types: [],
+                    args: ['{{datatype.uuid}}']
+                },
+                values: {
+                    state: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['state']
+                    },
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    }
+                }
+            }
+        }
+    },
+    deleteDistrict: {
+        inputs: {
+            variableName: {
+                type: 'District'
+            }
+        },
+        outputs: {
+            district: {
+                type: 'District',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    createSubdistrict: {
+        inputs: {
+            district: {
+                type: 'District'
+            },
+            name: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            subdistrict: {
+                type: 'Subdistrict',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: 'fake',
+                    types: [],
+                    args: ['{{datatype.uuid}}']
+                },
+                values: {
+                    district: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['district']
+                    },
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    }
+                }
+            }
+        }
+    },
+    deleteSubdistrict: {
+        inputs: {
+            variableName: {
+                type: 'Subdistrict'
+            }
+        },
+        outputs: {
+            subdistrict: {
+                type: 'Subdistrict',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    createPostalCode: {
+        inputs: {
+            subdistrict: {
+                type: 'Subdistrict'
+            },
+            name: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            postalCode: {
+                type: 'PostalCode',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: 'fake',
+                    types: [],
+                    args: ['{{datatype.uuid}}']
+                },
+                values: {
+                    subdistrict: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['subdistrict']
+                    },
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    }
+                }
+            }
+        }
+    },
+    deletePostalCode: {
+        inputs: {
+            variableName: {
+                type: 'PostalCode'
+            }
+        },
+        outputs: {
+            postalCode: {
+                type: 'PostalCode',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    createAddress: {
+        inputs: {
+            postalCode: {
+                type: 'PostalCode'
+            },
+            line1: {
+                type: 'Text'
+            },
+            line2: {
+                type: 'Text'
+            },
+            latitude: {
+                type: 'Decimal'
+            },
+            longitude: {
+                type: 'Decimal'
+            }
+        },
+        outputs: {
+            address: {
+                type: 'Address',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: 'fake',
+                    types: [],
+                    args: ['{{datatype.uuid}}']
+                },
+                values: {
+                    postalCode: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['postalCode']
+                    },
+                    line1: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['line1']
+                    },
+                    line2: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['line2']
+                    },
+                    latitude: {
+                        expectedReturnType: 'Decimal',
+                        op: '.',
+                        types: [],
+                        args: ['latitude']
+                    },
+                    longitude: {
+                        expectedReturnType: 'Decimal',
+                        op: '.',
+                        types: [],
+                        args: ['longitude']
+                    }
+                }
+            }
+        }
+    },
+    deleteAddress: {
+        inputs: {
+            variableName: {
+                type: 'Address'
+            }
+        },
+        outputs: {
+            address: {
+                type: 'Address',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    createServiceArea: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            serviceArea: {
+                type: 'ServiceArea',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    deleteServiceArea: {
+        inputs: {
+            variableName: {
+                type: 'ServiceArea'
+            }
+        },
+        outputs: {
+            serviceArea: {
+                type: 'ServiceArea',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    createCompanyType: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            companyType: {
+                type: 'CompanyType',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    deleteCompanyType: {
+        inputs: {
+            variableName: {
+                type: 'CompanyType'
+            }
+        },
+        outputs: {
+            companyType: {
+                type: 'CompanyType',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    createBank: {
+        inputs: {
+            country: {
+                type: 'Country'
+            },
+            name: {
+                type: 'Text'
+            },
+            website: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            bank: {
+                type: 'Bank',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: 'fake',
+                    types: [],
+                    args: ['{{datatype.uuid}}']
+                },
+                values: {
+                    country: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['country']
+                    },
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    },
+                    website: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['website']
+                    }
+                }
+            }
+        }
+    },
+    deleteBank: {
+        inputs: {
+            variableName: {
+                type: 'Bank'
+            }
+        },
+        outputs: {
+            bank: {
+                type: 'Bank',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    createBankBranch: {
+        inputs: {
+            bank: {
+                type: 'Bank'
+            },
+            name: {
+                type: 'Text'
+            },
+            ifsc: {
+                type: 'Text'
+            },
+            address: {
+                type: 'Address'
+            }
+        },
+        outputs: {
+            bankBranch: {
+                type: 'BankBranch',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: 'fake',
+                    types: [],
+                    args: ['{{datatype.uuid}}']
+                },
+                values: {
+                    bank: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['bank']
+                    },
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    },
+                    ifsc: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['ifsc']
+                    },
+                    address: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['address']
+                    }
+                }
+            }
+        }
+    },
+    deleteBankBranch: {
+        inputs: {
+            variableName: {
+                type: 'BankBranch'
+            }
+        },
+        outputs: {
+            bankBranch: {
+                type: 'BankBranch',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    createBankAccount: {
+        inputs: {
+            bank: {
+                type: 'Bank'
+            },
+            bankBranch: {
+                type: 'BankBranch'
+            },
+            accountNumber: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            bankAccount: {
+                type: 'BankAccount',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: 'fake',
+                    types: [],
+                    args: ['{{datatype.uuid}}']
+                },
+                values: {
+                    bank: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['bank']
+                    },
+                    bankBranch: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['bankBranch']
+                    },
+                    accountNumber: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['accountNumber']
+                    }
+                }
+            }
+        }
+    },
+    deleteBankAccount: {
+        inputs: {
+            variableName: {
+                type: 'BankAccount'
+            }
+        },
+        outputs: {
+            bankAccount: {
+                type: 'BankAccount',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    createSupplier: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            },
+            email: {
+                type: 'Text'
+            },
+            telephone: {
+                type: 'Text'
+            },
+            mobile: {
+                type: 'Text'
+            },
+            website: {
+                type: 'Text'
+            },
+            companyType: {
+                type: 'CompanyType'
+            },
+            serviceArea: {
+                type: 'ServiceArea'
+            },
+            gstin: {
+                type: 'Text'
+            },
+            name: {
+                type: 'Text'
+            },
+            pan: {
+                type: 'Text'
+            },
+            iec: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            supplier: {
+                type: 'Supplier',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {
+                    email: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['email']
+                    },
+                    telephone: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['telephone']
+                    },
+                    mobile: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['mobile']
+                    },
+                    website: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['website']
+                    },
+                    companyType: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['companyType']
+                    },
+                    serviceArea: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['serviceArea']
+                    },
+                    gstin: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['gstin']
+                    },
+                    pan: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['pan']
+                    },
+                    iec: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['iec']
+                    }
+                }
+            }
+        }
+    },
+    deleteSupplier: {
+        inputs: {
+            variableName: {
+                type: 'Supplier'
+            }
+        },
+        outputs: {
+            supplier: {
+                type: 'Supplier',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    createSupplierAddress: {
+        inputs: {
+            supplier: {
+                type: 'Supplier'
+            },
+            name: {
+                type: 'Text'
+            },
+            address: {
+                type: 'Address'
+            }
+        },
+        outputs: {
+            supplierAddress: {
+                type: 'SupplierAddress',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: 'fake',
+                    types: [],
+                    args: ['{{datatype.uuid}}']
+                },
+                values: {
+                    supplier: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['supplier']
+                    },
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    },
+                    address: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['address']
+                    }
+                }
+            }
+        }
+    },
+    deleteSupplierAddress: {
+        inputs: {
+            variableName: {
+                type: 'SupplierAddress'
+            }
+        },
+        outputs: {
+            supplierAddress: {
+                type: 'SupplierAddress',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    createSupplierContact: {
+        inputs: {
+            supplier: {
+                type: 'Supplier'
+            },
+            name: {
+                type: 'Text'
+            },
+            designation: {
+                type: 'Text'
+            },
+            email: {
+                type: 'Text'
+            },
+            telephone: {
+                type: 'Text'
+            },
+            mobile: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            supplierContact: {
+                type: 'SupplierContact',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: 'fake',
+                    types: [],
+                    args: ['{{datatype.uuid}}']
+                },
+                values: {
+                    supplier: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['supplier']
+                    },
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    },
+                    designation: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['designation']
+                    },
+                    email: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['email']
+                    },
+                    telephone: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['telephone']
+                    },
+                    mobile: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['mobile']
+                    }
+                }
+            }
+        }
+    },
+    deleteSupplierContact: {
+        inputs: {
+            variableName: {
+                type: 'SupplierContact'
+            }
+        },
+        outputs: {
+            supplierContact: {
+                type: 'SupplierContact',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    createSupplierBankAccount: {
+        inputs: {
+            supplier: {
+                type: 'Supplier'
+            },
+            bankAccount: {
+                type: 'BankAccount'
+            }
+        },
+        outputs: {
+            supplierBankAccount: {
+                type: 'SupplierBankAccount',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: 'fake',
+                    types: [],
+                    args: ['{{datatype.uuid}}']
+                },
+                values: {
+                    supplier: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['supplier']
+                    },
+                    bankAccount: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['bankAccount']
+                    }
+                }
+            }
+        }
+    },
+    deleteSupplierBankAccount: {
+        inputs: {
+            variableName: {
+                type: 'SupplierBankAccount'
+            }
+        },
+        outputs: {
+            supplierBankAccount: {
+                type: 'SupplierBankAccount',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
     createProduct: {
         inputs: {
             variableName: {
@@ -211,46 +1285,6 @@ export const functions: Record<FunctionName, Function> = {
         outputs: {
             uom: {
                 type: 'UOM',
-                op: 'delete',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: '.',
-                    types: [],
-                    args: ['variableName']
-                },
-                values: {}
-            }
-        }
-    },
-    createSupplier: {
-        inputs: {
-            variableName: {
-                type: 'Text'
-            }
-        },
-        outputs: {
-            supplier: {
-                type: 'Supplier',
-                op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: '.',
-                    types: [],
-                    args: ['variableName']
-                },
-                values: {}
-            }
-        }
-    },
-    deleteSupplier: {
-        inputs: {
-            variableName: {
-                type: 'Supplier'
-            }
-        },
-        outputs: {
-            supplier: {
-                type: 'Supplier',
                 op: 'delete',
                 variableName: {
                     expectedReturnType: 'Text',
@@ -403,6 +1437,62 @@ export const functions: Record<FunctionName, Function> = {
         outputs: {
             indentItem: {
                 type: 'IndentItem',
+                op: 'delete',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: '.',
+                    types: [],
+                    args: ['variableName']
+                },
+                values: {}
+            }
+        }
+    },
+    createSupplierProduct: {
+        inputs: {
+            supplier: {
+                type: 'Supplier'
+            },
+            product: {
+                type: 'Product'
+            }
+        },
+        outputs: {
+            supplierProduct: {
+                type: 'SupplierProduct',
+                op: 'create',
+                variableName: {
+                    expectedReturnType: 'Text',
+                    op: 'fake',
+                    types: [],
+                    args: ['{{datatype.uuid}}']
+                },
+                values: {
+                    supplier: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['supplier']
+                    },
+                    product: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['product']
+                    }
+                }
+            }
+        }
+    },
+    deleteSupplierProduct: {
+        inputs: {
+            variableName: {
+                type: 'SupplierProduct'
+            }
+        },
+        outputs: {
+            supplierProduct: {
+                type: 'SupplierProduct',
                 op: 'delete',
                 variableName: {
                     expectedReturnType: 'Text',
