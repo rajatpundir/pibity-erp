@@ -4,6 +4,8 @@ import { Container, Item, none } from './commons'
 import * as Grid from './grids'
 import ShowRegion from '../components/Geography/Region/Show'
 import ListRegion from '../components/Geography/Region/List'
+import ShowCountry from '../components/Geography/Country/Show'
+import ListCountry from '../components/Geography/Country/List'
 import ShowProduct from '../components/IT/Product/Show'
 import ListProduct from '../components/IT/Product/List'
 import ShowSupplier from '../components/IT/Supplier/Show'
@@ -46,6 +48,9 @@ function App() {
               <Route exact path='/regions'><ListRegion /></Route>
               <Route exact path='/region/*'><ShowRegion /></Route>
               <Route exact path='/region'><ShowRegion /></Route>
+              <Route exact path='/countries'><ListCountry /></Route>
+              <Route exact path='/country/*'><ShowCountry /></Route>
+              <Route exact path='/country'><ShowCountry /></Route>
               <Route exact path='/products'><ListProduct /></Route>
               <Route exact path='/product/*'><ShowProduct /></Route>
               <Route exact path='/product'><ShowProduct /></Route>

@@ -154,7 +154,10 @@ export const circuits: Record<CircuitName, Circuit> = {
     },
     createCountry: {
         inputs: {
-            variableName: {
+            region: {
+                type: 'Region'
+            },
+            name: {
                 type: 'Text'
             },
             items: {
@@ -167,7 +170,8 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'createCountry',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    region: ['input', 'region'],
+                    name: ['input', 'name']
                 }
             },
             c2: {
@@ -178,7 +182,7 @@ export const circuits: Record<CircuitName, Circuit> = {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        country: ['input', 'variableName']
+                        country: ['input', 'name']
                     }
                 }
             }
@@ -225,7 +229,10 @@ export const circuits: Record<CircuitName, Circuit> = {
     },
     createState: {
         inputs: {
-            variableName: {
+            country: {
+                type: 'Country'
+            },
+            name: {
                 type: 'Text'
             },
             items: {
@@ -238,7 +245,8 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'createState',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    country: ['input', 'country'],
+                    name: ['input', 'name']
                 }
             },
             c2: {
@@ -249,7 +257,7 @@ export const circuits: Record<CircuitName, Circuit> = {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        state: ['input', 'variableName']
+                        state: ['input', 'name']
                     }
                 }
             }

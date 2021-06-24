@@ -11,11 +11,11 @@ import { useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { RegionVariable } from '../../../main/variables'
-import { DiffRow, RegionRow } from '../../../main/rows'
+import { CountryVariable } from '../../../main/variables'
+import { DiffRow, CountryRow } from '../../../main/rows'
 
 type State = Immutable<{
-    typeName: 'Region'
+    typeName: 'Country'
     query: Query
     limit: number
     offset: number
@@ -30,12 +30,12 @@ export type Action =
     | ['query', Args]
 
 const initialState: State = {
-    typeName: 'Region',
-    query: getQuery('Region'),
+    typeName: 'Country',
+    query: getQuery('Country'),
     limit: 5,
     offset: 0,
     page: 1,
-    columns: Vector.of(['variableName'])
+    columns: Vector.of(['variableName'], ['values', 'region'], ['values', 'name'])
 }
 
 function reducer(state: Draft<State>, action: Action) {
@@ -66,8 +66,8 @@ function reducer(state: Draft<State>, action: Action) {
 
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const rows = useLiveQuery(() => db.regions.orderBy('variableName').toArray())
-    var composedVariables = Vector.of<Immutable<RegionVariable>>().appendAll(rows ? rows.map(x => RegionRow.toVariable(x)) : [])
+    const rows = useLiveQuery(() => db.countries.orderBy('variableName').toArray())
+    var composedVariables = Vector.of<Immutable<CountryVariable>>().appendAll(rows ? rows.map(x => CountryRow.toVariable(x)) : [])
     const diffs = useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
     diffs?.forEach(diff => {
         composedVariables = composedVariables.filter(x => !diff.variables[state.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables[state.typeName].replace)
@@ -86,8 +86,8 @@ function Component(props) {
     return (
         <Container area={none} layout={Grid.layouts.main} className='p-10'>
             <Item area={Grid.header} align='center' className='flex'>
-                <Title>Regions</Title>
-                <button onClick={() => { props.history.push('/region') }} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2'>+</button>
+                <Title>Countries</Title>
+                <button onClick={() => { props.history.push('/country') }} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2'>+</button>
             </Item>
             <Item area={Grid.filter} justify='end' align='center'>
                 <Button onClick={() => setOpen(true)}>Filter</Button>
