@@ -11,11 +11,11 @@ import { useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { DiffRow, StateRow } from '../../../main/rows'
-import { StateVariable } from '../../../main/variables'
+import { DiffRow, DistrictRow } from '../../../main/rows'
+import { DistrictVariable } from '../../../main/variables'
 
 type State = Immutable<{
-    typeName: 'State'
+    typeName: 'District'
     query: Query
     limit: number
     offset: number
@@ -30,12 +30,12 @@ export type Action =
     | ['query', Args]
 
 const initialState: State = {
-    typeName: 'State',
-    query: getQuery('State'),
+    typeName: 'District',
+    query: getQuery('District'),
     limit: 5,
     offset: 0,
     page: 1,
-    columns: Vector.of(['variableName'], ['values', 'country', 'values', 'name'], ['values', 'name'])
+    columns: Vector.of(['variableName'], ['values', 'state', 'values', 'name'], ['values', 'name'])
 }
 
 function reducer(state: Draft<State>, action: Action) {
@@ -66,8 +66,8 @@ function reducer(state: Draft<State>, action: Action) {
 
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const rows = useLiveQuery(() => db.states.orderBy('variableName').toArray())
-    var composedVariables = Vector.of<Immutable<StateVariable>>().appendAll(rows ? rows.map(x => StateRow.toVariable(x)) : [])
+    const rows = useLiveQuery(() => db.districts.orderBy('variableName').toArray())
+    var composedVariables = Vector.of<Immutable<DistrictVariable>>().appendAll(rows ? rows.map(x => DistrictRow.toVariable(x)) : [])
     const diffs = useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
     diffs?.forEach(diff => {
         composedVariables = composedVariables.filter(x => !diff.variables[state.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables[state.typeName].replace)
