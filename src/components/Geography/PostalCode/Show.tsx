@@ -9,31 +9,31 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { District, DistrictVariable, PostalCodeVariable, Subdistrict, SubdistrictVariable } from '../../../main/variables'
+import { AddressVariable, PostalCode, PostalCodeVariable, Subdistrict, SubdistrictVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter, Link } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
 import { iff, when } from '../../../main/utils'
 import { db } from '../../../main/dexie'
-import { DiffRow, DistrictRow, SubdistrictRow, PostalCodeRow } from '../../../main/rows'
+import { DiffRow, SubdistrictRow, PostalCodeRow, AddressRow } from '../../../main/rows'
 import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
-    variable: SubdistrictVariable
-    updatedVariableName: Subdistrict
+    variable: PostalCodeVariable
+    updatedVariableName: PostalCode
     items: {
-        typeName: 'PostalCode'
+        typeName: 'Address'
         query: Query
         limit: number
         offset: number
         page: number
         columns: Vector<Array<string>>
-        variable: PostalCodeVariable
-        variables: HashSet<Immutable<PostalCodeVariable>>
+        variable: AddressVariable
+        variables: HashSet<Immutable<AddressVariable>>
     }
 }>
 
@@ -41,34 +41,37 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
-    | ['variable', 'values', 'district', District]
+    | ['variable', 'values', 'subdistrict', Subdistrict]
     | ['variable', 'values', 'name', string]
 
     | ['items', 'limit', number]
     | ['items', 'offset', number]
     | ['items', 'page', number]
     | ['items', 'query', Args]
-    | ['items', 'variable', 'values', 'name', string]
+    | ['items', 'variable', 'values', 'line1', string]
+    | ['items', 'variable', 'values', 'line2', string]
+    | ['items', 'variable', 'values', 'latitude', number]
+    | ['items', 'variable', 'values', 'longitude', number]
     | ['items', 'addVariable']
 
-    | ['replace', 'variable', SubdistrictVariable]
-    | ['replace', 'items', HashSet<PostalCodeVariable>]
+    | ['replace', 'variable', PostalCodeVariable]
+    | ['replace', 'items', HashSet<AddressVariable>]
 
 function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new SubdistrictVariable('', { district: new District(''), name: '' }),
-        updatedVariableName: new Subdistrict(''),
+        variable: new PostalCodeVariable('', { subdistrict: new Subdistrict(''), name: '' }),
+        updatedVariableName: new PostalCode(''),
         items: {
-            typeName: 'PostalCode',
-            query: getQuery('PostalCode'),
+            typeName: 'Address',
+            query: getQuery('Address'),
             limit: 5,
             offset: 0,
             page: 1,
-            columns: Vector.of(['variableName'], ['values', 'name']),
-            variable: new PostalCodeVariable('', { subdistrict: new Subdistrict(''), name: '' }),
-            variables: HashSet.of<PostalCodeVariable>()
+            columns: Vector.of(['variableName'], ['values', 'line1'], ['values', 'line2'], ['values', 'latitude'], ['values', 'longitude']),
+            variable: new AddressVariable('', { postalCode: new PostalCode(''), line1: '', line2: '', latitude: 0, longitude: 0 }),
+            variables: HashSet.of<AddressVariable>()
         }
     }
 
@@ -89,7 +92,7 @@ function Component(props) {
                 switch (action[1]) {
                     case 'values': {
                         switch (action[2]) {
-                            case 'district': {
+                            case 'subdistrict': {
                                 state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
@@ -127,7 +130,19 @@ function Component(props) {
                     }
                     case 'variable': {
                         switch (action[3]) {
-                            case 'name': {
+                            case 'line1': {
+                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                break
+                            }
+                            case 'line2': {
+                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                break
+                            }
+                            case 'latitude': {
+                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                break
+                            }
+                            case 'longitude': {
                                 state[action[0]][action[1]][action[2]][action[3]] = action[4]
                                 break
                             }
@@ -135,7 +150,13 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.items.variables = state.items.variables.add(new PostalCodeVariable('', { subdistrict: new Subdistrict(''), name: state.items.variable.values.name }))
+                        state.items.variables = state.items.variables.add(new AddressVariable('', {
+                            postalCode: new PostalCode(''),
+                            line1: state.items.variable.values.line1,
+                            line2: state.items.variable.values.line2,
+                            latitude: state.items.variable.values.latitude,
+                            longitude: state.items.variable.values.longitude
+                        }))
                         state.items.variable = initialState.items.variable
                         break
                     }
@@ -173,16 +194,16 @@ function Component(props) {
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const subdistrict = types['Subdistrict']
     const postalCode = types['PostalCode']
+    const address = types['Address']
 
     const [addItemDrawer, toggleAddItemDrawer] = useState(false)
     const [itemFilter, toggleItemFilter] = useState(false)
 
     const setVariable = useCallback(async () => {
         if (props.match.params[0]) {
-            const rows = await db.subdistricts.toArray()
-            var composedVariables = HashSet.of<Immutable<SubdistrictVariable>>().addAll(rows ? rows.map(x => SubdistrictRow.toVariable(x)) : [])
+            const rows = await db.postalCodes.toArray()
+            var composedVariables = HashSet.of<Immutable<PostalCodeVariable>>().addAll(rows ? rows.map(x => PostalCodeRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
                 composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.variable.typeName].replace)
@@ -190,32 +211,32 @@ function Component(props) {
             const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
-                dispatch(['replace', 'variable', variable as SubdistrictVariable])
-                const itemRows = await db.postalCodes.toArray()
-                var composedItemVariables = HashSet.of<Immutable<PostalCodeVariable>>().addAll(itemRows ? itemRows.map(x => PostalCodeRow.toVariable(x)) : [])
+                dispatch(['replace', 'variable', variable as PostalCodeVariable])
+                const itemRows = await db.addresses.toArray()
+                var composedItemVariables = HashSet.of<Immutable<AddressVariable>>().addAll(itemRows ? itemRows.map(x => AddressRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
                     composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
                 })
-                const items = composedItemVariables.filter(variable => variable.values.subdistrict.toString() === props.match.params[0])
-                dispatch(['replace', 'items', items as HashSet<PostalCodeVariable>])
+                const items = composedItemVariables.filter(variable => variable.values.postalCode.toString() === props.match.params[0])
+                dispatch(['replace', 'items', items as HashSet<AddressVariable>])
             }
         }
     }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
 
     useEffect(() => { setVariable() }, [setVariable])
 
-    const rows = useLiveQuery(() => db.districts.orderBy('name').toArray())?.map(x => DistrictRow.toVariable(x))
-    var districts = HashSet.of<Immutable<DistrictVariable>>().addAll(rows ? rows : [])
+    const rows = useLiveQuery(() => db.subdistricts.orderBy('name').toArray())?.map(x => SubdistrictRow.toVariable(x))
+    var subdistricts = HashSet.of<Immutable<SubdistrictVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        districts = districts.filter(x => !diff.variables.District.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.District.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.District.replace)
+        subdistricts = subdistricts.filter(x => !diff.variables.Subdistrict.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.Subdistrict.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.Subdistrict.replace)
     })
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
             default: {
                 switch (event.target.name) {
-                    case 'district': {
-                        dispatch(['variable', 'values', event.target.name, new District(event.target.value)])
+                    case 'subdistrict': {
+                        dispatch(['variable', 'values', event.target.name, new Subdistrict(event.target.value)])
                         break
                     }
                     case 'name': {
@@ -231,8 +252,20 @@ function Component(props) {
         switch (event.target.name) {
             default: {
                 switch (event.target.name) {
-                    case 'name': {
+                    case 'line1': {
                         dispatch(['items', 'variable', 'values', event.target.name, event.target.value])
+                        break
+                    }
+                    case 'line2': {
+                        dispatch(['items', 'variable', 'values', event.target.name, event.target.value])
+                        break
+                    }
+                    case 'latitude': {
+                        dispatch(['items', 'variable', 'values', event.target.name, parseFloat(event.target.value)])
+                        break
+                    }
+                    case 'longitude': {
+                        dispatch(['items', 'variable', 'values', event.target.name, parseFloat(event.target.value)])
                         break
                     }
                 }
@@ -255,11 +288,16 @@ function Component(props) {
     }
 
     const createVariable = async () => {
-        const [result, symbolFlag, diff] = await executeCircuit(circuits.createSubdistrict, {
-            district: state.variable.values.district.toString(),
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.createPostalCode, {
+            subdistrict: state.variable.values.subdistrict.toString(),
             name: state.variable.values.name,
             items: state.items.variables.toArray().map(state => {
-                return { name: state.values.name }
+                return {
+                    line1: state.values.line1,
+                    line2: state.values.line2,
+                    latitude: state.values.latitude,
+                    longitude: state.values.longitude
+                }
             })
         })
         console.log(result, symbolFlag, diff)
@@ -278,7 +316,7 @@ function Component(props) {
     }
 
     const deleteVariable = async () => {
-        const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteSubdistrict, {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.deletePostalCode, {
             variableName: state.variable.variableName.toString(),
             items: [{}]
         })
@@ -293,9 +331,9 @@ function Component(props) {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
                     <Title>{when(state.mode, {
-                        'create': `Create Subdistrict`,
-                        'update': `Update Subdistrict`,
-                        'show': `Subdistrict`
+                        'create': `Create PostalCode`,
+                        'update': `Update PostalCode`,
+                        'show': `PostalCode`
                     })}</Title>
                 </Item>
                 <Item area={Grid.button} justify='end' align='center' className='flex'>
@@ -303,7 +341,7 @@ function Component(props) {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
                                 await createVariable()
-                                props.history.push('/subdistricts')
+                                props.history.push('/postal-codes')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
                                 <>
@@ -313,13 +351,13 @@ function Component(props) {
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
                                         await modifyVariable()
-                                        props.history.push('/subdistricts')
+                                        props.history.push('/postal-codes')
                                     }}>Update</Button>
                                 </>,
                                 <>
                                     <Button onClick={async () => {
                                         await deleteVariable()
-                                        props.history.push('/subdistricts')
+                                        props.history.push('/postal-codes')
                                     }}>Delete</Button>
                                     <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>
                                 </>))
@@ -327,26 +365,25 @@ function Component(props) {
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>
                     <Item>
-                        <Label>{subdistrict.keys.district.name}</Label>
+                        <Label>{postalCode.keys.subdistrict.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Select onChange={onVariableInputChange} value={state.variable.values.district.toString()} name='district'>
-                                    <option value='' selected disabled hidden>Select District</option>
-                                    {districts.toArray().map(x => <option value={x.variableName.toString()}>{x.values.name}</option>)}
+                                <Select onChange={onVariableInputChange} value={state.variable.values.subdistrict.toString()} name='subdistrict'>
+                                    <option value='' selected disabled hidden>Select Subsistrict</option>
+                                    {subdistricts.toArray().map(x => <option value={x.variableName.toString()}>{x.values.name}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{
-                                    iff(districts.filter(x => x.variableName.toString() === state.variable.values.district.toString()).length() !== 0, 
-                                    () => {
-                                        const referencedVariable = districts.filter(x => x.variableName.toString() === state.variable.values.district.toString()).toArray()[0] as DistrictVariable
-                                        
-                                        return <Link to={`/district/${referencedVariable.variableName.toString()}`}>{referencedVariable.values.name}</Link>
-                                    }, <Link to={`/district/${state.variable.values.district.toString()}`}>{state.variable.values.district.toString()}</Link>)
+                                    iff(subdistricts.filter(x => x.variableName.toString() === state.variable.values.subdistrict.toString()).length() !== 0,
+                                        () => {
+                                            const referencedVariable = subdistricts.filter(x => x.variableName.toString() === state.variable.values.subdistrict.toString()).toArray()[0] as SubdistrictVariable
+                                            return <Link to={`/subdistrict/${referencedVariable.variableName.toString()}`}>{referencedVariable.values.name}</Link>
+                                        }, <Link to={`/subdistrict/${state.variable.values.subdistrict.toString()}`}>{state.variable.values.subdistrict.toString()}</Link>)
                                 }</div>
                             )
                         }
                     </Item>
                     <Item>
-                        <Label>{subdistrict.name}</Label>
+                        <Label>{postalCode.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Input type='text' onChange={onVariableInputChange} value={state.variable.values.name} name='name' />,
@@ -357,7 +394,7 @@ function Component(props) {
                 </Container>
                 <Container area={Grid.uom} layout={Grid2.layouts.main}>
                     <Item area={Grid2.header} className='flex items-center'>
-                        <Title>{postalCode.name}s</Title>
+                        <Title>{address.name}s</Title>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>,
@@ -368,15 +405,27 @@ function Component(props) {
                     <Item area={Grid2.filter} justify='end' align='center' className='flex'>
                         <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
                         <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
-                            <Filter typeName='PostalCode' query={state['items'].query} updateQuery={updateItemsQuery('items')} />
+                            <Filter typeName='Address' query={state['items'].query} updateQuery={updateItemsQuery('items')} />
                         </Drawer>
                         <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
                             <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
-                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add {postalCode.name}</div>
+                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add {address.name}</div>
                                 <Container area={none} layout={Grid.layouts.uom} className=''>
                                     <Item>
-                                        <Label>{postalCode.keys.name.name}</Label>
-                                        <Input type='text' onChange={onItemInputChange} name='name' />
+                                        <Label>{address.keys.line1.name}</Label>
+                                        <Input type='text' onChange={onItemInputChange} name='line1' />
+                                    </Item>
+                                    <Item>
+                                        <Label>{address.keys.line2.name}</Label>
+                                        <Input type='text' onChange={onItemInputChange} name='line2' />
+                                    </Item>
+                                    <Item>
+                                        <Label>{address.keys.latitude.name}</Label>
+                                        <Input type='text' onChange={onItemInputChange} name='latitude' />
+                                    </Item>
+                                    <Item>
+                                        <Label>{address.keys.longitude.name}</Label>
+                                        <Input type='text' onChange={onItemInputChange} name='longitude' />
                                     </Item>
                                     <Item justify='center' align='center'>
                                         <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>

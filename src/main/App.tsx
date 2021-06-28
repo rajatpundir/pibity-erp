@@ -12,6 +12,8 @@ import ShowDistrict from '../components/Geography/District/Show'
 import ListDistrict from '../components/Geography/District/List'
 import ShowSubdistrict from '../components/Geography/Subdistrict/Show'
 import ListSubdistrict from '../components/Geography/Subdistrict/List'
+import ShowPostalCode from '../components/Geography/PostalCode/Show'
+import ListPostalCode from '../components/Geography/PostalCode/List'
 import ShowProduct from '../components/IT/Product/Show'
 import ListProduct from '../components/IT/Product/List'
 import ShowSupplier from '../components/IT/Supplier/Show'
@@ -66,6 +68,9 @@ function App() {
               <Route exact path='/subdistricts'><ListSubdistrict /></Route>
               <Route exact path='/subdistrict/*'><ShowSubdistrict /></Route>
               <Route exact path='/subdistrict'><ShowSubdistrict /></Route>
+              <Route exact path='/postal-codes'><ListPostalCode /></Route>
+              <Route exact path='/postal-code/*'><ShowPostalCode /></Route>
+              <Route exact path='/postal-code'><ShowPostalCode /></Route>
               <Route exact path='/products'><ListProduct /></Route>
               <Route exact path='/product/*'><ShowProduct /></Route>
               <Route exact path='/product'><ShowProduct /></Route>

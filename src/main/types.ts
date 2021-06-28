@@ -147,7 +147,7 @@ export const types = {
     PostalCode: {
         name: 'Postal Code',
         autoId: true,
-        url: 'postalCode',
+        url: 'postal-code',
         keys: {
             subdistrict: {
                 order: 0,
