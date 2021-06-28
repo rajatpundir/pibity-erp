@@ -10,6 +10,8 @@ import ShowState from '../components/Geography/State/Show'
 import ListState from '../components/Geography/State/List'
 import ShowDistrict from '../components/Geography/District/Show'
 import ListDistrict from '../components/Geography/District/List'
+import ShowSubdistrict from '../components/Geography/Subdistrict/Show'
+import ListSubdistrict from '../components/Geography/Subdistrict/List'
 import ShowProduct from '../components/IT/Product/Show'
 import ListProduct from '../components/IT/Product/List'
 import ShowSupplier from '../components/IT/Supplier/Show'
@@ -61,6 +63,9 @@ function App() {
               <Route exact path='/districts'><ListDistrict /></Route>
               <Route exact path='/district/*'><ShowDistrict /></Route>
               <Route exact path='/district'><ShowDistrict /></Route>
+              <Route exact path='/subdistricts'><ListSubdistrict /></Route>
+              <Route exact path='/subdistrict/*'><ShowSubdistrict /></Route>
+              <Route exact path='/subdistrict'><ShowSubdistrict /></Route>
               <Route exact path='/products'><ListProduct /></Route>
               <Route exact path='/product/*'><ShowProduct /></Route>
               <Route exact path='/product'><ShowProduct /></Route>

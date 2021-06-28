@@ -304,7 +304,10 @@ export const circuits: Record<CircuitName, Circuit> = {
     },
     createDistrict: {
         inputs: {
-            variableName: {
+            state: {
+                type: 'State'
+            },
+            name: {
                 type: 'Text'
             },
             items: {
@@ -317,7 +320,8 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'createDistrict',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    state: ['input', 'state'],
+                    name: ['input', 'name']
                 }
             },
             c2: {
@@ -375,7 +379,10 @@ export const circuits: Record<CircuitName, Circuit> = {
     },
     createSubdistrict: {
         inputs: {
-            variableName: {
+            district: {
+                type: 'District'
+            },
+            name: {
                 type: 'Text'
             },
             items: {
@@ -388,7 +395,8 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'createSubdistrict',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    district: ['input', 'district'],
+                    name: ['input', 'name']
                 }
             },
             c2: {
@@ -446,7 +454,10 @@ export const circuits: Record<CircuitName, Circuit> = {
     },
     createPostalCode: {
         inputs: {
-            variableName: {
+            subdistrict: {
+                type: 'Subdistrict'
+            },
+            name: {
                 type: 'Text'
             },
             items: {
@@ -459,7 +470,8 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'createPostalCode',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    subdistrict: ['input', 'subdistrict'],
+                    name: ['input', 'name']
                 }
             },
             c2: {
