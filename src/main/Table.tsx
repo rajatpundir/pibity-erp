@@ -1,15 +1,15 @@
 import { Vector } from 'prelude-ts'
 import { Immutable } from 'immer'
 import tw from 'twin.macro'
-import { Container, Item, TableContainer, Cell, validateLayout, Area, GridLayout } from './commons'
+import { Container, Item, TableContainer, Cell, validateLayout, GridArea, GridLayout } from './commons'
 import { Variable } from './variables'
 import { NonPrimitiveType, Type, types } from './types'
 import { Link } from 'react-router-dom'
 import { getVariable } from './layers'
 import { useEffect, useState } from 'react'
 
-const body: Area = new Area('body')
-const footer: Area = new Area('footer')
+const body: GridArea = new GridArea('body')
+const footer: GridArea = new GridArea('footer')
 
 const layouts: { [index: string]: GridLayout } = {
     table: validateLayout({
@@ -193,18 +193,18 @@ async function getCells(columns: Array<Array<string>>, variables: Immutable<Arra
                 if (columns.length === 1) {
                     cells.push(<Cell key={`${rowIndex},${columnIndex}`} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold"
                         row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>
-                        {cellValue[1] === '' ? cellValue[0] : <Link to={`${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
+                        {cellValue[1] === '' ? cellValue[0] : <Link to={`/${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
                 } else {
                     if (columnIndex === 0) {
                         const cellValue = await Q(variable, path)
                         cells.push(<Cell key={`${rowIndex},${columnIndex}`} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold" row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>
-                            {cellValue[1] === '' ? cellValue[0] : <Link to={`${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
+                            {cellValue[1] === '' ? cellValue[0] : <Link to={`/${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
                     } else if (columnIndex === columns.length - 1) {
                         cells.push(<Cell key={`${rowIndex},${columnIndex}`} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>
-                            {cellValue[1] === '' ? cellValue[0] : <Link to={`${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
+                            {cellValue[1] === '' ? cellValue[0] : <Link to={`/${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
                     } else {
                         cells.push(<Cell key={`${rowIndex},${columnIndex}`} className="pt-4 pb-4 border-b-2 w-full" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>
-                            {cellValue[1] === '' ? cellValue[0] : <Link to={`${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
+                            {cellValue[1] === '' ? cellValue[0] : <Link to={`/${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
                     }
                 }
             }
@@ -214,17 +214,17 @@ async function getCells(columns: Array<Array<string>>, variables: Immutable<Arra
                 const cellValue = await Q(variable, path)
                 if (columns.length === 1) {
                     cells.push(<Cell key={`${rowIndex},${columnIndex}`} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>
-                        {cellValue[1] === '' ? cellValue[0] : <Link to={`${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
+                        {cellValue[1] === '' ? cellValue[0] : <Link to={`/${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
                 } else {
                     if (columnIndex === 0) {
                         cells.push(<Cell key={`${rowIndex},${columnIndex}`} className="pl-4 pt-4 pb-4 border-b-2 w-full font-bold bg-gray-50" row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>
-                            {cellValue[1] === '' ? cellValue[0] : <Link to={`${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
+                            {cellValue[1] === '' ? cellValue[0] : <Link to={`/${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
                     } else if (columnIndex === columns.length - 1) {
                         cells.push(<Cell key={`${rowIndex},${columnIndex}`} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>
-                            {cellValue[1] === '' ? cellValue[0] : <Link to={`${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
+                            {cellValue[1] === '' ? cellValue[0] : <Link to={`/${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
                     } else {
                         cells.push(<Cell key={`${rowIndex},${columnIndex}`} className="pt-4 pb-4 border-b-2 w-full bg-gray-50" justify='start' row={`${rowIndex + 2}/${rowIndex + 3}`} column={`${columnIndex + 1}/${columnIndex + 2}`}>
-                            {cellValue[1] === '' ? cellValue[0] : <Link to={`${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
+                            {cellValue[1] === '' ? cellValue[0] : <Link to={`/${cellValue[1]}/${cellValue[0]}`}>{cellValue[0]}</Link>} </Cell>)
                     }
                 }
             }
@@ -266,7 +266,7 @@ async function getCells(columns: Array<Array<string>>, variables: Immutable<Arra
 }
 
 type TableProps = {
-    area: Area
+    area: GridArea
     state: Immutable<{
         typeName: NonPrimitiveType
         limit: number

@@ -59,6 +59,7 @@ export type Circuit = {
 }
 
 export async function executeCircuit(circuit: Circuit, args: object, overlay: Vector<DiffVariable> = Vector.of()): Promise<[object, boolean, DiffVariable]> {
+    console.log(args)
     const computationResults = {}
     var outputs = {}
     var diffs = Vector.of<DiffVariable>()
@@ -90,6 +91,7 @@ export async function executeCircuit(circuit: Circuit, args: object, overlay: Ve
                     return [outputs, false, mergeDiffs(diffs.toArray())]
                 }
                 computationResults[computationName] = result
+                console.log(diff)
                 diffs = diffs.append(diff)
                 break
             }
@@ -118,6 +120,7 @@ export async function executeCircuit(circuit: Circuit, args: object, overlay: Ve
                     return [outputs, false, mergeDiffs(diffs.toArray())]
                 }
                 computationResults[computationName] = result
+                console.log(diff)
                 diffs = diffs.append(diff)
                 break
             }
@@ -195,6 +198,7 @@ export async function executeCircuit(circuit: Circuit, args: object, overlay: Ve
                     return [outputs, false, mergeDiffs(diffs.toArray())]
                 }
                 computationResults[computationName] = result
+                console.log(diff)
                 diffs = diffs.append(diff)
                 break
             }

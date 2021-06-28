@@ -107,7 +107,7 @@ export const circuits: Record<CircuitName, Circuit> = {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        region: ['input', 'variableName']
+                        region: ['computation', 'c1', 'region']
                     }
                 }
             }
@@ -182,7 +182,7 @@ export const circuits: Record<CircuitName, Circuit> = {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        country: ['input', 'name']
+                        country: ['computation', 'c1', 'country']
                     }
                 }
             }
@@ -257,7 +257,7 @@ export const circuits: Record<CircuitName, Circuit> = {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        state: ['input', 'name']
+                        state: ['computation', 'c1', 'state']
                     }
                 }
             }
@@ -328,7 +328,7 @@ export const circuits: Record<CircuitName, Circuit> = {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        district: ['input', 'variableName']
+                        district: ['computation', 'c1', 'district']
                     }
                 }
             }
@@ -399,7 +399,7 @@ export const circuits: Record<CircuitName, Circuit> = {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        subdistrict: ['input', 'variableName']
+                        subdistrict: ['computation', 'c1', 'subdistrict']
                     }
                 }
             }
@@ -470,7 +470,7 @@ export const circuits: Record<CircuitName, Circuit> = {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        postalCode: ['input', 'variableName']
+                        postalCode: ['computation', 'c1', 'postalCode']
                     }
                 }
             }
@@ -677,7 +677,7 @@ export const circuits: Record<CircuitName, Circuit> = {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        bank: ['input', 'variableName']
+                        bank: ['computation', 'c1', 'bank']
                     }
                 }
             }
@@ -714,7 +714,7 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteBank',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    variableName: ['computation', 'c1', 'bank']
                 }
             }
         },
@@ -748,7 +748,7 @@ export const circuits: Record<CircuitName, Circuit> = {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        bankBranch: ['input', 'variableName']
+                        bankBranch: ['computation', 'c1', 'bankBranch']
                     }
                 }
             }
@@ -828,7 +828,7 @@ export const circuits: Record<CircuitName, Circuit> = {
                     queryParams: {},
                     args: ['input', 'addresses'],
                     overrides: {
-                        supplier: ['input', 'variableName']
+                        supplier: ['computation', 'c1', 'supplier']
                     }
                 }
             },
@@ -840,7 +840,7 @@ export const circuits: Record<CircuitName, Circuit> = {
                     queryParams: {},
                     args: ['input', 'contacts'],
                     overrides: {
-                        supplier: ['input', 'variableName']
+                        supplier: ['computation', 'c1', 'supplier']
                     }
                 }
             },
@@ -852,7 +852,7 @@ export const circuits: Record<CircuitName, Circuit> = {
                     queryParams: {},
                     args: ['input', 'bankAccounts'],
                     overrides: {
-                        supplier: ['input', 'variableName']
+                        supplier: ['computation', 'c1', 'supplier']
                     }
                 }
             },
@@ -864,7 +864,7 @@ export const circuits: Record<CircuitName, Circuit> = {
                     queryParams: {},
                     args: ['input', 'products'],
                     overrides: {
-                        supplier: ['input', 'variableName']
+                        supplier: ['computation', 'c1', 'supplier']
                     }
                 }
             }
@@ -993,7 +993,7 @@ export const circuits: Record<CircuitName, Circuit> = {
                     queryParams: {},
                     args: ['input', 'uoms'],
                     overrides: {
-                        product: ['input', 'sku']
+                        product: ['computation', 'c1', 'product']
                     }
                 }
             },
@@ -1005,7 +1005,7 @@ export const circuits: Record<CircuitName, Circuit> = {
                     queryParams: {},
                     args: ['input', 'suppliers'],
                     overrides: {
-                        product: ['input', 'sku']
+                        product: ['computation', 'c1', 'product']
                     }
                 }
             }

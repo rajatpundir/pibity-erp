@@ -78,7 +78,7 @@ export const types = {
     },
     Country: {
         name: 'Country',
-        autoId: false,
+        autoId: true,
         url: 'country',
         keys: {
             region: {

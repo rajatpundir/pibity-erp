@@ -1,10 +1,10 @@
 import styled from '@emotion/styled'
 import { Vector } from 'prelude-ts'
 
-export class Area {
+export class GridArea {
     constructor(private name: string) { }
 
-    equals(other: Area): boolean {
+    equals(other: GridArea): boolean {
         if (!other) {
             return false;
         }
@@ -20,7 +20,7 @@ export class Area {
     }
 }
 
-export const none = new Area('.')
+export const none = new GridArea('.')
 
 const breakpoints: Record<string, number> = {
     sm: 640,
@@ -38,7 +38,7 @@ function getTemplateColumns(layout: Layout): string {
 }
 
 function getTemplateAreas(layout: Layout): string {
-    return (layout.areas.map(row => row.fold(new Area(''), (acc, x) => new Area(`${acc.toString()} ${x.toString()}`))).fold(new Area(''), (acc, x) => new Area(`${acc.toString()}"${x.toString()}" `))).toString()
+    return (layout.areas.map(row => row.fold(new GridArea(''), (acc, x) => new GridArea(`${acc.toString()} ${x.toString()}`))).fold(new GridArea(''), (acc, x) => new GridArea(`${acc.toString()}"${x.toString()}" `))).toString()
 }
 
 export function validateLayout(layout: GridLayout): GridLayout {
@@ -54,7 +54,7 @@ export function validateLayout(layout: GridLayout): GridLayout {
 type Layout = {
     rows: Vector<string>
     columns: Vector<string>
-    areas: Vector<Vector<Area>>
+    areas: Vector<Vector<GridArea>>
 }
 
 export type GridLayout = {
@@ -72,7 +72,7 @@ export type GridLayout = {
 }
 
 type GridContainer = {
-    area: Area
+    area: GridArea
     layout: GridLayout
 }
 
@@ -114,7 +114,7 @@ export const Container = styled.div<GridContainer>`
 `
 
 export type GridItem = {
-    area?: Area
+    area?: GridArea
     justify?: 'start' | 'center' | 'end' | 'stretch'
     align?: 'start' | 'center' | 'end' | 'stretch'
 }
@@ -127,7 +127,7 @@ export const Item = styled.div<GridItem>`
 `
 
 type TableContainerProps = {
-    area: Area
+    area: GridArea
     margin?: number
     rowGap?: string
     columnGap?: string

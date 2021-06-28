@@ -12,7 +12,7 @@ import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../.
 import { Country, CountryVariable, Region, RegionVariable, StateVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
 import { iff, when } from '../../../main/utils'
 import { db } from '../../../main/dexie'
@@ -66,7 +66,7 @@ function Component(props) {
             limit: 5,
             offset: 0,
             page: 1,
-            columns: Vector.of(['values', 'name']),
+            columns: Vector.of(['variableName'], ['values', 'name']),
             variable: new StateVariable('', { country: new Country(''), name: '' }),
             variables: HashSet.of<StateVariable>()
         }
@@ -334,7 +334,14 @@ function Component(props) {
                                     <option value='' selected disabled hidden>Select Region</option>
                                     {regions.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
-                                <div className='font-bold text-xl'>{state.variable.values.region.toString()}</div>
+                                <div className='font-bold text-xl'>{
+                                    iff(regions.filter(x => x.variableName.toString() === state.variable.values.region.toString()).length() !== 0, 
+                                    () => {
+                                        const referencedVariable = regions.filter(x => x.variableName.toString() === state.variable.values.region.toString()).toArray()[0] as RegionVariable
+                                        
+                                        return <Link to={`/region/${referencedVariable.variableName.toString()}`}>{referencedVariable.variableName.toString()}</Link>
+                                    }, <Link to={`/region/${state.variable.values.region.toString()}`}>{state.variable.values.region.toString()}</Link>)
+                                }</div>
                             )
                         }
                     </Item>

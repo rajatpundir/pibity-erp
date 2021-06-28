@@ -9,38 +9,40 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { Region, RegionVariable, CountryVariable } from '../../../main/variables'
+import { Country, CountryVariable, DistrictVariable, State, StateVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
 import { iff, when } from '../../../main/utils'
 import { db } from '../../../main/dexie'
-import { DiffRow, RegionRow, CountryRow } from '../../../main/rows'
+import { DiffRow, CountryRow, StateRow, DistrictRow } from '../../../main/rows'
 import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
+import { useLiveQuery } from 'dexie-react-hooks'
 
-type State = Immutable<{
+type StateS = Immutable<{
     mode: 'create' | 'update' | 'show'
-    variable: RegionVariable
-    updatedVariableName: Region
+    variable: StateVariable
+    updatedVariableName: State
     items: {
-        typeName: 'Country'
+        typeName: 'District'
         query: Query
         limit: number
         offset: number
         page: number
         columns: Vector<Array<string>>
-        variable: CountryVariable
-        variables: HashSet<Immutable<CountryVariable>>
+        variable: DistrictVariable
+        variables: HashSet<Immutable<DistrictVariable>>
     }
 }>
 
 export type Action =
     | ['toggleMode']
-    | ['resetVariable', State]
+    | ['resetVariable', StateS]
 
-    | ['variable', 'variableName', Region]
+    | ['variable', 'values', 'country', Country]
+    | ['variable', 'values', 'name', string]
 
     | ['items', 'limit', number]
     | ['items', 'offset', number]
@@ -49,28 +51,28 @@ export type Action =
     | ['items', 'variable', 'values', 'name', string]
     | ['items', 'addVariable']
 
-    | ['replace', 'variable', RegionVariable]
-    | ['replace', 'items', HashSet<CountryVariable>]
+    | ['replace', 'variable', StateVariable]
+    | ['replace', 'items', HashSet<DistrictVariable>]
 
 function Component(props) {
 
-    const initialState: State = {
+    const initialState: StateS = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new RegionVariable('', {}),
-        updatedVariableName: new Region(''),
+        variable: new StateVariable('', { country: new Country(''), name: '' }),
+        updatedVariableName: new State(''),
         items: {
-            typeName: 'Country',
-            query: getQuery('Country'),
+            typeName: 'District',
+            query: getQuery('District'),
             limit: 5,
             offset: 0,
             page: 1,
             columns: Vector.of(['variableName'], ['values', 'name']),
-            variable: new CountryVariable('', { region: new Region(''), name: '' }),
-            variables: HashSet.of<CountryVariable>()
+            variable: new DistrictVariable('', { state: new State(''), name: '' }),
+            variables: HashSet.of<DistrictVariable>()
         }
     }
 
-    function reducer(state: Draft<State>, action: Action) {
+    function reducer(state: Draft<StateS>, action: Action) {
         switch (action[0]) {
             case 'toggleMode': {
                 state.mode = when(state.mode, {
@@ -85,12 +87,21 @@ function Component(props) {
             }
             case 'variable': {
                 switch (action[1]) {
-                    case 'variableName': {
-                        if (state.mode === 'create') {
-                            state[action[0]][action[1]] = action[2]
+                    case 'values': {
+                        switch (action[2]) {
+                            case 'country': {
+                                state[action[0]][action[1]][action[2]] = action[3]
+                                break
+                            }
+                            case 'name': {
+                                state[action[0]][action[1]][action[2]] = action[3]
+                                break
+                            }
+                            default: {
+                                const _exhaustiveCheck: never = action;
+                                return _exhaustiveCheck;
+                            }
                         }
-                        state.updatedVariableName = action[2]
-                        break
                     }
                 }
                 break
@@ -124,7 +135,7 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.items.variables = state.items.variables.add(new CountryVariable('', { region: new Region(''), name: state.items.variable.values.name }))
+                        state.items.variables = state.items.variables.add(new DistrictVariable('', { state: new State(''), name: state.items.variable.values.name }))
                         state.items.variable = initialState.items.variable
                         break
                     }
@@ -160,18 +171,18 @@ function Component(props) {
         }
     }
 
-    const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
+    const [state, dispatch] = useImmerReducer<StateS, Action>(reducer, initialState)
 
-    const region = types['Region']
-    const country = types['Country']
+    const stateType = types['State']
+    const district = types['District']
 
     const [addItemDrawer, toggleAddItemDrawer] = useState(false)
     const [itemFilter, toggleItemFilter] = useState(false)
 
     const setVariable = useCallback(async () => {
         if (props.match.params[0]) {
-            const rows = await db.regions.toArray()
-            var composedVariables = HashSet.of<Immutable<RegionVariable>>().addAll(rows ? rows.map(x => RegionRow.toVariable(x)) : [])
+            const rows = await db.states.toArray()
+            var composedVariables = HashSet.of<Immutable<StateVariable>>().addAll(rows ? rows.map(x => StateRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
                 composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.variable.typeName].replace)
@@ -179,25 +190,39 @@ function Component(props) {
             const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
-                dispatch(['replace', 'variable', variable as RegionVariable])
-                const itemRows = await db.countries.toArray()
-                var composedItemVariables = HashSet.of<Immutable<CountryVariable>>().addAll(itemRows ? itemRows.map(x => CountryRow.toVariable(x)) : [])
+                dispatch(['replace', 'variable', variable as StateVariable])
+                const itemRows = await db.districts.toArray()
+                var composedItemVariables = HashSet.of<Immutable<DistrictVariable>>().addAll(itemRows ? itemRows.map(x => DistrictRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
                     composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
                 })
-                const items = composedItemVariables.filter(variable => variable.values.region.toString() === props.match.params[0])
-                dispatch(['replace', 'items', items as HashSet<CountryVariable>])
+                const items = composedItemVariables.filter(variable => variable.values.state.toString() === props.match.params[0])
+                dispatch(['replace', 'items', items as HashSet<DistrictVariable>])
             }
         }
     }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
 
     useEffect(() => { setVariable() }, [setVariable])
 
-    const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const rows = useLiveQuery(() => db.countries.orderBy('name').toArray())?.map(x => CountryRow.toVariable(x))
+    var countries = HashSet.of<Immutable<CountryVariable>>().addAll(rows ? rows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        countries = countries.filter(x => !diff.variables.Country.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.Country.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.Country.replace)
+    })
+
+    const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
-            case 'variableName': {
-                dispatch(['variable', 'variableName', new Region(event.target.value)])
-                break
+            default: {
+                switch (event.target.name) {
+                    case 'country': {
+                        dispatch(['variable', 'values', event.target.name, new Country(event.target.value)])
+                        break
+                    }
+                    case 'name': {
+                        dispatch(['variable', 'values', event.target.name, event.target.value])
+                        break
+                    }
+                }
             }
         }
     }
@@ -230,12 +255,11 @@ function Component(props) {
     }
 
     const createVariable = async () => {
-        const [result, symbolFlag, diff] = await executeCircuit(circuits.createRegion, {
-            variableName: state.variable.variableName.toString(),
-            items: state.items.variables.toArray().map(country => {
-                return {
-                    name: country.values.name
-                }
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.createState, {
+            country: state.variable.values.country.toString(),
+            name: state.variable.values.name,
+            items: state.items.variables.toArray().map(state => {
+                return { name: state.values.name }
             })
         })
         console.log(result, symbolFlag, diff)
@@ -254,7 +278,7 @@ function Component(props) {
     }
 
     const deleteVariable = async () => {
-        const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteRegion, {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteState, {
             variableName: state.variable.variableName.toString(),
             items: [{}]
         })
@@ -269,9 +293,9 @@ function Component(props) {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
                     <Title>{when(state.mode, {
-                        'create': `Create Region`,
-                        'update': `Update Region`,
-                        'show': `Region`
+                        'create': `Create State`,
+                        'update': `Update State`,
+                        'show': `State`
                     })}</Title>
                 </Item>
                 <Item area={Grid.button} justify='end' align='center' className='flex'>
@@ -279,7 +303,7 @@ function Component(props) {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
                                 await createVariable()
-                                props.history.push('/regions')
+                                props.history.push('/states')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
                                 <>
@@ -289,13 +313,13 @@ function Component(props) {
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
                                         await modifyVariable()
-                                        props.history.push('/regions')
+                                        props.history.push('/states')
                                     }}>Update</Button>
                                 </>,
                                 <>
                                     <Button onClick={async () => {
                                         await deleteVariable()
-                                        props.history.push('/regions')
+                                        props.history.push('/states')
                                     }}>Delete</Button>
                                     <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>
                                 </>))
@@ -303,18 +327,37 @@ function Component(props) {
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>
                     <Item>
-                        <Label>{region.name}</Label>
+                        <Label>{stateType.keys.country.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Input type='text' onChange={onVariableInputChange} value={state.updatedVariableName.toString()} name='variableName' />,
-                                <div className='font-bold text-xl'>{state.variable.variableName.toString()}</div>
+                                <Select onChange={onVariableInputChange} value={state.variable.values.country.toString()} name='country'>
+                                    <option value='' selected disabled hidden>Select Country</option>
+                                    {countries.toArray().map(x => <option value={x.variableName.toString()}>{x.values.name}</option>)}
+                                </Select>,
+                                <div className='font-bold text-xl'>{
+                                    iff(countries.filter(x => x.variableName.toString() === state.variable.values.country.toString()).length() !== 0, 
+                                    () => {
+                                        const referencedVariable = countries.filter(x => x.variableName.toString() === state.variable.values.country.toString()).toArray()[0] as CountryVariable
+                                        
+                                        return <Link to={`/country/${referencedVariable.variableName.toString()}`}>{referencedVariable.values.name}</Link>
+                                    }, <Link to={`/country/${state.variable.values.country.toString()}`}>{state.variable.values.country.toString()}</Link>)
+                                }</div>
+                            )
+                        }
+                    </Item>
+                    <Item>
+                        <Label>{stateType.name}</Label>
+                        {
+                            iff(state.mode === 'create' || state.mode === 'update',
+                                <Input type='text' onChange={onVariableInputChange} value={state.variable.values.name} name='name' />,
+                                <div className='font-bold text-xl'>{state.variable.values.name}</div>
                             )
                         }
                     </Item>
                 </Container>
                 <Container area={Grid.uom} layout={Grid2.layouts.main}>
                     <Item area={Grid2.header} className='flex items-center'>
-                        <Title>Countries</Title>
+                        <Title>{district.name}s</Title>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>,
@@ -325,14 +368,14 @@ function Component(props) {
                     <Item area={Grid2.filter} justify='end' align='center' className='flex'>
                         <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
                         <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
-                            <Filter typeName='Country' query={state['items'].query} updateQuery={updateItemsQuery('items')} />
+                            <Filter typeName='District' query={state['items'].query} updateQuery={updateItemsQuery('items')} />
                         </Drawer>
                         <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
                             <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
-                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add {country.name}</div>
+                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add {district.name}</div>
                                 <Container area={none} layout={Grid.layouts.uom} className=''>
                                     <Item>
-                                        <Label>{country.keys.name.name}</Label>
+                                        <Label>{district.keys.name.name}</Label>
                                         <Input type='text' onChange={onItemInputChange} name='name' />
                                     </Item>
                                     <Item justify='center' align='center'>
@@ -355,6 +398,8 @@ const Title = tw.div`py-8 text-4xl text-gray-800 font-bold mx-1 whitespace-nowra
 const Label = tw.label`w-1/2 whitespace-nowrap`
 
 // const InlineLabel = tw.label`inline-block w-1/2`
+
+const Select = tw.select`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full rounded-sm`
 
 const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full rounded-sm`
 

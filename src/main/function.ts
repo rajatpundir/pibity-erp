@@ -253,6 +253,7 @@ async function getSymbolsForFunction(fx: Function, args: object, overlay: Vector
 }
 
 export async function executeFunction(fx: Function, args: object, overlay: Vector<DiffVariable>): Promise<[object, boolean, DiffVariable]> {
+    console.log('function', args)
     const [symbols, symbolFlag] = await getSymbolsForFunction(fx, args, overlay)
     const result = {}
     var diffs: Vector<DiffVariable> = Vector.of()
@@ -325,6 +326,7 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                             result[outputName] = createdVariable
                             const replacedVariable = replaceVariable(createdVariable.typeName, createdVariable.variableName, createdVariable.values)
                             diffs = diffs.append(getReplaceVariableDiff(replacedVariable))
+                            console.log(replacedVariable)
                             break
                         }
                         case 'update': {
