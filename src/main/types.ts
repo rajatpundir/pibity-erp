@@ -215,8 +215,13 @@ export const types = {
                 name: 'Country',
                 type: 'Country'
             },
-            website: {
+            name: {
                 order: 1,
+                name: 'Name',
+                type: 'Text'
+            },
+            website: {
+                order: 2,
                 name: 'Website',
                 type: 'Text'
             }

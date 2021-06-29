@@ -14,6 +14,10 @@ import ShowSubdistrict from '../components/Geography/Subdistrict/Show'
 import ListSubdistrict from '../components/Geography/Subdistrict/List'
 import ShowPostalCode from '../components/Geography/PostalCode/Show'
 import ListPostalCode from '../components/Geography/PostalCode/List'
+import ShowAddress from '../components/Geography/Address/Show'
+import ListAddress from '../components/Geography/Address/List'
+import ShowBank from '../components/Banking/Bank/Show'
+import ListBank from '../components/Banking/Bank/List'
 import ShowProduct from '../components/IT/Product/Show'
 import ListProduct from '../components/IT/Product/List'
 import ShowSupplier from '../components/IT/Supplier/Show'
@@ -71,6 +75,12 @@ function App() {
               <Route exact path='/postal-codes'><ListPostalCode /></Route>
               <Route exact path='/postal-code/*'><ShowPostalCode /></Route>
               <Route exact path='/postal-code'><ShowPostalCode /></Route>
+              <Route exact path='/addresses'><ListAddress /></Route>
+              <Route exact path='/address/*'><ShowAddress /></Route>
+              <Route exact path='/address'><ShowAddress /></Route>
+              <Route exact path='/banks'><ListBank /></Route>
+              <Route exact path='/bank/*'><ShowBank /></Route>
+              <Route exact path='/bank'><ShowBank /></Route>
               <Route exact path='/products'><ListProduct /></Route>
               <Route exact path='/product/*'><ShowProduct /></Route>
               <Route exact path='/product'><ShowProduct /></Route>
