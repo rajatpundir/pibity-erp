@@ -338,7 +338,6 @@ function Component(props) {
                                     iff(states.filter(x => x.variableName.toString() === state.variable.values.state.toString()).length() !== 0, 
                                     () => {
                                         const referencedVariable = states.filter(x => x.variableName.toString() === state.variable.values.state.toString()).toArray()[0] as StateVariable
-                                        
                                         return <Link to={`/state/${referencedVariable.variableName.toString()}`}>{referencedVariable.values.name}</Link>
                                     }, <Link to={`/state/${state.variable.values.state.toString()}`}>{state.variable.values.state.toString()}</Link>)
                                 }</div>

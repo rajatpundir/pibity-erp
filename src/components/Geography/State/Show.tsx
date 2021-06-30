@@ -337,8 +337,7 @@ function Component(props) {
                                 <div className='font-bold text-xl'>{
                                     iff(countries.filter(x => x.variableName.toString() === state.variable.values.country.toString()).length() !== 0, 
                                     () => {
-                                        const referencedVariable = countries.filter(x => x.variableName.toString() === state.variable.values.country.toString()).toArray()[0] as CountryVariable
-                                        
+                                        const referencedVariable = countries.filter(x => x.variableName.toString() === state.variable.values.country.toString()).toArray()[0] as CountryVariable      
                                         return <Link to={`/country/${referencedVariable.variableName.toString()}`}>{referencedVariable.values.name}</Link>
                                     }, <Link to={`/country/${state.variable.values.country.toString()}`}>{state.variable.values.country.toString()}</Link>)
                                 }</div>

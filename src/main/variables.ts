@@ -635,7 +635,7 @@ export class BankVariable {
         if (!other) {
             return false;
         }
-        return this.variableName.equals(other.variableName)
+        return this.values.country.equals(other.values.country) && this.values.name === other.values.name
     }
 
     hashCode(): number {
@@ -695,7 +695,7 @@ export class BankBranchVariable {
         if (!other) {
             return false;
         }
-        return this.variableName.equals(other.variableName)
+        return this.values.bank.equals(other.values.bank) && this.values.name === other.values.name
     }
 
     hashCode(): number {
@@ -755,7 +755,7 @@ export class BankAccountVariable {
         if (!other) {
             return false;
         }
-        return this.variableName.equals(other.variableName)
+        return this.values.bank.equals(other.values.bank) && this.values.accountNumber === other.values.accountNumber
     }
 
     hashCode(): number {

@@ -18,6 +18,10 @@ import ShowAddress from '../components/Geography/Address/Show'
 import ListAddress from '../components/Geography/Address/List'
 import ShowBank from '../components/Banking/Bank/Show'
 import ListBank from '../components/Banking/Bank/List'
+import ShowBankBranch from '../components/Banking/BankBranch/Show'
+import ListBankBranch from '../components/Banking/BankBranch/List'
+import ShowBankAccount from '../components/Banking/BankAccount/Show'
+import ListBankAccount from '../components/Banking/BankAccount/List'
 import ShowProduct from '../components/IT/Product/Show'
 import ListProduct from '../components/IT/Product/List'
 import ShowSupplier from '../components/IT/Supplier/Show'
@@ -81,6 +85,12 @@ function App() {
               <Route exact path='/banks'><ListBank /></Route>
               <Route exact path='/bank/*'><ShowBank /></Route>
               <Route exact path='/bank'><ShowBank /></Route>
+              <Route exact path='/bank-branches'><ListBankBranch /></Route>
+              <Route exact path='/bank-branch/*'><ShowBankBranch /></Route>
+              <Route exact path='/bank-branch'><ShowBankBranch /></Route>
+              <Route exact path='/bank-accounts'><ListBankAccount /></Route>
+              <Route exact path='/bank-account/*'><ShowBankAccount /></Route>
+              <Route exact path='/bank-account'><ShowBankAccount /></Route>
               <Route exact path='/products'><ListProduct /></Route>
               <Route exact path='/product/*'><ShowProduct /></Route>
               <Route exact path='/product'><ShowProduct /></Route>

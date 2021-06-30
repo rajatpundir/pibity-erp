@@ -396,6 +396,164 @@ export default async function createDemoData() {
     diffs = diffs.append(r1)
 
     const [, , r2] = await executeCircuit(circuits.createRegion, {
+        variableName: 'Europe',
+        items: [
+            { name: 'Albania' },
+            { name: 'Andorra' },
+            { name: 'Austria' },
+            { name: 'Belarus' },
+            { name: 'Belgium' },
+            { name: 'Bosnia and Herzegovina' },
+            { name: 'Bulgaria' },
+            { name: 'Croatia' },
+            { name: 'Czech Republic' },
+            { name: 'Denmark' },
+            { name: 'Estonia' },
+            { name: 'Faroe Islands' },
+            { name: 'Finland' },
+            { name: 'France' },
+            { name: 'Germany' },
+            { name: 'Gibraltar' },
+            { name: 'Greece' },
+            { name: 'Guernsey' },
+            { name: 'Holy See' },
+            { name: 'Hungary' },
+            { name: 'Iceland' },
+            { name: 'Ireland' },
+            { name: 'Isle of Man' },
+            { name: 'Italy' },
+            { name: 'Jersey' },
+            { name: 'Latvia' },
+            { name: 'Liechtenstein' },
+            { name: 'Lithuania' },
+            { name: 'Luxembourg' },
+            { name: 'Macedonia (the former Yugoslav Republic of)' },
+            { name: 'Malta' },
+            { name: 'Moldova (Republic of)' },
+            { name: 'Monaco' },
+            { name: 'Montenegro' },
+            { name: 'Netherlands' },
+            { name: 'Norway' },
+            { name: 'Poland' },
+            { name: 'Portugal' },
+            { name: 'Romania' },
+            { name: 'Russian Federation' },
+            { name: 'San Marino' },
+            { name: 'Serbia' },
+            { name: 'Slovakia' },
+            { name: 'Slovenia' },
+            { name: 'Spain' },
+            { name: 'Svalbard and Jan Mayen' },
+            { name: 'Sweden' },
+            { name: 'Switzerland' },
+            { name: 'Ukraine' },
+            { name: 'United Kingdom of Great Britain and Northern Ireland' }
+        ]
+    })
+    diffs = diffs.append(r2)
+
+    const [, , r3] = await executeCircuit(circuits.createRegion, {
+        variableName: 'North America',
+        items: [
+            { name: 'Bermuda' },
+            { name: 'Canada' },
+            { name: 'Greenland' },
+            { name: 'Saint Pierre and Miquelon' },
+            { name: 'United States of America' },
+            { name: 'Belize' },
+            { name: 'Costa Rica' },
+            { name: 'El Salvador' },
+            { name: 'Guatemala' },
+            { name: 'Honduras' },
+            { name: 'Mexico' },
+            { name: 'Nicaragua' },
+            { name: 'Panama' },
+            { name: 'Anguilla' },
+            { name: 'Antigua and Barbuda' },
+            { name: 'Aruba' },
+            { name: 'Bahamas' },
+            { name: 'Barbados' },
+            { name: 'Bonaire, Sint Eustatius and Saba' },
+            { name: 'Cayman Islands' },
+            { name: 'Cuba' },
+            { name: 'Curacao' },
+            { name: 'Dominica' },
+            { name: 'Dominican Republic' },
+            { name: 'Grenada' },
+            { name: 'Guadeloupe' },
+            { name: 'Haiti' },
+            { name: 'Jamaica' },
+            { name: 'Martinique' },
+            { name: 'Montserrat' },
+            { name: 'Puerto Rico' },
+            { name: 'Saint Barth駘emy' },
+            { name: 'Saint Kitts and Nevis' },
+            { name: 'Saint Lucia' },
+            { name: 'Saint Martin (French part)' },
+            { name: 'Saint Vincent and the Grenadines' },
+            { name: 'Sint Maarten (Dutch part)' },
+            { name: 'Trinidad and Tobago' },
+            { name: 'Turks and Caicos Islands' },
+            { name: 'Virgin Islands (British)' },
+            { name: 'Virgin Islands (U.S.)' }
+        ]
+    })
+    diffs = diffs.append(r3)
+
+    const [, , r4] = await executeCircuit(circuits.createRegion, {
+        variableName: 'South America',
+        items: [
+            { name: 'Argentina' },
+            { name: 'Bolivia (Plurinational State of)' },
+            { name: 'Brazil' },
+            { name: 'Chile' },
+            { name: 'Colombia' },
+            { name: 'Ecuador' },
+            { name: 'Falkland Islands (Malvinas)' },
+            { name: 'French Guiana' },
+            { name: 'Guyana' },
+            { name: 'Paraguay' },
+            { name: 'Peru' },
+            { name: 'Suriname' },
+            { name: 'Uruguay' },
+            { name: 'Venezuela (Bolivarian Republic of)' }
+        ]
+    })
+    diffs = diffs.append(r4)
+
+    const [, , r5] = await executeCircuit(circuits.createRegion, {
+        variableName: 'Australia',
+        items: [
+            { name: 'American Samoa' },
+            { name: 'Australia' },
+            { name: 'Cook Islands' },
+            { name: 'Fiji' },
+            { name: 'French Polynesia' },
+            { name: 'Guam' },
+            { name: 'Kiribati' },
+            { name: 'Marshall Islands' },
+            { name: 'Micronesia (Federated States of)' },
+            { name: 'Nauru' },
+            { name: 'New Caledonia' },
+            { name: 'New Zealand' },
+            { name: 'Niue' },
+            { name: 'Norfolk Island' },
+            { name: 'Northern Mariana Islands' },
+            { name: 'Palau' },
+            { name: 'Papua New Guinea' },
+            { name: 'Pitcairn' },
+            { name: 'Samoa' },
+            { name: 'Solomon Islands' },
+            { name: 'Tokelau' },
+            { name: 'Tonga' },
+            { name: 'Tuvalu' },
+            { name: 'Vanuatu' },
+            { name: 'Wallis and Futuna' }
+        ]
+    })
+    diffs = diffs.append(r5)
+
+    const [res_r6, , r6] = await executeCircuit(circuits.createRegion, {
         variableName: 'Asia',
         items: [
             { name: 'Afghanistan' },
@@ -451,599 +609,821 @@ export default async function createDemoData() {
             { name: 'India' }
         ]
     })
-    diffs = diffs.append(r2)
-
-    const [, , r3] = await executeCircuit(circuits.createRegion, {
-        variableName: 'Europe',
-        items: [
-            { name: 'Albania' },
-            { name: 'Andorra' },
-            { name: 'Austria' },
-            { name: 'Belarus' },
-            { name: 'Belgium' },
-            { name: 'Bosnia and Herzegovina' },
-            { name: 'Bulgaria' },
-            { name: 'Croatia' },
-            { name: 'Czech Republic' },
-            { name: 'Denmark' },
-            { name: 'Estonia' },
-            { name: 'Faroe Islands' },
-            { name: 'Finland' },
-            { name: 'France' },
-            { name: 'Germany' },
-            { name: 'Gibraltar' },
-            { name: 'Greece' },
-            { name: 'Guernsey' },
-            { name: 'Holy See' },
-            { name: 'Hungary' },
-            { name: 'Iceland' },
-            { name: 'Ireland' },
-            { name: 'Isle of Man' },
-            { name: 'Italy' },
-            { name: 'Jersey' },
-            { name: 'Latvia' },
-            { name: 'Liechtenstein' },
-            { name: 'Lithuania' },
-            { name: 'Luxembourg' },
-            { name: 'Macedonia (the former Yugoslav Republic of)' },
-            { name: 'Malta' },
-            { name: 'Moldova (Republic of)' },
-            { name: 'Monaco' },
-            { name: 'Montenegro' },
-            { name: 'Netherlands' },
-            { name: 'Norway' },
-            { name: 'Poland' },
-            { name: 'Portugal' },
-            { name: 'Romania' },
-            { name: 'Russian Federation' },
-            { name: 'San Marino' },
-            { name: 'Serbia' },
-            { name: 'Slovakia' },
-            { name: 'Slovenia' },
-            { name: 'Spain' },
-            { name: 'Svalbard and Jan Mayen' },
-            { name: 'Sweden' },
-            { name: 'Switzerland' },
-            { name: 'Ukraine' },
-            { name: 'United Kingdom of Great Britain and Northern Ireland' }
-        ]
-    })
-    diffs = diffs.append(r3)
-
-    const [, , r4] = await executeCircuit(circuits.createRegion, {
-        variableName: 'North America',
-        items: [
-            { name: 'Bermuda' },
-            { name: 'Canada' },
-            { name: 'Greenland' },
-            { name: 'Saint Pierre and Miquelon' },
-            { name: 'United States of America' },
-            { name: 'Belize' },
-            { name: 'Costa Rica' },
-            { name: 'El Salvador' },
-            { name: 'Guatemala' },
-            { name: 'Honduras' },
-            { name: 'Mexico' },
-            { name: 'Nicaragua' },
-            { name: 'Panama' },
-            { name: 'Anguilla' },
-            { name: 'Antigua and Barbuda' },
-            { name: 'Aruba' },
-            { name: 'Bahamas' },
-            { name: 'Barbados' },
-            { name: 'Bonaire, Sint Eustatius and Saba' },
-            { name: 'Cayman Islands' },
-            { name: 'Cuba' },
-            { name: 'Curacao' },
-            { name: 'Dominica' },
-            { name: 'Dominican Republic' },
-            { name: 'Grenada' },
-            { name: 'Guadeloupe' },
-            { name: 'Haiti' },
-            { name: 'Jamaica' },
-            { name: 'Martinique' },
-            { name: 'Montserrat' },
-            { name: 'Puerto Rico' },
-            { name: 'Saint Barth駘emy' },
-            { name: 'Saint Kitts and Nevis' },
-            { name: 'Saint Lucia' },
-            { name: 'Saint Martin (French part)' },
-            { name: 'Saint Vincent and the Grenadines' },
-            { name: 'Sint Maarten (Dutch part)' },
-            { name: 'Trinidad and Tobago' },
-            { name: 'Turks and Caicos Islands' },
-            { name: 'Virgin Islands (British)' },
-            { name: 'Virgin Islands (U.S.)' }
-        ]
-    })
-    diffs = diffs.append(r4)
-
-    const [, , r5] = await executeCircuit(circuits.createRegion, {
-        variableName: 'South America',
-        items: [
-            { name: 'Argentina' },
-            { name: 'Bolivia (Plurinational State of)' },
-            { name: 'Brazil' },
-            { name: 'Chile' },
-            { name: 'Colombia' },
-            { name: 'Ecuador' },
-            { name: 'Falkland Islands (Malvinas)' },
-            { name: 'French Guiana' },
-            { name: 'Guyana' },
-            { name: 'Paraguay' },
-            { name: 'Peru' },
-            { name: 'Suriname' },
-            { name: 'Uruguay' },
-            { name: 'Venezuela (Bolivarian Republic of)' }
-        ]
-    })
-    diffs = diffs.append(r5)
-
-    const [, , r6] = await executeCircuit(circuits.createRegion, {
-        variableName: 'Australia',
-        items: [
-            { name: 'American Samoa' },
-            { name: 'Australia' },
-            { name: 'Cook Islands' },
-            { name: 'Fiji' },
-            { name: 'French Polynesia' },
-            { name: 'Guam' },
-            { name: 'Kiribati' },
-            { name: 'Marshall Islands' },
-            { name: 'Micronesia (Federated States of)' },
-            { name: 'Nauru' },
-            { name: 'New Caledonia' },
-            { name: 'New Zealand' },
-            { name: 'Niue' },
-            { name: 'Norfolk Island' },
-            { name: 'Northern Mariana Islands' },
-            { name: 'Palau' },
-            { name: 'Papua New Guinea' },
-            { name: 'Pitcairn' },
-            { name: 'Samoa' },
-            { name: 'Solomon Islands' },
-            { name: 'Tokelau' },
-            { name: 'Tonga' },
-            { name: 'Tuvalu' },
-            { name: 'Vanuatu' },
-            { name: 'Wallis and Futuna' }
-        ]
-    })
     diffs = diffs.append(r6)
 
-    //createSupplier
-    // const [, , s1] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Royal'
-    // })
-    // diffs = diffs.append(s1)
+    db.diffs.put(mergeDiffs(diffs.toArray()).toRow())
+    diffs = Vector.of()
 
-    // const [, , s11] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Fenghua'
-    // })
-    // diffs = diffs.append(s11)
+    const country_india: string = res_r6['countries'].filter(x => x['country'].values.name === 'India')[0]['country']['variableName']
 
-    // const [, , s12] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Yageo'
-    // })
-    // diffs = diffs.append(s12)
+    const [, , st1] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Andhra Pradesh',
+        items: [
+            { name: 'Ananthapur' },
+            { name: 'Cuddapah' },
+            { name: 'Chittoor' },
+            { name: 'Kurnool' },
+            { name: 'Prakasam' },
+            { name: 'West Godavari' },
+            { name: 'Krishna' },
+            { name: 'Nellore' },
+            { name: 'Guntur' },
+            { name: 'East Godavari' },
+            { name: 'Visakhapatnam' },
+            { name: 'Vizianagaram' },
+            { name: 'Srikakulam' }
+        ]
+    })
+    diffs = diffs.append(st1)
 
-    // const [, , s13] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Samsung'
-    // })
-    // diffs = diffs.append(s13)
+    const [, , st2] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Arunachal Pradesh',
+        items: [
+            { name: 'Lower Dibang Valley' },
+            { name: 'East Siang' },
+            { name: 'Dibang Valley' },
+            { name: 'West Siang' },
+            { name: 'Lohit' },
+            { name: 'Papum Pare' },
+            { name: 'Tawang' },
+            { name: 'West Kameng' },
+            { name: 'East Kameng' },
+            { name: 'Lower Subansiri' },
+            { name: 'Changlang' },
+            { name: 'Tirap' },
+            { name: 'Kurung Kumey' },
+            { name: 'Upper Siang' },
+            { name: 'Upper Subansiri' }
+        ]
+    })
+    diffs = diffs.append(st2)
 
-    // const [, , s14] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'CCTC'
-    // })
-    // diffs = diffs.append(s14)
+    const [, , st3] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Assam',
+        items: [
+            { name: 'Lakhimpur' },
+            { name: 'Dibrugarh' },
+            { name: 'Dhemaji' },
+            { name: 'Marigaon' },
+            { name: 'Nagaon' },
+            { name: 'Karbi Anglong' },
+            { name: 'Golaghat' },
+            { name: 'Sibsagar' },
+            { name: 'Jorhat' },
+            { name: 'Tinsukia' },
+            { name: 'Karimganj' },
+            { name: 'Hailakandi' },
+            { name: 'Cachar' },
+            { name: 'North Cachar Hills' },
+            { name: 'Darrang' },
+            { name: 'Sonitpur' },
+            { name: 'Bongaigaon' },
+            { name: 'Kokrajhar' },
+            { name: 'Goalpara' },
+            { name: 'Dhubri' },
+            { name: 'Kamrup' },
+            { name: 'Nalbari' },
+            { name: 'Barpeta' }
+        ]
+    })
+    diffs = diffs.append(st3)
 
-    // const [, , s21] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Dafu'
-    // })
-    // diffs = diffs.append(s21)
+    const [, , st4] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Bihar',
+        items: [
+            { name: 'Begusarai' },
+            { name: 'Khagaria' },
+            { name: 'Darbhanga' },
+            { name: 'Madhubani' },
+            { name: 'Muzaffarpur' },
+            { name: 'Samastipur' },
+            { name: 'Sitamarhi' },
+            { name: 'East Champaran' },
+            { name: 'Supaul' },
+            { name: 'Vaishali' },
+            { name: 'Purnia' },
+            { name: 'Araria' },
+            { name: 'Katihar' },
+            { name: 'Kishanganj' },
+            { name: 'Madhepura' },
+            { name: 'Saharsa' },
+            { name: 'Saran' },
+            { name: 'Siwan' },
+            { name: 'Bhojpur' },
+            { name: 'Sheohar' },
+            { name: 'Gopalganj' },
+            { name: 'West Champaran' },
+            { name: 'Gaya' },
+            { name: 'Aurangabad(BH)' },
+            { name: 'Arwal' },
+            { name: 'Bhagalpur' },
+            { name: 'Banka' },
+            { name: 'Munger' },
+            { name: 'Buxar' },
+            { name: 'Jehanabad' },
+            { name: 'Patna' },
+            { name: 'Sheikhpura' },
+            { name: 'Jamui' },
+            { name: 'Lakhisarai' },
+            { name: 'Nalanda' },
+            { name: 'Nawada' },
+            { name: 'Rohtas' },
+            { name: 'Kaimur (Bhabua)' }
+        ]
+    })
+    diffs = diffs.append(st4)
 
-    // const [, , s22] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Keming'
-    // })
-    // diffs = diffs.append(s22)
+    const [, , st5] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Chattisgarh',
+        items: [
+            { name: 'Kanker' },
+            { name: 'Bastar' },
+            { name: 'Dantewada' },
+            { name: 'Bijapur(CGH)' },
+            { name: 'Narayanpur' },
+            { name: 'Bilaspur(CGH)' },
+            { name: 'Janjgir-champa' },
+            { name: 'Korba' },
+            { name: 'Durg' },
+            { name: 'Rajnandgaon' },
+            { name: 'Kawardha' },
+            { name: 'Surguja' },
+            { name: 'Raigarh' },
+            { name: 'Jashpur' },
+            { name: 'Koriya' },
+            { name: 'Raipur' },
+            { name: 'Mahasamund' },
+            { name: 'Dhamtari' },
+            { name: 'Gariaband' }
+        ]
+    })
+    diffs = diffs.append(st5)
 
-    // const [, , s23] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Nicholed'
-    // })
-    // diffs = diffs.append(s23)
+    const [, , st6] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Gujarat',
+        items: [
+            { name: 'Ahmedabad' },
+            { name: 'Gandhi Nagar' },
+            { name: 'Banaskantha' },
+            { name: 'Mahesana' },
+            { name: 'Surendra Nagar' },
+            { name: 'Patan' },
+            { name: 'Sabarkantha' },
+            { name: 'Amreli' },
+            { name: 'Rajkot' },
+            { name: 'Junagadh' },
+            { name: 'Bhavnagar' },
+            { name: 'Jamnagar' },
+            { name: 'Porbandar' },
+            { name: 'Kachchh' },
+            { name: 'Anand' },
+            { name: 'Kheda' },
+            { name: 'Surat' },
+            { name: 'The Dangs' },
+            { name: 'Tapi' },
+            { name: 'Navsari' },
+            { name: 'Vadodara' },
+            { name: 'Bharuch' },
+            { name: 'Narmada' },
+            { name: 'Dahod' },
+            { name: 'Panch Mahals' },
+            { name: 'Valsad' }
+        ]
+    })
+    diffs = diffs.append(st6)
 
-    // const [, , s24] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'CCO'
-    // })
-    // diffs = diffs.append(s24)
+    const [, , st7] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Haryana',
+        items: [
+            { name: 'Ambala' },
+            { name: 'Yamuna Nagar' },
+            { name: 'Panchkula' },
+            { name: 'Bhiwani' },
+            { name: 'Faridabad' },
+            { name: 'Gurgaon' },
+            { name: 'Rewari' },
+            { name: 'Mahendragarh' },
+            { name: 'Hisar' },
+            { name: 'Sirsa' },
+            { name: 'Fatehabad' },
+            { name: 'Karnal' },
+            { name: 'Panipat' },
+            { name: 'Jind' },
+            { name: 'Kaithal' },
+            { name: 'Kurukshetra' },
+            { name: 'Jhajjar' },
+            { name: 'Rohtak' },
+            { name: 'Sonipat' }
+        ]
+    })
+    diffs = diffs.append(st7)
 
-    // const [, , s3] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Chengdong'
-    // })
-    // diffs = diffs.append(s3)
+    const [, , st8] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Himachal Pradesh',
+        items: [
+            { name: 'Chamba' },
+            { name: 'Kangra' },
+            { name: 'Bilaspur (HP)' },
+            { name: 'Hamirpur(HP)' },
+            { name: 'Una' },
+            { name: 'Mandi' },
+            { name: 'Kullu' },
+            { name: 'Lahul & Spiti' },
+            { name: 'Kinnaur' },
+            { name: 'Shimla' },
+            { name: 'Sirmaur' },
+            { name: 'Solan' }
+        ]
+    })
+    diffs = diffs.append(st8)
 
-    // const [, , s31] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Weidy'
-    // })
-    // diffs = diffs.append(s31)
+    const [, , st9] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Jharkhand',
+        items: [
+            { name: 'Dhanbad' },
+            { name: 'Bokaro' },
+            { name: 'Giridh' },
+            { name: 'Hazaribag' },
+            { name: 'Chatra' },
+            { name: 'Ramgarh' },
+            { name: 'Koderma' },
+            { name: 'Latehar' },
+            { name: 'Garhwa' },
+            { name: 'Palamau' },
+            { name: 'Ranchi' },
+            { name: 'Gumla' },
+            { name: 'Simdega' },
+            { name: 'Lohardaga' },
+            { name: 'West Singhbhum' },
+            { name: 'Khunti' },
+            { name: 'Deoghar' },
+            { name: 'Godda' },
+            { name: 'Jamtara' },
+            { name: 'Sahibganj' },
+            { name: 'Dumka' },
+            { name: 'Pakur' },
+            { name: 'Seraikela-kharsawan' },
+            { name: 'East Singhbhum' }
+        ]
+    })
+    diffs = diffs.append(st9)
 
-    // const [, , s32] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Yinyan'
-    // })
-    // diffs = diffs.append(s32)
+    const [, , st10] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Karnataka',
+        items: [
+            { name: 'Bangalore' },
+            { name: 'Bangalore Rural' },
+            { name: 'Ramanagar' },
+            { name: 'Bagalkot' },
+            { name: 'Bijapur(KAR)' },
+            { name: 'Belgaum' },
+            { name: 'Davangere' },
+            { name: 'Bellary' },
+            { name: 'Bidar' },
+            { name: 'Dharwad' },
+            { name: 'Gadag' },
+            { name: 'Koppal' },
+            { name: 'Yadgir' },
+            { name: 'Gulbarga' },
+            { name: 'Haveri' },
+            { name: 'Uttara Kannada' },
+            { name: 'Raichur' },
+            { name: 'Chickmagalur' },
+            { name: 'Chitradurga' },
+            { name: 'Hassan' },
+            { name: 'Kodagu' },
+            { name: 'Chikkaballapur' },
+            { name: 'Kolar' },
+            { name: 'Mandya' },
+            { name: 'Dakshina Kannada' },
+            { name: 'Udupi' },
+            { name: 'Mysore' },
+            { name: 'Chamrajnagar' },
+            { name: 'Shimoga' },
+            { name: 'Tumkur' }
+        ]
+    })
+    diffs = diffs.append(st10)
 
-    // const [, , s5] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'TBOR'
-    // })
-    // diffs = diffs.append(s5)
+    const [, , st11] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Kerala',
+        items: [
+            { name: 'Wayanad' },
+            { name: 'Kozhikode' },
+            { name: 'Malappuram' },
+            { name: 'Kannur' },
+            { name: 'Kasargod' },
+            { name: 'Palakkad' },
+            { name: 'Alappuzha' },
+            { name: 'Ernakulam' },
+            { name: 'Kottayam' },
+            { name: 'Pathanamthitta' },
+            { name: 'Idukki' },
+            { name: 'Thrissur' },
+            { name: 'Kollam' },
+            { name: 'Thiruvananthapuram' }
+        ]
+    })
+    diffs = diffs.append(st11)
 
-    // const [, , s51] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Topaz'
-    // })
-    // diffs = diffs.append(s51)
+    const [, , st12] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Madhya Pradesh',
+        items: [
+            { name: 'Seoni' },
+            { name: 'Balaghat' },
+            { name: 'Mandla' },
+            { name: 'Dindori' },
+            { name: 'Bhopal' },
+            { name: 'Raisen' },
+            { name: 'Chhatarpur' },
+            { name: 'Tikamgarh' },
+            { name: 'Panna' },
+            { name: 'Betul' },
+            { name: 'Chhindwara' },
+            { name: 'Hoshangabad' },
+            { name: 'Narsinghpur' },
+            { name: 'Harda' },
+            { name: 'Satna' },
+            { name: 'Rewa' },
+            { name: 'Damoh' },
+            { name: 'Sagar' },
+            { name: 'Anuppur' },
+            { name: 'Umaria' },
+            { name: 'Shahdol' },
+            { name: 'Sidhi' },
+            { name: 'Singrauli' },
+            { name: 'Vidisha' },
+            { name: 'Ashok Nagar' },
+            { name: 'Shivpuri' },
+            { name: 'Guna' },
+            { name: 'Gwalior' },
+            { name: 'Datia' },
+            { name: 'Bhind' },
+            { name: 'Morena' },
+            { name: 'Sheopur' },
+            { name: 'Indore' },
+            { name: 'Dewas' },
+            { name: 'Dhar' },
+            { name: 'Katni' },
+            { name: 'Jabalpur' },
+            { name: 'East Nimar' },
+            { name: 'West Nimar' },
+            { name: 'Barwani' },
+            { name: 'Khandwa' },
+            { name: 'Burhanpur' },
+            { name: 'Khargone' },
+            { name: 'Neemuch' },
+            { name: 'Mandsaur' },
+            { name: 'Jhabua' },
+            { name: 'Ratlam' },
+            { name: 'Alirajpur' },
+            { name: 'Sehore' },
+            { name: 'Rajgarh' },
+            { name: 'Ujjain' },
+            { name: 'Shajapur' }
+        ]
+    })
+    diffs = diffs.append(st12)
 
-    // const [, , s6] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Aishi'
-    // })
-    // diffs = diffs.append(s6)
+    const [, , st13] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Maharashtra',
+        items: [
+            { name: 'Jalna' },
+            { name: 'Aurangabad' },
+            { name: 'Beed' },
+            { name: 'Jalgaon' },
+            { name: 'Dhule' },
+            { name: 'Nandurbar' },
+            { name: 'Nashik' },
+            { name: 'Nanded' },
+            { name: 'Latur' },
+            { name: 'Osmanabad' },
+            { name: 'Hingoli' },
+            { name: 'Parbhani' },
+            { name: 'Kolhapur' },
+            { name: 'Ratnagiri' },
+            { name: 'Sindhudurg' },
+            { name: 'Satara' },
+            { name: 'Sangli' },
+            { name: 'Mumbai' },
+            { name: 'Raigarh(MH)' },
+            { name: 'Thane' },
+            { name: 'Akola' },
+            { name: 'Washim' },
+            { name: 'Amravati' },
+            { name: 'Buldhana' },
+            { name: 'Gadchiroli' },
+            { name: 'Chandrapur' },
+            { name: 'Nagpur' },
+            { name: 'Gondia' },
+            { name: 'Bhandara' },
+            { name: 'Wardha' },
+            { name: 'Yavatmal' },
+            { name: 'Ahmed Nagar' },
+            { name: 'Solapur' },
+            { name: 'Pune' }
+        ]
+    })
+    diffs = diffs.append(st13)
 
-    // const [, , s7] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Weisheng'
-    // })
-    // diffs = diffs.append(s7)
+    const [, , st14] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Manipur',
+        items: [
+            { name: 'Imphal West' },
+            { name: 'Churachandpur' },
+            { name: 'Chandel' },
+            { name: 'Thoubal' },
+            { name: 'Tamenglong' },
+            { name: 'Ukhrul' },
+            { name: 'Imphal East' },
+            { name: 'Bishnupur' },
+            { name: 'Senapati' }
+        ]
+    })
+    diffs = diffs.append(st14)
 
-    // const [, , s8] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Xinhaifu'
-    // })
-    // diffs = diffs.append(s8)
+    const [, , st15] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Meghalaya',
+        items: [
+            { name: 'West Garo Hills' },
+            { name: 'East Garo Hills' },
+            { name: 'Jaintia Hills' },
+            { name: 'East Khasi Hills' },
+            { name: 'South Garo Hills' },
+            { name: 'Ri Bhoi' },
+            { name: 'West Khasi Hills' }
+        ]
+    })
+    diffs = diffs.append(st15)
 
-    // const [, , s81] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Shibiyou'
-    // })
-    // diffs = diffs.append(s81)
+    const [, , st16] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Mizoram',
+        items: [
+            { name: 'Aizawl' },
+            { name: 'Mammit' },
+            { name: 'Lunglei' },
+            { name: 'Kolasib' },
+            { name: 'Lawngtlai' },
+            { name: 'Champhai' },
+            { name: 'Saiha' },
+            { name: 'Serchhip' }
 
-    // const [, , s9] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Gelvshi'
-    // })
-    // diffs = diffs.append(s9)
+        ]
+    })
+    diffs = diffs.append(st16)
 
-    // const [, , su6] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'DLUE'
-    // })
-    // diffs = diffs.append(su6)
+    const [, , st17] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Nagaland',
+        items: [
+            { name: 'Zunhebotto' },
+            { name: 'Dimapur' },
+            { name: 'Wokha' },
+            { name: 'Phek' },
+            { name: 'Mokokchung' },
+            { name: 'Kiphire' },
+            { name: 'Tuensang' },
+            { name: 'Mon' },
+            { name: 'Kohima' },
+            { name: 'Peren' },
+            { name: 'Longleng' }
+        ]
+    })
+    diffs = diffs.append(st17)
 
-    // const [, , su61] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'BL'
-    // })
-    // diffs = diffs.append(su61)
+    const [, , st18] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Odisha',
+        items: [
+            { name: 'Ganjam' },
+            { name: 'Gajapati' },
+            { name: 'Kalahandi' },
+            { name: 'Nuapada' },
+            { name: 'Koraput' },
+            { name: 'Rayagada' },
+            { name: 'Nabarangapur' },
+            { name: 'Malkangiri' },
+            { name: 'Kandhamal' },
+            { name: 'Boudh' },
+            { name: 'Baleswar' },
+            { name: 'Bhadrak' },
+            { name: 'Kendujhar' },
+            { name: 'Khorda' },
+            { name: 'Puri' },
+            { name: 'Cuttack' },
+            { name: 'Jajapur' },
+            { name: 'Kendrapara' },
+            { name: 'Jagatsinghapur' },
+            { name: 'Mayurbhanj' },
+            { name: 'Nayagarh' },
+            { name: 'Balangir' },
+            { name: 'Sonapur' },
+            { name: 'Angul' },
+            { name: 'Dhenkanal' },
+            { name: 'Sambalpur' },
+            { name: 'Bargarh' },
+            { name: 'Jharsuguda' },
+            { name: 'Debagarh' },
+            { name: 'Sundergarh' }
 
-    // const [, , su62] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'STS'
-    // })
-    // diffs = diffs.append(su62)
+        ]
+    })
+    diffs = diffs.append(st18)
 
-    // const [, , su64] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Jilin Sino'
-    // })
-    // diffs = diffs.append(su64)
+    const [, , st19] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Punjab',
+        items: [
+            { name: 'Ropar' },
+            { name: 'Mohali' },
+            { name: 'Rupnagar' },
+            { name: 'Patiala' },
+            { name: 'Ludhiana' },
+            { name: 'Fatehgarh Sahib' },
+            { name: 'Sangrur' },
+            { name: 'Barnala' },
+            { name: 'Amritsar' },
+            { name: 'Tarn Taran' },
+            { name: 'Bathinda' },
+            { name: 'Mansa' },
+            { name: 'Muktsar' },
+            { name: 'Moga' },
+            { name: 'Faridkot' },
+            { name: 'Firozpur' },
+            { name: 'Fazilka' },
+            { name: 'Gurdaspur' },
+            { name: 'Pathankot' },
+            { name: 'Hoshiarpur' },
+            { name: 'Nawanshahr' },
+            { name: 'Jalandhar' },
+            { name: 'Kapurthala' }
+        ]
+    })
+    diffs = diffs.append(st19)
 
-    // const [, , su63] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Goodark'
-    // })
-    // diffs = diffs.append(su63)
+    const [, , st20] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Rajasthan',
+        items: [
+            { name: 'Ajmer' },
+            { name: 'Rajsamand' },
+            { name: 'Bhilwara' },
+            { name: 'Chittorgarh' },
+            { name: 'Banswara' },
+            { name: 'Dungarpur' },
+            { name: 'Kota' },
+            { name: 'Baran' },
+            { name: 'Jhalawar' },
+            { name: 'Bundi' },
+            { name: 'Tonk' },
+            { name: 'Udaipur' },
+            { name: 'Alwar' },
+            { name: 'Bharatpur' },
+            { name: 'Dholpur' },
+            { name: 'Jaipur' },
+            { name: 'Dausa' },
+            { name: 'Sawai Madhopur' },
+            { name: 'Karauli' },
+            { name: 'Barmer' },
+            { name: 'Bikaner' },
+            { name: 'Churu' },
+            { name: 'Jhujhunu' },
+            { name: 'Jodhpur' },
+            { name: 'Jaisalmer' },
+            { name: 'Nagaur' },
+            { name: 'Pali' },
+            { name: 'Sikar' },
+            { name: 'Sirohi' },
+            { name: 'Jalor' },
+            { name: 'Ganganagar' },
+            { name: 'Hanumangarh' }
+        ]
+    })
+    diffs = diffs.append(st20)
 
-    // const [, , su7] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Richteck'
-    // })
-    // diffs = diffs.append(su7)
+    const [, , st21] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Sikkim',
+        items: [
+            { name: 'East Sikkim' },
+            { name: 'West Sikkim' },
+            { name: 'South Sikkim' },
+            { name: 'North Sikkim' }
+        ]
+    })
+    diffs = diffs.append(st21)
 
-    // const [, , su8] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Edison'
-    // })
-    // diffs = diffs.append(su8)
+    const [, , st22] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Tamilnadu',
+        items: [
+            { name: 'Chennai' },
+            { name: 'Vellore' },
+            { name: 'Tiruvannamalai' },
+            { name: 'Kanchipuram' },
+            { name: 'Tiruvallur' },
+            { name: 'Villupuram' },
+            { name: 'Cuddalore' },
+            { name: 'Coimbatore' },
+            { name: 'Dharmapuri' },
+            { name: 'Salem' },
+            { name: 'Erode' },
+            { name: 'Karur' },
+            { name: 'Namakkal' },
+            { name: 'Krishnagiri' },
+            { name: 'Nilgiris' },
+            { name: 'Dindigul' },
+            { name: 'Kanyakumari' },
+            { name: 'Sivaganga' },
+            { name: 'Ramanathapuram' },
+            { name: 'Tuticorin' },
+            { name: 'Tirunelveli' },
+            { name: 'Madurai' },
+            { name: 'Theni' },
+            { name: 'Virudhunagar' },
+            { name: 'Ariyalur' },
+            { name: 'Tiruchirappalli' },
+            { name: 'Pudukkottai' },
+            { name: 'Tiruvarur' },
+            { name: 'Thanjavur' },
+            { name: 'Nagapattinam' },
+            { name: 'Perambalur' }
+        ]
+    })
+    diffs = diffs.append(st22)
 
-    // const [, , su9] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Everlight'
-    // })
-    // diffs = diffs.append(su9)
+    const [, , st23] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Telangana',
+        items: [
+            { name: 'Adilabad' },
+            { name: 'Warangal' },
+            { name: 'Karim Nagar' },
+            { name: 'Mahabub Nagar' },
+            { name: 'K.V.Rangareddy' },
+            { name: 'Medak' },
+            { name: 'Nalgonda' },
+            { name: 'Nizamabad' },
+            { name: 'Hyderabad' },
+            { name: 'Khammam' }
+        ]
+    })
+    diffs = diffs.append(st23)
 
-    // const [, , sup1] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Quanyou'
-    // })
-    // diffs = diffs.append(sup1)
+    const [, , st24] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Tripura',
+        items: [
+            { name: 'South Tripura' },
+            { name: 'West Tripura' },
+            { name: 'Dhalai' },
+            { name: 'North Tripura' }
+        ]
+    })
+    diffs = diffs.append(st24)
 
-    // const [, , sup11] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'zhonghe'
-    // })
-    // diffs = diffs.append(sup11)
+    const [, , st25] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'West Bengal',
+        items: [
+            { name: 'Kolkata' },
+            { name: 'North 24 Parganas' },
+            { name: 'South 24 Parganas' },
+            { name: 'Birbhum' },
+            { name: 'Murshidabad' },
+            { name: 'Nadia' },
+            { name: 'Cooch Behar' },
+            { name: 'Jalpaiguri' },
+            { name: 'Darjiling' },
+            { name: 'Malda' },
+            { name: 'South Dinajpur' },
+            { name: 'North Dinajpur' },
+            { name: 'Bardhaman' },
+            { name: 'Bankura' },
+            { name: 'West Midnapore' },
+            { name: 'East Midnapore' },
+            { name: 'Hooghly' },
+            { name: 'Howrah' },
+            { name: 'Medinipur' },
+            { name: 'Puruliya' }
+        ]
+    })
+    diffs = diffs.append(st25)
 
-    // const [, , sup12] = await executeCircuit(circuits.createSupplier, {
-    //     name: 'Qinda'
-    // })
-    // diffs = diffs.append(sup12)
+    const [, , st26] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Uttarakhand',
+        items: [
+            { name: 'Haridwar' },
+            { name: 'Almora' },
+            { name: 'Bageshwar' },
+            { name: 'Chamoli' },
+            { name: 'Rudraprayag' },
+            { name: 'Dehradun' },
+            { name: 'Udham Singh Nagar' },
+            { name: 'Nainital' },
+            { name: 'Champawat' },
+            { name: 'Pauri Garhwal' },
+            { name: 'Pithoragarh' },
+            { name: 'Tehri Garhwal' },
+            { name: 'Uttarkashi' }
+        ]
+    })
+    diffs = diffs.append(st26)
+
+    const [, , st27] = await executeCircuit(circuits.createState, {
+        country: country_india,
+        name: 'Uttar Pradesh',
+        items: [
+            { name: 'Agra' },
+            { name: 'Aligarh' },
+            { name: 'Hathras' },
+            { name: 'Bulandshahr' },
+            { name: 'Gautam Buddha Nagar' },
+            { name: 'Etah' },
+            { name: 'Firozabad' },
+            { name: 'Etawah' },
+            { name: 'Auraiya' },
+            { name: 'Jhansi' },
+            { name: 'Jalaun' },
+            { name: 'Lalitpur' },
+            { name: 'Mainpuri' },
+            { name: 'Mathura' },
+            { name: 'Azamgarh' },
+            { name: 'Allahabad' },
+            { name: 'Kaushambi' },
+            { name: 'Ghazipur' },
+            { name: 'Jaunpur' },
+            { name: 'Sonbhadra' },
+            { name: 'Mirzapur' },
+            { name: 'Pratapgarh' },
+            { name: 'Varanasi' },
+            { name: 'Chandauli' },
+            { name: 'Sant Ravidas Nagar' },
+            { name: 'Pilibhit' },
+            { name: 'Bareilly' },
+            { name: 'Bijnor' },
+            { name: 'Budaun' },
+            { name: 'Hardoi' },
+            { name: 'Kheri' },
+            { name: 'Meerut' },
+            { name: 'Bagpat' },
+            { name: 'Moradabad' },
+            { name: 'Jyotiba Phule Nagar' },
+            { name: 'Rampur' },
+            { name: 'Muzaffarnagar' },
+            { name: 'Saharanpur' },
+            { name: 'Shahjahanpur' },
+            { name: 'Mau' },
+            { name: 'Shrawasti' },
+            { name: 'Bahraich' },
+            { name: 'Ballia' },
+            { name: 'Siddharthnagar' },
+            { name: 'Sant Kabir Nagar' },
+            { name: 'Basti' },
+            { name: 'Deoria' },
+            { name: 'Kushinagar' },
+            { name: 'Gonda' },
+            { name: 'Balrampur' },
+            { name: 'Gorakhpur' },
+            { name: 'Maharajganj' },
+            { name: 'Banda' },
+            { name: 'Chitrakoot' },
+            { name: 'Mahoba' },
+            { name: 'Hamirpur' },
+            { name: 'Kannauj' },
+            { name: 'Farrukhabad' },
+            { name: 'Fatehpur' },
+            { name: 'Kanpur Nagar' },
+            { name: 'Unnao' },
+            { name: 'Kanpur Dehat' },
+            { name: 'Barabanki' },
+            { name: 'Faizabad' },
+            { name: 'Ambedkar Nagar' },
+            { name: 'Ghaziabad' },
+            { name: 'Lucknow' },
+            { name: 'Raebareli' },
+            { name: 'Sitapur' },
+            { name: 'Sultanpur' }
+        ]
+    })
+    diffs = diffs.append(st27)
 
     db.diffs.put(mergeDiffs(diffs.toArray()).toRow())
-
-    //createIndent
-    // const [, , i1] = await executeCircuit(circuits.createIndent, {
-    //     items: [{
-    //         product:'abc',
-    //         quantity: 50,
-    //         uom:'kg'
-    //     }]
-    // })
-    // diffs = diffs.append(i1)
-
-    // const [, , i2] = await executeCircuit(circuits.createIndent, {
-    //     items: [{
-    //         product:'ResistorR1',
-    //         quantity: 100,
-    //         uom:'NO'
-    //     }]
-    // })
-    // diffs = diffs.append(i2)
-
-    // const [, , i3] = await executeCircuit(circuits.createIndent, {
-    //     items: [{
-    //         product:'ResistorR2',
-    //         quantity: 150,
-    //         uom:'No'
-    //     }]
-    // })
-    // diffs = diffs.append(i3)
-
-    // const [, , i4] = await executeCircuit(circuits.createIndent, {
-    //     items: [{
-    //         product:'ResistorR3',
-    //         quantity: 5,
-    //         uom:'No'
-    //     }]
-    // })
-    // diffs = diffs.append(i4)
-
-    // const [, , i5] = await executeCircuit(circuits.createIndent, {
-    //     items: [{
-    //         product:'ResistorR4',
-    //         quantity: 5,
-    //         uom:'No'
-    //     }]
-    // })
-    // diffs = diffs.append(i5)
-
-    // const [, , i6] = await executeCircuit(circuits.createIndent, {
-    //     items: [{
-    //         product:'ResistorR5',
-    //         quantity: 150,
-    //         uom:'No'
-    //     }]
-    // })
-    // diffs = diffs.append(i6)
-
-    // const [, , i7] = await executeCircuit(circuits.createIndent, {
-    //     items: [{
-    //         product:'ResistorR6',
-    //         quantity: 500,
-    //         uom:'No'
-    //     }]
-    // })
-    // diffs = diffs.append(i7)
-
-    // //createQuoation
-    // //im not able too see indent on page but wen i create from there it is showing ?? why
-    // const [, , q1] = await executeCircuit(circuits.createQuotation, {
-    //     indent:'a7889b2a-4a65-4bc1-bd8a-3f991a7188de',
-    //     supplier:'Royal/Fenghua/Yageo/Samsung/CCTC',
-    //     items: [{
-    //         indentItem:'27ad397c-bb28-4808-ac3a-7c56a98a8da9',
-    //         quantity: 1
-    //     }]
-    // })
-    // diffs = diffs.append(q1)
-
-    // const [, , q2] = await executeCircuit(circuits.createQuotation, {
-    //     indent:'',
-    //     supplier:'',
-    //     items: [{
-    //         indentItem:'',
-    //         quantity: 1
-    //     }]
-    // })
-    // diffs = diffs.append(q2)
-
-    // const [, , q3] = await executeCircuit(circuits.createQuotation, {
-    //     indent:'',
-    //     supplier:'',
-    //     items: [{
-    //         indentItem:'',
-    //         quantity: 1
-    //     }]
-    // })
-    // diffs = diffs.append(q3)
-
-    // const [, , q4] = await executeCircuit(circuits.createQuotation, {
-    //     indent:'',
-    //     supplier:'',
-    //     items: [{
-    //         indentItem:'',
-    //         quantity: 1
-    //     }]
-    // })
-    // diffs = diffs.append(q4)
-
-    // const [, , q5] = await executeCircuit(circuits.createQuotation, {
-    //     indent:'',
-    //     supplier:'',
-    //     items: [{
-    //         indentItem:'',
-    //         quantity: 1
-    //     }]
-    // })
-    // diffs = diffs.append(q5)
-
-    // const [, , q6] = await executeCircuit(circuits.createQuotation, {
-    //     indent:'',
-    //     supplier:'',
-    //     items: [{
-    //         indentItem:'',
-    //         quantity: 1
-    //     }]
-    // })
-    // diffs = diffs.append(q6)
-
-    // const [, , q7] = await executeCircuit(circuits.createQuotation, {
-    //     indent:'',
-    //     supplier:'',
-    //     items: [{
-    //         indentItem:'',
-    //         quantity: 1
-    //     }]
-    // })
-    // diffs = diffs.append(q7)
-
-    // //createPurchaseOrder
-    // const [, , po1] = await executeCircuit(circuits.createPurchaseOrder, {
-    //     quotation:'',
-    //     items: [{
-    //         quotationItem:'',
-    //         quantity: 1,
-    //         price: 100
-    //     }]
-    // })
-    // diffs = diffs.append(po1)
-
-    // const [, , po2] = await executeCircuit(circuits.createPurchaseOrder, {
-    //     quotation:'',
-    //     items: [{
-    //         quotationItem:'',
-    //         quantity: 1,
-    //         price: 100
-    //     }]
-    // })
-    // diffs = diffs.append(po2)
-
-    // const [, , po3] = await executeCircuit(circuits.createPurchaseOrder, {
-    //     quotation:'',
-    //     items: [{
-    //         quotationItem:'',
-    //         quantity: 1,
-    //         price: 100
-    //     }]
-    // })
-    // diffs = diffs.append(po3)
-
-    // const [, , po4] = await executeCircuit(circuits.createPurchaseOrder, {
-    //     quotation:'',
-    //     items: [{
-    //         quotationItem:'',
-    //         quantity: 1,
-    //         price: 100
-    //     }]
-    // })
-    // diffs = diffs.append(po4)
-
-    // const [, , po5] = await executeCircuit(circuits.createPurchaseOrder, {
-    //     quotation:'',
-    //     items: [{
-    //         quotationItem:'',
-    //         quantity: 1,
-    //         price: 100
-    //     }]
-    // })
-    // diffs = diffs.append(po5)
-
-    // const [, , po6] = await executeCircuit(circuits.createPurchaseOrder, {
-    //     quotation:'',
-    //     items: [{
-    //         quotationItem:'',
-    //         quantity: 1,
-    //         price: 100
-    //     }]
-    // })
-    // diffs = diffs.append(po6)
-
-    // //createPurchaseInvoice
-    // const [, , pi1] = await executeCircuit(circuits.createPurchaseInvoice, {
-    //     purchaseOrder:'',
-    //     items: [{
-    //         purchaseOrderItem:'',
-    //         quantity: 1
-    //     }]
-    // })
-    // diffs = diffs.append(pi1)
-
-    // const [, , pi2] = await executeCircuit(circuits.createPurchaseInvoice, {
-    //     purchaseOrder:'',
-    //     items: [{
-    //         purchaseOrderItem:'',
-    //         quantity: 1
-    //     }]
-    // })
-    // diffs = diffs.append(pi2)
-
-    // const [, , pi3] = await executeCircuit(circuits.createPurchaseInvoice, {
-    //     purchaseOrder:'',
-    //     items: [{
-    //         purchaseOrderItem:'',
-    //         quantity: 1
-    //     }]
-    // })
-    // diffs = diffs.append(pi3)
-
-    // const [, , pi4] = await executeCircuit(circuits.createPurchaseInvoice, {
-    //     purchaseOrder:'',
-    //     items: [{
-    //         purchaseOrderItem:'',
-    //         quantity: 1
-    //     }]
-    // })
-    // diffs = diffs.append(pi4)
-
-    // const [, , pi5] = await executeCircuit(circuits.createPurchaseInvoice, {
-    //     purchaseOrder:'',
-    //     items: [{
-    //         purchaseOrderItem:'',
-    //         quantity: 1
-    //     }]
-    // })
-    // diffs = diffs.append(pi5)
-
-    // //createMaterialApprovalSlip
-    // const [, , ma1] = await executeCircuit(circuits.createMaterialApprovalSlip, {
-    //     purchaseInvoice:'',
-    //     items: [{
-    //         purchaseInvoiceItem:'',
-    //         quantity: 1
-    //     }]
-    // })
-    // diffs = diffs.append(ma1)
-
-    // //createMaterialRejectionSlip
-    // const [, , mr1] = await executeCircuit(circuits.createMaterialRejectionSlip, {
-    //     purchaseInvoice:'',
-    //     items: [{
-    //         purchaseInvoiceItem:'',
-    //         quantity: 1
-    //     }]
-    // })
-    // diffs = diffs.append(mr1)
-
-    // //createMaterialReturnSlip
-    // const [, , mre1] = await executeCircuit(circuits.createMaterialReturnSlip, {
-    //     materialRejectionSlip:'',
-    //     items: [{
-    //         materialRejectionSlipItem:'',
-    //         quantity: 1
-    //     }]
-    // })
-    // diffs = diffs.append(mre1)
-
-    // //createMaterialRequistionSlip
-    // const [, , mrq1] = await executeCircuit(circuits.createMaterialRequistionSlip, {
-    //     materialApprovalSlip:'',
-    //     items: [{
-    //         materialApprovalSlipItem:'',
-    //         quantity: 1
-    //     }]
-    // })
-    // diffs = diffs.append(mrq1)
 }

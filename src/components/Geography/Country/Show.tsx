@@ -337,8 +337,7 @@ function Component(props) {
                                 <div className='font-bold text-xl'>{
                                     iff(regions.filter(x => x.variableName.toString() === state.variable.values.region.toString()).length() !== 0, 
                                     () => {
-                                        const referencedVariable = regions.filter(x => x.variableName.toString() === state.variable.values.region.toString()).toArray()[0] as RegionVariable
-                                        
+                                        const referencedVariable = regions.filter(x => x.variableName.toString() === state.variable.values.region.toString()).toArray()[0] as RegionVariable      
                                         return <Link to={`/region/${referencedVariable.variableName.toString()}`}>{referencedVariable.variableName.toString()}</Link>
                                     }, <Link to={`/region/${state.variable.values.region.toString()}`}>{state.variable.values.region.toString()}</Link>)
                                 }</div>

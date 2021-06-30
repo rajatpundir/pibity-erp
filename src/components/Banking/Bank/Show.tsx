@@ -9,14 +9,14 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { Address, Bank, BankBranchVariable, BankVariable, Country, CountryVariable } from '../../../main/variables'
+import { Address, AddressVariable, Bank, BankBranchVariable, BankVariable, Country, CountryVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter, Link } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
 import { iff, when } from '../../../main/utils'
 import { db } from '../../../main/dexie'
-import { DiffRow, CountryRow, BankRow, BankBranchRow } from '../../../main/rows'
+import { DiffRow, CountryRow, BankRow, BankBranchRow, AddressRow } from '../../../main/rows'
 import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -70,7 +70,7 @@ function Component(props) {
             limit: 5,
             offset: 0,
             page: 1,
-            columns: Vector.of(['variableName'], ['values', 'name']),
+            columns: Vector.of(['variableName'], ['values', 'name'], ['values', 'ifsc']),
             variable: new BankBranchVariable('', { bank: new Bank(''), name: '', ifsc: '', address: new Address('') }),
             variables: HashSet.of<BankBranchVariable>()
         }
@@ -194,7 +194,7 @@ function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
     const bank = types['Bank']
-    const bankBranch = types['BankBranch']
+    const item = types['BankBranch']
 
     const [addItemDrawer, toggleAddItemDrawer] = useState(false)
     const [itemFilter, toggleItemFilter] = useState(false)
@@ -230,6 +230,12 @@ function Component(props) {
         countries = countries.filter(x => !diff.variables.Country.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.Country.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.Country.replace)
     })
 
+    const addressRows = useLiveQuery(() => db.addresses.toArray())?.map(x => AddressRow.toVariable(x))
+    var addresses = HashSet.of<Immutable<AddressVariable>>().addAll(addressRows ? addressRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        addresses = addresses.filter(x => !diff.variables.Address.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.Address.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.Address.replace)
+    })
+
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
             default: {
@@ -251,7 +257,7 @@ function Component(props) {
         }
     }
 
-    const onItemInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onItemInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
             default: {
                 switch (event.target.name) {
@@ -301,7 +307,7 @@ function Component(props) {
                     name: state.values.name,
                     ifsc: state.values.ifsc,
                     address: state.values.address.toString(),
-                 }
+                }
             })
         })
         console.log(result, symbolFlag, diff)
@@ -377,12 +383,11 @@ function Component(props) {
                                     {countries.toArray().map(x => <option value={x.variableName.toString()}>{x.values.name}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{
-                                    iff(countries.filter(x => x.variableName.toString() === state.variable.values.country.toString()).length() !== 0, 
-                                    () => {
-                                        const referencedVariable = countries.filter(x => x.variableName.toString() === state.variable.values.country.toString()).toArray()[0] as CountryVariable
-                                        
-                                        return <Link to={`/country/${referencedVariable.variableName.toString()}`}>{referencedVariable.values.name}</Link>
-                                    }, <Link to={`/country/${state.variable.values.country.toString()}`}>{state.variable.values.country.toString()}</Link>)
+                                    iff(countries.filter(x => x.variableName.toString() === state.variable.values.country.toString()).length() !== 0,
+                                        () => {
+                                            const referencedVariable = countries.filter(x => x.variableName.toString() === state.variable.values.country.toString()).toArray()[0] as CountryVariable
+                                            return <Link to={`/country/${referencedVariable.variableName.toString()}`}>{referencedVariable.values.name}</Link>
+                                        }, <Link to={`/country/${state.variable.values.country.toString()}`}>{state.variable.values.country.toString()}</Link>)
                                 }</div>
                             )
                         }
@@ -408,7 +413,7 @@ function Component(props) {
                 </Container>
                 <Container area={Grid.uom} layout={Grid2.layouts.main}>
                     <Item area={Grid2.header} className='flex items-center'>
-                        <Title>{bankBranch.name}s</Title>
+                        <Title>{item.name}es</Title>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>,
@@ -423,23 +428,22 @@ function Component(props) {
                         </Drawer>
                         <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
                             <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
-                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add {bankBranch.name}</div>
+                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add {item.name}</div>
                                 <Container area={none} layout={Grid.layouts.uom} className=''>
                                     <Item>
-                                        <Label>{bankBranch.keys.bank.name}</Label>
-                                        <Input type='text' onChange={onItemInputChange} name='bank' />
-                                    </Item>
-                                    <Item>
-                                        <Label>{bankBranch.keys.name.name}</Label>
+                                        <Label>{item.keys.name.name}</Label>
                                         <Input type='text' onChange={onItemInputChange} name='name' />
                                     </Item>
                                     <Item>
-                                        <Label>{bankBranch.keys.ifsc.name}</Label>
+                                        <Label>{item.keys.ifsc.name}</Label>
                                         <Input type='text' onChange={onItemInputChange} name='ifsc' />
                                     </Item>
                                     <Item>
-                                        <Label>{bankBranch.keys.address.name}</Label>
-                                        <Input type='text' onChange={onItemInputChange} name='address' />
+                                        <Label>{item.keys.address.name}</Label>
+                                        <Select onChange={onItemInputChange} value={state.items.variable.values.address.toString()} name='address'>
+                                            <option value='' selected disabled hidden>Select Address</option>
+                                            {addresses.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                        </Select>
                                     </Item>
                                     <Item justify='center' align='center'>
                                         <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>

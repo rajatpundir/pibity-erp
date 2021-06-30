@@ -35,6 +35,9 @@ export type CircuitName =
     | 'createBankBranch'
     | 'deleteBankBranch'
 
+    | 'createBankAccount'
+    | 'deleteBankAccount'
+
     | 'createSupplier'
     | 'deleteSupplier'
 
@@ -665,7 +668,13 @@ export const circuits: Record<CircuitName, Circuit> = {
     },
     createBank: {
         inputs: {
-            variableName: {
+            country: {
+                type: 'Country'
+            },
+            name: {
+                type: 'Text'
+            },
+            website: {
                 type: 'Text'
             },
             items: {
@@ -678,7 +687,9 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'createBank',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    country: ['input', 'country'],
+                    name: ['input', 'name'],
+                    website: ['input', 'website']
                 }
             },
             c2: {
@@ -726,7 +737,7 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteBank',
                 connect: {
-                    variableName: ['computation', 'c1', 'bank']
+                    variableName: ['input', 'variableName']
                 }
             }
         },
@@ -736,8 +747,17 @@ export const circuits: Record<CircuitName, Circuit> = {
     },
     createBankBranch: {
         inputs: {
-            variableName: {
+            bank: {
+                type: 'Bank'
+            },
+            name: {
                 type: 'Text'
+            },
+            ifsc: {
+                type: 'Text'
+            },
+            address: {
+                type: 'Address'
             },
             items: {
                 type: []
@@ -749,7 +769,10 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'createBankBranch',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    bank: ['input', 'bank'],
+                    name: ['input', 'name'],
+                    ifsc: ['input', 'ifsc'],
+                    address: ['input', 'address']
                 }
             },
             c2: {
@@ -760,6 +783,7 @@ export const circuits: Record<CircuitName, Circuit> = {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
+                        bank: ['input', 'bank'],
                         bankBranch: ['computation', 'c1', 'bankBranch']
                     }
                 }
@@ -803,6 +827,57 @@ export const circuits: Record<CircuitName, Circuit> = {
         },
         outputs: {
             bankBranch: ['c2', 'bankBranch']
+        }
+    },
+    createBankAccount: {
+        inputs: {
+            bank: {
+                type: 'Bank'
+            },
+            bankBranch: {
+                type: 'BankBranch'
+            },
+            accountNumber: {
+                type: 'Text'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'createBankAccount',
+                connect: {
+                    bank: ['input', 'bank'],
+                    bankBranch: ['input', 'bankBranch'],
+                    accountNumber: ['input', 'accountNumber']
+                }
+            }
+        },
+        outputs: {
+            bankAccount: ['c1', 'bankAccount']
+        }
+    },
+    deleteBankAccount: {
+        inputs: {
+            variableName: {
+                type: 'Text'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 2,
+                type: 'function',
+                exec: 'deleteBankAccount',
+                connect: {
+                    variableName: ['input', 'variableName']
+                }
+            }
+        },
+        outputs: {
+            bankAccount: ['c1', 'bankAccount']
         }
     },
     createSupplier: {
