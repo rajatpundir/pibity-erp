@@ -11,11 +11,11 @@ import { useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { DiffRow, SupplierRow } from '../../../main/rows'
-import { SupplierVariable } from '../../../main/variables'
+import { CompanyRow, DiffRow } from '../../../main/rows'
+import { CompanyVariable } from '../../../main/variables'
 
 type State = Immutable<{
-    typeName: 'Supplier'
+    typeName: 'Company'
     query: Query
     limit: number
     offset: number
@@ -30,12 +30,12 @@ export type Action =
     | ['query', Args]
 
 const initialState: State = {
-    typeName: 'Supplier',
-    query: getQuery('Supplier'),
+    typeName: 'Company',
+    query: getQuery('Company'),
     limit: 5,
     offset: 0,
     page: 1,
-    columns: Vector.of(['variableName'])
+    columns: Vector.of(['variableName'], ['values', 'email'], ['values', 'telephone'], ['values', 'mobile'], ['values', 'website'], ['values', 'companyType'], ['values', 'serviceArea'], ['values', 'gstin'], ['values', 'pan'])
 }
 
 function reducer(state: Draft<State>, action: Action) {
@@ -66,8 +66,8 @@ function reducer(state: Draft<State>, action: Action) {
 
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const rows = useLiveQuery(() => db.suppliers.orderBy('variableName').toArray())
-    var composedVariables = Vector.of<Immutable<SupplierVariable>>().appendAll(rows ? rows.map(x => SupplierRow.toVariable(x)) : [])
+    const rows = useLiveQuery(() => db.companies.orderBy('variableName').toArray())
+    var composedVariables = Vector.of<Immutable<CompanyVariable>>().appendAll(rows ? rows.map(x => CompanyRow.toVariable(x)) : [])
     const diffs = useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
     diffs?.forEach(diff => {
         composedVariables = composedVariables.filter(x => !diff.variables[state.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables[state.typeName].replace)
@@ -86,8 +86,8 @@ function Component(props) {
     return (
         <Container area={none} layout={Grid.layouts.main} className='p-10'>
             <Item area={Grid.header} align='center' className='flex'>
-                <Title>Suppliers</Title>
-                <button onClick={() => {props.history.push('/supplier')} } className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2'>+</button>
+                <Title>Companies</Title>
+                <button onClick={() => { props.history.push('/company') }} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2'>+</button>
             </Item>
             <Item area={Grid.filter} justify='end' align='center'>
                 <Button onClick={() => setOpen(true)}>Filter</Button>

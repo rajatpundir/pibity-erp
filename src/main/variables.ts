@@ -1,5 +1,5 @@
 import { immerable } from 'immer'
-import { AddressRow, BankAccountRow, BankBranchRow, BankRow, BOMItemRow, BOMRow, CompanyTypeRow, CountryRow, DistrictRow, IndentItemRow, IndentRow, MaterialApprovalSlipItemRow, MaterialApprovalSlipRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow, MaterialRequistionSlipItemRow, MaterialRequistionSlipRow, MaterialReturnSlipItemRow, MaterialReturnSlipRow, PostalCodeRow, ProductionPreparationSlipItemRow, ProductionPreparationSlipRow, ProductRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow, PurchaseOrderItemRow, PurchaseOrderRow, QuotationItemRow, QuotationRow, RegionRow, ScrapMaterialSlipRow, ServiceAreaRow, StateRow, SubdistrictRow, SupplierAddressRow, SupplierBankAccountRow, SupplierContactRow, SupplierProductRow, SupplierRow, TransferMaterialSlipRow, UOMRow, WarehouseAcceptanceSlipRow } from './rows'
+import { AddressRow, BankAccountRow, BankBranchRow, BankRow, BOMItemRow, BOMRow, CompanyTypeRow, CountryRow, DistrictRow, IndentItemRow, IndentRow, MaterialApprovalSlipItemRow, MaterialApprovalSlipRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow, MaterialRequistionSlipItemRow, MaterialRequistionSlipRow, MaterialReturnSlipItemRow, MaterialReturnSlipRow, PostalCodeRow, ProductionPreparationSlipItemRow, ProductionPreparationSlipRow, ProductRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow, PurchaseOrderItemRow, PurchaseOrderRow, QuotationItemRow, QuotationRow, RegionRow, ScrapMaterialSlipRow, ServiceAreaRow, StateRow, SubdistrictRow, CompanyAddressRow, CompanyBankAccountRow, CompanyContactRow, CompanyProductRow, CompanyRow, TransferMaterialSlipRow, UOMRow, WarehouseAcceptanceSlipRow } from './rows'
 import { NonPrimitiveType } from './types'
 
 export type Text = string
@@ -24,15 +24,15 @@ export type Variable =
     | BankVariable
     | BankBranchVariable
     | BankAccountVariable
-    | SupplierVariable
-    | SupplierAddressVariable
-    | SupplierContactVariable
-    | SupplierBankAccountVariable
+    | CompanyVariable
+    | CompanyAddressVariable
+    | CompanyContactVariable
+    | CompanyBankAccountVariable
     | ProductVariable
     | UOMVariable
     | IndentVariable
     | IndentItemVariable
-    | SupplierProductVariable
+    | CompanyProductVariable
     | QuotationVariable
     | QuotationItemVariable
     | PurchaseOrderVariable
@@ -67,15 +67,15 @@ export type VariableName =
     | CompanyType
     | Bank
     | BankAccount
-    | Supplier
-    | SupplierAddress
-    | SupplierContact
-    | SupplierBankAccount
+    | Company
+    | CompanyAddress
+    | CompanyContact
+    | CompanyBankAccount
     | Product
     | UOM
     | Indent
     | IndentItem
-    | SupplierProduct
+    | CompanyProduct
     | Quotation
     | QuotationItem
     | PurchaseOrder
@@ -775,10 +775,10 @@ export class BankAccountVariable {
     }
 }
 
-export class Supplier {
+export class Company {
     constructor(private variableName: string) { }
 
-    equals(other: Supplier): boolean {
+    equals(other: Company): boolean {
         if (!other) {
             return false;
         }
@@ -794,10 +794,10 @@ export class Supplier {
     }
 }
 
-export class SupplierVariable {
+export class CompanyVariable {
     [immerable] = true
-    readonly typeName = 'Supplier'
-    variableName: Supplier
+    readonly typeName = 'Company'
+    variableName: Company
     values: {
         email: Text
         telephone: Text
@@ -811,11 +811,11 @@ export class SupplierVariable {
     }
 
     constructor(variableName: string, values: { email: Text, telephone: Text, mobile: Text, website: Text, companyType: CompanyType, serviceArea: ServiceArea, gstin: Text, pan: Text, iec: Text }) {
-        this.variableName = new Supplier(variableName)
+        this.variableName = new Company(variableName)
         this.values = values
     }
 
-    equals(other: SupplierVariable): boolean {
+    equals(other: CompanyVariable): boolean {
         if (!other) {
             return false;
         }
@@ -830,8 +830,8 @@ export class SupplierVariable {
         return JSON.stringify(this, null, 2)
     }
 
-    toRow(): SupplierRow {
-        return new SupplierRow(this.variableName.toString(), {
+    toRow(): CompanyRow {
+        return new CompanyRow(this.variableName.toString(), {
             email: this.values.email,
             telephone: this.values.telephone,
             mobile: this.values.mobile,
@@ -845,10 +845,10 @@ export class SupplierVariable {
     }
 }
 
-export class SupplierAddress {
+export class CompanyAddress {
     constructor(private variableName: string) { }
 
-    equals(other: SupplierAddress): boolean {
+    equals(other: CompanyAddress): boolean {
         if (!other) {
             return false;
         }
@@ -864,28 +864,28 @@ export class SupplierAddress {
     }
 }
 
-export class SupplierAddressVariable {
+export class CompanyAddressVariable {
     [immerable] = true
-    readonly typeName = 'SupplierAddress'
-    variableName: SupplierAddress
+    readonly typeName = 'CompanyAddress'
+    variableName: CompanyAddress
     values: {
-        // UNQ(supplier, name)
-        // UNQ(supplier, address)
-        supplier: Supplier
+        // UNQ(company, name)
+        // UNQ(company, address)
+        company: Company
         name: Text
         address: Address
     }
 
-    constructor(variableName: string, values: { supplier: Supplier, name: Text, address: Address }) {
-        this.variableName = new SupplierAddress(variableName)
+    constructor(variableName: string, values: { company: Company, name: Text, address: Address }) {
+        this.variableName = new CompanyAddress(variableName)
         this.values = values
     }
 
-    equals(other: SupplierAddressVariable): boolean {
+    equals(other: CompanyAddressVariable): boolean {
         if (!other) {
             return false;
         }
-        return this.values.supplier.equals(other.values.supplier) && this.values.name === other.values.name && this.values.address.equals(other.values.address)
+        return this.values.company.equals(other.values.company) && this.values.name === other.values.name && this.values.address.equals(other.values.address)
     }
 
     hashCode(): number {
@@ -896,19 +896,19 @@ export class SupplierAddressVariable {
         return JSON.stringify(this, null, 2)
     }
 
-    toRow(): SupplierAddressRow {
-        return new SupplierAddressRow(this.variableName.toString(), {
-            supplier: this.values.supplier.toString(),
+    toRow(): CompanyAddressRow {
+        return new CompanyAddressRow(this.variableName.toString(), {
+            company: this.values.company.toString(),
             name: this.values.name,
             address: this.values.address.toString()
         })
     }
 }
 
-export class SupplierContact {
+export class CompanyContact {
     constructor(private variableName: string) { }
 
-    equals(other: SupplierContact): boolean {
+    equals(other: CompanyContact): boolean {
         if (!other) {
             return false;
         }
@@ -924,13 +924,13 @@ export class SupplierContact {
     }
 }
 
-export class SupplierContactVariable {
+export class CompanyContactVariable {
     [immerable] = true
-    readonly typeName = 'SupplierContact'
-    variableName: SupplierContact
+    readonly typeName = 'CompanyContact'
+    variableName: CompanyContact
     values: {
-        // UNQ(supplier, name)
-        supplier: Supplier
+        // UNQ(company, name)
+        company: Company
         name: Text
         designation: Text
         email: Text
@@ -938,16 +938,16 @@ export class SupplierContactVariable {
         mobile: Text
     }
 
-    constructor(variableName: string, values: { supplier: Supplier, name: Text, designation: Text, email: Text, telephone: Text, mobile: Text }) {
-        this.variableName = new SupplierContact(variableName)
+    constructor(variableName: string, values: { company: Company, name: Text, designation: Text, email: Text, telephone: Text, mobile: Text }) {
+        this.variableName = new CompanyContact(variableName)
         this.values = values
     }
 
-    equals(other: SupplierContactVariable): boolean {
+    equals(other: CompanyContactVariable): boolean {
         if (!other) {
             return false;
         }
-        return this.values.supplier.equals(other.values.supplier) && this.values.name === other.values.name
+        return this.values.company.equals(other.values.company) && this.values.name === other.values.name
     }
 
     hashCode(): number {
@@ -958,9 +958,9 @@ export class SupplierContactVariable {
         return JSON.stringify(this, null, 2)
     }
 
-    toRow(): SupplierContactRow {
-        return new SupplierContactRow(this.variableName.toString(), {
-            supplier: this.values.supplier.toString(),
+    toRow(): CompanyContactRow {
+        return new CompanyContactRow(this.variableName.toString(), {
+            company: this.values.company.toString(),
             name: this.values.name,
             designation: this.values.designation,
             email: this.values.email,
@@ -970,10 +970,10 @@ export class SupplierContactVariable {
     }
 }
 
-export class SupplierBankAccount {
+export class CompanyBankAccount {
     constructor(private variableName: string) { }
 
-    equals(other: SupplierBankAccount): boolean {
+    equals(other: CompanyBankAccount): boolean {
         if (!other) {
             return false;
         }
@@ -989,26 +989,26 @@ export class SupplierBankAccount {
     }
 }
 
-export class SupplierBankAccountVariable {
+export class CompanyBankAccountVariable {
     [immerable] = true
-    readonly typeName = 'SupplierBankAccount'
-    variableName: SupplierBankAccount
+    readonly typeName = 'CompanyBankAccount'
+    variableName: CompanyBankAccount
     values: {
-        // UNQ(supplier, bankAccount)
-        supplier: Supplier
+        // UNQ(company, bankAccount)
+        company: Company
         bankAccount: BankAccount
     }
 
-    constructor(variableName: string, values: { supplier: Supplier, bankAccount: BankAccount }) {
-        this.variableName = new SupplierBankAccount(variableName)
+    constructor(variableName: string, values: { company: Company, bankAccount: BankAccount }) {
+        this.variableName = new CompanyBankAccount(variableName)
         this.values = values
     }
 
-    equals(other: SupplierBankAccountVariable): boolean {
+    equals(other: CompanyBankAccountVariable): boolean {
         if (!other) {
             return false;
         }
-        return this.values.supplier.equals(other.values.supplier) && this.values.bankAccount.equals(other.values.bankAccount)
+        return this.values.company.equals(other.values.company) && this.values.bankAccount.equals(other.values.bankAccount)
     }
 
     hashCode(): number {
@@ -1019,9 +1019,9 @@ export class SupplierBankAccountVariable {
         return JSON.stringify(this, null, 2)
     }
 
-    toRow(): SupplierBankAccountRow {
-        return new SupplierBankAccountRow(this.variableName.toString(), {
-            supplier: this.values.supplier.toString(),
+    toRow(): CompanyBankAccountRow {
+        return new CompanyBankAccountRow(this.variableName.toString(), {
+            company: this.values.company.toString(),
             bankAccount: this.values.bankAccount.toString()
         })
     }
@@ -1280,10 +1280,10 @@ export class IndentItemVariable {
     }
 }
 
-export class SupplierProduct {
+export class CompanyProduct {
     constructor(private variableName: string) { }
 
-    equals(other: SupplierProduct): boolean {
+    equals(other: CompanyProduct): boolean {
         if (!other) {
             return false;
         }
@@ -1299,26 +1299,26 @@ export class SupplierProduct {
     }
 }
 
-export class SupplierProductVariable {
+export class CompanyProductVariable {
     [immerable] = true
-    readonly typeName = 'SupplierProduct'
-    variableName: SupplierProduct
+    readonly typeName = 'CompanyProduct'
+    variableName: CompanyProduct
     values: {
-        // UNQ(supplier, product)
-        supplier: Supplier
+        // UNQ(company, product)
+        company: Company
         product: Product
     }
 
-    constructor(variableName: string, values: { supplier: Supplier, product: Product }) {
-        this.variableName = new SupplierProduct(variableName)
+    constructor(variableName: string, values: { company: Company, product: Product }) {
+        this.variableName = new CompanyProduct(variableName)
         this.values = values
     }
 
-    equals(other: SupplierProductVariable): boolean {
+    equals(other: CompanyProductVariable): boolean {
         if (!other) {
             return false;
         }
-        return this.values.supplier.equals(other.values.supplier) && this.values.product.equals(other.values.product)
+        return this.values.company.equals(other.values.company) && this.values.product.equals(other.values.product)
     }
 
     hashCode(): number {
@@ -1329,9 +1329,9 @@ export class SupplierProductVariable {
         return JSON.stringify(this, null, 2)
     }
 
-    toRow(): SupplierProductRow {
-        return new SupplierProductRow(this.variableName.toString(), {
-            supplier: this.values.supplier.toString(),
+    toRow(): CompanyProductRow {
+        return new CompanyProductRow(this.variableName.toString(), {
+            company: this.values.company.toString(),
             product: this.values.product.toString()
         })
     }
@@ -1362,10 +1362,10 @@ export class QuotationVariable {
     variableName: Quotation
     values: {
         indent: Indent
-        supplier: Supplier
+        company: Company
     }
 
-    constructor(variableName: string, values: { indent: Indent, supplier: Supplier }) {
+    constructor(variableName: string, values: { indent: Indent, company: Company }) {
         this.variableName = new Quotation(variableName)
         this.values = values
     }
@@ -1388,7 +1388,7 @@ export class QuotationVariable {
     toRow(): QuotationRow {
         return new QuotationRow(this.variableName.toString(), {
             indent: this.values.indent.toString(),
-            supplier: this.values.supplier.toString()
+            company: this.values.company.toString()
         })
     }
 }
@@ -2643,8 +2643,8 @@ export function replaceVariable(typeName: NonPrimitiveType, variableName: string
                 accountNumber: String(values['accountNumber'])
             })
         }
-        case 'Supplier': {
-            return new SupplierVariable(variableName, {
+        case 'Company': {
+            return new CompanyVariable(variableName, {
                 email: String(values['email']),
                 telephone: String(values['telephone']),
                 mobile: String(values['mobile']),
@@ -2656,16 +2656,16 @@ export function replaceVariable(typeName: NonPrimitiveType, variableName: string
                 iec: String(values['iec'])
             })
         }
-        case 'SupplierAddress': {
-            return new SupplierAddressVariable(variableName, {
-                supplier: new Supplier(String(values['supplier'])),
+        case 'CompanyAddress': {
+            return new CompanyAddressVariable(variableName, {
+                company: new Company(String(values['company'])),
                 name: String(values['name']),
                 address: new Address(String(values['address']))
             })
         }
-        case 'SupplierContact': {
-            return new SupplierContactVariable(variableName, {
-                supplier: new Supplier(String(values['supplier'])),
+        case 'CompanyContact': {
+            return new CompanyContactVariable(variableName, {
+                company: new Company(String(values['company'])),
                 name: String(values['name']),
                 designation: String(values['designation']),
                 email: String(values['email']),
@@ -2673,9 +2673,9 @@ export function replaceVariable(typeName: NonPrimitiveType, variableName: string
                 mobile: String(values['mobile'])
             })
         }
-        case 'SupplierBankAccount': {
-            return new SupplierBankAccountVariable(variableName, {
-                supplier: new Supplier(String(values['supplier'])),
+        case 'CompanyBankAccount': {
+            return new CompanyBankAccountVariable(variableName, {
+                company: new Company(String(values['company'])),
                 bankAccount: new BankAccount(String(values['bankAccount']))
             })
         }
@@ -2712,16 +2712,16 @@ export function replaceVariable(typeName: NonPrimitiveType, variableName: string
                 consumed: parseInt(String(values['consumed']))
             })
         }
-        case 'SupplierProduct': {
-            return new SupplierProductVariable(variableName, {
-                supplier: new Supplier(values['supplier']),
+        case 'CompanyProduct': {
+            return new CompanyProductVariable(variableName, {
+                company: new Company(values['company']),
                 product: new Product(values['product'])
             })
         }
         case 'Quotation': {
             return new QuotationVariable(variableName, {
                 indent: new Indent(values['indent']),
-                supplier: new Supplier(values['supplier'])
+                company: new Company(values['company'])
             })
         }
         case 'QuotationItem': {

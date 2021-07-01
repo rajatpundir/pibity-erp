@@ -24,8 +24,8 @@ import ShowBankAccount from '../components/Banking/BankAccount/Show'
 import ListBankAccount from '../components/Banking/BankAccount/List'
 import ShowProduct from '../components/IT/Product/Show'
 import ListProduct from '../components/IT/Product/List'
-import ShowSupplier from '../components/IT/Supplier/Show'
-import ListSupplier from '../components/IT/Supplier/List'
+import ShowCompany from '../components/IT/Company/Show'
+import ListCompany from '../components/IT/Company/List'
 import ShowIndent from '../components/Production/Indent/Show'
 import ListIndent from '../components/Production/Indent/List'
 import ShowQuotation from '../components/Purchase/Quotation/Show'
@@ -94,9 +94,9 @@ function App() {
               <Route exact path='/products'><ListProduct /></Route>
               <Route exact path='/product/*'><ShowProduct /></Route>
               <Route exact path='/product'><ShowProduct /></Route>
-              <Route exact path='/suppliers'><ListSupplier /></Route>
-              <Route exact path='/supplier/*'><ShowSupplier /></Route>
-              <Route exact path='/supplier'><ShowSupplier /></Route>
+              <Route exact path='/companies'><ListCompany /></Route>
+              <Route exact path='/company/*'><ShowCompany /></Route>
+              <Route exact path='/company'><ShowCompany /></Route>
               <Route exact path='/indents'><ListIndent /></Route>
               <Route exact path='/indent/*'><ShowIndent /></Route>
               <Route exact path='/indent'><ShowIndent /></Route>

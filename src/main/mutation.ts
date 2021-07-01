@@ -2,7 +2,7 @@ import { Immutable } from 'immer';
 import { DiffVariable, getRemoveVariableDiff, getRenameVariableDiff, getReplaceVariableDiff, getVariable, mergeDiffs } from './layers'
 import { NonPrimitiveType } from './types';
 import { iff, when } from './utils';
-import { Variable, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip, RegionVariable, CountryVariable, Region, StateVariable, DistrictVariable, SubdistrictVariable, PostalCodeVariable, AddressVariable, ServiceAreaVariable, CompanyTypeVariable, BankVariable, BankBranchVariable, BankAccountVariable, SupplierAddressVariable, SupplierContactVariable, SupplierBankAccountVariable, Country, State, District, Subdistrict, PostalCode, Bank, Address, BankBranch, CompanyType, ServiceArea, BankAccount } from './variables'
+import { Variable, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, CompanyVariable, CompanyProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Company, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip, RegionVariable, CountryVariable, Region, StateVariable, DistrictVariable, SubdistrictVariable, PostalCodeVariable, AddressVariable, ServiceAreaVariable, CompanyTypeVariable, BankVariable, BankBranchVariable, BankAccountVariable, CompanyAddressVariable, CompanyContactVariable, CompanyBankAccountVariable, Country, State, District, Subdistrict, PostalCode, Bank, Address, BankBranch, CompanyType, ServiceArea, BankAccount } from './variables'
 
 export function createVariable(typeName: NonPrimitiveType, variableName: string, values: object): [Variable, DiffVariable] {
     const variable: Variable = when(typeName, {
@@ -52,7 +52,7 @@ export function createVariable(typeName: NonPrimitiveType, variableName: string,
             bankBranch: new BankBranch(String(values['bankBranch'])),
             accountNumber: String(values['accountNumber'])
         }),
-        'Supplier': () => new SupplierVariable(variableName, {
+        'Company': () => new CompanyVariable(variableName, {
             email: String(values['email']),
             telephone: String(values['telephone']),
             mobile: String(values['mobile']),
@@ -63,21 +63,21 @@ export function createVariable(typeName: NonPrimitiveType, variableName: string,
             pan: String(values['pan']),
             iec: String(values['iec'])
         }),
-        'SupplierAddress': () => new SupplierAddressVariable(variableName, {
-            supplier: new Supplier(String(values['supplier'])),
+        'CompanyAddress': () => new CompanyAddressVariable(variableName, {
+            company: new Company(String(values['company'])),
             name: String(values['name']),
             address: new Address(String(values['address']))
         }),
-        'SupplierContact': () => new SupplierContactVariable(variableName, {
-            supplier: new Supplier(String(values['supplier'])),
+        'CompanyContact': () => new CompanyContactVariable(variableName, {
+            company: new Company(String(values['company'])),
             name: String(values['name']),
             designation: String(values['designation']),
             email: String(values['email']),
             telephone: String(values['telephone']),
             mobile: String(values['mobile'])
         }),
-        'SupplierBankAccount': () => new SupplierBankAccountVariable(variableName, {
-            supplier: new Supplier(String(values['supplier'])),
+        'CompanyBankAccount': () => new CompanyBankAccountVariable(variableName, {
+            company: new Company(String(values['company'])),
             bankAccount: new BankAccount(String(values['bankAccount']))
         }),
         'Product': () => new ProductVariable(variableName, {
@@ -105,13 +105,13 @@ export function createVariable(typeName: NonPrimitiveType, variableName: string,
             requisted: parseInt(String(values['requisted'])),
             consumed: parseInt(String(values['consumed']))
         }),
-        'SupplierProduct': () => new SupplierProductVariable(variableName, {
-            supplier: new Supplier(values['supplier']),
+        'CompanyProduct': () => new CompanyProductVariable(variableName, {
+            company: new Company(values['company']),
             product: new Product(values['product'])
         }),
         'Quotation': () => new QuotationVariable(variableName, {
             indent: new Indent(values['indent']),
-            supplier: new Supplier(values['supplier'])
+            company: new Company(values['company'])
         }),
         'QuotationItem': () => new QuotationItemVariable(variableName, {
             quotation: new Quotation(values['quotation']),
@@ -292,8 +292,8 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
             })
             break
         }
-        case 'Supplier': {
-            updatedVariable = new SupplierVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+        case 'Company': {
+            updatedVariable = new CompanyVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
                 email: values['email'] !== undefined ? String(values['email']) : variable.values.email,
                 telephone: values['telephone'] !== undefined ? String(values['telephone']) : variable.values.telephone,
                 mobile: values['mobile'] !== undefined ? String(values['mobile']) : variable.values.mobile,
@@ -306,17 +306,17 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
             })
             break
         }
-        case 'SupplierAddress': {
-            updatedVariable = new SupplierAddressVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
-                supplier: values['supplier'] !== undefined ? new Supplier(String(values['supplier'])) : new Supplier(variable.values.supplier.toString()),
+        case 'CompanyAddress': {
+            updatedVariable = new CompanyAddressVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                company: values['company'] !== undefined ? new Company(String(values['company'])) : new Company(variable.values.company.toString()),
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name,
                 address: values['address'] !== undefined ? new Address(String(values['address'])) : new Address(variable.values.address.toString())
             })
             break
         }
-        case 'SupplierContact': {
-            updatedVariable = new SupplierContactVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
-                supplier: values['supplier'] !== undefined ? new Supplier(String(values['supplier'])) : new Supplier(variable.values.supplier.toString()),
+        case 'CompanyContact': {
+            updatedVariable = new CompanyContactVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                company: values['company'] !== undefined ? new Company(String(values['company'])) : new Company(variable.values.company.toString()),
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name,
                 designation: values['designation'] !== undefined ? String(values['designation']) : variable.values.designation,
                 email: values['email'] !== undefined ? String(values['email']) : variable.values.email,
@@ -325,9 +325,9 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
             })
             break
         }
-        case 'SupplierBankAccount': {
-            updatedVariable = new SupplierBankAccountVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
-                supplier: values['supplier'] !== undefined ? new Supplier(String(values['supplier'])) : new Supplier(variable.values.supplier.toString()),
+        case 'CompanyBankAccount': {
+            updatedVariable = new CompanyBankAccountVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                company: values['company'] !== undefined ? new Company(String(values['company'])) : new Company(variable.values.company.toString()),
                 bankAccount: values['bankAccount'] !== undefined ? new BankAccount(String(values['bankAccount'])) : new BankAccount(variable.values.bankAccount.toString())
             })
             break
@@ -369,9 +369,9 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
             })
             break
         }
-        case 'SupplierProduct': {
-            updatedVariable = new SupplierProductVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
-                supplier: values['supplier'] !== undefined ? new Supplier(String(values['supplier'])) : new Supplier(variable.values.supplier.toString()),
+        case 'CompanyProduct': {
+            updatedVariable = new CompanyProductVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
+                company: values['company'] !== undefined ? new Company(String(values['company'])) : new Company(variable.values.company.toString()),
                 product: values['product'] !== undefined ? new Product(String(values['product'])) : new Product(variable.values.product.toString())
             })
             break
@@ -379,7 +379,7 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
         case 'Quotation': {
             updatedVariable = new QuotationVariable(updatedVariableName !== undefined ? updatedVariableName : variable.variableName.toString(), {
                 indent: values['indent'] !== undefined ? new Indent(String(values['indent'])) : new Indent(variable.values.indent.toString()),
-                supplier: values['supplier'] !== undefined ? new Supplier(String(values['supplier'])) : new Supplier(variable.values.supplier.toString())
+                company: values['company'] !== undefined ? new Company(String(values['company'])) : new Company(variable.values.company.toString())
             })
             break
         }

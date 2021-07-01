@@ -4,7 +4,7 @@ import createDemoData from './createDemoData'
 const navbar: { [index: string]: { [index: string]: string } } = {
     'IT': {
         'Products': '/products',
-        'Suppliers': '/suppliers'
+        'Companies': '/companies'
     },
     'Geography': {
         'Regions': '/regions',

@@ -38,17 +38,17 @@ export type FunctionName =
     | 'createBankAccount'
     | 'deleteBankAccount'
 
-    | 'createSupplier'
-    | 'deleteSupplier'
+    | 'createCompany'
+    | 'deleteCompany'
 
-    | 'createSupplierAddress'
-    | 'deleteSupplierAddress'
+    | 'createCompanyAddress'
+    | 'deleteCompanyAddress'
 
-    | 'createSupplierContact'
-    | 'deleteSupplierContact'
+    | 'createCompanyContact'
+    | 'deleteCompanyContact'
 
-    | 'createSupplierBankAccount'
-    | 'deleteSupplierBankAccount'
+    | 'createCompanyBankAccount'
+    | 'deleteCompanyBankAccount'
 
     | 'createProduct'
     | 'deleteProduct'
@@ -62,8 +62,8 @@ export type FunctionName =
     | 'createIndentItem'
     | 'deleteIndentItem'
 
-    | 'createSupplierProduct'
-    | 'deleteSupplierProduct'
+    | 'createCompanyProduct'
+    | 'deleteCompanyProduct'
 
     | 'createQuotation'
     | 'deleteQuotation'
@@ -816,7 +816,7 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
-    createSupplier: {
+    createCompany: {
         inputs: {
             variableName: {
                 type: 'Text'
@@ -842,9 +842,6 @@ export const functions: Record<FunctionName, Function> = {
             gstin: {
                 type: 'Text'
             },
-            name: {
-                type: 'Text'
-            },
             pan: {
                 type: 'Text'
             },
@@ -853,8 +850,8 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            supplier: {
-                type: 'Supplier',
+            company: {
+                type: 'Company',
                 op: 'create',
                 variableName: {
                     expectedReturnType: 'Text',
@@ -921,15 +918,15 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
-    deleteSupplier: {
+    deleteCompany: {
         inputs: {
             variableName: {
-                type: 'Supplier'
+                type: 'Company'
             }
         },
         outputs: {
-            supplier: {
-                type: 'Supplier',
+            company: {
+                type: 'Company',
                 op: 'delete',
                 variableName: {
                     expectedReturnType: 'Text',
@@ -941,10 +938,10 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
-    createSupplierAddress: {
+    createCompanyAddress: {
         inputs: {
-            supplier: {
-                type: 'Supplier'
+            company: {
+                type: 'Company'
             },
             name: {
                 type: 'Text'
@@ -954,8 +951,8 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            supplierAddress: {
-                type: 'SupplierAddress',
+            companyAddress: {
+                type: 'CompanyAddress',
                 op: 'create',
                 variableName: {
                     expectedReturnType: 'Text',
@@ -964,11 +961,11 @@ export const functions: Record<FunctionName, Function> = {
                     args: ['{{datatype.uuid}}']
                 },
                 values: {
-                    supplier: {
+                    company: {
                         expectedReturnType: 'Text',
                         op: '.',
                         types: [],
-                        args: ['supplier']
+                        args: ['company']
                     },
                     name: {
                         expectedReturnType: 'Text',
@@ -986,15 +983,15 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
-    deleteSupplierAddress: {
+    deleteCompanyAddress: {
         inputs: {
             variableName: {
-                type: 'SupplierAddress'
+                type: 'CompanyAddress'
             }
         },
         outputs: {
-            supplierAddress: {
-                type: 'SupplierAddress',
+            companyAddress: {
+                type: 'CompanyAddress',
                 op: 'delete',
                 variableName: {
                     expectedReturnType: 'Text',
@@ -1006,10 +1003,10 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
-    createSupplierContact: {
+    createCompanyContact: {
         inputs: {
-            supplier: {
-                type: 'Supplier'
+            company: {
+                type: 'Company'
             },
             name: {
                 type: 'Text'
@@ -1028,8 +1025,8 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            supplierContact: {
-                type: 'SupplierContact',
+            companyContact: {
+                type: 'CompanyContact',
                 op: 'create',
                 variableName: {
                     expectedReturnType: 'Text',
@@ -1038,11 +1035,11 @@ export const functions: Record<FunctionName, Function> = {
                     args: ['{{datatype.uuid}}']
                 },
                 values: {
-                    supplier: {
+                    company: {
                         expectedReturnType: 'Text',
                         op: '.',
                         types: [],
-                        args: ['supplier']
+                        args: ['company']
                     },
                     name: {
                         expectedReturnType: 'Text',
@@ -1078,15 +1075,15 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
-    deleteSupplierContact: {
+    deleteCompanyContact: {
         inputs: {
             variableName: {
-                type: 'SupplierContact'
+                type: 'CompanyContact'
             }
         },
         outputs: {
-            supplierContact: {
-                type: 'SupplierContact',
+            companyContact: {
+                type: 'CompanyContact',
                 op: 'delete',
                 variableName: {
                     expectedReturnType: 'Text',
@@ -1098,18 +1095,18 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
-    createSupplierBankAccount: {
+    createCompanyBankAccount: {
         inputs: {
-            supplier: {
-                type: 'Supplier'
+            company: {
+                type: 'Company'
             },
             bankAccount: {
                 type: 'BankAccount'
             }
         },
         outputs: {
-            supplierBankAccount: {
-                type: 'SupplierBankAccount',
+            companyBankAccount: {
+                type: 'CompanyBankAccount',
                 op: 'create',
                 variableName: {
                     expectedReturnType: 'Text',
@@ -1118,11 +1115,11 @@ export const functions: Record<FunctionName, Function> = {
                     args: ['{{datatype.uuid}}']
                 },
                 values: {
-                    supplier: {
+                    company: {
                         expectedReturnType: 'Text',
                         op: '.',
                         types: [],
-                        args: ['supplier']
+                        args: ['company']
                     },
                     bankAccount: {
                         expectedReturnType: 'Text',
@@ -1134,15 +1131,15 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
-    deleteSupplierBankAccount: {
+    deleteCompanyBankAccount: {
         inputs: {
             variableName: {
-                type: 'SupplierBankAccount'
+                type: 'CompanyBankAccount'
             }
         },
         outputs: {
-            supplierBankAccount: {
-                type: 'SupplierBankAccount',
+            companyBankAccount: {
+                type: 'CompanyBankAccount',
                 op: 'delete',
                 variableName: {
                     expectedReturnType: 'Text',
@@ -1448,18 +1445,18 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
-    createSupplierProduct: {
+    createCompanyProduct: {
         inputs: {
-            supplier: {
-                type: 'Supplier'
+            company: {
+                type: 'Company'
             },
             product: {
                 type: 'Product'
             }
         },
         outputs: {
-            supplierProduct: {
-                type: 'SupplierProduct',
+            companyProduct: {
+                type: 'CompanyProduct',
                 op: 'create',
                 variableName: {
                     expectedReturnType: 'Text',
@@ -1468,11 +1465,11 @@ export const functions: Record<FunctionName, Function> = {
                     args: ['{{datatype.uuid}}']
                 },
                 values: {
-                    supplier: {
+                    company: {
                         expectedReturnType: 'Text',
                         op: '.',
                         types: [],
-                        args: ['supplier']
+                        args: ['company']
                     },
                     product: {
                         expectedReturnType: 'Text',
@@ -1484,15 +1481,15 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
-    deleteSupplierProduct: {
+    deleteCompanyProduct: {
         inputs: {
             variableName: {
-                type: 'SupplierProduct'
+                type: 'CompanyProduct'
             }
         },
         outputs: {
-            supplierProduct: {
-                type: 'SupplierProduct',
+            companyProduct: {
+                type: 'CompanyProduct',
                 op: 'delete',
                 variableName: {
                     expectedReturnType: 'Text',
@@ -1509,8 +1506,8 @@ export const functions: Record<FunctionName, Function> = {
             indent: {
                 type: 'Indent'
             },
-            supplier: {
-                type: 'Supplier'
+            company: {
+                type: 'Company'
             }
         },
         outputs: {
@@ -1530,11 +1527,11 @@ export const functions: Record<FunctionName, Function> = {
                         types: [],
                         args: ['indent']
                     },
-                    supplier: {
+                    company: {
                         expectedReturnType: 'Text',
                         op: '.',
                         types: [],
-                        args: ['supplier']
+                        args: ['company']
                     }
                 }
             }

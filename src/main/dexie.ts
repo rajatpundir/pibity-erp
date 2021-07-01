@@ -1,6 +1,6 @@
 import Dexie from 'dexie'
 import { Immutable } from 'immer'
-import { AddressRow, BankAccountRow, BankBranchRow, BankRow, BOMItemRow, BOMRow, CompanyTypeRow, CountryRow, DiffRow, DistrictRow, IndentItemRow, IndentRow, MaterialApprovalSlipItemRow, MaterialApprovalSlipRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow, MaterialRequistionSlipItemRow, MaterialRequistionSlipRow, MaterialReturnSlipItemRow, MaterialReturnSlipRow, PostalCodeRow, ProductionPreparationSlipItemRow, ProductionPreparationSlipRow, ProductRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow, PurchaseOrderItemRow, PurchaseOrderRow, QuotationItemRow, QuotationRow, RegionRow, ScrapMaterialSlipRow, ServiceAreaRow, StateRow, SubdistrictRow, SupplierAddressRow, SupplierBankAccountRow, SupplierContactRow, SupplierProductRow, SupplierRow, TransferMaterialSlipRow, UOMRow, WarehouseAcceptanceSlipRow } from './rows'
+import { AddressRow, BankAccountRow, BankBranchRow, BankRow, BOMItemRow, BOMRow, CompanyTypeRow, CountryRow, DiffRow, DistrictRow, IndentItemRow, IndentRow, MaterialApprovalSlipItemRow, MaterialApprovalSlipRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow, MaterialRequistionSlipItemRow, MaterialRequistionSlipRow, MaterialReturnSlipItemRow, MaterialReturnSlipRow, PostalCodeRow, ProductionPreparationSlipItemRow, ProductionPreparationSlipRow, ProductRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow, PurchaseOrderItemRow, PurchaseOrderRow, QuotationItemRow, QuotationRow, RegionRow, ScrapMaterialSlipRow, ServiceAreaRow, StateRow, SubdistrictRow, CompanyAddressRow, CompanyBankAccountRow, CompanyContactRow, CompanyProductRow, CompanyRow, TransferMaterialSlipRow, UOMRow, WarehouseAcceptanceSlipRow } from './rows'
 
 class Database extends Dexie {
     diffs: Dexie.Table<Immutable<DiffRow>, number>
@@ -16,15 +16,15 @@ class Database extends Dexie {
     banks: Dexie.Table<Immutable<BankRow>, string>
     bankBranches: Dexie.Table<Immutable<BankBranchRow>, string>
     bankAccounts: Dexie.Table<Immutable<BankAccountRow>, string>
-    suppliers: Dexie.Table<Immutable<SupplierRow>, string>
-    supplierAddresses: Dexie.Table<Immutable<SupplierAddressRow>, string>
-    supplierContacts: Dexie.Table<Immutable<SupplierContactRow>, string>
-    supplierBankAccounts: Dexie.Table<Immutable<SupplierBankAccountRow>, string>
+    companies: Dexie.Table<Immutable<CompanyRow>, string>
+    companyAddresses: Dexie.Table<Immutable<CompanyAddressRow>, string>
+    companyContacts: Dexie.Table<Immutable<CompanyContactRow>, string>
+    companyBankAccounts: Dexie.Table<Immutable<CompanyBankAccountRow>, string>
     products: Dexie.Table<Immutable<ProductRow>, string>
     uoms: Dexie.Table<Immutable<UOMRow>, string>
     indents: Dexie.Table<Immutable<IndentRow>, string>
     indentItems: Dexie.Table<Immutable<IndentItemRow>, string>
-    supplierProducts: Dexie.Table<Immutable<SupplierProductRow>, string>
+    companyProducts: Dexie.Table<Immutable<CompanyProductRow>, string>
     quotations: Dexie.Table<Immutable<QuotationRow>, string>
     quotationItems: Dexie.Table<Immutable<QuotationItemRow>, string>
     purchaseOrders: Dexie.Table<Immutable<PurchaseOrderRow>, string>
@@ -63,15 +63,15 @@ class Database extends Dexie {
             banks: 'variableName, [country+name], country, name',
             bankBranches: 'variableName, [bank+name], bank, name',
             bankAccounts: 'variableName, [bank+accountNumber], bank',
-            suppliers: '&variableName',
-            supplierAddresses: 'variableName, [supplier+name], [supplier+address]',
-            supplierContacts: 'variableName, [supplier+name]',
-            supplierBankAccounts: 'variableName, [supplier+bankAccount]',
+            companies: '&variableName',
+            companyAddresses: 'variableName, [company+name], [company+address]',
+            companyContacts: 'variableName, [company+name]',
+            companyBankAccounts: 'variableName, [company+bankAccount]',
             products: '&variableName',
             uoms: 'variableName, [product+name], product',
             indents: '&variableName',
             indentItems: 'variableName, [indent+product], indent',
-            supplierProducts: 'variableName, [supplier+product], supplier',
+            companyProducts: 'variableName, [company+product], company',
             quotations: '&variableName',
             quotationItems: 'variableName, [quotation+indentItem], quotation',
             purchaseOrders: '&variableName',
@@ -108,15 +108,15 @@ class Database extends Dexie {
         this.banks = this.table('banks')
         this.bankBranches = this.table('bankBranches')
         this.bankAccounts = this.table('bankAccounts')
-        this.suppliers = this.table('suppliers')
-        this.supplierAddresses = this.table('supplierAddresses')
-        this.supplierContacts = this.table('supplierContacts')
-        this.supplierBankAccounts = this.table('supplierBankAccounts')
+        this.companies = this.table('companies')
+        this.companyAddresses = this.table('companyAddresses')
+        this.companyContacts = this.table('companyContacts')
+        this.companyBankAccounts = this.table('companyBankAccounts')
         this.products = this.table('products')
         this.uoms = this.table('uoms')
         this.indents = this.table('indents')
         this.indentItems = this.table('indentItems')
-        this.supplierProducts = this.table('supplierProducts')
+        this.companyProducts = this.table('companyProducts')
         this.quotations = this.table('quotations')
         this.quotationItems = this.table('quotationItems')
         this.purchaseOrders = this.table('purchaseOrders')
@@ -152,16 +152,16 @@ class Database extends Dexie {
         this.banks.mapToClass(BankRow)
         this.bankBranches.mapToClass(BankBranchRow)
         this.bankAccounts.mapToClass(BankAccountRow)
-        this.suppliers.mapToClass(SupplierRow)
-        this.supplierAddresses.mapToClass(SupplierAddressRow)
-        this.supplierContacts.mapToClass(SupplierContactRow)
-        this.supplierBankAccounts.mapToClass(SupplierBankAccountRow)
+        this.companies.mapToClass(CompanyRow)
+        this.companyAddresses.mapToClass(CompanyAddressRow)
+        this.companyContacts.mapToClass(CompanyContactRow)
+        this.companyBankAccounts.mapToClass(CompanyBankAccountRow)
         this.products.mapToClass(ProductRow)
         this.uoms.mapToClass(UOMRow)
         this.indents.mapToClass(IndentRow)
         this.indentItems.mapToClass(IndentItemRow)
-        this.suppliers.mapToClass(SupplierRow)
-        this.supplierProducts.mapToClass(SupplierProductRow)
+        this.companies.mapToClass(CompanyRow)
+        this.companyProducts.mapToClass(CompanyProductRow)
         this.quotations.mapToClass(QuotationRow)
         this.quotationItems.mapToClass(QuotationItemRow)
         this.purchaseOrders.mapToClass(PurchaseOrderRow)

@@ -1,8 +1,8 @@
 import { HashSet, Vector } from 'prelude-ts'
 import { immerable, Immutable } from 'immer'
-import { Variable, VariableName, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, SupplierProduct, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialReturnSlipItem, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, BOMItem, ProductionPreparationSlip, ProductionPreparationSlipItem, ScrapMaterialSlip, TransferMaterialSlip, WarehouseAcceptanceSlip, RegionVariable, Region, CountryVariable, Country, StateVariable, State, DistrictVariable, District, SubdistrictVariable, Subdistrict, PostalCodeVariable, PostalCode, AddressVariable, Address, ServiceAreaVariable, ServiceArea, CompanyTypeVariable, CompanyType, BankVariable, Bank, BankBranchVariable, BankBranch, BankAccountVariable, BankAccount, SupplierAddressVariable, SupplierAddress, SupplierContactVariable, SupplierContact, SupplierBankAccountVariable, SupplierBankAccount } from './variables'
+import { Variable, VariableName, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, CompanyVariable, CompanyProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Company, CompanyProduct, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialReturnSlipItem, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, BOMItem, ProductionPreparationSlip, ProductionPreparationSlipItem, ScrapMaterialSlip, TransferMaterialSlip, WarehouseAcceptanceSlip, RegionVariable, Region, CountryVariable, Country, StateVariable, State, DistrictVariable, District, SubdistrictVariable, Subdistrict, PostalCodeVariable, PostalCode, AddressVariable, Address, ServiceAreaVariable, ServiceArea, CompanyTypeVariable, CompanyType, BankVariable, Bank, BankBranchVariable, BankBranch, BankAccountVariable, BankAccount, CompanyAddressVariable, CompanyAddress, CompanyContactVariable, CompanyContact, CompanyBankAccountVariable, CompanyBankAccount } from './variables'
 import { NonPrimitiveType } from './types'
-import { AddressRow, BankAccountRow, BankBranchRow, BankRow, BOMItemRow, BOMRow, CompanyTypeRow, CountryRow, DiffRow, DistrictRow, IndentItemRow, IndentRow, MaterialApprovalSlipItemRow, MaterialApprovalSlipRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow, MaterialRequistionSlipItemRow, MaterialRequistionSlipRow, MaterialReturnSlipItemRow, MaterialReturnSlipRow, PostalCodeRow, ProductionPreparationSlipItemRow, ProductionPreparationSlipRow, ProductRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow, PurchaseOrderItemRow, PurchaseOrderRow, QuotationItemRow, QuotationRow, RegionRow, ScrapMaterialSlipRow, ServiceAreaRow, StateRow, SubdistrictRow, SupplierAddressRow, SupplierBankAccountRow, SupplierContactRow, SupplierProductRow, SupplierRow, TransferMaterialSlipRow, UOMRow, WarehouseAcceptanceSlipRow } from './rows'
+import { AddressRow, BankAccountRow, BankBranchRow, BankRow, BOMItemRow, BOMRow, CompanyTypeRow, CountryRow, DiffRow, DistrictRow, IndentItemRow, IndentRow, MaterialApprovalSlipItemRow, MaterialApprovalSlipRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow, MaterialRequistionSlipItemRow, MaterialRequistionSlipRow, MaterialReturnSlipItemRow, MaterialReturnSlipRow, PostalCodeRow, ProductionPreparationSlipItemRow, ProductionPreparationSlipRow, ProductRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow, PurchaseOrderItemRow, PurchaseOrderRow, QuotationItemRow, QuotationRow, RegionRow, ScrapMaterialSlipRow, ServiceAreaRow, StateRow, SubdistrictRow, CompanyAddressRow, CompanyBankAccountRow, CompanyContactRow, CompanyProductRow, CompanyRow, TransferMaterialSlipRow, UOMRow, WarehouseAcceptanceSlipRow } from './rows'
 import { db } from './dexie'
 
 type DiffVariables = {
@@ -54,21 +54,21 @@ type DiffVariables = {
         replace: HashSet<Immutable<BankAccountVariable>>,
         remove: HashSet<Immutable<BankAccount>>
     },
-    Supplier: {
-        replace: HashSet<Immutable<SupplierVariable>>,
-        remove: HashSet<Immutable<Supplier>>
+    Company: {
+        replace: HashSet<Immutable<CompanyVariable>>,
+        remove: HashSet<Immutable<Company>>
     },
-    SupplierAddress: {
-        replace: HashSet<Immutable<SupplierAddressVariable>>,
-        remove: HashSet<Immutable<SupplierAddress>>
+    CompanyAddress: {
+        replace: HashSet<Immutable<CompanyAddressVariable>>,
+        remove: HashSet<Immutable<CompanyAddress>>
     },
-    SupplierContact: {
-        replace: HashSet<Immutable<SupplierContactVariable>>,
-        remove: HashSet<Immutable<SupplierContact>>
+    CompanyContact: {
+        replace: HashSet<Immutable<CompanyContactVariable>>,
+        remove: HashSet<Immutable<CompanyContact>>
     },
-    SupplierBankAccount: {
-        replace: HashSet<Immutable<SupplierBankAccountVariable>>,
-        remove: HashSet<Immutable<SupplierBankAccount>>
+    CompanyBankAccount: {
+        replace: HashSet<Immutable<CompanyBankAccountVariable>>,
+        remove: HashSet<Immutable<CompanyBankAccount>>
     },
     Product: {
         replace: HashSet<Immutable<ProductVariable>>
@@ -86,9 +86,9 @@ type DiffVariables = {
         replace: HashSet<Immutable<IndentItemVariable>>,
         remove: HashSet<Immutable<IndentItem>>
     },
-    SupplierProduct: {
-        replace: HashSet<Immutable<SupplierProductVariable>>,
-        remove: HashSet<Immutable<SupplierProduct>>
+    CompanyProduct: {
+        replace: HashSet<Immutable<CompanyProductVariable>>,
+        remove: HashSet<Immutable<CompanyProduct>>
     },
     Quotation: {
         replace: HashSet<Immutable<QuotationVariable>>,
@@ -231,19 +231,19 @@ export class DiffVariable {
             replace: HashSet.of(),
             remove: HashSet.of()
         },
-        Supplier: {
+        Company: {
             replace: HashSet.of(),
             remove: HashSet.of()
         },
-        SupplierAddress: {
+        CompanyAddress: {
             replace: HashSet.of(),
             remove: HashSet.of()
         },
-        SupplierContact: {
+        CompanyContact: {
             replace: HashSet.of(),
             remove: HashSet.of()
         },
-        SupplierBankAccount: {
+        CompanyBankAccount: {
             replace: HashSet.of(),
             remove: HashSet.of()
         },
@@ -263,7 +263,7 @@ export class DiffVariable {
             replace: HashSet.of(),
             remove: HashSet.of()
         },
-        SupplierProduct: {
+        CompanyProduct: {
             replace: HashSet.of(),
             remove: HashSet.of()
         },
@@ -423,21 +423,21 @@ export class DiffVariable {
                 replace: this.variables.BankAccount.replace.toArray().map(x => x.toRow()),
                 remove: this.variables.BankAccount.remove.toArray().map(x => x.toString())
             },
-            Supplier: {
-                replace: this.variables.Supplier.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.Supplier.remove.toArray().map(x => x.toString())
+            Company: {
+                replace: this.variables.Company.replace.toArray().map(x => x.toRow()),
+                remove: this.variables.Company.remove.toArray().map(x => x.toString())
             },
-            SupplierAddress: {
-                replace: this.variables.SupplierAddress.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.SupplierAddress.remove.toArray().map(x => x.toString())
+            CompanyAddress: {
+                replace: this.variables.CompanyAddress.replace.toArray().map(x => x.toRow()),
+                remove: this.variables.CompanyAddress.remove.toArray().map(x => x.toString())
             },
-            SupplierContact: {
-                replace: this.variables.SupplierContact.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.SupplierContact.remove.toArray().map(x => x.toString())
+            CompanyContact: {
+                replace: this.variables.CompanyContact.replace.toArray().map(x => x.toRow()),
+                remove: this.variables.CompanyContact.remove.toArray().map(x => x.toString())
             },
-            SupplierBankAccount: {
-                replace: this.variables.SupplierBankAccount.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.SupplierBankAccount.remove.toArray().map(x => x.toString())
+            CompanyBankAccount: {
+                replace: this.variables.CompanyBankAccount.replace.toArray().map(x => x.toRow()),
+                remove: this.variables.CompanyBankAccount.remove.toArray().map(x => x.toString())
             },
             Product: {
                 replace: this.variables.Product.replace.toArray().map(x => x.toRow()),
@@ -455,9 +455,9 @@ export class DiffVariable {
                 replace: this.variables.IndentItem.replace.toArray().map(x => x.toRow()),
                 remove: this.variables.IndentItem.remove.toArray().map(x => x.toString())
             },
-            SupplierProduct: {
-                replace: this.variables.SupplierProduct.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.SupplierProduct.remove.toArray().map(x => x.toString())
+            CompanyProduct: {
+                replace: this.variables.CompanyProduct.replace.toArray().map(x => x.toRow()),
+                remove: this.variables.CompanyProduct.remove.toArray().map(x => x.toString())
             },
             Quotation: {
                 replace: this.variables.Quotation.replace.toArray().map(x => x.toRow()),
@@ -598,19 +598,19 @@ export function getReplaceVariableDiff(variable: Immutable<Variable>): DiffVaria
             diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
-        case 'Supplier': {
+        case 'Company': {
             diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
-        case 'SupplierAddress': {
+        case 'CompanyAddress': {
             diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
-        case 'SupplierContact': {
+        case 'CompanyContact': {
             diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
-        case 'SupplierBankAccount': {
+        case 'CompanyBankAccount': {
             diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
@@ -630,7 +630,7 @@ export function getReplaceVariableDiff(variable: Immutable<Variable>): DiffVaria
             diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
-        case 'SupplierProduct': {
+        case 'CompanyProduct': {
             diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
@@ -777,20 +777,20 @@ export function getRemoveVariableDiff(typeName: NonPrimitiveType, variableName: 
             diff.variables[typeName].remove = diff.variables[typeName].remove.add(new BankAccount(variableName))
             break
         }
-        case 'Supplier': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Supplier(variableName))
+        case 'Company': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Company(variableName))
             break
         }
-        case 'SupplierAddress': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new SupplierAddress(variableName))
+        case 'CompanyAddress': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyAddress(variableName))
             break
         }
-        case 'SupplierContact': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new SupplierContact(variableName))
+        case 'CompanyContact': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyContact(variableName))
             break
         }
-        case 'SupplierBankAccount': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new SupplierBankAccount(variableName))
+        case 'CompanyBankAccount': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyBankAccount(variableName))
             break
         }
         case 'Product': {
@@ -809,8 +809,8 @@ export function getRemoveVariableDiff(typeName: NonPrimitiveType, variableName: 
             diff.variables[typeName].remove = diff.variables[typeName].remove.add(new IndentItem(variableName))
             break
         }
-        case 'SupplierProduct': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new SupplierProduct(variableName))
+        case 'CompanyProduct': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyProduct(variableName))
             break
         }
         case 'Quotation': {
@@ -949,14 +949,14 @@ export async function getRenameVariableDiff(typeName: NonPrimitiveType, variable
             break
         }
         case 'ServiceArea': {
-            // Updated variableName affects references in Supplier
+            // Updated variableName affects references in Company
             diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ServiceArea(variableName))
-            const supplierRows = await db.suppliers.toArray()
-            let suppliers: Vector<Immutable<SupplierVariable>> = Vector.of<Immutable<SupplierVariable>>().appendAll(supplierRows ? supplierRows.map(x => SupplierRow.toVariable(x)) : [])
+            const companyRows = await db.companies.toArray()
+            let companies: Vector<Immutable<CompanyVariable>> = Vector.of<Immutable<CompanyVariable>>().appendAll(companyRows ? companyRows.map(x => CompanyRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                suppliers = suppliers.filter(x => !diff.variables.Supplier.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.Supplier.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables.Supplier.replace)
+                companies = companies.filter(x => !diff.variables.Company.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.Company.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables.Company.replace)
             })
-            diff.variables.Supplier.replace = diff.variables.Supplier.replace.addAll(suppliers.filter(x => x.values.serviceArea.toString() === variableName).map(x => new SupplierVariable(x.variableName.toString(), {
+            diff.variables.Company.replace = diff.variables.Company.replace.addAll(companies.filter(x => x.values.serviceArea.toString() === variableName).map(x => new CompanyVariable(x.variableName.toString(), {
                 email: x.values.email,
                 telephone: x.values.telephone,
                 mobile: x.values.mobile,
@@ -967,18 +967,18 @@ export async function getRenameVariableDiff(typeName: NonPrimitiveType, variable
                 pan: x.values.pan,
                 iec: x.values.iec
             })))
-            diff.variables.Supplier.remove = diff.variables.Supplier.remove.addAll(suppliers.filter(x => x.values.serviceArea.toString() === variableName).map(x => new Supplier(x.variableName.toString())))
+            diff.variables.Company.remove = diff.variables.Company.remove.addAll(companies.filter(x => x.values.serviceArea.toString() === variableName).map(x => new Company(x.variableName.toString())))
             break
         }
         case 'CompanyType': {
-            // Updated variableName affects references in Supplier
+            // Updated variableName affects references in Company
             diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyType(variableName))
-            const supplierRows = await db.suppliers.toArray()
-            let suppliers: Vector<Immutable<SupplierVariable>> = Vector.of<Immutable<SupplierVariable>>().appendAll(supplierRows ? supplierRows.map(x => SupplierRow.toVariable(x)) : [])
+            const companyRows = await db.companies.toArray()
+            let companies: Vector<Immutable<CompanyVariable>> = Vector.of<Immutable<CompanyVariable>>().appendAll(companyRows ? companyRows.map(x => CompanyRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                suppliers = suppliers.filter(x => !diff.variables.Supplier.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.Supplier.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables.Supplier.replace)
+                companies = companies.filter(x => !diff.variables.Company.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.Company.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables.Company.replace)
             })
-            diff.variables.Supplier.replace = diff.variables.Supplier.replace.addAll(suppliers.filter(x => x.values.serviceArea.toString() === variableName).map(x => new SupplierVariable(x.variableName.toString(), {
+            diff.variables.Company.replace = diff.variables.Company.replace.addAll(companies.filter(x => x.values.serviceArea.toString() === variableName).map(x => new CompanyVariable(x.variableName.toString(), {
                 email: x.values.email,
                 telephone: x.values.telephone,
                 mobile: x.values.mobile,
@@ -989,7 +989,7 @@ export async function getRenameVariableDiff(typeName: NonPrimitiveType, variable
                 pan: x.values.pan,
                 iec: x.values.iec
             })))
-            diff.variables.Supplier.remove = diff.variables.Supplier.remove.addAll(suppliers.filter(x => x.values.serviceArea.toString() === variableName).map(x => new Supplier(x.variableName.toString())))
+            diff.variables.Company.remove = diff.variables.Company.remove.addAll(companies.filter(x => x.values.serviceArea.toString() === variableName).map(x => new Company(x.variableName.toString())))
             break
         }
         case 'Bank': {
@@ -1004,86 +1004,86 @@ export async function getRenameVariableDiff(typeName: NonPrimitiveType, variable
             diff.variables[typeName].remove = diff.variables[typeName].remove.add(new BankAccount(variableName))
             break
         }
-        case 'Supplier': {
-            // Updated variableName affects references in SupplierAddress, SupplierContact, SupplierBankAccount, SupplierProduct, Quotation
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Supplier(variableName))
+        case 'Company': {
+            // Updated variableName affects references in CompanyAddress, CompanyContact, CompanyBankAccount, CompanyProduct, Quotation
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Company(variableName))
 
-            const supplierAddressRows = await db.supplierAddresses.toArray()
-            let supplierAddresses = Vector.of<Immutable<SupplierAddressVariable>>().appendAll(supplierAddressRows ? supplierAddressRows.map(x => SupplierAddressRow.toVariable(x)) : [])
+            const companyAddressRows = await db.companyAddresses.toArray()
+            let companyAddresses = Vector.of<Immutable<CompanyAddressVariable>>().appendAll(companyAddressRows ? companyAddressRows.map(x => CompanyAddressRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                supplierAddresses = supplierAddresses.filter(x => !diff.variables.SupplierAddress.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.SupplierAddress.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables.SupplierAddress.replace)
+                companyAddresses = companyAddresses.filter(x => !diff.variables.CompanyAddress.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.CompanyAddress.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables.CompanyAddress.replace)
             })
-            diff.variables.SupplierAddress.replace = diff.variables.SupplierAddress.replace.addAll(supplierAddresses.filter(x => x.values.supplier.toString() === variableName).map(x => new SupplierAddressVariable(x.variableName.toString(), {
-                supplier: new Supplier(updatedVariableName),
+            diff.variables.CompanyAddress.replace = diff.variables.CompanyAddress.replace.addAll(companyAddresses.filter(x => x.values.company.toString() === variableName).map(x => new CompanyAddressVariable(x.variableName.toString(), {
+                company: new Company(updatedVariableName),
                 name: x.values.name,
                 address: new Address(x.values.address.toString())
             })))
-            diff.variables.SupplierAddress.remove = diff.variables.SupplierAddress.remove.addAll(supplierAddresses.filter(x => x.values.supplier.toString() === variableName).map(x => new SupplierAddress(x.variableName.toString())))
+            diff.variables.CompanyAddress.remove = diff.variables.CompanyAddress.remove.addAll(companyAddresses.filter(x => x.values.company.toString() === variableName).map(x => new CompanyAddress(x.variableName.toString())))
 
-            const supplierContactRows = await db.supplierContacts.toArray()
-            let supplierContacts = Vector.of<Immutable<SupplierContactVariable>>().appendAll(supplierContactRows ? supplierContactRows.map(x => SupplierContactRow.toVariable(x)) : [])
+            const companyContactRows = await db.companyContacts.toArray()
+            let companyContacts = Vector.of<Immutable<CompanyContactVariable>>().appendAll(companyContactRows ? companyContactRows.map(x => CompanyContactRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                supplierContacts = supplierContacts.filter(x => !diff.variables.SupplierContact.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.SupplierContact.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables.SupplierContact.replace)
+                companyContacts = companyContacts.filter(x => !diff.variables.CompanyContact.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.CompanyContact.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables.CompanyContact.replace)
             })
-            diff.variables.SupplierContact.replace = diff.variables.SupplierContact.replace.addAll(supplierContacts.filter(x => x.values.supplier.toString() === variableName).map(x => new SupplierContactVariable(x.variableName.toString(), {
-                supplier: new Supplier(updatedVariableName),
+            diff.variables.CompanyContact.replace = diff.variables.CompanyContact.replace.addAll(companyContacts.filter(x => x.values.company.toString() === variableName).map(x => new CompanyContactVariable(x.variableName.toString(), {
+                company: new Company(updatedVariableName),
                 name: x.values.name,
                 designation: x.values.designation,
                 email: x.values.email,
                 telephone: x.values.telephone,
                 mobile: x.values.mobile
             })))
-            diff.variables.SupplierContact.remove = diff.variables.SupplierContact.remove.addAll(supplierContacts.filter(x => x.values.supplier.toString() === variableName).map(x => new SupplierContact(x.variableName.toString())))
+            diff.variables.CompanyContact.remove = diff.variables.CompanyContact.remove.addAll(companyContacts.filter(x => x.values.company.toString() === variableName).map(x => new CompanyContact(x.variableName.toString())))
 
-            const supplierBankAccountRows = await db.supplierBankAccounts.toArray()
-            let supplierBankAccounts = Vector.of<Immutable<SupplierBankAccountVariable>>().appendAll(supplierBankAccountRows ? supplierBankAccountRows.map(x => SupplierBankAccountRow.toVariable(x)) : [])
+            const companyBankAccountRows = await db.companyBankAccounts.toArray()
+            let companyBankAccounts = Vector.of<Immutable<CompanyBankAccountVariable>>().appendAll(companyBankAccountRows ? companyBankAccountRows.map(x => CompanyBankAccountRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                supplierBankAccounts = supplierBankAccounts.filter(x => !diff.variables.SupplierBankAccount.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.SupplierBankAccount.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables.SupplierBankAccount.replace)
+                companyBankAccounts = companyBankAccounts.filter(x => !diff.variables.CompanyBankAccount.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.CompanyBankAccount.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables.CompanyBankAccount.replace)
             })
-            diff.variables.SupplierBankAccount.replace = diff.variables.SupplierBankAccount.replace.addAll(supplierBankAccounts.filter(x => x.values.supplier.toString() === variableName).map(x => new SupplierBankAccountVariable(x.variableName.toString(), {
-                supplier: new Supplier(updatedVariableName),
+            diff.variables.CompanyBankAccount.replace = diff.variables.CompanyBankAccount.replace.addAll(companyBankAccounts.filter(x => x.values.company.toString() === variableName).map(x => new CompanyBankAccountVariable(x.variableName.toString(), {
+                company: new Company(updatedVariableName),
                 bankAccount: new BankAccount(x.values.bankAccount.toString())
             })))
-            diff.variables.SupplierBankAccount.remove = diff.variables.SupplierBankAccount.remove.addAll(supplierBankAccounts.filter(x => x.values.supplier.toString() === variableName).map(x => new SupplierBankAccount(x.variableName.toString())))
+            diff.variables.CompanyBankAccount.remove = diff.variables.CompanyBankAccount.remove.addAll(companyBankAccounts.filter(x => x.values.company.toString() === variableName).map(x => new CompanyBankAccount(x.variableName.toString())))
 
-            const supplierProductRows = await db.supplierProducts.toArray()
-            let supplierProducts = Vector.of<Immutable<SupplierProductVariable>>().appendAll(supplierProductRows ? supplierProductRows.map(x => SupplierProductRow.toVariable(x)) : [])
+            const companyProductRows = await db.companyProducts.toArray()
+            let companyProducts = Vector.of<Immutable<CompanyProductVariable>>().appendAll(companyProductRows ? companyProductRows.map(x => CompanyProductRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                supplierProducts = supplierProducts.filter(x => !diff.variables.SupplierProduct.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.SupplierProduct.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables.SupplierProduct.replace)
+                companyProducts = companyProducts.filter(x => !diff.variables.CompanyProduct.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.CompanyProduct.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables.CompanyProduct.replace)
             })
-            diff.variables.SupplierProduct.replace = diff.variables.SupplierProduct.replace.addAll(supplierProducts.filter(x => x.values.supplier.toString() === variableName).map(x => new SupplierProductVariable(x.variableName.toString(), {
-                supplier: new Supplier(updatedVariableName),
+            diff.variables.CompanyProduct.replace = diff.variables.CompanyProduct.replace.addAll(companyProducts.filter(x => x.values.company.toString() === variableName).map(x => new CompanyProductVariable(x.variableName.toString(), {
+                company: new Company(updatedVariableName),
                 product: new Product(x.values.product.toString())
             })))
-            diff.variables.SupplierProduct.remove = diff.variables.SupplierProduct.remove.addAll(supplierProducts.filter(x => x.values.supplier.toString() === variableName).map(x => new SupplierProduct(x.variableName.toString())))
+            diff.variables.CompanyProduct.remove = diff.variables.CompanyProduct.remove.addAll(companyProducts.filter(x => x.values.company.toString() === variableName).map(x => new CompanyProduct(x.variableName.toString())))
 
             const quotationRows = await db.quotations.toArray()
             let quotations = Vector.of<Immutable<QuotationVariable>>().appendAll(quotationRows ? quotationRows.map(x => QuotationRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
                 quotations = quotations.filter(x => !diff.variables.Quotation.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.Quotation.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables.Quotation.replace)
             })
-            diff.variables.Quotation.replace = diff.variables.Quotation.replace.addAll(quotations.filter(x => x.values.supplier.toString() === variableName).map(x => new QuotationVariable(x.variableName.toString(), {
+            diff.variables.Quotation.replace = diff.variables.Quotation.replace.addAll(quotations.filter(x => x.values.company.toString() === variableName).map(x => new QuotationVariable(x.variableName.toString(), {
                 indent: new Indent(x.values.indent.toString()),
-                supplier: new Supplier(updatedVariableName)
+                company: new Company(updatedVariableName)
             })))
-            diff.variables.Quotation.remove = diff.variables.Quotation.remove.addAll(quotations.filter(x => x.values.supplier.toString() === variableName).map(x => new Quotation(x.variableName.toString())))
+            diff.variables.Quotation.remove = diff.variables.Quotation.remove.addAll(quotations.filter(x => x.values.company.toString() === variableName).map(x => new Quotation(x.variableName.toString())))
 
             break
         }
-        case 'SupplierAddress': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new SupplierAddress(variableName))
+        case 'CompanyAddress': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyAddress(variableName))
             break
         }
-        case 'SupplierContact': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new SupplierContact(variableName))
+        case 'CompanyContact': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyContact(variableName))
             break
         }
-        case 'SupplierBankAccount': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new SupplierBankAccount(variableName))
+        case 'CompanyBankAccount': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyBankAccount(variableName))
             break
         }
         case 'Product': {
-            // Updated variableName affects references in UOM, IndentItem, SupplierProduct, BOMItem
+            // Updated variableName affects references in UOM, IndentItem, CompanyProduct, BOMItem
             diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Product(variableName))
 
             const uomRows = await db.uoms.toArray()
@@ -1118,16 +1118,16 @@ export async function getRenameVariableDiff(typeName: NonPrimitiveType, variable
             })))
             diff.variables.IndentItem.remove = diff.variables.IndentItem.remove.addAll(indentItems.filter(x => x.values.product.toString() === variableName).map(x => new IndentItem(x.variableName.toString())))
 
-            const supplierProductRows = await db.supplierProducts.toArray()
-            let supplierProductItems: Vector<Immutable<SupplierProductVariable>> = Vector.of<Immutable<SupplierProductVariable>>().appendAll(supplierProductRows ? supplierProductRows.map(x => SupplierProductRow.toVariable(x)) : [])
+            const companyProductRows = await db.companyProducts.toArray()
+            let companyProductItems: Vector<Immutable<CompanyProductVariable>> = Vector.of<Immutable<CompanyProductVariable>>().appendAll(companyProductRows ? companyProductRows.map(x => CompanyProductRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                supplierProductItems = supplierProductItems.filter(x => !diff.variables.SupplierProduct.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.SupplierProduct.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables.SupplierProduct.replace)
+                companyProductItems = companyProductItems.filter(x => !diff.variables.CompanyProduct.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.CompanyProduct.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables.CompanyProduct.replace)
             })
-            diff.variables.SupplierProduct.replace = diff.variables.SupplierProduct.replace.addAll(supplierProductItems.filter(x => x.values.product.toString() === variableName).map(x => new SupplierProductVariable(x.variableName.toString(), {
-                supplier: new Supplier(x.values.supplier.toString()),
+            diff.variables.CompanyProduct.replace = diff.variables.CompanyProduct.replace.addAll(companyProductItems.filter(x => x.values.product.toString() === variableName).map(x => new CompanyProductVariable(x.variableName.toString(), {
+                company: new Company(x.values.company.toString()),
                 product: new Product(updatedVariableName)
             })))
-            diff.variables.SupplierProduct.remove = diff.variables.SupplierProduct.remove.addAll(supplierProductItems.filter(x => x.values.product.toString() === variableName).map(x => new SupplierProduct(x.variableName.toString())))
+            diff.variables.CompanyProduct.remove = diff.variables.CompanyProduct.remove.addAll(companyProductItems.filter(x => x.values.product.toString() === variableName).map(x => new CompanyProduct(x.variableName.toString())))
 
             const bomItemRows = await db.bomItems.toArray()
             let bomItems: Vector<Immutable<BOMItemVariable>> = Vector.of<Immutable<BOMItemVariable>>().appendAll(bomItemRows ? bomItemRows.map(x => BOMItemRow.toVariable(x)) : [])
@@ -1156,8 +1156,8 @@ export async function getRenameVariableDiff(typeName: NonPrimitiveType, variable
             diff.variables[typeName].remove = diff.variables[typeName].remove.add(new IndentItem(variableName))
             break
         }
-        case 'SupplierProduct': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new SupplierProduct(variableName))
+        case 'CompanyProduct': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyProduct(variableName))
             break
         }
         case 'Quotation': {
@@ -1592,24 +1592,24 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             }
             return undefined
         }
-        case 'Supplier': {
+        case 'Company': {
             for (const diff of overlay.reverse().toArray()) {
-                for (const variable of diff.variables.Supplier.replace.toArray()) {
+                for (const variable of diff.variables.Company.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables.Supplier.remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables.Company.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
-                for (const variable of diff.variables.Supplier.replace.toArray()) {
+                for (const variable of diff.variables.Company.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables.Supplier.remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables.Company.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
             }
@@ -1619,24 +1619,24 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             }
             return undefined
         }
-        case 'SupplierAddress': {
+        case 'CompanyAddress': {
             for (const diff of overlay.reverse().toArray()) {
-                for (const variable of diff.variables.SupplierAddress.replace.toArray()) {
+                for (const variable of diff.variables.CompanyAddress.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables.SupplierAddress.remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables.CompanyAddress.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
-                for (const variable of diff.variables.SupplierAddress.replace.toArray()) {
+                for (const variable of diff.variables.CompanyAddress.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables.SupplierAddress.remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables.CompanyAddress.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
             }
@@ -1646,24 +1646,24 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             }
             return undefined
         }
-        case 'SupplierContact': {
+        case 'CompanyContact': {
             for (const diff of overlay.reverse().toArray()) {
-                for (const variable of diff.variables.SupplierContact.replace.toArray()) {
+                for (const variable of diff.variables.CompanyContact.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables.SupplierContact.remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables.CompanyContact.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
-                for (const variable of diff.variables.SupplierContact.replace.toArray()) {
+                for (const variable of diff.variables.CompanyContact.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables.SupplierContact.remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables.CompanyContact.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
             }
@@ -1673,24 +1673,24 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             }
             return undefined
         }
-        case 'SupplierBankAccount': {
+        case 'CompanyBankAccount': {
             for (const diff of overlay.reverse().toArray()) {
-                for (const variable of diff.variables.SupplierBankAccount.replace.toArray()) {
+                for (const variable of diff.variables.CompanyBankAccount.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables.SupplierBankAccount.remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables.CompanyBankAccount.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
-                for (const variable of diff.variables.SupplierBankAccount.replace.toArray()) {
+                for (const variable of diff.variables.CompanyBankAccount.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables.SupplierBankAccount.remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables.CompanyBankAccount.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
             }
@@ -1808,30 +1808,30 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
             }
             return undefined
         }
-        case 'SupplierProduct': {
+        case 'CompanyProduct': {
             for (const diff of overlay.reverse().toArray()) {
-                for (const variable of diff.variables.SupplierProduct.replace.toArray()) {
+                for (const variable of diff.variables.CompanyProduct.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables.SupplierProduct.remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables.CompanyProduct.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
-                for (const variable of diff.variables.SupplierProduct.replace.toArray()) {
+                for (const variable of diff.variables.CompanyProduct.replace.toArray()) {
                     if (variable.variableName.toString() === variableName) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables.SupplierProduct.remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables.CompanyProduct.remove.anyMatch(x => x.toString() === variableName)) {
                     return undefined
                 }
             }
-            const row = await db.supplierProducts.get(variableName)
+            const row = await db.companyProducts.get(variableName)
             if (row !== undefined) {
-                return SupplierProductRow.toVariable(row) as Variable
+                return CompanyProductRow.toVariable(row) as Variable
             }
             return undefined
         }
@@ -2508,33 +2508,33 @@ export async function getVariables(typeName: NonPrimitiveType, overlay: Vector<D
             })
             return composedVariables
         }
-        case 'Supplier': {
-            const rows = await db.suppliers.orderBy('variableName').toArray()
-            let composedVariables = Vector.of<Immutable<SupplierVariable>>().appendAll(rows ? rows.map(x => SupplierRow.toVariable(x)) : [])
+        case 'Company': {
+            const rows = await db.companies.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<CompanyVariable>>().appendAll(rows ? rows.map(x => CompanyRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
                 composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
-        case 'SupplierAddress': {
-            const rows = await db.supplierAddresses.orderBy('variableName').toArray()
-            let composedVariables = Vector.of<Immutable<SupplierAddressVariable>>().appendAll(rows ? rows.map(x => SupplierAddressRow.toVariable(x)) : [])
+        case 'CompanyAddress': {
+            const rows = await db.companyAddresses.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<CompanyAddressVariable>>().appendAll(rows ? rows.map(x => CompanyAddressRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
                 composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
-        case 'SupplierContact': {
-            const rows = await db.supplierContacts.orderBy('variableName').toArray()
-            let composedVariables = Vector.of<Immutable<SupplierContactVariable>>().appendAll(rows ? rows.map(x => SupplierContactRow.toVariable(x)) : [])
+        case 'CompanyContact': {
+            const rows = await db.companyContacts.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<CompanyContactVariable>>().appendAll(rows ? rows.map(x => CompanyContactRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
                 composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
-        case 'SupplierBankAccount': {
-            const rows = await db.supplierBankAccounts.orderBy('variableName').toArray()
-            let composedVariables = Vector.of<Immutable<SupplierBankAccountVariable>>().appendAll(rows ? rows.map(x => SupplierBankAccountRow.toVariable(x)) : [])
+        case 'CompanyBankAccount': {
+            const rows = await db.companyBankAccounts.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<CompanyBankAccountVariable>>().appendAll(rows ? rows.map(x => CompanyBankAccountRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
                 composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
             })
@@ -2572,9 +2572,9 @@ export async function getVariables(typeName: NonPrimitiveType, overlay: Vector<D
             })
             return composedVariables
         }
-        case 'SupplierProduct': {
-            const rows = await db.supplierProducts.orderBy('variableName').toArray()
-            let composedVariables = Vector.of<Immutable<SupplierProductVariable>>().appendAll(rows ? rows.map(x => SupplierProductRow.toVariable(x)) : [])
+        case 'CompanyProduct': {
+            const rows = await db.companyProducts.orderBy('variableName').toArray()
+            let composedVariables = Vector.of<Immutable<CompanyProductVariable>>().appendAll(rows ? rows.map(x => CompanyProductRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
                 composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
             })

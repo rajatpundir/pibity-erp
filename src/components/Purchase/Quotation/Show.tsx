@@ -8,7 +8,7 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { Indent, IndentItem, IndentItemVariable, IndentVariable, Quotation, QuotationItemVariable, QuotationVariable, Supplier, SupplierVariable } from '../../../main/variables'
+import { Indent, IndentItem, IndentItemVariable, IndentVariable, Quotation, QuotationItemVariable, QuotationVariable, Company, CompanyVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter } from 'react-router-dom'
@@ -17,7 +17,7 @@ import { circuits } from '../../../main/circuits'
 import { iff, when } from '../../../main/utils'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { DiffRow, IndentItemRow, IndentRow, QuotationItemRow, QuotationRow, SupplierRow } from '../../../main/rows'
+import { DiffRow, IndentItemRow, IndentRow, QuotationItemRow, QuotationRow, CompanyRow } from '../../../main/rows'
 import { updateVariable } from '../../../main/mutation'
 
 type State = Immutable<{
@@ -42,7 +42,7 @@ export type Action =
 
 
     | ['variable', 'values', 'indent', Indent]
-    | ['variable', 'values', 'supplier', Supplier]
+    | ['variable', 'values', 'company', Company]
 
     | ['items', 'limit', number]
     | ['items', 'offset', number]
@@ -59,7 +59,7 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new QuotationVariable('', { indent: new Indent(''), supplier: new Supplier(''), }),
+        variable: new QuotationVariable('', { indent: new Indent(''), company: new Company(''), }),
         updatedVariableName: new Quotation(''),
         items: {
             typeName: 'QuotationItem',
@@ -94,7 +94,7 @@ function Component(props) {
                                 state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
-                            case 'supplier': {
+                            case 'company': {
                                 state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
@@ -220,10 +220,10 @@ function Component(props) {
         items = items.filter(x => x.values.indent.toString() === state.variable.values.indent.toString())
     })
 
-    const supplierRows = useLiveQuery(() => db.suppliers.toArray())?.map(x => SupplierRow.toVariable(x))
-    var suppliers = HashSet.of<Immutable<SupplierVariable>>().addAll(supplierRows ? supplierRows : [])
+    const companyRows = useLiveQuery(() => db.companies.toArray())?.map(x => CompanyRow.toVariable(x))
+    var companies = HashSet.of<Immutable<CompanyVariable>>().addAll(companyRows ? companyRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        suppliers = suppliers.filter(x => !diff.variables.Supplier.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.Supplier.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.Supplier.replace)
+        companies = companies.filter(x => !diff.variables.Company.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.Company.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.Company.replace)
     })
 
     const quotation = types['Quotation']
@@ -240,8 +240,8 @@ function Component(props) {
                         dispatch(['variable', 'values', event.target.name, new Indent(event.target.value)])
                         break
                     }
-                    case 'supplier': {
-                        dispatch(['variable', 'values', event.target.name, new Supplier(event.target.value)])
+                    case 'company': {
+                        dispatch(['variable', 'values', event.target.name, new Company(event.target.value)])
                         break
                     }
                 }
@@ -285,7 +285,7 @@ function Component(props) {
     const createVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createQuotation, {
             indent: state.variable.values.indent.toString(),
-            supplier: state.variable.values.supplier.toString(),
+            company: state.variable.values.company.toString(),
             items: state.items.variables.toArray().map(item => {
                 return {
                     indentItem: item.values.indentItem.toString(),
@@ -370,14 +370,14 @@ function Component(props) {
                         }
                     </Item>
                     <Item>
-                        <Label>{quotation.keys.supplier.name}</Label>
+                        <Label>{quotation.keys.company.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Select onChange={onVariableInputChange} value={state.variable.values.supplier.toString()} name='supplier'>
-                                    <option value='' selected disabled hidden>Select Supplier</option>
-                                    {suppliers.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                <Select onChange={onVariableInputChange} value={state.variable.values.company.toString()} name='company'>
+                                    <option value='' selected disabled hidden>Select Company</option>
+                                    {companies.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
                                 </Select>,
-                                <div className='font-bold text-xl'>{state.variable.values.supplier.toString()}</div>
+                                <div className='font-bold text-xl'>{state.variable.values.company.toString()}</div>
                             )
                         }
                     </Item>

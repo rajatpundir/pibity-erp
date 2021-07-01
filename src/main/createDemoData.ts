@@ -8,6 +8,57 @@ export default async function createDemoData() {
     db.diffs.clear()
     var diffs = Vector.of<DiffVariable>()
 
+    const [, , ct1] = await executeCircuit(circuits.createCompanyType, {
+        variableName: 'Ltd'
+    })
+    diffs = diffs.append(ct1)
+
+    const [, , ct2] = await executeCircuit(circuits.createCompanyType, {
+        variableName: 'Pvt Ltd'
+    })
+    diffs = diffs.append(ct2)
+
+    const [, , ct3] = await executeCircuit(circuits.createCompanyType, {
+        variableName: 'Proprietorship'
+    })
+    diffs = diffs.append(ct3)
+
+    const [, , ct4] = await executeCircuit(circuits.createCompanyType, {
+        variableName: 'Partnership'
+    })
+    diffs = diffs.append(ct4)
+
+    const [, , ct5] = await executeCircuit(circuits.createCompanyType, {
+        variableName: 'Corporation'
+    })
+    diffs = diffs.append(ct5)
+
+    const [, , ct6] = await executeCircuit(circuits.createCompanyType, {
+        variableName: 'Franchise'
+    })
+    diffs = diffs.append(ct6)
+
+    const [, , sa1] = await executeCircuit(circuits.createServiceArea, {
+        variableName: 'Local'
+    })
+    diffs = diffs.append(sa1)
+
+    const [, , sa2] = await executeCircuit(circuits.createServiceArea, {
+        variableName: 'Regional'
+    })
+    diffs = diffs.append(sa2)
+
+    const [, , sa3] = await executeCircuit(circuits.createServiceArea, {
+        variableName: 'National'
+    })
+    diffs = diffs.append(sa3)
+
+
+    const [, , sa4] = await executeCircuit(circuits.createServiceArea, {
+        variableName: 'International'
+    })
+    diffs = diffs.append(sa4)
+
     const [, , c2] = await executeCircuit(circuits.createProduct, {
         sku: 'R1',
         name: ' 510kΩ 0.25W ±5% SMD(1206 package)',
@@ -18,7 +69,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 1
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(c2)
 
@@ -32,7 +83,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 2
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(c3)
 
@@ -46,7 +97,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 1
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(c4)
 
@@ -60,7 +111,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 2
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(c5)
 
@@ -74,7 +125,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 1
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(c6)
 
@@ -88,7 +139,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 1
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(c8)
 
@@ -102,7 +153,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 2
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(c9)
 
@@ -116,7 +167,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 2
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(p1)
 
@@ -130,7 +181,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 2
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(p2)
 
@@ -144,7 +195,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 2
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(p3)
 
@@ -158,7 +209,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 2
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(p4)
 
@@ -172,7 +223,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 2
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(p5)
 
@@ -186,7 +237,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 2
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(p6)
 
@@ -200,7 +251,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 2
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(p7)
 
@@ -214,7 +265,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 2
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(p8)
 
@@ -228,7 +279,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 2
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(p9)
 
@@ -242,7 +293,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 2
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(p10)
 
@@ -256,7 +307,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 2
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(pr1)
 
@@ -270,7 +321,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 2
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(pr2)
 
@@ -284,7 +335,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 2
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(pr3)
 
@@ -298,7 +349,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 2
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(pr4)
 
@@ -312,7 +363,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 2
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(pr5)
 
@@ -326,7 +377,7 @@ export default async function createDemoData() {
             name: 'No',
             conversionRate: 2
         }],
-        suppliers: []
+        companies: []
     })
     diffs = diffs.append(pr6)
 

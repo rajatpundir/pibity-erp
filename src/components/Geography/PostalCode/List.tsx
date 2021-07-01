@@ -86,7 +86,7 @@ function Component(props) {
     return (
         <Container area={none} layout={Grid.layouts.main} className='p-10'>
             <Item area={Grid.header} align='center' className='flex'>
-                <Title>PostalCodes</Title>
+                <Title>Postal Codes</Title>
                 <button onClick={() => { props.history.push('/postal-code') }} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2'>+</button>
             </Item>
             <Item area={Grid.filter} justify='end' align='center'>

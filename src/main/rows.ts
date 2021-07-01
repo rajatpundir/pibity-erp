@@ -1,7 +1,7 @@
 import { immerable, Immutable } from 'immer'
 import { HashSet } from 'prelude-ts'
 import { DiffVariable } from './layers'
-import { Number, Decimal, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, SupplierVariable, SupplierProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Supplier, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip, MaterialReturnSlipItem, BOMItem, ProductionPreparationSlipItem, ScrapMaterialSlip, WarehouseAcceptanceSlip, SupplierProduct, RegionVariable, CountryVariable, Region, StateVariable, Country, DistrictVariable, State, SubdistrictVariable, District, PostalCodeVariable, Subdistrict, AddressVariable, PostalCode, ServiceAreaVariable, CompanyTypeVariable, BankVariable, BankBranchVariable, Bank, Address, BankAccountVariable, BankBranch, CompanyType, ServiceArea, SupplierAddressVariable, SupplierContactVariable, SupplierBankAccountVariable, BankAccount, SupplierAddress, SupplierContact, SupplierBankAccount } from './variables'
+import { Number, Decimal, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, CompanyVariable, CompanyProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Company, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip, MaterialReturnSlipItem, BOMItem, ProductionPreparationSlipItem, ScrapMaterialSlip, WarehouseAcceptanceSlip, CompanyProduct, RegionVariable, CountryVariable, Region, StateVariable, Country, DistrictVariable, State, SubdistrictVariable, District, PostalCodeVariable, Subdistrict, AddressVariable, PostalCode, ServiceAreaVariable, CompanyTypeVariable, BankVariable, BankBranchVariable, Bank, Address, BankAccountVariable, BankBranch, CompanyType, ServiceArea, CompanyAddressVariable, CompanyContactVariable, CompanyBankAccountVariable, BankAccount, CompanyAddress, CompanyContact, CompanyBankAccount } from './variables'
 
 export type Row =
     | RegionRow
@@ -16,15 +16,15 @@ export type Row =
     | BankRow
     | BankBranchRow
     | BankAccountRow
-    | SupplierRow
-    | SupplierAddressRow
-    | SupplierContactRow
-    | SupplierBankAccountRow
+    | CompanyRow
+    | CompanyAddressRow
+    | CompanyContactRow
+    | CompanyBankAccountRow
     | ProductRow
     | UOMRow
     | IndentRow
     | IndentItemRow
-    | SupplierProductRow
+    | CompanyProductRow
     | QuotationRow
     | QuotationItemRow
     | PurchaseOrderRow
@@ -342,8 +342,8 @@ export class BankAccountRow {
     }
 }
 
-export class SupplierRow {
-    readonly typeName = 'Supplier'
+export class CompanyRow {
+    readonly typeName = 'Company'
     readonly variableName: string
     values: {
         email: string
@@ -362,8 +362,8 @@ export class SupplierRow {
         this.values = values
     }
 
-    static toVariable(row: SupplierRow): SupplierVariable {
-        return new SupplierVariable(row.variableName, {
+    static toVariable(row: CompanyRow): CompanyVariable {
+        return new CompanyVariable(row.variableName, {
             email: row.values.email,
             telephone: row.values.telephone,
             mobile: row.values.mobile,
@@ -377,45 +377,45 @@ export class SupplierRow {
     }
 }
 
-export class SupplierAddressRow {
-    readonly typeName = 'SupplierAddress'
+export class CompanyAddressRow {
+    readonly typeName = 'CompanyAddress'
     readonly variableName: string
-    readonly supplier: string
+    readonly company: string
     readonly name: string
     readonly address: string
     values: {
-        // UNQ(supplier, name)
-        // UNQ(supplier, address)
-        supplier: string
+        // UNQ(company, name)
+        // UNQ(company, address)
+        company: string
         name: string
         address: string
     }
 
-    constructor(variableName: string, values: { supplier: string, name: string, address: string }) {
+    constructor(variableName: string, values: { company: string, name: string, address: string }) {
         this.variableName = variableName
         this.values = values
-        this.supplier = values.supplier
+        this.company = values.company
         this.name = values.name
         this.address = values.address
     }
 
-    static toVariable(row: SupplierAddressRow): SupplierAddressVariable {
-        return new SupplierAddressVariable(row.variableName, {
-            supplier: new Supplier(row.values.supplier),
+    static toVariable(row: CompanyAddressRow): CompanyAddressVariable {
+        return new CompanyAddressVariable(row.variableName, {
+            company: new Company(row.values.company),
             name: row.values.name,
             address: new Address(row.values.address)
         })
     }
 }
 
-export class SupplierContactRow {
-    readonly typeName = 'SupplierContact'
+export class CompanyContactRow {
+    readonly typeName = 'CompanyContact'
     readonly variableName: string
-    readonly supplier: string
+    readonly company: string
     readonly name: string
     values: {
-        // UNQ(supplier, name)
-        supplier: string
+        // UNQ(company, name)
+        company: string
         name: string
         designation: string
         email: string
@@ -423,16 +423,16 @@ export class SupplierContactRow {
         mobile: string
     }
 
-    constructor(variableName: string, values: { supplier: string, name: string, designation: string, email: string, telephone: string, mobile: string }) {
+    constructor(variableName: string, values: { company: string, name: string, designation: string, email: string, telephone: string, mobile: string }) {
         this.variableName = variableName
         this.values = values
-        this.supplier = values.supplier
+        this.company = values.company
         this.name = values.name
     }
 
-    static toVariable(row: SupplierContactRow): SupplierContactVariable {
-        return new SupplierContactVariable(row.variableName, {
-            supplier: new Supplier(row.values.supplier),
+    static toVariable(row: CompanyContactRow): CompanyContactVariable {
+        return new CompanyContactVariable(row.variableName, {
+            company: new Company(row.values.company),
             name: row.values.name,
             designation: row.values.designation,
             email: row.values.email,
@@ -442,27 +442,27 @@ export class SupplierContactRow {
     }
 }
 
-export class SupplierBankAccountRow {
-    readonly typeName = 'SupplierBankAccount'
+export class CompanyBankAccountRow {
+    readonly typeName = 'CompanyBankAccount'
     readonly variableName: string
-    readonly supplier: string
+    readonly company: string
     readonly bankAccount: string
     values: {
-        // UNQ(supplier, bankAccount)
-        supplier: string
+        // UNQ(company, bankAccount)
+        company: string
         bankAccount: string
     }
 
-    constructor(variableName: string, values: { supplier: string, bankAccount: string }) {
+    constructor(variableName: string, values: { company: string, bankAccount: string }) {
         this.variableName = variableName
         this.values = values
-        this.supplier = values.supplier
+        this.company = values.company
         this.bankAccount = values.bankAccount
     }
 
-    static toVariable(row: SupplierBankAccountRow): SupplierBankAccountVariable {
-        return new SupplierBankAccountVariable(row.variableName, {
-            supplier: new Supplier(row.values.supplier),
+    static toVariable(row: CompanyBankAccountRow): CompanyBankAccountVariable {
+        return new CompanyBankAccountVariable(row.variableName, {
+            company: new Company(row.values.company),
             bankAccount: new BankAccount(row.values.bankAccount)
         })
     }
@@ -589,27 +589,27 @@ export class IndentItemRow {
     }
 }
 
-export class SupplierProductRow {
-    readonly typeName = 'SupplierProduct'
+export class CompanyProductRow {
+    readonly typeName = 'CompanyProduct'
     readonly variableName: string
-    readonly supplier: string
+    readonly company: string
     readonly product: string
     values: {
-        // UNQ(supplier, product)
-        supplier: string
+        // UNQ(company, product)
+        company: string
         product: string
     }
 
-    constructor(variableName: string, values: { supplier: string, product: string }) {
+    constructor(variableName: string, values: { company: string, product: string }) {
         this.variableName = variableName
         this.values = values
-        this.supplier = values.supplier
+        this.company = values.company
         this.product = values.product
     }
 
-    static toVariable(row: SupplierProductRow): SupplierProductVariable {
-        return new SupplierProductVariable(row.variableName, {
-            supplier: new Supplier(row.values.supplier),
+    static toVariable(row: CompanyProductRow): CompanyProductVariable {
+        return new CompanyProductVariable(row.variableName, {
+            company: new Company(row.values.company),
             product: new Product(row.values.product)
         })
     }
@@ -620,10 +620,10 @@ export class QuotationRow {
     readonly variableName: string
     values: {
         indent: string
-        supplier: string
+        company: string
     }
 
-    constructor(variableName: string, values: { indent: string, supplier: string }) {
+    constructor(variableName: string, values: { indent: string, company: string }) {
         this.variableName = variableName
         this.values = values
     }
@@ -631,7 +631,7 @@ export class QuotationRow {
     static toVariable(row: QuotationRow): QuotationVariable {
         return new QuotationVariable(row.variableName, {
             indent: new Indent(row.values.indent),
-            supplier: new Supplier(row.values.supplier)
+            company: new Company(row.values.company)
         })
     }
 }
@@ -1204,20 +1204,20 @@ export class DiffRow {
             replace: Array<BankAccountRow>
             remove: Array<string>
         }
-        Supplier: {
-            replace: Array<SupplierRow>
+        Company: {
+            replace: Array<CompanyRow>
             remove: Array<string>
         }
-        SupplierAddress: {
-            replace: Array<SupplierAddressRow>
+        CompanyAddress: {
+            replace: Array<CompanyAddressRow>
             remove: Array<string>
         }
-        SupplierContact: {
-            replace: Array<SupplierContactRow>
+        CompanyContact: {
+            replace: Array<CompanyContactRow>
             remove: Array<string>
         }
-        SupplierBankAccount: {
-            replace: Array<SupplierBankAccountRow>
+        CompanyBankAccount: {
+            replace: Array<CompanyBankAccountRow>
             remove: Array<string>
         }
         Product: {
@@ -1236,8 +1236,8 @@ export class DiffRow {
             replace: Array<IndentItemRow>
             remove: Array<string>
         },
-        SupplierProduct: {
-            replace: Array<SupplierProductRow>
+        CompanyProduct: {
+            replace: Array<CompanyProductRow>
             remove: Array<string>
         },
         Quotation: {
@@ -1375,20 +1375,20 @@ export class DiffRow {
             replace: Array<BankAccountRow>
             remove: Array<string>
         }
-        Supplier: {
-            replace: Array<SupplierRow>
+        Company: {
+            replace: Array<CompanyRow>
             remove: Array<string>
         }
-        SupplierAddress: {
-            replace: Array<SupplierAddressRow>
+        CompanyAddress: {
+            replace: Array<CompanyAddressRow>
             remove: Array<string>
         }
-        SupplierContact: {
-            replace: Array<SupplierContactRow>
+        CompanyContact: {
+            replace: Array<CompanyContactRow>
             remove: Array<string>
         }
-        SupplierBankAccount: {
-            replace: Array<SupplierBankAccountRow>
+        CompanyBankAccount: {
+            replace: Array<CompanyBankAccountRow>
             remove: Array<string>
         }
         Product: {
@@ -1407,8 +1407,8 @@ export class DiffRow {
             replace: Array<IndentItemRow>,
             remove: Array<string>
         },
-        SupplierProduct: {
-            replace: Array<SupplierProductRow>,
+        CompanyProduct: {
+            replace: Array<CompanyProductRow>,
             remove: Array<string>
         },
         Quotation: {
@@ -1550,21 +1550,21 @@ export class DiffRow {
                 replace: HashSet.of<BankAccountVariable>().addAll(diff.variables.BankAccount.replace.map(x => BankAccountRow.toVariable(x))),
                 remove: HashSet.of<BankAccount>().addAll(diff.variables.BankAccount.remove.map(x => new BankAccount(x)))
             },
-            Supplier: {
-                replace: HashSet.of<SupplierVariable>().addAll(diff.variables.Supplier.replace.map(x => SupplierRow.toVariable(x))),
-                remove: HashSet.of<Supplier>().addAll(diff.variables.Supplier.remove.map(x => new Supplier(x)))
+            Company: {
+                replace: HashSet.of<CompanyVariable>().addAll(diff.variables.Company.replace.map(x => CompanyRow.toVariable(x))),
+                remove: HashSet.of<Company>().addAll(diff.variables.Company.remove.map(x => new Company(x)))
             },
-            SupplierAddress: {
-                replace: HashSet.of<SupplierAddressVariable>().addAll(diff.variables.SupplierAddress.replace.map(x => SupplierAddressRow.toVariable(x))),
-                remove: HashSet.of<SupplierAddress>().addAll(diff.variables.SupplierAddress.remove.map(x => new SupplierAddress(x)))
+            CompanyAddress: {
+                replace: HashSet.of<CompanyAddressVariable>().addAll(diff.variables.CompanyAddress.replace.map(x => CompanyAddressRow.toVariable(x))),
+                remove: HashSet.of<CompanyAddress>().addAll(diff.variables.CompanyAddress.remove.map(x => new CompanyAddress(x)))
             },
-            SupplierContact: {
-                replace: HashSet.of<SupplierContactVariable>().addAll(diff.variables.SupplierContact.replace.map(x => SupplierContactRow.toVariable(x))),
-                remove: HashSet.of<SupplierContact>().addAll(diff.variables.SupplierContact.remove.map(x => new SupplierContact(x)))
+            CompanyContact: {
+                replace: HashSet.of<CompanyContactVariable>().addAll(diff.variables.CompanyContact.replace.map(x => CompanyContactRow.toVariable(x))),
+                remove: HashSet.of<CompanyContact>().addAll(diff.variables.CompanyContact.remove.map(x => new CompanyContact(x)))
             },
-            SupplierBankAccount: {
-                replace: HashSet.of<SupplierBankAccountVariable>().addAll(diff.variables.SupplierBankAccount.replace.map(x => SupplierBankAccountRow.toVariable(x))),
-                remove: HashSet.of<SupplierBankAccount>().addAll(diff.variables.SupplierBankAccount.remove.map(x => new SupplierBankAccount(x)))
+            CompanyBankAccount: {
+                replace: HashSet.of<CompanyBankAccountVariable>().addAll(diff.variables.CompanyBankAccount.replace.map(x => CompanyBankAccountRow.toVariable(x))),
+                remove: HashSet.of<CompanyBankAccount>().addAll(diff.variables.CompanyBankAccount.remove.map(x => new CompanyBankAccount(x)))
             },
             Product: {
                 replace: HashSet.of<ProductVariable>().addAll(diff.variables.Product.replace.map(x => ProductRow.toVariable(x))),
@@ -1582,9 +1582,9 @@ export class DiffRow {
                 replace: HashSet.of<IndentItemVariable>().addAll(diff.variables.IndentItem.replace.map(x => IndentItemRow.toVariable(x))),
                 remove: HashSet.of<IndentItem>().addAll(diff.variables.IndentItem.remove.map(x => new IndentItem(x)))
             },
-            SupplierProduct: {
-                replace: HashSet.of<SupplierProductVariable>().addAll(diff.variables.SupplierProduct.replace.map(x => SupplierProductRow.toVariable(x))),
-                remove: HashSet.of<SupplierProduct>().addAll(diff.variables.SupplierProduct.remove.map(x => new SupplierProduct(x)))
+            CompanyProduct: {
+                replace: HashSet.of<CompanyProductVariable>().addAll(diff.variables.CompanyProduct.replace.map(x => CompanyProductRow.toVariable(x))),
+                remove: HashSet.of<CompanyProduct>().addAll(diff.variables.CompanyProduct.remove.map(x => new CompanyProduct(x)))
             },
             Quotation: {
                 replace: HashSet.of<QuotationVariable>().addAll(diff.variables.Quotation.replace.map(x => QuotationRow.toVariable(x))),

@@ -39,14 +39,14 @@ export type MapperName =
     | 'createBankAccounts'
     | 'deleteBankAccounts'
 
-    | 'createSupplierAddresses'
-    | 'deleteSupplierAddresses'
+    | 'createCompanyAddresses'
+    | 'deleteCompanyAddresses'
 
-    | 'createSupplierContacts'
-    | 'deleteSupplierContacts'
+    | 'createCompanyContacts'
+    | 'deleteCompanyContacts'
 
-    | 'createSupplierBankAccounts'
-    | 'deleteSupplierBankAccounts'
+    | 'createCompanyBankAccounts'
+    | 'deleteCompanyBankAccounts'
 
     | 'createUOMs'
     | 'deleteUOMs'
@@ -54,11 +54,11 @@ export type MapperName =
     | 'createIndentItems'
     | 'deleteIndentItems'
 
-    | 'createProductSuppliers'
-    | 'deleteProductSuppliers'
+    | 'createProductCompanies'
+    | 'deleteProductCompanies'
 
-    | 'createSupplierProducts'
-    | 'deleteSupplierProducts'
+    | 'createCompanyProducts'
+    | 'deleteCompanyProducts'
 
     | 'createQuotationItems'
     | 'deleteQuotationItems'
@@ -184,41 +184,41 @@ export const mappers: Record<MapperName, Mapper> = {
         functionName: 'deleteBankAccount',
         functionInput: 'variableName'
     },
-    createSupplierAddresses: {
+    createCompanyAddresses: {
         query: false,
         queryParams: [],
-        functionName: 'createSupplierAddress',
-        functionInput: 'supplier'
+        functionName: 'createCompanyAddress',
+        functionInput: 'company'
     },
-    deleteSupplierAddresses: {
+    deleteCompanyAddresses: {
         query: true,
-        queryParams: ['supplier'],
-        functionName: 'deleteSupplierAddress',
+        queryParams: ['company'],
+        functionName: 'deleteCompanyAddress',
         functionInput: 'variableName'
     },
-    createSupplierContacts: {
+    createCompanyContacts: {
         query: false,
         queryParams: [],
-        functionName: 'createSupplierContact',
-        functionInput: 'supplier'
+        functionName: 'createCompanyContact',
+        functionInput: 'company'
     },
-    deleteSupplierContacts: {
+    deleteCompanyContacts: {
         query: true,
-        queryParams: ['supplier'],
-        functionName: 'deleteSupplierContact',
+        queryParams: ['company'],
+        functionName: 'deleteCompanyContact',
         functionInput: 'variableName'
     },
-    createSupplierBankAccounts: {
+    createCompanyBankAccounts: {
         query: false,
         queryParams: [],
-        functionName: 'createSupplierBankAccount',
-        functionInput: 'supplier'
+        functionName: 'createCompanyBankAccount',
+        functionInput: 'company'
     },
-    deleteSupplierBankAccounts: {
+    deleteCompanyBankAccounts: {
         query: true,
         queryParams: ['region'],
-        functionName: 'deleteSupplierBankAccount',
-        functionInput: 'supplier'
+        functionName: 'deleteCompanyBankAccount',
+        functionInput: 'company'
     },
     createUOMs: {
         query: false,
@@ -244,28 +244,28 @@ export const mappers: Record<MapperName, Mapper> = {
         functionName: 'deleteIndentItem',
         functionInput: 'variableName'
     },
-    createSupplierProducts: {
+    createCompanyProducts: {
         query: false,
         queryParams: [],
-        functionName: 'createSupplierProduct',
-        functionInput: 'supplier'
+        functionName: 'createCompanyProduct',
+        functionInput: 'company'
     },
-    deleteSupplierProducts: {
+    deleteCompanyProducts: {
         query: true,
-        queryParams: ['supplier'],
-        functionName: 'deleteSupplierProduct',
+        queryParams: ['company'],
+        functionName: 'deleteCompanyProduct',
         functionInput: 'variableName'
     },
-    createProductSuppliers: {
+    createProductCompanies: {
         query: false,
         queryParams: [],
-        functionName: 'createSupplierProduct',
+        functionName: 'createCompanyProduct',
         functionInput: 'product'
     },
-    deleteProductSuppliers: {
+    deleteProductCompanies: {
         query: true,
         queryParams: ['product'],
-        functionName: 'deleteSupplierProduct',
+        functionName: 'deleteCompanyProduct',
         functionInput: 'variableName'
     },
     createQuotationItems: {

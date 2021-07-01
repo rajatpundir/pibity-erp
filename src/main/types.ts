@@ -25,13 +25,13 @@ export type NonPrimitiveType =
     | 'Bank'
     | 'BankBranch'
     | 'BankAccount'
-    | 'Supplier'
-    | 'SupplierAddress'
-    | 'SupplierContact'
-    | 'SupplierBankAccount'
+    | 'Company'
+    | 'CompanyAddress'
+    | 'CompanyContact'
+    | 'CompanyBankAccount'
     | 'Product'
     | 'UOM'
-    | 'SupplierProduct'
+    | 'CompanyProduct'
     | 'Indent'
     | 'IndentItem'
     | 'Quotation'
@@ -276,10 +276,10 @@ export const types = {
             }
         }
     },
-    Supplier: {
-        name: 'Supplier',
+    Company: {
+        name: 'Company',
         autoId: false,
-        url: 'supplier',
+        url: 'company',
         keys: {
             email: {
                 order: 0,
@@ -293,7 +293,7 @@ export const types = {
             },
             mobile: {
                 order: 2,
-                name: 'Name',
+                name: 'Mobile',
                 type: 'Text'
             },
             website: {
@@ -328,14 +328,14 @@ export const types = {
             }
         }
     },
-    SupplierAddress: {
-        name: 'Supplier Address',
+    CompanyAddress: {
+        name: 'Company Address',
         autoId: true,
         keys: {
-            supplier: {
+            company: {
                 order: 0,
-                name: 'Supplier',
-                type: 'Supplier'
+                name: 'Company',
+                type: 'Company'
             },
             name: {
                 order: 1,
@@ -349,14 +349,14 @@ export const types = {
             }
         }
     },
-    SupplierContact: {
-        name: 'Supplier Contact',
+    CompanyContact: {
+        name: 'Company Contact',
         autoId: true,
         keys: {
-            supplier: {
+            company: {
                 order: 0,
-                name: 'Supplier',
-                type: 'Supplier'
+                name: 'Company',
+                type: 'Company'
             },
             name: {
                 order: 1,
@@ -385,14 +385,14 @@ export const types = {
             }
         }
     },
-    SupplierBankAccount: {
-        name: 'Supplier Bank Account',
+    CompanyBankAccount: {
+        name: 'Company Bank Account',
         autoId: true,
         keys: {
-            supplier: {
+            company: {
                 order: 0,
-                name: 'Supplier',
-                type: 'Supplier'
+                name: 'Company',
+                type: 'Company'
             },
             bankAccount: {
                 order: 1,
@@ -516,14 +516,14 @@ export const types = {
             }
         }
     },
-    SupplierProduct: {
-        name: 'Supplier Product',
+    CompanyProduct: {
+        name: 'Company Product',
         autoId: true,
         keys: {
-            supplier: {
+            company: {
                 order: 0,
-                name: 'Supplier',
-                type: 'Supplier'
+                name: 'Company',
+                type: 'Company'
             },
             product: {
                 order: 1,
@@ -542,10 +542,10 @@ export const types = {
                 name: 'Indent',
                 type: 'Indent'
             },
-            supplier: {
+            company: {
                 order: 1,
-                name: 'Supplier',
-                type: 'Supplier'
+                name: 'Company',
+                type: 'Company'
             }
         }
     },
