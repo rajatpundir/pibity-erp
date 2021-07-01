@@ -53,13 +53,190 @@ export default async function createDemoData() {
     })
     diffs = diffs.append(sa3)
 
-
     const [, , sa4] = await executeCircuit(circuits.createServiceArea, {
         variableName: 'International'
     })
     diffs = diffs.append(sa4)
 
-    const [, , c2] = await executeCircuit(circuits.createProduct, {
+    db.diffs.put(mergeDiffs(diffs.toArray()).toRow())
+
+    const [, , s1] = await executeCircuit(circuits.createCompany, {
+        variableName: 'Vistas LLP',
+        email: 'vistaselectricals@gmail.com',
+        telephone: '',
+        mobile: '9540406429',
+        website: '',
+        companyType: 'LLP',
+        serviceArea: 'National',
+        gstin: '09AAQFV5708G1ZO',
+        pan: 'AAQFV5708G',
+        iec: 'AAQFV5708G',
+        addresses: [],
+        contacts: [],
+        bankAccounts: [],
+        products: []
+    })
+    diffs = diffs.append(s1)
+
+    const [, , s2] = await executeCircuit(circuits.createCompany, {
+        variableName: 'Victor Component PVT Ltd',
+        email: '',
+        telephone: '',
+        mobile: '9716624976',
+        website: '',
+        companyType: 'Pvt Ltd',
+        serviceArea: 'National',
+        gstin: '09AAACV1927G1ZD',
+        pan: 'AAACV1927G',
+        iec: 'AAACV1927G',
+        addresses: [],
+        contacts: [],
+        bankAccounts: [],
+        products: []
+    })
+    diffs = diffs.append(s2)
+
+    const [, , s3] = await executeCircuit(circuits.createCompany, {
+        variableName: 'Hob Nob Electronics Pvt. Ltd',
+        email: 'yash.arya@jyyautomation.com',
+        telephone: '',
+        mobile: '9953132379',
+        website: '',
+        companyType: 'Pvt Ltd',
+        serviceArea: 'National',
+        gstin: '09AAACH6202N1ZI',
+        pan: 'AAACH6202N1',
+        iec: 'AAACH6202N1',
+        addresses: [],
+        contacts: [],
+        bankAccounts: [],
+        products: []
+    })
+    diffs = diffs.append(s3)
+
+    const [, , s4] = await executeCircuit(circuits.createCompany, {
+        variableName: 'Purnima Lighting PVT Ltd',
+        email: 'shailendra.singh@purnimasolarindia.com',
+        telephone: '',
+        mobile: '9871622628',
+        website: '',
+        companyType: 'Pvt Ltd',
+        serviceArea: 'National',
+        gstin: '09AABCL2371F1ZO',
+        pan: 'AABCL2371F1',
+        iec: 'AABCL2371F1',
+        addresses: [],
+        contacts: [],
+        bankAccounts: [],
+        products: []
+    })
+    diffs = diffs.append(s4)
+
+    const [, , s5] = await executeCircuit(circuits.createCompany, {
+        variableName: 'Relish Overses',
+        email: 'nautiyal131@gmail.com',
+        telephone: '',
+        mobile: '9810533617',
+        website: '',
+        companyType: 'Pvt Ltd',
+        serviceArea: 'National',
+        gstin: '09AASFR6912Q1Z5',
+        pan: 'AASFR6912Q1',
+        iec: 'AASFR6912Q1',
+        addresses: [],
+        contacts: [],
+        bankAccounts: [],
+        products: []
+    })
+    diffs = diffs.append(s5)
+
+    const [, , s6] = await executeCircuit(circuits.createCompany, {
+        variableName: 'Bright Westech PVT Ltd',
+        email: 'info@westechindia.co.in',
+        telephone: '',
+        mobile: '7600784757',
+        website: '',
+        companyType: 'Pvt Ltd',
+        serviceArea: 'National',
+        gstin: '09AAHCB5661Q1ZY',
+        pan: 'AAHCB5661Q1',
+        iec: 'AAHCB5661Q1',
+        addresses: [],
+        contacts: [],
+        bankAccounts: [],
+        products: []
+    })
+    diffs = diffs.append(s6)
+
+    const [, , s7] = await executeCircuit(circuits.createCompany, {
+        variableName: 'SS Electronics PVT Ltd',
+        email: 'upesh.gupta@sselectronic.co.in',
+        telephone: '',
+        mobile: '9560889978',
+        website: '',
+        companyType: 'Pvt Ltd',
+        serviceArea: 'National',
+        gstin: '09ABDPS6852J1Z3',
+        pan: 'ABDPS6852J1',
+        iec: 'ABDPS6852J1',
+        addresses: [],
+        contacts: [],
+        bankAccounts: [],
+        products: []
+    })
+    diffs = diffs.append(s7)
+
+    const [, , s8] = await executeCircuit(circuits.createCompany, {
+        variableName: 'Samtayo Tech India Pvt. Ltd',
+        email: 'bharat@samtaiyotech.co.in',
+        telephone: '',
+        mobile: '9810036857',
+        website: '',
+        companyType: 'Pvt Ltd',
+        serviceArea: 'National',
+        gstin: '09ABACS5561L1ZX',
+        pan: 'ABACS5561L',
+        iec: 'ABACS5561L',
+        addresses: [],
+        contacts: [],
+        bankAccounts: [],
+        products: []
+    })
+    diffs = diffs.append(s8)
+
+    const [, , s9] = await executeCircuit(circuits.createCompany, {
+        variableName: 'JYY Automation Technologies PVT Ltd',
+        email: 'yash.arya@jyyautomation.com',
+        telephone: '',
+        mobile: '8126891337',
+        website: 'www.jyyautomation.com',
+        companyType: 'Pvt Ltd',
+        serviceArea: 'National',
+        gstin: '09AAECJ5755E1ZF',
+        pan: 'AAECJ5755E',
+        iec: 'AAECJ5755E',
+        addresses: [],
+        contacts: [],
+        bankAccounts: [],
+        products: []
+    })
+    diffs = diffs.append(s9)
+
+    const [, , p1] = await executeCircuit(circuits.createProduct, {
+        sku: 'R0',
+        name: ' 510kΩ 0.25W ±5% SMD(1206 package)',
+        orderable: true,
+        consumable: true,
+        producable: true,
+        uoms: [{
+            name: 'No',
+            conversionRate: 1
+        }],
+        companies: []
+    })
+    diffs = diffs.append(p1)
+
+    const [, , p2] = await executeCircuit(circuits.createProduct, {
         sku: 'R1',
         name: ' 510kΩ 0.25W ±5% SMD(1206 package)',
         orderable: true,
@@ -71,123 +248,11 @@ export default async function createDemoData() {
         }],
         companies: []
     })
-    diffs = diffs.append(c2)
-
-    const [, , c3] = await executeCircuit(circuits.createProduct, {
-        sku: 'R2',
-        name: '3.9Ω 0.125W ±1% SMD(0805 package)',
-        orderable: true,
-        consumable: true,
-        producable: true,
-        uoms: [{
-            name: 'No',
-            conversionRate: 2
-        }],
-        companies: []
-    })
-    diffs = diffs.append(c3)
-
-    const [, , c4] = await executeCircuit(circuits.createProduct, {
-        sku: 'R3',
-        name: '470kΩ 0.125W ±5% SMD(0805 package)',
-        orderable: true,
-        consumable: true,
-        producable: true,
-        uoms: [{
-            name: 'No',
-            conversionRate: 1
-        }],
-        companies: []
-    })
-    diffs = diffs.append(c4)
-
-    const [, , c5] = await executeCircuit(circuits.createProduct, {
-        sku: 'R4',
-        name: '100kΩ 0.125W ±5% SMD(0805 package)',
-        orderable: true,
-        consumable: true,
-        producable: true,
-        uoms: [{
-            name: 'No',
-            conversionRate: 2
-        }],
-        companies: []
-    })
-    diffs = diffs.append(c5)
-
-    const [, , c6] = await executeCircuit(circuits.createProduct, {
-        sku: 'RL1',
-        name: '56kΩ 0.125W ±5% SMD(0805 package)',
-        orderable: true,
-        consumable: true,
-        producable: true,
-        uoms: [{
-            name: 'No',
-            conversionRate: 1
-        }],
-        companies: []
-    })
-    diffs = diffs.append(c6)
-
-    const [, , c8] = await executeCircuit(circuits.createProduct, {
-        sku: 'Fuse',
-        name: 'RES-AXI- 10 Ω/1WS (mini size) L=5.0±0.5mm Horizontal Mounting',
-        orderable: true,
-        consumable: true,
-        producable: true,
-        uoms: [{
-            name: 'No',
-            conversionRate: 1
-        }],
-        companies: []
-    })
-    diffs = diffs.append(c8)
-
-    const [, , c9] = await executeCircuit(circuits.createProduct, {
-        sku: 'Varistor (VR1 & VR2)',
-        name: '07D511K L=5.0±0.5mm',
-        orderable: true,
-        consumable: true,
-        producable: true,
-        uoms: [{
-            name: 'No',
-            conversionRate: 2
-        }],
-        companies: []
-    })
-    diffs = diffs.append(c9)
-
-    const [, , p1] = await executeCircuit(circuits.createProduct, {
-        sku: 'C1',
-        name: '100 nF / 450V ±5% ； P=10mm L=5.0±0.5mm CBB capacitor',
-        orderable: true,
-        consumable: true,
-        producable: true,
-        uoms: [{
-            name: 'No',
-            conversionRate: 2
-        }],
-        companies: []
-    })
-    diffs = diffs.append(p1)
-
-    const [, , p2] = await executeCircuit(circuits.createProduct, {
-        sku: 'Cx1',
-        name: '22nfd / 275V P10 L=5±0.2mm W13*H11*T5mm',
-        orderable: true,
-        consumable: true,
-        producable: true,
-        uoms: [{
-            name: 'No',
-            conversionRate: 2
-        }],
-        companies: []
-    })
     diffs = diffs.append(p2)
 
     const [, , p3] = await executeCircuit(circuits.createProduct, {
-        sku: 'C2',
-        name: '4.7μF / 50V ±20% 105℃ φ5*11mm L=5.0±0.5mm Electrolytic cap 10000 Hrs.',
+        sku: 'R2',
+        name: '3.9Ω 0.125W ±1% SMD(0805 package)',
         orderable: true,
         consumable: true,
         producable: true,
@@ -200,22 +265,22 @@ export default async function createDemoData() {
     diffs = diffs.append(p3)
 
     const [, , p4] = await executeCircuit(circuits.createProduct, {
-        sku: 'C3',
-        name: '100μF / 63V ±20% 105℃ φ8*16mm L=5.0±0.5mm Electrolytic cap 10000Hrs.',
+        sku: 'R3',
+        name: '470kΩ 0.125W ±5% SMD(0805 package)',
         orderable: true,
         consumable: true,
         producable: true,
         uoms: [{
             name: 'No',
-            conversionRate: 2
+            conversionRate: 1
         }],
         companies: []
     })
     diffs = diffs.append(p4)
 
     const [, , p5] = await executeCircuit(circuits.createProduct, {
-        sku: 'C5',
-        name: ' 0.22μF/ 25V 0805 ±20﹪,X7R SMD(0805 package)',
+        sku: 'R4',
+        name: '100kΩ 0.125W ±5% SMD(0805 package)',
         orderable: true,
         consumable: true,
         producable: true,
@@ -228,36 +293,36 @@ export default async function createDemoData() {
     diffs = diffs.append(p5)
 
     const [, , p6] = await executeCircuit(circuits.createProduct, {
-        sku: 'BD1',
-        name: 'MB10F 1A/1KV SOP-4 Package',
+        sku: 'RL1',
+        name: '56kΩ 0.125W ±5% SMD(0805 package)',
         orderable: true,
         consumable: true,
         producable: true,
         uoms: [{
             name: 'No',
-            conversionRate: 2
+            conversionRate: 1
         }],
         companies: []
     })
     diffs = diffs.append(p6)
 
     const [, , p7] = await executeCircuit(circuits.createProduct, {
-        sku: 'D5',
-        name: 'ES1J 1A / 600V SMA',
+        sku: 'Fuse',
+        name: 'RES-AXI- 10 Ω/1WS (mini size) L=5.0±0.5mm Horizontal Mounting',
         orderable: true,
         consumable: true,
         producable: true,
         uoms: [{
             name: 'No',
-            conversionRate: 2
+            conversionRate: 1
         }],
         companies: []
     })
     diffs = diffs.append(p7)
 
     const [, , p8] = await executeCircuit(circuits.createProduct, {
-        sku: 'D7',
-        name: 'RS1M 1A / 600V SMA',
+        sku: 'Varistor (VR1 & VR2)',
+        name: '07D511K L=5.0±0.5mm',
         orderable: true,
         consumable: true,
         producable: true,
@@ -270,8 +335,8 @@ export default async function createDemoData() {
     diffs = diffs.append(p8)
 
     const [, , p9] = await executeCircuit(circuits.createProduct, {
-        sku: 'IC',
-        name: 'RT8497C SOP-8 Package',
+        sku: 'C1',
+        name: '100 nF / 450V ±5% ； P=10mm L=5.0±0.5mm CBB capacitor',
         orderable: true,
         consumable: true,
         producable: true,
@@ -284,8 +349,8 @@ export default async function createDemoData() {
     diffs = diffs.append(p9)
 
     const [, , p10] = await executeCircuit(circuits.createProduct, {
-        sku: 'LED',
-        name: 'LED-2835 - 0.5W - 150mA - 3.0 - 3.2V - 5400 - 6000K - 60 - 65lm - Ra80',
+        sku: 'Cx1',
+        name: '22nfd / 275V P10 L=5±0.2mm W13*H11*T5mm',
         orderable: true,
         consumable: true,
         producable: true,
@@ -297,7 +362,119 @@ export default async function createDemoData() {
     })
     diffs = diffs.append(p10)
 
-    const [, , pr1] = await executeCircuit(circuits.createProduct, {
+    const [, , p11] = await executeCircuit(circuits.createProduct, {
+        sku: 'C2',
+        name: '4.7μF / 50V ±20% 105℃ φ5*11mm L=5.0±0.5mm Electrolytic cap 10000 Hrs.',
+        orderable: true,
+        consumable: true,
+        producable: true,
+        uoms: [{
+            name: 'No',
+            conversionRate: 2
+        }],
+        companies: []
+    })
+    diffs = diffs.append(p11)
+
+    const [, , p12] = await executeCircuit(circuits.createProduct, {
+        sku: 'C3',
+        name: '100μF / 63V ±20% 105℃ φ8*16mm L=5.0±0.5mm Electrolytic cap 10000Hrs.',
+        orderable: true,
+        consumable: true,
+        producable: true,
+        uoms: [{
+            name: 'No',
+            conversionRate: 2
+        }],
+        companies: []
+    })
+    diffs = diffs.append(p12)
+
+    const [, , p13] = await executeCircuit(circuits.createProduct, {
+        sku: 'C5',
+        name: ' 0.22μF/ 25V 0805 ±20﹪,X7R SMD(0805 package)',
+        orderable: true,
+        consumable: true,
+        producable: true,
+        uoms: [{
+            name: 'No',
+            conversionRate: 2
+        }],
+        companies: []
+    })
+    diffs = diffs.append(p13)
+
+    const [, , p14] = await executeCircuit(circuits.createProduct, {
+        sku: 'BD1',
+        name: 'MB10F 1A/1KV SOP-4 Package',
+        orderable: true,
+        consumable: true,
+        producable: true,
+        uoms: [{
+            name: 'No',
+            conversionRate: 2
+        }],
+        companies: []
+    })
+    diffs = diffs.append(p14)
+
+    const [, , p15] = await executeCircuit(circuits.createProduct, {
+        sku: 'D5',
+        name: 'ES1J 1A / 600V SMA',
+        orderable: true,
+        consumable: true,
+        producable: true,
+        uoms: [{
+            name: 'No',
+            conversionRate: 2
+        }],
+        companies: []
+    })
+    diffs = diffs.append(p15)
+
+    const [, , p16] = await executeCircuit(circuits.createProduct, {
+        sku: 'D7',
+        name: 'RS1M 1A / 600V SMA',
+        orderable: true,
+        consumable: true,
+        producable: true,
+        uoms: [{
+            name: 'No',
+            conversionRate: 2
+        }],
+        companies: []
+    })
+    diffs = diffs.append(p16)
+
+    const [, , p17] = await executeCircuit(circuits.createProduct, {
+        sku: 'IC',
+        name: 'RT8497C SOP-8 Package',
+        orderable: true,
+        consumable: true,
+        producable: true,
+        uoms: [{
+            name: 'No',
+            conversionRate: 2
+        }],
+        companies: []
+    })
+    diffs = diffs.append(p17)
+
+    const [, , p18] = await executeCircuit(circuits.createProduct, {
+        sku: 'LED',
+        name: 'LED-2835 - 0.5W - 150mA - 3.0 - 3.2V - 5400 - 6000K - 60 - 65lm - Ra80',
+        orderable: true,
+        consumable: true,
+        producable: true,
+        uoms: [{
+            name: 'No',
+            conversionRate: 2
+        }],
+        companies: []
+    })
+    diffs = diffs.append(p18)
+
+    const [, , p19] = await executeCircuit(circuits.createProduct, {
         sku: 'Drum filter',
         name: 'φ6*10mm P=3.0 10mH±10%(with sleeve) L=5.0±0.5mm WD=0.1',
         orderable: true,
@@ -309,9 +486,9 @@ export default async function createDemoData() {
         }],
         companies: []
     })
-    diffs = diffs.append(pr1)
+    diffs = diffs.append(p19)
 
-    const [, , pr2] = await executeCircuit(circuits.createProduct, {
+    const [, , p20] = await executeCircuit(circuits.createProduct, {
         sku: 'Transformer',
         name: '9W TR-EE10-1.0mH±3%-180Ts-WD=0.21mm-V1.0 Tape color: Yellow & Blue',
         orderable: true,
@@ -323,9 +500,9 @@ export default async function createDemoData() {
         }],
         companies: []
     })
-    diffs = diffs.append(pr2)
+    diffs = diffs.append(p20)
 
-    const [, , pr3] = await executeCircuit(circuits.createProduct, {
+    const [, , p21] = await executeCircuit(circuits.createProduct, {
         sku: 'Output Wire Red',
         name: '0.20mm²*50mm-red Drive side=3mm Led side=5mm (V+)',
         orderable: true,
@@ -337,9 +514,9 @@ export default async function createDemoData() {
         }],
         companies: []
     })
-    diffs = diffs.append(pr3)
+    diffs = diffs.append(p21)
 
-    const [, , pr4] = await executeCircuit(circuits.createProduct, {
+    const [, , p22] = await executeCircuit(circuits.createProduct, {
         sku: 'Output Wire Black',
         name: '0.20mm²*50mm-black Drive side=3mm Led side=5mm (V-)',
         orderable: true,
@@ -351,9 +528,9 @@ export default async function createDemoData() {
         }],
         companies: []
     })
-    diffs = diffs.append(pr4)
+    diffs = diffs.append(p22)
 
-    const [, , pr5] = await executeCircuit(circuits.createProduct, {
+    const [, , p23] = await executeCircuit(circuits.createProduct, {
         sku: 'Supply Wire Yellow',
         name: '0.20mm²*38mm-yellow Drive side=5mm Cap side=6mm (L)',
         orderable: true,
@@ -365,9 +542,9 @@ export default async function createDemoData() {
         }],
         companies: []
     })
-    diffs = diffs.append(pr5)
+    diffs = diffs.append(p23)
 
-    const [, , pr6] = await executeCircuit(circuits.createProduct, {
+    const [, , p24] = await executeCircuit(circuits.createProduct, {
         sku: 'Supply Wire White',
         name: '0.20mm²*44mm-white Drive side=5mm Cap side=6mm (N)',
         orderable: true,
@@ -379,7 +556,7 @@ export default async function createDemoData() {
         }],
         companies: []
     })
-    diffs = diffs.append(pr6)
+    diffs = diffs.append(p24)
 
     const [, , r1] = await executeCircuit(circuits.createRegion, {
         variableName: 'Africa',
