@@ -885,7 +885,7 @@ export class CompanyAddressVariable {
         if (!other) {
             return false;
         }
-        return this.values.company.equals(other.values.company) && this.values.name === other.values.name && this.values.address.equals(other.values.address)
+        return (this.values.company.equals(other.values.company) && this.values.name === other.values.name) && (this.values.company.equals(other.values.company) && this.values.address.equals(other.values.address))
     }
 
     hashCode(): number {

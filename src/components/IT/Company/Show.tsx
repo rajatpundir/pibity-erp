@@ -590,6 +590,7 @@ function Component(props) {
             variableName: state.variable.variableName.toString(),
             email: state.variable.values.email,
             telephone: state.variable.values.telephone,
+            mobile: state.variable.values.mobile,
             website: state.variable.values.website,
             companyType: state.variable.values.companyType.toString(),
             serviceArea: state.variable.values.serviceArea.toString(),
