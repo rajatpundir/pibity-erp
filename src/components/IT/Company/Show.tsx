@@ -603,7 +603,7 @@ function Component(props) {
                     address: state.values.address.toString()
                 }
             }),
-            contacts: [{}],
+            contacts: [],
             bankAccounts: state.bankAccounts.variables.toArray().map(state => {
                 return {
                     bankAccount: state.values.bankAccount.toString()

@@ -48,6 +48,9 @@ export type MapperName =
     | 'createCompanyBankAccounts'
     | 'deleteCompanyBankAccounts'
 
+    | 'createBankAccountCompanies'
+    | 'deleteBankAccountCompanies'
+
     | 'createUOMs'
     | 'deleteUOMs'
 
@@ -219,6 +222,18 @@ export const mappers: Record<MapperName, Mapper> = {
         queryParams: ['region'],
         functionName: 'deleteCompanyBankAccount',
         functionInput: 'company'
+    },
+    createBankAccountCompanies: {
+        query: false,
+        queryParams: [],
+        functionName: 'createCompanyBankAccount',
+        functionInput: 'bankAccount'
+    },
+    deleteBankAccountCompanies: {
+        query: true,
+        queryParams: ['bankAccount'],
+        functionName: 'deleteCompanyBankAccount',
+        functionInput: 'variableName'
     },
     createUOMs: {
         query: false,

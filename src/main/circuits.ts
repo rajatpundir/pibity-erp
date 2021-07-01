@@ -839,6 +839,9 @@ export const circuits: Record<CircuitName, Circuit> = {
             },
             accountNumber: {
                 type: 'Text'
+            },
+            companies: {
+                type: []
             }
         },
         computations: {
@@ -851,10 +854,23 @@ export const circuits: Record<CircuitName, Circuit> = {
                     bankBranch: ['input', 'bankBranch'],
                     accountNumber: ['input', 'accountNumber']
                 }
+            },
+            c2: {
+                order: 3,
+                type: 'mapper',
+                exec: 'createBankAccountCompanies',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'companies'],
+                    overrides: {
+                        bankAccount: ['computation', 'c1', 'bankAccount']
+                    }
+                }
             }
         },
         outputs: {
-            bankAccount: ['c1', 'bankAccount']
+            bankAccount: ['c1', 'bankAccount'],
+            companies: ['c2', '']
         }
     },
     deleteBankAccount: {
@@ -869,6 +885,18 @@ export const circuits: Record<CircuitName, Circuit> = {
         computations: {
             c1: {
                 order: 2,
+                type: 'mapper',
+                exec: 'deleteBankAccountCompanies',
+                connect: {
+                    queryParams: {
+                        'bankAccount': ['input', 'variableName']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c2: {
+                order: 2,
                 type: 'function',
                 exec: 'deleteBankAccount',
                 connect: {
@@ -877,7 +905,7 @@ export const circuits: Record<CircuitName, Circuit> = {
             }
         },
         outputs: {
-            bankAccount: ['c1', 'bankAccount']
+            bankAccount: ['c2', 'bankAccount']
         }
     },
     createCompany: {
