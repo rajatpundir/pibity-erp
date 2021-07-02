@@ -4,7 +4,8 @@ import { GridLayout, GridArea, none, validateLayout } from '../../../../main/com
 export const header: GridArea = new GridArea('header')
 export const button: GridArea = new GridArea('button')
 export const details: GridArea = new GridArea('details')
-export const uom: GridArea = new GridArea('uom')
+export const uoms: GridArea = new GridArea('uoms')
+export const companies: GridArea = new GridArea('companies')
 
 export const layouts: { [index: string]: GridLayout } = {
     main: validateLayout({
@@ -18,7 +19,8 @@ export const layouts: { [index: string]: GridLayout } = {
                 Vector.of(header),
                 Vector.of(details),
                 Vector.of(button),
-                Vector.of(uom)
+                Vector.of(uoms),
+                Vector.of(companies)
             )
         },
         layout_sm: {
@@ -27,7 +29,8 @@ export const layouts: { [index: string]: GridLayout } = {
             areas: Vector.of(
                 Vector.of(header, button),
                 Vector.of(details, details),
-                Vector.of(uom, uom)
+                Vector.of(uoms, uoms),
+                Vector.of(companies, companies)
             )
         },
         layout_md: {
@@ -36,7 +39,8 @@ export const layouts: { [index: string]: GridLayout } = {
             areas: Vector.of(
                 Vector.of(header, header, button),
                 Vector.of(details, details, details),
-                Vector.of(uom, uom, none)
+                Vector.of(uoms, uoms, none),
+                Vector.of(companies, companies, companies)
             )
         },
         layout_lg: {
@@ -45,7 +49,8 @@ export const layouts: { [index: string]: GridLayout } = {
             areas: Vector.of(
                 Vector.of(none, header, header, none, button, none),
                 Vector.of(none, details, details, details, details, none),
-                Vector.of(none, uom, uom, uom, uom, none)
+                Vector.of(none, uoms, uoms, uoms, uoms, none),
+                Vector.of(none, companies, companies, companies, companies, none)
             )
         },
         layout_xl: {
@@ -54,7 +59,8 @@ export const layouts: { [index: string]: GridLayout } = {
             areas: Vector.of(
                 Vector.of(none, header, header, none, button, none),
                 Vector.of(none, details, details, details, details, none),
-                Vector.of(none, uom, uom, uom, uom, none)
+                Vector.of(none, uoms, uoms, uoms, uoms, none),
+                Vector.of(none, companies, companies, companies, companies, none)
             )
         }
     }),

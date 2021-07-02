@@ -130,6 +130,7 @@ export async function executeCircuit(circuit: Circuit, args: object, overlay: Ve
                 const queryParamsConnections = computation.connect.queryParams
                 for (const queryParam of mapper.queryParams) {
                     const connection = queryParamsConnections[queryParam]
+                    // console.log(mapper, queryParam, connection)
                     switch (connection[0]) {
                         case 'input': {
                             queryParams[queryParam] = args[connection[1]]

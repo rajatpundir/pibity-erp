@@ -219,9 +219,9 @@ export const mappers: Record<MapperName, Mapper> = {
     },
     deleteCompanyBankAccounts: {
         query: true,
-        queryParams: ['region'],
+        queryParams: ['company'],
         functionName: 'deleteCompanyBankAccount',
-        functionInput: 'company'
+        functionInput: 'variableName'
     },
     createBankAccountCompanies: {
         query: false,

@@ -45,7 +45,6 @@ export type Action =
     | ['variable', 'values', 'bankBranch', BankBranch]
     | ['variable', 'values', 'accountNumber', string]
 
-
     | ['companies', 'limit', number]
     | ['companies', 'offset', number]
     | ['companies', 'page', number]
@@ -439,8 +438,8 @@ function Component(props) {
                                                     iff(companies.filter(x => x.variableName.toString() === state.companies.variable.values.company.toString()).length() !== 0,
                                                         () => {
                                                             const referencedVariable = companies.filter(x => x.variableName.toString() === state.companies.variable.values.company.toString()).toArray()[0] as CompanyVariable
-                                                            return <Link to={`/region/${referencedVariable.variableName.toString()}`}>{referencedVariable.variableName.toString()}</Link>
-                                                        }, <Link to={`/region/${state.companies.variable.values.company.toString()}`}>{state.companies.variable.values.company.toString()}</Link>)
+                                                            return <Link to={`/company/${referencedVariable.variableName.toString()}`}>{referencedVariable.variableName.toString()}</Link>
+                                                        }, <Link to={`/company/${state.companies.variable.values.company.toString()}`}>{state.companies.variable.values.company.toString()}</Link>)
                                                 }</div>
                                             )
                                         }

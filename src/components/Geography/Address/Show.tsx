@@ -1,26 +1,40 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
-import { HashSet } from 'prelude-ts'
+import { HashSet, Vector } from 'prelude-ts'
 import { executeCircuit } from '../../../main/circuit'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
-import { Address, AddressVariable, PostalCode, PostalCodeVariable } from '../../../main/variables'
+import { Address, AddressVariable, Company, CompanyAddressVariable, CompanyVariable, PostalCode, PostalCodeVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
+import * as Grid2 from './grids/List'
 import { withRouter, Link } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
 import { iff, when } from '../../../main/utils'
 import { db } from '../../../main/dexie'
-import { DiffRow, PostalCodeRow, AddressRow } from '../../../main/rows'
+import { DiffRow, PostalCodeRow, AddressRow, CompanyAddressRow, CompanyRow } from '../../../main/rows'
 import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
+import { Drawer } from '@material-ui/core'
+import { Table } from '../../../main/Table'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: AddressVariable
     updatedVariableName: Address
+    companies: {
+        typeName: 'CompanyAddress'
+        query: Query
+        limit: number
+        offset: number
+        page: number
+        columns: Vector<Array<string>>
+        variable: CompanyAddressVariable
+        variables: HashSet<Immutable<CompanyAddressVariable>>
+    }
 }>
 
 export type Action =
@@ -33,14 +47,32 @@ export type Action =
     | ['variable', 'values', 'latitude', number]
     | ['variable', 'values', 'longitude', number]
 
+    | ['companies', 'limit', number]
+    | ['companies', 'offset', number]
+    | ['companies', 'page', number]
+    | ['companies', 'query', Args]
+    | ['companies', 'variable', 'values', 'company', Company]
+    | ['companies', 'addVariable']
+
     | ['replace', 'variable', AddressVariable]
+    | ['replace', 'companies', HashSet<CompanyAddressVariable>]
 
 function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
         variable: new AddressVariable('', { postalCode: new PostalCode(''), line1: '', line2: '', latitude: 0, longitude: 0 }),
-        updatedVariableName: new Address('')
+        updatedVariableName: new Address(''),
+        companies: {
+            typeName: 'CompanyAddress',
+            query: getQuery('CompanyAddress'),
+            limit: 5,
+            offset: 0,
+            page: 1,
+            columns: Vector.of(['values', 'company']),
+            variable: new CompanyAddressVariable('', { company: new Company(''), name: '', address: new Address('') }),
+            variables: HashSet.of<CompanyAddressVariable>()
+        }
     }
 
     function reducer(state: Draft<State>, action: Action) {
@@ -89,11 +121,55 @@ function Component(props) {
                 }
                 break
             }
+            case 'companies': {
+                switch (action[1]) {
+                    case 'limit': {
+                        state[action[0]].limit = Math.max(initialState.companies.limit, action[2])
+                        break
+                    }
+                    case 'offset': {
+                        state[action[0]].offset = Math.max(0, action[2])
+                        state[action[0]].page = Math.max(0, action[2]) + 1
+                        break
+                    }
+                    case 'page': {
+                        state[action[0]].page = action[2]
+                        break
+                    }
+                    case 'query': {
+                        updateQuery(state[action[0]].query, action[2])
+                        break
+                    }
+                    case 'variable': {
+                        switch (action[3]) {
+                            case 'company': {
+                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                break
+                            }
+                        }
+                        break
+                    }
+                    case 'addVariable': {
+                        state.companies.variables = state.companies.variables.add(new CompanyAddressVariable('', { company: new Company(state.companies.variable.values.company.toString()), name: '', address: new Address('') }))
+                        state.companies.variable = initialState.companies.variable
+                        break
+                    }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
+                    }
+                }
+                break
+            }
             case 'replace': {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
                         state.updatedVariableName = action[2].variableName
+                        break
+                    }
+                    case 'companies': {
+                        state.companies.variables = action[2]
                         break
                     }
                     default: {
@@ -113,6 +189,10 @@ function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
     const address = types['Address']
+    const companyAddress = types['CompanyAddress']
+
+    const [addCompanyAddressDrawer, toggleAddCompanyAddressDrawer] = useState(false)
+    const [companyAddressFilter, toggleCompanyAddressFilter] = useState(false)
 
     const setVariable = useCallback(async () => {
         if (props.match.params[0]) {
@@ -126,9 +206,16 @@ function Component(props) {
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as AddressVariable])
+
+                const companyAddressRows = await db.companyAddresses.toArray()
+                var composedCompanyAddressVariables = HashSet.of<Immutable<CompanyAddressVariable>>().addAll(companyAddressRows ? companyAddressRows.map(x => CompanyAddressRow.toVariable(x)) : [])
+                diffs?.forEach(diff => {
+                    composedCompanyAddressVariables = composedCompanyAddressVariables.filter(x => !diff.variables[state.companies.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.companies.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.companies.variable.typeName].replace)
+                })
+                dispatch(['replace', 'companies', composedCompanyAddressVariables.filter(variable => variable.values.address.toString() === props.match.params[0]) as HashSet<CompanyAddressVariable>])
             }
         }
-    }, [state.variable.typeName, props.match.params, dispatch])
+    }, [state.variable.typeName, state.companies.variable.typeName, props.match.params, dispatch])
 
     useEffect(() => { setVariable() }, [setVariable])
 
@@ -136,6 +223,12 @@ function Component(props) {
     var postalCodes = HashSet.of<Immutable<PostalCodeVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
         postalCodes = postalCodes.filter(x => !diff.variables.PostalCode.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.PostalCode.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.PostalCode.replace)
+    })
+
+    const companyRows = useLiveQuery(() => db.companies.toArray())?.map(x => CompanyRow.toVariable(x))
+    var companies = HashSet.of<Immutable<CompanyVariable>>().addAll(companyRows ? companyRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        companies = companies.filter(x => !diff.variables.Company.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.Company.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.Company.replace)
     })
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -167,13 +260,54 @@ function Component(props) {
         }
     }
 
+    const onCompanyAddressInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        switch (event.target.name) {
+            default: {
+                switch (event.target.name) {
+                    case 'company': {
+                        dispatch(['companies', 'variable', 'values', event.target.name, new Company(event.target.value)])
+                        break
+                    }
+                }
+            }
+        }
+    }
+
+    const updateItemsQuery = (list: 'companies') => {
+        const fx = (args: Args) => {
+            switch (list) {
+                case 'companies': {
+                    dispatch([list, 'query', args])
+                    break
+                }
+                default: {
+                    const _exhaustiveCheck: never = list
+                    return _exhaustiveCheck
+                }
+            }
+        }
+        return fx
+    }
+
+    const updatePage = (list: 'companies') => {
+        const fx = (args: ['limit', number] | ['offset', number] | ['page', number]) => {
+            dispatch([list, args[0], args[1]])
+        }
+        return fx
+    }
+
     const createVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createAddress, {
             postalCode: state.variable.values.postalCode.toString(),
             line1: state.variable.values.line1,
             line2: state.variable.values.line2,
             latitude: state.variable.values.latitude,
-            longitude: state.variable.values.longitude
+            longitude: state.variable.values.longitude,
+            companies: state.companies.variables.toArray().map(state => {
+                return {
+                    company: state.values.company.toString()
+                }
+            })
         })
         console.log(result, symbolFlag, diff)
         if (symbolFlag) {
@@ -294,6 +428,54 @@ function Component(props) {
                         }
                     </Item>
                 </Container>
+
+                <Container area={Grid.companies} layout={Grid2.layouts.main}>
+                    <Item area={Grid2.header} className='flex items-center'>
+                        <Title>Companies</Title>
+                        {
+                            iff(state.mode === 'create' || state.mode === 'update',
+                                <button onClick={() => toggleAddCompanyAddressDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>,
+                                undefined
+                            )
+                        }
+                    </Item>
+                    <Item area={Grid2.filter} justify='end' align='center' className='flex'>
+                        <Button onClick={() => toggleCompanyAddressFilter(true)}>Filter</Button>
+                        <Drawer open={companyAddressFilter} onClose={() => toggleCompanyAddressFilter(false)} anchor={'right'}>
+                            <Filter typeName='CompanyAddress' query={state['companies'].query} updateQuery={updateItemsQuery('companies')} />
+                        </Drawer>
+                        <Drawer open={addCompanyAddressDrawer} onClose={() => toggleAddCompanyAddressDrawer(false)} anchor={'right'}>
+                            <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
+                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Company</div>
+                                <Container area={none} layout={Grid.layouts.uom}>
+                                    <Item>
+                                        <Label>{companyAddress.keys.company.name}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Select onChange={onCompanyAddressInputChange} value={state.companies.variable.values.company.toString()} name='company'>
+                                                    <option value='' selected disabled hidden>Select Company</option>
+                                                    {companies.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                                </Select>,
+                                                <div className='font-bold text-xl'>{
+                                                    iff(companies.filter(x => x.variableName.toString() === state.companies.variable.values.company.toString()).length() !== 0,
+                                                        () => {
+                                                            const referencedVariable = companies.filter(x => x.variableName.toString() === state.companies.variable.values.company.toString()).toArray()[0] as CompanyVariable
+                                                            return <Link to={`/company/${referencedVariable.variableName.toString()}`}>{referencedVariable.variableName.toString()}</Link>
+                                                        }, <Link to={`/company/${state.companies.variable.values.company.toString()}`}>{state.companies.variable.values.company.toString()}</Link>)
+                                                }</div>
+                                            )
+                                        }
+                                    </Item>
+                                    <Item justify='center' align='center'>
+                                        <Button onClick={() => dispatch(['companies', 'addVariable'])}>Add</Button>
+                                    </Item>
+                                </Container>
+                            </div>
+                        </Drawer>
+                    </Item>
+                    <Table area={Grid2.table} state={state['companies']} updatePage={updatePage('companies')} variables={state.companies.variables.filter(variable => applyFilter(state['companies'].query, variable)).toArray()} columns={state['companies'].columns.toArray()} />
+                </Container >
+
             </Container>
         }, <div>Variable not found</div>)
 }
