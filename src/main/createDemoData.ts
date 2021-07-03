@@ -1575,7 +1575,7 @@ export default async function createDemoData() {
     })
     diffs = diffs.append(st26)
 
-    const [, , st27] = await executeCircuit(circuits.createState, {
+    const [res_st27, , st27] = await executeCircuit(circuits.createState, {
         country: country_india,
         name: 'Uttar Pradesh',
         items: [
@@ -1654,4 +1654,29 @@ export default async function createDemoData() {
     diffs = diffs.append(st27)
 
     db.diffs.put(mergeDiffs(diffs.toArray()).toRow())
+
+    diffs = Vector.of()
+    const district_ga: string = res_st27['districts'].filter(x => x['district'].values.name === 'Gautam Buddha Nagar')[0]['district']['variableName']
+    const [res_sd1, , sd1] = await executeCircuit(circuits.createSubdistrict, {
+        district: district_ga,
+        name: 'Noida',
+        items: [
+            { name: '201305' }
+        ]
+    })
+    diffs = diffs.append(sd1)
+    db.diffs.put(mergeDiffs(diffs.toArray()).toRow())
+
+    diffs = Vector.of()
+    const postal_code_201305: string = res_sd1['postalCodes'].filter(x => x['postalCode'].values.name === '201305')[0]['postalCode']['variableName']
+    const [res_ad1, , ad1] = await executeCircuit(circuits.createAddress, {
+        postalCode: postal_code_201305,
+        line1: 'Plot No. 18',
+        line2: 'Sector 140A ',
+        latitude: 28.51168212296573,
+        longitude: 77.4217063944774
+    })
+    diffs = diffs.append(ad1)
+    db.diffs.put(mergeDiffs(diffs.toArray()).toRow())
+
 }

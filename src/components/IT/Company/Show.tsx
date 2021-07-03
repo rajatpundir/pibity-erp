@@ -692,7 +692,7 @@ function Component(props) {
                         <Label>{company.keys.email.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Input type='text' onChange={onVariableInputChange} value={state.variable.values.email} name='email' />,
+                                <Input type='text' onChange={onVariableInputChange} value={state.variable.values.email} name='email' autoComplete='false' />,
                                 <div className='font-bold text-xl'>{state.variable.values.email}</div>
                             )
                         }
