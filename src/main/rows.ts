@@ -61,20 +61,20 @@ export type Row =
 
 export class RegionRow {
     readonly typeName = 'Region'
-    readonly variableName: string
+    readonly id: number
     readonly name: string
     values: {
         name: string
     }
 
-    constructor(variableName: string, values: { name: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { name: string }) {
+        this.id = id
         this.values = values
         this.name = values.name
     }
 
     static toVariable(row: RegionRow): RegionVariable {
-        return new RegionVariable(row.variableName, {
+        return new RegionVariable(row.id, {
             name: row.values.name
         })
     }
@@ -82,24 +82,24 @@ export class RegionRow {
 
 export class CountryRow {
     readonly typeName = 'Country'
-    readonly variableName: string
-    readonly region: string
+    readonly id: number
+    readonly region: number
     readonly name: string
     values: {
         // UNQ(region, name)
-        region: string
+        region: number
         name: string
     }
 
-    constructor(variableName: string, values: { region: string, name: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { region: number, name: string }) {
+        this.id = id
         this.values = values
         this.region = values.region
         this.name = values.name
     }
 
     static toVariable(row: CountryRow): CountryVariable {
-        return new CountryVariable(row.variableName, {
+        return new CountryVariable(row.id, {
             region: new Region(row.values.region),
             name: row.values.name
         })
@@ -108,24 +108,24 @@ export class CountryRow {
 
 export class StateRow {
     readonly typeName = 'State'
-    readonly variableName: string
-    readonly country: string
+    readonly id: number
+    readonly country: number
     readonly name: string
     values: {
         // UNQ(country, name)
-        country: string
+        country: number
         name: string
     }
 
-    constructor(variableName: string, values: { country: string, name: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { country: number, name: string }) {
+        this.id = id
         this.values = values
         this.country = values.country
         this.name = values.name
     }
 
     static toVariable(row: StateRow): StateVariable {
-        return new StateVariable(row.variableName, {
+        return new StateVariable(row.id, {
             country: new Country(row.values.country),
             name: row.values.name
         })
@@ -134,24 +134,24 @@ export class StateRow {
 
 export class DistrictRow {
     readonly typeName = 'District'
-    readonly variableName: string
-    readonly state: string
+    readonly id: number
+    readonly state: number
     readonly name: string
     values: {
         // UNQ(state, name)
-        state: string
+        state: number
         name: string
     }
 
-    constructor(variableName: string, values: { state: string, name: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { state: number, name: string }) {
+        this.id = id
         this.values = values
         this.state = values.state
         this.name = values.name
     }
 
     static toVariable(row: DistrictRow): DistrictVariable {
-        return new DistrictVariable(row.variableName, {
+        return new DistrictVariable(row.id, {
             state: new State(row.values.state),
             name: row.values.name
         })
@@ -160,24 +160,24 @@ export class DistrictRow {
 
 export class SubdistrictRow {
     readonly typeName = 'Subdistrict'
-    readonly variableName: string
-    readonly district: string
+    readonly id: number
+    readonly district: number
     readonly name: string
     values: {
         // UNQ(district, name)
-        district: string
+        district: number
         name: string
     }
 
-    constructor(variableName: string, values: { district: string, name: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { district: number, name: string }) {
+        this.id = id
         this.values = values
         this.district = values.district
         this.name = values.name
     }
 
     static toVariable(row: SubdistrictRow): SubdistrictVariable {
-        return new SubdistrictVariable(row.variableName, {
+        return new SubdistrictVariable(row.id, {
             district: new District(row.values.district),
             name: row.values.name
         })
@@ -186,24 +186,24 @@ export class SubdistrictRow {
 
 export class PostalCodeRow {
     readonly typeName = 'PostalCode'
-    readonly variableName: string
-    readonly subdistrict: string
+    readonly id: number
+    readonly subdistrict: number
     readonly name: string
     values: {
         // UNQ(subdistrict, name)
-        subdistrict: string
+        subdistrict: number
         name: string
     }
 
-    constructor(variableName: string, values: { subdistrict: string, name: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { subdistrict: number, name: string }) {
+        this.id = id
         this.values = values
         this.subdistrict = values.subdistrict
         this.name = values.name
     }
 
     static toVariable(row: PostalCodeRow): PostalCodeVariable {
-        return new PostalCodeVariable(row.variableName, {
+        return new PostalCodeVariable(row.id, {
             subdistrict: new Subdistrict(row.values.subdistrict),
             name: row.values.name
         })
@@ -212,21 +212,21 @@ export class PostalCodeRow {
 
 export class AddressRow {
     readonly typeName = 'Address'
-    readonly variableName: string
-    readonly postalCode: string
+    readonly id: number
+    readonly postalCode: number
     readonly line1: string
     readonly line2: string
     values: {
         // UNQ(postalCode, line1, line2)
-        postalCode: string
+        postalCode: number
         line1: string
         line2: string
         latitude: number
         longitude: number
     }
 
-    constructor(variableName: string, values: { postalCode: string, line1: string, line2: string, latitude: number, longitude: number }) {
-        this.variableName = variableName
+    constructor(id: number, values: { postalCode: number, line1: string, line2: string, latitude: number, longitude: number }) {
+        this.id = id
         this.values = values
         this.postalCode = values.postalCode
         this.line1 = values.line1
@@ -234,7 +234,7 @@ export class AddressRow {
     }
 
     static toVariable(row: AddressRow): AddressVariable {
-        return new AddressVariable(row.variableName, {
+        return new AddressVariable(row.id, {
             postalCode: new PostalCode(row.values.postalCode),
             line1: row.values.line1,
             line2: row.values.line2,
@@ -246,7 +246,7 @@ export class AddressRow {
 
 export class CompanyRow {
     readonly typeName = 'Company'
-    readonly variableName: string
+    readonly id: number
     readonly name: string
     values: {
         name: string
@@ -259,14 +259,14 @@ export class CompanyRow {
         iec: string
     }
 
-    constructor(variableName: string, values: { name: string, email: string, telephone: string, mobile: string, website: string, gstin: string, pan: string, iec: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { name: string, email: string, telephone: string, mobile: string, website: string, gstin: string, pan: string, iec: string }) {
+        this.id = id
         this.values = values
         this.name = values.name
     }
 
     static toVariable(row: CompanyRow): CompanyVariable {
-        return new CompanyVariable(row.variableName, {
+        return new CompanyVariable(row.id, {
             name: row.values.name,
             email: row.values.email,
             telephone: row.values.telephone,
@@ -281,20 +281,20 @@ export class CompanyRow {
 
 export class CompanyAddressRow {
     readonly typeName = 'CompanyAddress'
-    readonly variableName: string
-    readonly company: string
+    readonly id: number
+    readonly company: number
     readonly name: string
-    readonly address: string
+    readonly address: number
     values: {
         // UNQ(company, name)
         // UNQ(company, address)
-        company: string
+        company: number
         name: string
-        address: string
+        address: number
     }
 
-    constructor(variableName: string, values: { company: string, name: string, address: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { company: number, name: string, address: number }) {
+        this.id = id
         this.values = values
         this.company = values.company
         this.name = values.name
@@ -302,7 +302,7 @@ export class CompanyAddressRow {
     }
 
     static toVariable(row: CompanyAddressRow): CompanyAddressVariable {
-        return new CompanyAddressVariable(row.variableName, {
+        return new CompanyAddressVariable(row.id, {
             company: new Company(row.values.company),
             name: row.values.name,
             address: new Address(row.values.address)
@@ -312,20 +312,20 @@ export class CompanyAddressRow {
 
 export class CompanyTagGroupRow {
     readonly typeName = 'CompanyTagGroup'
-    readonly variableName: string
+    readonly id: number
     readonly name: string
     values: {
         name: string
     }
 
-    constructor(variableName: string, values: { name: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { name: string }) {
+        this.id = id
         this.values = values
         this.name = values.name
     }
 
     static toVariable(row: CompanyTagGroupRow): CompanyTagGroupVariable {
-        return new CompanyTagGroupVariable(row.variableName, {
+        return new CompanyTagGroupVariable(row.id, {
             name: row.values.name
         })
     }
@@ -333,23 +333,23 @@ export class CompanyTagGroupRow {
 
 export class CompanyTagRow {
     readonly typeName = 'CompanyTag'
-    readonly variableName: string
-    readonly group: string
+    readonly id: number
+    readonly group: number
     readonly name: string
     values: {
-        group: string
+        group: number
         name: string
     }
 
-    constructor(variableName: string, values: { group: string, name: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { group: number, name: string }) {
+        this.id = id
         this.values = values
         this.group = values.group
         this.name = values.name
     }
 
     static toVariable(row: CompanyTagRow): CompanyTagVariable {
-        return new CompanyTagVariable(row.variableName, {
+        return new CompanyTagVariable(row.id, {
             group: new CompanyTagGroup(row.values.group),
             name: row.values.name
         })
@@ -358,23 +358,23 @@ export class CompanyTagRow {
 
 export class MappingCompanyTagRow {
     readonly typeName = 'MappingCompanyTag'
-    readonly variableName: string
-    readonly company: string
-    readonly tag: string
+    readonly id: number
+    readonly company: number
+    readonly tag: number
     values: {
-        company: string
-        tag: string
+        company: number
+        tag: number
     }
 
-    constructor(variableName: string, values: { company: string, tag: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { company: number, tag: number }) {
+        this.id = id
         this.values = values
         this.company = values.company
         this.tag = values.tag
     }
 
     static toVariable(row: MappingCompanyTagRow): MappingCompanyTagVariable {
-        return new MappingCompanyTagVariable(row.variableName, {
+        return new MappingCompanyTagVariable(row.id, {
             company: new Company(row.values.company),
             tag: new CompanyTag(row.values.tag)
         })
@@ -383,7 +383,7 @@ export class MappingCompanyTagRow {
 
 export class ContactRow {
     readonly typeName = 'Contact'
-    readonly variableName: string
+    readonly id: number
     readonly name: string
     values: {
         name: string
@@ -393,14 +393,14 @@ export class ContactRow {
         website: string
     }
 
-    constructor(variableName: string, values: { name: string, email: string, telephone: string, mobile: string, website: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { name: string, email: string, telephone: string, mobile: string, website: string }) {
+        this.id = id
         this.values = values
         this.name = values.name
     }
 
     static toVariable(row: ContactRow): ContactVariable {
-        return new ContactVariable(row.variableName, {
+        return new ContactVariable(row.id, {
             name: row.values.name,
             email: row.values.email,
             telephone: row.values.telephone,
@@ -412,20 +412,20 @@ export class ContactRow {
 
 export class ContactAddressRow {
     readonly typeName = 'ContactAddress'
-    readonly variableName: string
-    readonly contact: string
+    readonly id: number
+    readonly contact: number
     readonly name: string
-    readonly address: string
+    readonly address: number
     values: {
         // UNQ(contact, name)
         // UNQ(contact, address)
-        contact: string
+        contact: number
         name: string
-        address: string
+        address: number
     }
 
-    constructor(variableName: string, values: { contact: string, name: string, address: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { contact: number, name: string, address: number }) {
+        this.id = id
         this.values = values
         this.contact = values.contact
         this.name = values.name
@@ -433,7 +433,7 @@ export class ContactAddressRow {
     }
 
     static toVariable(row: ContactAddressRow): ContactAddressVariable {
-        return new ContactAddressVariable(row.variableName, {
+        return new ContactAddressVariable(row.id, {
             contact: new Contact(row.values.contact),
             name: row.values.name,
             address: new Address(row.values.address)
@@ -443,28 +443,28 @@ export class ContactAddressRow {
 
 export class CompanyContactRow {
     readonly typeName = 'CompanyContact'
-    readonly variableName: string
-    readonly company: string
-    readonly contact: string
+    readonly id: number
+    readonly company: number
+    readonly contact: number
     values: {
         // UNQ(company, name)
-        company: string
-        contact: string
+        company: number
+        contact: number
         role: string
         email: string
         telephone: string
         mobile: string
     }
 
-    constructor(variableName: string, values: { company: string, contact: string, role: string, email: string, telephone: string, mobile: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { company: number, contact: number, role: string, email: string, telephone: string, mobile: string }) {
+        this.id = id
         this.values = values
         this.company = values.company
         this.contact = values.contact
     }
 
     static toVariable(row: CompanyContactRow): CompanyContactVariable {
-        return new CompanyContactVariable(row.variableName, {
+        return new CompanyContactVariable(row.id, {
             company: new Company(row.values.company),
             contact: new Contact(row.values.contact),
             role: row.values.role,
@@ -477,20 +477,20 @@ export class CompanyContactRow {
 
 export class CurrencyRow {
     readonly typeName = 'Currency'
-    readonly variableName: string
+    readonly id: number
     readonly name: string
     values: {
         name: string
     }
 
-    constructor(variableName: string, values: { name: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { name: string }) {
+        this.id = id
         this.values = values
         this.name = values.name
     }
 
     static toVariable(row: CurrencyRow): CurrencyVariable {
-        return new CurrencyVariable(row.variableName, {
+        return new CurrencyVariable(row.id, {
             name: row.values.name
         })
     }
@@ -498,19 +498,19 @@ export class CurrencyRow {
 
 export class CurrencyRateRow {
     readonly typeName = 'CurrencyRate'
-    readonly variableName: string
-    readonly currency: string
+    readonly id: number
+    readonly currency: number
     readonly startTime: number
     readonly endTime: number
     values: {
-        currency: string
+        currency: number
         conversionRate: number
         startTime: number
         endTime: number
     }
 
-    constructor(variableName: string, values: { currency: string, conversionRate: number, startTime: number, endTime: number }) {
-        this.variableName = variableName
+    constructor(id: number, values: { currency: number, conversionRate: number, startTime: number, endTime: number }) {
+        this.id = id
         this.values = values
         this.currency = values.currency
         this.startTime = values.startTime
@@ -518,7 +518,7 @@ export class CurrencyRateRow {
     }
 
     static toVariable(row: CurrencyRateRow): CurrencyRateVariable {
-        return new CurrencyRateVariable(row.variableName, {
+        return new CurrencyRateVariable(row.id, {
             currency: new Currency(row.values.currency),
             conversionRate: row.values.conversionRate,
             startTime: row.values.startTime,
@@ -529,23 +529,23 @@ export class CurrencyRateRow {
 
 export class MemoRow {
     readonly typeName = 'Memo'
-    readonly variableName: string
-    readonly company: string
+    readonly id: number
+    readonly company: number
     values: {
-        company: string
-        currency: string
+        company: number
+        currency: number
         amount: number
         unsettled: number
     }
 
-    constructor(variableName: string, values: { company: string, currency: string, amount: number, unsettled: number }) {
-        this.variableName = variableName
+    constructor(id: number, values: { company: number, currency: number, amount: number, unsettled: number }) {
+        this.id = id
         this.values = values
         this.company = values.company
     }
 
     static toVariable(row: MemoRow): MemoVariable {
-        return new MemoVariable(row.variableName, {
+        return new MemoVariable(row.id, {
             company: new Company(row.values.company),
             currency: new Currency(row.values.currency),
             amount: row.values.amount,
@@ -556,25 +556,25 @@ export class MemoRow {
 
 export class BankRow {
     readonly typeName = 'Bank'
-    readonly variableName: string
-    readonly country: string
+    readonly id: number
+    readonly country: number
     readonly name: string
     values: {
         // UNQ(country, name)
-        country: string
+        country: number
         name: string
         website: string
     }
 
-    constructor(variableName: string, values: { country: string, name: string, website: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { country: number, name: string, website: string }) {
+        this.id = id
         this.values = values
         this.country = values.country
         this.name = values.name
     }
 
     static toVariable(row: BankRow): BankVariable {
-        return new BankVariable(row.variableName, {
+        return new BankVariable(row.id, {
             country: new Country(row.values.country),
             name: row.values.name,
             website: row.values.website
@@ -584,26 +584,26 @@ export class BankRow {
 
 export class BankBranchRow {
     readonly typeName = 'BankBranch'
-    readonly variableName: string
-    readonly bank: string
+    readonly id: number
+    readonly bank: number
     readonly name: string
     values: {
         // UNQ(bank, name)
-        bank: string
+        bank: number
         name: string
         ifsc: string
-        address: string
+        address: number
     }
 
-    constructor(variableName: string, values: { bank: string, name: string, ifsc: string, address: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { bank: number, name: string, ifsc: string, address: number }) {
+        this.id = id
         this.values = values
         this.bank = values.bank
         this.name = values.name
     }
 
     static toVariable(row: BankBranchRow): BankBranchVariable {
-        return new BankBranchVariable(row.variableName, {
+        return new BankBranchVariable(row.id, {
             bank: new Bank(row.values.bank),
             name: row.values.name,
             ifsc: row.values.ifsc,
@@ -614,27 +614,27 @@ export class BankBranchRow {
 
 export class BankAccountRow {
     readonly typeName = 'BankAccount'
-    readonly variableName: string
-    readonly bank: string
+    readonly id: number
+    readonly bank: number
     readonly accountNumber: string
     values: {
         // UNQ(bank, accountNumber)
-        bank: string
-        bankBranch: string
+        bank: number
+        bankBranch: number
         accountNumber: string
         accountName: string
-        currency: string
+        currency: number
     }
 
-    constructor(variableName: string, values: { bank: string, bankBranch: string, accountNumber: string, accountName: string, currency: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { bank: number, bankBranch: number, accountNumber: string, accountName: string, currency: number }) {
+        this.id = id
         this.values = values
         this.bank = values.bank
         this.accountNumber = values.accountNumber
     }
 
     static toVariable(row: BankAccountRow): BankAccountVariable {
-        return new BankAccountVariable(row.variableName, {
+        return new BankAccountVariable(row.id, {
             bank: new Bank(row.values.bank),
             bankBranch: new BankBranch(row.values.bankBranch),
             accountNumber: row.values.accountNumber,
@@ -646,28 +646,28 @@ export class BankAccountRow {
 
 export class BankTransactionRow {
     readonly typeName = 'BankTransaction'
-    readonly variableName: string
-    readonly memo: string
-    readonly bankAccount: string
+    readonly id: number
+    readonly memo: number
+    readonly bankAccount: number
     values: {
         timestamp: number
-        memo: string
-        currencyRate: string
-        bankAccount: string
-        fromToAccount: string
+        memo: number
+        currencyRate: number
+        bankAccount: number
+        fromToAccount: number
         credit: number
         debit: number
     }
 
-    constructor(variableName: string, values: { timestamp: number, memo: string, currencyRate: string, bankAccount: string, fromToAccount: string, credit: number, debit: number }) {
-        this.variableName = variableName
+    constructor(id: number, values: { timestamp: number, memo: number, currencyRate: number, bankAccount: number, fromToAccount: number, credit: number, debit: number }) {
+        this.id = id
         this.values = values
         this.memo = values.memo
         this.bankAccount = values.bankAccount
     }
 
     static toVariable(row: BankTransactionRow): BankTransactionVariable {
-        return new BankTransactionVariable(row.variableName, {
+        return new BankTransactionVariable(row.id, {
             timestamp: row.values.timestamp,
             memo: new Memo(row.values.memo),
             currencyRate: new CurrencyRate(row.values.currencyRate),
@@ -681,24 +681,24 @@ export class BankTransactionRow {
 
 export class CompanyBankAccountRow {
     readonly typeName = 'CompanyBankAccount'
-    readonly variableName: string
-    readonly company: string
-    readonly bankAccount: string
+    readonly id: number
+    readonly company: number
+    readonly bankAccount: number
     values: {
         // UNQ(company, bankAccount)
-        company: string
-        bankAccount: string
+        company: number
+        bankAccount: number
     }
 
-    constructor(variableName: string, values: { company: string, bankAccount: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { company: number, bankAccount: number }) {
+        this.id = id
         this.values = values
         this.company = values.company
         this.bankAccount = values.bankAccount
     }
 
     static toVariable(row: CompanyBankAccountRow): CompanyBankAccountVariable {
-        return new CompanyBankAccountVariable(row.variableName, {
+        return new CompanyBankAccountVariable(row.id, {
             company: new Company(row.values.company),
             bankAccount: new BankAccount(row.values.bankAccount)
         })
@@ -707,23 +707,23 @@ export class CompanyBankAccountRow {
 
 export class ProductCategoryGroupRow {
     readonly typeName = 'ProductCategoryGroup'
-    readonly variableName: string
-    readonly parent: string
+    readonly id: number
+    readonly parent: number
     values: {
         // UNQ(parent)
-        parent: string
+        parent: number
         name: string
         length: number
     }
 
-    constructor(variableName: string, values: { parent: string, name: string, length: number }) {
-        this.variableName = variableName
+    constructor(id: number, values: { parent: number, name: string, length: number }) {
+        this.id = id
         this.values = values
         this.parent = values.parent
     }
 
     static toVariable(row: ProductCategoryGroupRow): ProductCategoryGroupVariable {
-        return new ProductCategoryGroupVariable(row.variableName, {
+        return new ProductCategoryGroupVariable(row.id, {
             parent: new ProductCategoryGroup(row.values.parent),
             name: row.values.name,
             length: row.values.length
@@ -733,23 +733,23 @@ export class ProductCategoryGroupRow {
 
 export class ProductCategoryRow {
     readonly typeName = 'ProductCategory'
-    readonly variableName: string
-    readonly parent: string
+    readonly id: number
+    readonly parent: number
     readonly code: string
     readonly name: string
     values: {
         // UNQ(parent, name)
         // UNQ(parent, code)
-        parent: string
-        group: string
+        parent: number
+        group: number
         name: string
         code: string
         derivedCode: string
         childCount: number
     }
 
-    constructor(variableName: string, values: { parent: string, group: string, name: string, code: string, derivedCode: string, childCount: number }) {
-        this.variableName = variableName
+    constructor(id: number, values: { parent: number, group: number, name: string, code: string, derivedCode: string, childCount: number }) {
+        this.id = id
         this.values = values
         this.parent = values.parent
         this.code = values.code
@@ -757,7 +757,7 @@ export class ProductCategoryRow {
     }
 
     static toVariable(row: ProductCategoryRow): ProductCategoryVariable {
-        return new ProductCategoryVariable(row.variableName, {
+        return new ProductCategoryVariable(row.id, {
             parent: new ProductCategory(row.values.parent),
             group: new ProductCategoryGroup(row.values.group),
             name: row.values.name,
@@ -770,23 +770,23 @@ export class ProductCategoryRow {
 
 export class ProductRow {
     readonly typeName = 'Product'
-    readonly variableName: string
+    readonly id: number
     readonly name: string
     values: {
         name: string
-        category: string
+        category: number
         code: string
         sku: string
     }
 
-    constructor(variableName: string, values: { name: string, category: string, code: string, sku: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { name: string, category: number, code: string, sku: string }) {
+        this.id = id
         this.values = values
         this.name = values.name
     }
 
     static toVariable(row: ProductRow): ProductVariable {
-        return new ProductVariable(row.variableName, {
+        return new ProductVariable(row.id, {
             name: row.values.name,
             category: new ProductCategory(row.values.category),
             code: row.values.code,
@@ -797,20 +797,20 @@ export class ProductRow {
 
 export class ProductTagGroupRow {
     readonly typeName = 'ProductTagGroup'
-    readonly variableName: string
+    readonly id: number
     readonly name: string
     values: {
         name: string
     }
 
-    constructor(variableName: string, values: { name: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { name: string }) {
+        this.id = id
         this.values = values
         this.name = values.name
     }
 
     static toVariable(row: ProductTagGroupRow): ProductTagGroupVariable {
-        return new ProductTagGroupVariable(row.variableName, {
+        return new ProductTagGroupVariable(row.id, {
             name: row.values.name
         })
     }
@@ -818,23 +818,23 @@ export class ProductTagGroupRow {
 
 export class ProductTagRow {
     readonly typeName = 'ProductTag'
-    readonly variableName: string
-    readonly group: string
+    readonly id: number
+    readonly group: number
     readonly name: string
     values: {
-        group: string
+        group: number
         name: string
     }
 
-    constructor(variableName: string, values: { group: string, name: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { group: number, name: string }) {
+        this.id = id
         this.values = values
         this.group = values.group
         this.name = values.name
     }
 
     static toVariable(row: ProductTagRow): ProductTagVariable {
-        return new ProductTagVariable(row.variableName, {
+        return new ProductTagVariable(row.id, {
             group: new ProductTagGroup(row.values.group),
             name: row.values.name
         })
@@ -843,23 +843,23 @@ export class ProductTagRow {
 
 export class MappingProductTagRow {
     readonly typeName = 'MappingProductTag'
-    readonly variableName: string
-    readonly product: string
-    readonly tag: string
+    readonly id: number
+    readonly product: number
+    readonly tag: number
     values: {
-        product: string
-        tag: string
+        product: number
+        tag: number
     }
 
-    constructor(variableName: string, values: { product: string, tag: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { product: number, tag: number }) {
+        this.id = id
         this.values = values
         this.product = values.product
         this.tag = values.tag
     }
 
     static toVariable(row: MappingProductTagRow): MappingProductTagVariable {
-        return new MappingProductTagVariable(row.variableName, {
+        return new MappingProductTagVariable(row.id, {
             product: new Product(row.values.product),
             tag: new ProductTag(row.values.tag)
         })
@@ -868,25 +868,25 @@ export class MappingProductTagRow {
 
 export class UOMRow {
     readonly typeName = 'UOM'
-    readonly variableName: string
-    readonly product: string
+    readonly id: number
+    readonly product: number
     readonly name: string
     values: {
         // UNQ(product, name)
-        product: string
+        product: number
         name: string
         conversionRate: Decimal
     }
 
-    constructor(variableName: string, values: { product: string, name: string, conversionRate: Decimal }) {
-        this.variableName = variableName
+    constructor(id: number, values: { product: number, name: string, conversionRate: Decimal }) {
+        this.id = id
         this.values = values
         this.product = values.product
         this.name = values.name
     }
 
     static toVariable(row: UOMRow): UOMVariable {
-        return new UOMVariable(row.variableName, {
+        return new UOMVariable(row.id, {
             product: new Product(row.values.product),
             name: row.values.name,
             conversionRate: row.values.conversionRate
@@ -896,7 +896,7 @@ export class UOMRow {
 
 export class IndentRow {
     readonly typeName = 'Indent'
-    readonly variableName: string
+    readonly id: number
     values: {
         // timestamp: Timestamp // redundant field
         // subspace: Subspace
@@ -904,28 +904,28 @@ export class IndentRow {
         // approved: boolean
     }
 
-    constructor(variableName: string, values: {}) {
-        this.variableName = variableName
+    constructor(id: number, values: {}) {
+        this.id = id
         this.values = values
     }
 
     static toVariable(row: IndentRow): IndentVariable {
-        return new IndentVariable(row.variableName, row.values)
+        return new IndentVariable(row.id, row.values)
     }
 }
 
 export class IndentItemRow {
     readonly typeName = 'IndentItem'
-    readonly variableName: string
-    readonly indent: string
-    readonly product: string
+    readonly id: number
+    readonly indent: number
+    readonly product: number
     values: {
         // UNQ(indent, product)
-        indent: string
-        product: string
+        indent: number
+        product: number
         quantity: Number
         // assertion(uom.product == product && product.orderable == true && quantity > 0)
-        uom: string
+        uom: number
         // assertion((ordered - rejected) <= quantity && (ordered - rejected) >= 0)
         // assertion(ordered >= 0 && received >=0 && approved >= 0 && rejected >= 0 && returned >= 0 && requisted >= 0 && consumed >= 0)
         ordered: Number
@@ -942,15 +942,15 @@ export class IndentItemRow {
         consumed: Number
     }
 
-    constructor(variableName: string, values: { indent: string, product: string, quantity: Number, uom: string, ordered: Number, received: Number, approved: Number, rejected: Number, returned: Number, requisted: Number, consumed: Number }) {
-        this.variableName = variableName
+    constructor(id: number, values: { indent: number, product: number, quantity: Number, uom: number, ordered: Number, received: Number, approved: Number, rejected: Number, returned: Number, requisted: Number, consumed: Number }) {
+        this.id = id
         this.values = values
         this.indent = values.indent
         this.product = values.product
     }
 
     static toVariable(row: IndentItemRow): IndentItemVariable {
-        return new IndentItemVariable(row.variableName, {
+        return new IndentItemVariable(row.id, {
             indent: new Indent(row.values.indent),
             product: new Product(row.values.product),
             quantity: row.values.quantity,
@@ -968,24 +968,24 @@ export class IndentItemRow {
 
 export class CompanyProductRow {
     readonly typeName = 'CompanyProduct'
-    readonly variableName: string
-    readonly company: string
-    readonly product: string
+    readonly id: number
+    readonly company: number
+    readonly product: number
     values: {
         // UNQ(company, product)
-        company: string
-        product: string
+        company: number
+        product: number
     }
 
-    constructor(variableName: string, values: { company: string, product: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { company: number, product: number }) {
+        this.id = id
         this.values = values
         this.company = values.company
         this.product = values.product
     }
 
     static toVariable(row: CompanyProductRow): CompanyProductVariable {
-        return new CompanyProductVariable(row.variableName, {
+        return new CompanyProductVariable(row.id, {
             company: new Company(row.values.company),
             product: new Product(row.values.product)
         })
@@ -994,19 +994,19 @@ export class CompanyProductRow {
 
 export class QuotationRow {
     readonly typeName = 'Quotation'
-    readonly variableName: string
+    readonly id: number
     values: {
-        indent: string
-        company: string
+        indent: number
+        company: number
     }
 
-    constructor(variableName: string, values: { indent: string, company: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { indent: number, company: number }) {
+        this.id = id
         this.values = values
     }
 
     static toVariable(row: QuotationRow): QuotationVariable {
-        return new QuotationVariable(row.variableName, {
+        return new QuotationVariable(row.id, {
             indent: new Indent(row.values.indent),
             company: new Company(row.values.company)
         })
@@ -1015,27 +1015,27 @@ export class QuotationRow {
 
 export class QuotationItemRow {
     readonly typeName = 'QuotationItem'
-    readonly variableName: string
-    readonly quotation: string
-    readonly indentItem: string
+    readonly id: number
+    readonly quotation: number
+    readonly indentItem: number
     values: {
         // UNQ(quotation, indentItem)
-        quotation: string
+        quotation: number
         // assertion(quotation.indent == indentItem.indent)
-        indentItem: string
+        indentItem: number
         // assertion(quantity <= (indentItem.quantity - (ordered - rejected)) && quantity > 0)
         quantity: Number
     }
 
-    constructor(variableName: string, values: { quotation: string, indentItem: string, quantity: Number }) {
-        this.variableName = variableName
+    constructor(id: number, values: { quotation: number, indentItem: number, quantity: Number }) {
+        this.id = id
         this.values = values
         this.quotation = values.quotation
         this.indentItem = values.indentItem
     }
 
     static toVariable(row: QuotationItemRow): QuotationItemVariable {
-        return new QuotationItemVariable(row.variableName, {
+        return new QuotationItemVariable(row.id, {
             quotation: new Quotation(row.values.quotation),
             indentItem: new IndentItem(row.values.indentItem),
             quantity: row.values.quantity
@@ -1045,18 +1045,18 @@ export class QuotationItemRow {
 
 export class PurchaseOrderRow {
     readonly typeName = 'PurchaseOrder'
-    readonly variableName: string
+    readonly id: number
     values: {
-        quotation: string
+        quotation: number
     }
 
-    constructor(variableName: string, values: { quotation: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { quotation: number }) {
+        this.id = id
         this.values = values
     }
 
     static toVariable(row: PurchaseOrderRow): PurchaseOrderVariable {
-        return new PurchaseOrderVariable(row.variableName, {
+        return new PurchaseOrderVariable(row.id, {
             quotation: new Quotation(row.values.quotation)
         })
     }
@@ -1064,14 +1064,14 @@ export class PurchaseOrderRow {
 
 export class PurchaseOrderItemRow {
     readonly typeName = 'PurchaseOrderItem'
-    readonly variableName: string
-    readonly purchaseOrder: string
-    readonly quotationItem: string
+    readonly id: number
+    readonly purchaseOrder: number
+    readonly quotationItem: number
     values: {
         // UNQ(purchaseOrder, quotationItem)
-        purchaseOrder: string
+        purchaseOrder: number
         // assertion(purchaseOrder.quotation == quotationItem.quotation)
-        quotationItem: string
+        quotationItem: number
         // assertion(quantity <= quotationItem.quantity && quantity > 0)
         quantity: Number // { quotationItem.indentItem.ordered += quantity }
         price: Decimal
@@ -1079,15 +1079,15 @@ export class PurchaseOrderItemRow {
         received: Number
     }
 
-    constructor(variableName: string, values: { purchaseOrder: string, quotationItem: string, quantity: Number, price: Decimal, received: Number }) {
-        this.variableName = variableName
+    constructor(id: number, values: { purchaseOrder: number, quotationItem: number, quantity: Number, price: Decimal, received: Number }) {
+        this.id = id
         this.values = values
         this.purchaseOrder = values.purchaseOrder
         this.quotationItem = values.quotationItem
     }
 
     static toVariable(row: PurchaseOrderItemRow): PurchaseOrderItemVariable {
-        return new PurchaseOrderItemVariable(row.variableName, {
+        return new PurchaseOrderItemVariable(row.id, {
             purchaseOrder: new PurchaseOrder(row.values.purchaseOrder),
             quotationItem: new QuotationItem(row.values.quotationItem),
             quantity: row.values.quantity,
@@ -1099,18 +1099,18 @@ export class PurchaseOrderItemRow {
 
 export class PurchaseInvoiceRow {
     readonly typeName = 'PurchaseInvoice'
-    readonly variableName: string
+    readonly id: number
     values: {
-        purchaseOrder: string
+        purchaseOrder: number
     }
 
-    constructor(variableName: string, values: { purchaseOrder: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { purchaseOrder: number }) {
+        this.id = id
         this.values = values
     }
 
     static toVariable(row: PurchaseInvoiceRow): PurchaseInvoiceVariable {
-        return new PurchaseInvoiceVariable(row.variableName, {
+        return new PurchaseInvoiceVariable(row.id, {
             purchaseOrder: new PurchaseOrder(row.values.purchaseOrder)
         })
     }
@@ -1119,14 +1119,14 @@ export class PurchaseInvoiceRow {
 export class PurchaseInvoiceItemRow {
     [immerable] = true
     readonly typeName = 'PurchaseInvoiceItem'
-    readonly variableName: string
-    readonly purchaseInvoice: string
-    readonly purchaseOrderItem: string
+    readonly id: number
+    readonly purchaseInvoice: number
+    readonly purchaseOrderItem: number
     values: {
         // UNQ(purchaseInvoice, purchaseOrderItem)
-        purchaseInvoice: string
+        purchaseInvoice: number
         // assertion(purchaseInvoice.purchaseOrder == purchaseOrderItem.purchaseOrder)
-        purchaseOrderItem: string
+        purchaseOrderItem: number
         // assertion(quantity <= purchaseOrderItem.quantity && quantity > 0)
         quantity: Number // { purchaseOrderItem.received += quantity && purchaseOrderItem.quotationOrderItem.indentOrderItem.received += quantity }
         // assertion((approved + rejected) <= quantity && approved >= 0 && rejeted >= 0)
@@ -1134,15 +1134,15 @@ export class PurchaseInvoiceItemRow {
         rejected: Number
     }
 
-    constructor(variableName: string, values: { purchaseInvoice: string, purchaseOrderItem: string, quantity: Number, approved: Number, rejected: Number }) {
-        this.variableName = variableName
+    constructor(id: number, values: { purchaseInvoice: number, purchaseOrderItem: number, quantity: Number, approved: Number, rejected: Number }) {
+        this.id = id
         this.values = values
         this.purchaseInvoice = values.purchaseInvoice
         this.purchaseOrderItem = values.purchaseOrderItem
     }
 
     static toVariable(row: PurchaseInvoiceItemRow): PurchaseInvoiceItemVariable {
-        return new PurchaseInvoiceItemVariable(row.variableName, {
+        return new PurchaseInvoiceItemVariable(row.id, {
             purchaseInvoice: new PurchaseInvoice(row.values.purchaseInvoice),
             purchaseOrderItem: new PurchaseOrderItem(row.values.purchaseOrderItem),
             quantity: row.values.quantity,
@@ -1155,18 +1155,18 @@ export class PurchaseInvoiceItemRow {
 export class MaterialApprovalSlipRow {
     [immerable] = true
     readonly typeName = 'MaterialApprovalSlip'
-    readonly variableName: string
+    readonly id: number
     values: {
-        purchaseInvoice: string
+        purchaseInvoice: number
     }
 
-    constructor(variableName: string, values: { purchaseInvoice: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { purchaseInvoice: number }) {
+        this.id = id
         this.values = values
     }
 
     static toVariable(row: MaterialApprovalSlipRow): MaterialApprovalSlipVariable {
-        return new MaterialApprovalSlipVariable(row.variableName, {
+        return new MaterialApprovalSlipVariable(row.id, {
             purchaseInvoice: new PurchaseInvoice(row.values.purchaseInvoice)
         })
     }
@@ -1174,29 +1174,29 @@ export class MaterialApprovalSlipRow {
 
 export class MaterialApprovalSlipItemRow {
     readonly typeName = 'MaterialApprovalSlipItem'
-    readonly variableName: string
-    readonly materialApprovalSlip: string
-    readonly purchaseInvoiceItem: string
+    readonly id: number
+    readonly materialApprovalSlip: number
+    readonly purchaseInvoiceItem: number
     values: {
         // UNQ(materialApprovalSlip, purchaseInvoiceItem)
-        materialApprovalSlip: string
+        materialApprovalSlip: number
         // assertion(materialApprovalSlip.purchaseInvoice == purchaseInvoiceItem.purchaseInvoice)
-        purchaseInvoiceItem: string
+        purchaseInvoiceItem: number
         // assertion(quantity <= purchaseInvoiceItem.quantity && quantity > 0)
         quantity: Number // { purchaseInvoiceItem.approved += quantity && purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.approved += quantity }
         // assertion(requisted <= quantity && requisted >= 0)
         requisted: Number
     }
 
-    constructor(variableName: string, values: { materialApprovalSlip: string, purchaseInvoiceItem: string, quantity: Number, requisted: Number }) {
-        this.variableName = variableName
+    constructor(id: number, values: { materialApprovalSlip: number, purchaseInvoiceItem: number, quantity: Number, requisted: Number }) {
+        this.id = id
         this.values = values
         this.materialApprovalSlip = values.materialApprovalSlip
         this.purchaseInvoiceItem = values.purchaseInvoiceItem
     }
 
     static toVariable(row: MaterialApprovalSlipItemRow): MaterialApprovalSlipItemVariable {
-        return new MaterialApprovalSlipItemVariable(row.variableName, {
+        return new MaterialApprovalSlipItemVariable(row.id, {
             materialApprovalSlip: new MaterialApprovalSlip(row.values.materialApprovalSlip),
             purchaseInvoiceItem: new PurchaseInvoiceItem(row.values.purchaseInvoiceItem),
             quantity: row.values.quantity,
@@ -1207,18 +1207,18 @@ export class MaterialApprovalSlipItemRow {
 
 export class MaterialRejectionSlipRow {
     readonly typeName = 'MaterialRejectionSlip'
-    readonly variableName: string
+    readonly id: number
     values: {
-        purchaseInvoice: string
+        purchaseInvoice: number
     }
 
-    constructor(variableName: string, values: { purchaseInvoice: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { purchaseInvoice: number }) {
+        this.id = id
         this.values = values
     }
 
     static toVariable(row: MaterialRejectionSlipRow): MaterialRejectionSlipVariable {
-        return new MaterialRejectionSlipVariable(row.variableName, {
+        return new MaterialRejectionSlipVariable(row.id, {
             purchaseInvoice: new PurchaseInvoice(row.values.purchaseInvoice)
         })
     }
@@ -1226,29 +1226,29 @@ export class MaterialRejectionSlipRow {
 
 export class MaterialRejectionSlipItemRow {
     readonly typeName = 'MaterialRejectionSlipItem'
-    readonly variableName: string
-    readonly materialRejectionSlip: string
-    readonly purchaseInvoiceItem: string
+    readonly id: number
+    readonly materialRejectionSlip: number
+    readonly purchaseInvoiceItem: number
     values: {
         // UNQ(materialRejectionSlip, purchaseInvoiceItem)
-        materialRejectionSlip: string
+        materialRejectionSlip: number
         // assertion(materialRejectionSlip.purchaseInvoice == purchaseInvoiceItem.purchaseInvoice)
-        purchaseInvoiceItem: string
+        purchaseInvoiceItem: number
         // assertion(quantity <= purchaseInvoiceItem.quantity && quantity > 0)
         quantity: Number // { purchaseInvoiceItem.rejected += quantity && purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.rejected += quantity  }
         // assertion(returned <= quantity && returned >= 0)
         returned: Number
     }
 
-    constructor(variableName: string, values: { materialRejectionSlip: string, purchaseInvoiceItem: string, quantity: Number, returned: Number }) {
-        this.variableName = variableName
+    constructor(id: number, values: { materialRejectionSlip: number, purchaseInvoiceItem: number, quantity: Number, returned: Number }) {
+        this.id = id
         this.values = values
         this.materialRejectionSlip = values.materialRejectionSlip
         this.purchaseInvoiceItem = values.purchaseInvoiceItem
     }
 
     static toVariable(row: MaterialRejectionSlipItemRow): MaterialRejectionSlipItemVariable {
-        return new MaterialRejectionSlipItemVariable(row.variableName, {
+        return new MaterialRejectionSlipItemVariable(row.id, {
             materialRejectionSlip: new MaterialRejectionSlip(row.values.materialRejectionSlip),
             purchaseInvoiceItem: new PurchaseInvoiceItem(row.values.purchaseInvoiceItem),
             quantity: row.values.quantity,
@@ -1259,18 +1259,18 @@ export class MaterialRejectionSlipItemRow {
 
 export class MaterialReturnSlipRow {
     readonly typeName = 'MaterialReturnSlip'
-    readonly variableName: string
+    readonly id: number
     values: {
-        materialRejectionSlip: string
+        materialRejectionSlip: number
     }
 
-    constructor(variableName: string, values: { materialRejectionSlip: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { materialRejectionSlip: number }) {
+        this.id = id
         this.values = values
     }
 
     static toVariable(row: MaterialReturnSlipRow): MaterialReturnSlipVariable {
-        return new MaterialReturnSlipVariable(row.variableName, {
+        return new MaterialReturnSlipVariable(row.id, {
             materialRejectionSlip: new MaterialRejectionSlip(row.values.materialRejectionSlip)
         })
     }
@@ -1278,27 +1278,27 @@ export class MaterialReturnSlipRow {
 
 export class MaterialReturnSlipItemRow {
     readonly typeName = 'MaterialReturnSlipItem'
-    readonly variableName: string
-    readonly materialReturnSlip: string
-    readonly materialRejectionSlipItem: string
+    readonly id: number
+    readonly materialReturnSlip: number
+    readonly materialRejectionSlipItem: number
     values: {
         // UNQ(materialReturnSlip, materialRejectionSlipItem)
-        materialReturnSlip: string
+        materialReturnSlip: number
         // assertion(materialReturnSlip.materialRejectionSlip == materialRejectionSlipItem.materialRejectionSlip)
-        materialRejectionSlipItem: string
+        materialRejectionSlipItem: number
         // assertion(quantity <= materialRejectionSlipItem.quantity && quantity > 0)
         quantity: Number // { materialRejectionSlipItem.returned += quantity && materialRejectionSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.returned += quantity }
     }
 
-    constructor(variableName: string, values: { materialReturnSlip: string, materialRejectionSlipItem: string, quantity: Number }) {
-        this.variableName = variableName
+    constructor(id: number, values: { materialReturnSlip: number, materialRejectionSlipItem: number, quantity: Number }) {
+        this.id = id
         this.values = values
         this.materialReturnSlip = values.materialReturnSlip
         this.materialRejectionSlipItem = values.materialRejectionSlipItem
     }
 
     static toVariable(row: MaterialReturnSlipItemRow): MaterialReturnSlipItemVariable {
-        return new MaterialReturnSlipItemVariable(row.variableName, {
+        return new MaterialReturnSlipItemVariable(row.id, {
             materialReturnSlip: new MaterialReturnSlip(row.values.materialReturnSlip),
             materialRejectionSlipItem: new MaterialRejectionSlipItem(row.values.materialRejectionSlipItem),
             quantity: row.values.quantity
@@ -1308,18 +1308,18 @@ export class MaterialReturnSlipItemRow {
 
 export class MaterialRequistionSlipRow {
     readonly typeName = 'MaterialRequistionSlip'
-    readonly variableName: string
+    readonly id: number
     values: {
-        materialApprovalSlip: string
+        materialApprovalSlip: number
     }
 
-    constructor(variableName: string, values: { materialApprovalSlip: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { materialApprovalSlip: number }) {
+        this.id = id
         this.values = values
     }
 
     static toVariable(row: MaterialRequistionSlipRow): MaterialRequistionSlipVariable {
-        return new MaterialRequistionSlipVariable(row.variableName, {
+        return new MaterialRequistionSlipVariable(row.id, {
             materialApprovalSlip: new MaterialApprovalSlip(row.values.materialApprovalSlip)
         })
     }
@@ -1327,29 +1327,29 @@ export class MaterialRequistionSlipRow {
 
 export class MaterialRequistionSlipItemRow {
     readonly typeName = 'MaterialRequistionSlipItem'
-    readonly variableName: string
-    readonly materialRequistionSlip: string
-    readonly materialApprovalSlipItem: string
+    readonly id: number
+    readonly materialRequistionSlip: number
+    readonly materialApprovalSlipItem: number
     values: {
         // UNQ(materialRequistionSlip, materialApprovalSlipItem)
-        materialRequistionSlip: string
+        materialRequistionSlip: number
         // assertion(materialRequistionSlip.materialApprovalSlip == materialApprovalSlipItem.materialApprovalSlip)
-        materialApprovalSlipItem: string
+        materialApprovalSlipItem: number
         // assertion(quantity <= materialApprovalSlipItem.quantity && quantity > 0)
         quantity: Number // { materialApprovalSlipItem.requisted += quantity && materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.requisted += quantity }
         // assertion(consumed <= quantity && consumed >= 0)
         consumed: Number
     }
 
-    constructor(variableName: string, values: { materialRequistionSlip: string, materialApprovalSlipItem: string, quantity: Number, consumed: Number }) {
-        this.variableName = variableName
+    constructor(id: number, values: { materialRequistionSlip: number, materialApprovalSlipItem: number, quantity: Number, consumed: Number }) {
+        this.id = id
         this.values = values
         this.materialRequistionSlip = values.materialRequistionSlip
         this.materialApprovalSlipItem = values.materialApprovalSlipItem
     }
 
     static toVariable(row: MaterialRequistionSlipItemRow): MaterialRequistionSlipItemVariable {
-        return new MaterialRequistionSlipItemVariable(row.variableName, {
+        return new MaterialRequistionSlipItemVariable(row.id, {
             materialRequistionSlip: new MaterialRequistionSlip(row.values.materialRequistionSlip),
             materialApprovalSlipItem: new MaterialApprovalSlipItem(row.values.materialApprovalSlipItem),
             quantity: row.values.quantity,
@@ -1360,20 +1360,20 @@ export class MaterialRequistionSlipItemRow {
 
 export class BOMRow {
     readonly typeName = 'BOM'
-    readonly variableName: string
+    readonly id: number
     readonly name: string
     values: {
         name: string
     }
 
-    constructor(variableName: string, values: { name: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { name: string }) {
+        this.id = id
         this.values = values
         this.name = values.name
     }
 
     static toVariable(row: BOMRow): BOMVariable {
-        return new BOMVariable(row.variableName, {
+        return new BOMVariable(row.id, {
             name: row.values.name
         })
     }
@@ -1381,28 +1381,28 @@ export class BOMRow {
 
 export class BOMItemRow {
     readonly typeName = 'BOMItem'
-    readonly variableName: string
-    readonly bom: string
-    readonly product: string
+    readonly id: number
+    readonly bom: number
+    readonly product: number
     values: {
         // UNQ(bom, product)
-        bom: string
+        bom: number
         // assertion(product.consumable == true)
-        product: string
+        product: number
         // assertion(quantity > 0 && uom.product == product)
         quantity: Number
-        uom: string
+        uom: number
     }
 
-    constructor(variableName: string, values: { bom: string, product: string, quantity: Number, uom: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { bom: number, product: number, quantity: Number, uom: number }) {
+        this.id = id
         this.values = values
         this.bom = values.bom
         this.product = values.product
     }
 
     static toVariable(row: BOMItemRow): BOMItemVariable {
-        return new BOMItemVariable(row.variableName, {
+        return new BOMItemVariable(row.id, {
             bom: new BOM(row.values.bom),
             product: new Product(row.values.product),
             quantity: row.values.quantity,
@@ -1413,21 +1413,21 @@ export class BOMItemRow {
 
 export class ProductionPreparationSlipRow {
     readonly typeName = 'ProductionPreparationSlip'
-    readonly variableName: string
+    readonly id: number
     values: {
-        bom: string
+        bom: number
         // assertion((approved + scrapped) <= quantity && approved >= 0 && scrapped >= 0)
         approved: Number
         scrapped: Number
     }
 
-    constructor(variableName: string, values: { bom: string, approved: Number, scrapped: Number }) {
-        this.variableName = variableName
+    constructor(id: number, values: { bom: number, approved: Number, scrapped: Number }) {
+        this.id = id
         this.values = values
     }
 
     static toVariable(row: ProductionPreparationSlipRow): ProductionPreparationSlipVariable {
-        return new ProductionPreparationSlipVariable(row.variableName, {
+        return new ProductionPreparationSlipVariable(row.id, {
             bom: new BOM(row.values.bom),
             approved: row.values.approved,
             scrapped: row.values.scrapped
@@ -1437,28 +1437,28 @@ export class ProductionPreparationSlipRow {
 
 export class ProductionPreparationSlipItemRow {
     readonly typeName = 'ProductionPreparationSlipItem'
-    readonly variableName: string
-    readonly productionPreparationSlip: string
+    readonly id: number
+    readonly productionPreparationSlip: number
     readonly bomItem: string
     values: {
         // UNQ(productionPreparationSlip, bomItem)
-        productionPreparationSlip: string
+        productionPreparationSlip: number
         bomItem: string
         // assertion(bomItem.product == materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.product)
-        materialRequistionSlipItem: string
+        materialRequistionSlipItem: number
         // { materialRequistionSlipItem.consumed += bomItem.quantity * materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.uom.conversionRate / bomItem.product.uom.conversionRate }
         // { materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.consumed += bomItem.quantity * materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.uom.conversionRate / bomItem.product.uom.conversionRate }
     }
 
-    constructor(variableName: string, values: { productionPreparationSlip: string, bomItem: string, materialRequistionSlipItem: string }) {
-        this.variableName = variableName
+    constructor(id: number, values: { productionPreparationSlip: number, bomItem: string, materialRequistionSlipItem: number }) {
+        this.id = id
         this.values = values
         this.productionPreparationSlip = values.productionPreparationSlip
         this.bomItem = values.bomItem
     }
 
     static toVariable(row: ProductionPreparationSlipItemRow): ProductionPreparationSlipItemVariable {
-        return new ProductionPreparationSlipItemVariable(row.variableName, {
+        return new ProductionPreparationSlipItemVariable(row.id, {
             productionPreparationSlip: new ProductionPreparationSlip(row.values.productionPreparationSlip),
             bomItem: row.values.bomItem,
             materialRequistionSlipItem: new MaterialRequistionSlipItem(row.values.materialRequistionSlipItem)
@@ -1468,20 +1468,20 @@ export class ProductionPreparationSlipItemRow {
 
 export class ScrapMaterialSlipRow {
     readonly typeName = 'ScrapMaterialSlip'
-    readonly variableName: string
+    readonly id: number
     values: {
-        productionPreparationSlip: string
+        productionPreparationSlip: number
         // assertion(quantity <= productionPreparationSlip.bom.quantity && quantity > 0)
         quantity: Number // { productionPreparationSlip.scrapped += quantity }
     }
 
-    constructor(variableName: string, values: { productionPreparationSlip: string, quantity: Number }) {
-        this.variableName = variableName
+    constructor(id: number, values: { productionPreparationSlip: number, quantity: Number }) {
+        this.id = id
         this.values = values
     }
 
     static toVariable(row: ScrapMaterialSlipRow): ScrapMaterialSlipVariable {
-        return new ScrapMaterialSlipVariable(row.variableName, {
+        return new ScrapMaterialSlipVariable(row.id, {
             productionPreparationSlip: new ProductionPreparationSlip(row.values.productionPreparationSlip),
             quantity: row.values.quantity
         })
@@ -1490,22 +1490,22 @@ export class ScrapMaterialSlipRow {
 
 export class TransferMaterialSlipRow {
     readonly typeName = 'TransferMaterialSlip'
-    readonly variableName: string
+    readonly id: number
     values: {
-        productionPreparationSlip: string
+        productionPreparationSlip: number
         // assertion(quantity <= productionPreparationSlip.bom.quantity && quantity > 0)
         quantity: Number // { productionPreparationSlip.approved += quantity }
         // assertion(transfered <= quantity && transfered >= 0)
         transferred: Number
     }
 
-    constructor(variableName: string, values: { productionPreparationSlip: string, quantity: Number, transferred: Number }) {
-        this.variableName = variableName
+    constructor(id: number, values: { productionPreparationSlip: number, quantity: Number, transferred: Number }) {
+        this.id = id
         this.values = values
     }
 
     static toVariable(row: TransferMaterialSlipRow): TransferMaterialSlipVariable {
-        return new TransferMaterialSlipVariable(row.variableName, {
+        return new TransferMaterialSlipVariable(row.id, {
             productionPreparationSlip: new ProductionPreparationSlip(row.values.productionPreparationSlip),
             quantity: row.values.quantity,
             transferred: row.values.transferred
@@ -1515,20 +1515,20 @@ export class TransferMaterialSlipRow {
 
 export class WarehouseAcceptanceSlipRow {
     readonly typeName = 'WarehouseAcceptanceSlip'
-    readonly variableName: string
+    readonly id: number
     values: {
-        transferMaterialSlip: string
+        transferMaterialSlip: number
         // assertion(quantity <= transferMaterialSlip.quantity && quantity > 0)
         quantity: Number // { transferMaterialSlip.transfered += quantity }
     }
 
-    constructor(variableName: string, values: { transferMaterialSlip: string, quantity: Number }) {
-        this.variableName = variableName
+    constructor(id: number, values: { transferMaterialSlip: number, quantity: Number }) {
+        this.id = id
         this.values = values
     }
 
     static toVariable(row: WarehouseAcceptanceSlipRow): WarehouseAcceptanceSlipVariable {
-        return new WarehouseAcceptanceSlipVariable(row.variableName, {
+        return new WarehouseAcceptanceSlipVariable(row.id, {
             transferMaterialSlip: new TransferMaterialSlip(row.values.transferMaterialSlip),
             quantity: row.values.quantity
         })
@@ -1541,438 +1541,438 @@ export class DiffRow {
     variables: {
         Region: {
             replace: Array<RegionRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Country: {
             replace: Array<CountryRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         State: {
             replace: Array<StateRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         District: {
             replace: Array<DistrictRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Subdistrict: {
             replace: Array<SubdistrictRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         PostalCode: {
             replace: Array<PostalCodeRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Address: {
             replace: Array<AddressRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Company: {
             replace: Array<CompanyRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         CompanyAddress: {
             replace: Array<CompanyAddressRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         CompanyTagGroup: {
             replace: Array<CompanyTagGroupRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         CompanyTag: {
             replace: Array<CompanyTagRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         MappingCompanyTag: {
             replace: Array<MappingCompanyTagRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Contact: {
             replace: Array<ContactRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         ContactAddress: {
             replace: Array<ContactAddressRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         CompanyContact: {
             replace: Array<CompanyContactRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Currency: {
             replace: Array<CurrencyRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         CurrencyRate: {
             replace: Array<CurrencyRateRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Memo: {
             replace: Array<MemoRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Bank: {
             replace: Array<BankRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         BankBranch: {
             replace: Array<BankBranchRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         BankAccount: {
             replace: Array<BankAccountRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         BankTransaction: {
             replace: Array<BankTransactionRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         CompanyBankAccount: {
             replace: Array<CompanyBankAccountRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         ProductCategoryGroup: {
             replace: Array<ProductCategoryGroupRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         ProductCategory: {
             replace: Array<ProductCategoryRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Product: {
             replace: Array<ProductRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         ProductTagGroup: {
             replace: Array<ProductTagGroupRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         ProductTag: {
             replace: Array<ProductTagRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         MappingProductTag: {
             replace: Array<MappingProductTagRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         UOM: {
             replace: Array<UOMRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Indent: {
             replace: Array<IndentRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         IndentItem: {
             replace: Array<IndentItemRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         CompanyProduct: {
             replace: Array<CompanyProductRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Quotation: {
             replace: Array<QuotationRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         QuotationItem: {
             replace: Array<QuotationItemRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         PurchaseOrder: {
             replace: Array<PurchaseOrderRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         PurchaseOrderItem: {
             replace: Array<PurchaseOrderItemRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         PurchaseInvoice: {
             replace: Array<PurchaseInvoiceRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         PurchaseInvoiceItem: {
             replace: Array<PurchaseInvoiceItemRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         MaterialApprovalSlip: {
             replace: Array<MaterialApprovalSlipRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         MaterialApprovalSlipItem: {
             replace: Array<MaterialApprovalSlipItemRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         MaterialRejectionSlip: {
             replace: Array<MaterialRejectionSlipRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         MaterialRejectionSlipItem: {
             replace: Array<MaterialRejectionSlipItemRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         MaterialReturnSlip: {
             replace: Array<MaterialReturnSlipRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         MaterialReturnSlipItem: {
             replace: Array<MaterialReturnSlipItemRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         MaterialRequistionSlip: {
             replace: Array<MaterialRequistionSlipRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         MaterialRequistionSlipItem: {
             replace: Array<MaterialRequistionSlipItemRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         BOM: {
             replace: Array<BOMRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         BOMItem: {
             replace: Array<BOMItemRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         ProductionPreparationSlip: {
             replace: Array<ProductionPreparationSlipRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         ProductionPreparationSlipItem: {
             replace: Array<ProductionPreparationSlipItemRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         ScrapMaterialSlip: {
             replace: Array<ScrapMaterialSlipRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         TransferMaterialSlip: {
             replace: Array<TransferMaterialSlipRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         WarehouseAcceptanceSlip: {
             replace: Array<WarehouseAcceptanceSlipRow>
-            remove: Array<string>
+            remove: Array<number>
         }
     }
 
     constructor(variables: {
         Region: {
             replace: Array<RegionRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Country: {
             replace: Array<CountryRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         State: {
             replace: Array<StateRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         District: {
             replace: Array<DistrictRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Subdistrict: {
             replace: Array<SubdistrictRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         PostalCode: {
             replace: Array<PostalCodeRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Address: {
             replace: Array<AddressRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Company: {
             replace: Array<CompanyRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         CompanyAddress: {
             replace: Array<CompanyAddressRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         CompanyTagGroup: {
             replace: Array<CompanyTagGroupRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         CompanyTag: {
             replace: Array<CompanyTagRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         MappingCompanyTag: {
             replace: Array<MappingCompanyTagRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Contact: {
             replace: Array<ContactRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         ContactAddress: {
             replace: Array<ContactAddressRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         CompanyContact: {
             replace: Array<CompanyContactRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Currency: {
             replace: Array<CurrencyRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         CurrencyRate: {
             replace: Array<CurrencyRateRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Memo: {
             replace: Array<MemoRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Bank: {
             replace: Array<BankRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         BankBranch: {
             replace: Array<BankBranchRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         BankAccount: {
             replace: Array<BankAccountRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         BankTransaction: {
             replace: Array<BankTransactionRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         CompanyBankAccount: {
             replace: Array<CompanyBankAccountRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         ProductCategoryGroup: {
             replace: Array<ProductCategoryGroupRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         ProductCategory: {
             replace: Array<ProductCategoryRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Product: {
             replace: Array<ProductRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         ProductTagGroup: {
             replace: Array<ProductTagGroupRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         ProductTag: {
             replace: Array<ProductTagRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         MappingProductTag: {
             replace: Array<MappingProductTagRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         UOM: {
             replace: Array<UOMRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Indent: {
             replace: Array<IndentRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         IndentItem: {
             replace: Array<IndentItemRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         CompanyProduct: {
             replace: Array<CompanyProductRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         Quotation: {
             replace: Array<QuotationRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         QuotationItem: {
             replace: Array<QuotationItemRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         PurchaseOrder: {
             replace: Array<PurchaseOrderRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         PurchaseOrderItem: {
             replace: Array<PurchaseOrderItemRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         PurchaseInvoice: {
             replace: Array<PurchaseInvoiceRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         PurchaseInvoiceItem: {
             replace: Array<PurchaseInvoiceItemRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         MaterialApprovalSlip: {
             replace: Array<MaterialApprovalSlipRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         MaterialApprovalSlipItem: {
             replace: Array<MaterialApprovalSlipItemRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         MaterialRejectionSlip: {
             replace: Array<MaterialRejectionSlipRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         MaterialRejectionSlipItem: {
             replace: Array<MaterialRejectionSlipItemRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         MaterialReturnSlip: {
             replace: Array<MaterialReturnSlipRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         MaterialReturnSlipItem: {
             replace: Array<MaterialReturnSlipItemRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         MaterialRequistionSlip: {
             replace: Array<MaterialRequistionSlipRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         MaterialRequistionSlipItem: {
             replace: Array<MaterialRequistionSlipItemRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         BOM: {
             replace: Array<BOMRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         BOMItem: {
             replace: Array<BOMItemRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         ProductionPreparationSlip: {
             replace: Array<ProductionPreparationSlipRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         ProductionPreparationSlipItem: {
             replace: Array<ProductionPreparationSlipItemRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         ScrapMaterialSlip: {
             replace: Array<ScrapMaterialSlipRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         TransferMaterialSlip: {
             replace: Array<TransferMaterialSlipRow>
-            remove: Array<string>
+            remove: Array<number>
         },
         WarehouseAcceptanceSlip: {
             replace: Array<WarehouseAcceptanceSlipRow>
-            remove: Array<string>
+            remove: Array<number>
         }
     }) {
         this.active = true
