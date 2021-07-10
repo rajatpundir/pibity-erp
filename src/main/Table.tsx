@@ -144,7 +144,7 @@ async function Q(variable: Immutable<Variable>, path: Array<string>): Promise<[s
     if (path.length !== 0) {
         switch (path[0]) {
             case 'variableName': {
-                return [variable.variableName.toString(), type.url ? type.url : '']
+                return [variable.id.toString(), type.url ? type.url : '']
             }
             case 'values': {
                 if (path[1] !== undefined) {

@@ -236,7 +236,7 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
-                        state.updatedVariableName = action[2].variableName
+                        state.updatedVariableName = action[2].id
                         break
                     }
                     case 'uoms': {
@@ -275,29 +275,29 @@ function Component(props) {
 
     const setVariable = useCallback(async () => {
         if (props.match.params[0]) {
-            const rows = await db.products.toArray()
+            const rows = await db.Product.toArray()
             var composedVariables = HashSet.of<Immutable<ProductVariable>>().addAll(rows ? rows.map(x => ProductRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.variable.typeName].replace)
             })
-            const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
+            const variables = composedVariables.filter(variable => variable.id.toString() === props.match.params[0])
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as ProductVariable])
 
-                const itemRows = await db.uoms.toArray()
+                const itemRows = await db.UOM.toArray()
                 var composedItemVariables = HashSet.of<Immutable<UOMVariable>>().addAll(itemRows ? itemRows.map(x => UOMRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.uoms.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.uoms.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.uoms.variable.typeName].replace)
+                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.uoms.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.uoms.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.uoms.variable.typeName].replace)
                 })
                 const items = composedItemVariables.filter(variable => variable.values.product.toString() === props.match.params[0])
                 dispatch(['replace', 'uoms', items as HashSet<UOMVariable>])
 
-                const companyProductRows = await db.companyProducts.toArray()
+                const companyProductRows = await db.CompanyProduct.toArray()
                 var composedCompanyProductVariables = HashSet.of<Immutable<CompanyProductVariable>>().addAll(companyProductRows ? companyProductRows.map(x => CompanyProductRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedCompanyProductVariables = composedCompanyProductVariables.filter(x => !diff.variables[state.companies.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.companies.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.companies.variable.typeName].replace)
+                    composedCompanyProductVariables = composedCompanyProductVariables.filter(x => !diff.variables[state.companies.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.companies.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.companies.variable.typeName].replace)
                 })
                 dispatch(['replace', 'companies', composedCompanyProductVariables.filter(variable => variable.values.product.toString() === props.match.params[0]) as HashSet<CompanyProductVariable>])
             }
@@ -306,10 +306,10 @@ function Component(props) {
 
     useEffect(() => { setVariable() }, [setVariable])
 
-    const companyRows = useLiveQuery(() => db.companies.toArray())?.map(x => CompanyRow.toVariable(x))
+    const companyRows = useLiveQuery(() => db.Company.toArray())?.map(x => CompanyRow.toVariable(x))
     var companies = HashSet.of<Immutable<CompanyVariable>>().addAll(companyRows ? companyRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        companies = companies.filter(x => !diff.variables.Company.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.Company.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.Company.replace)
+        companies = companies.filter(x => !diff.variables.Company.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.Company.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.Company.replace)
     })
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -399,7 +399,7 @@ function Component(props) {
 
     const createVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createProduct, {
-            sku: state.variable.variableName.toString(),
+            sku: state.variable.id.toString(),
             name: state.variable.values.name,
             orderable: state.variable.values.orderable,
             consumable: state.variable.values.consumable,
@@ -423,7 +423,7 @@ function Component(props) {
     }
 
     const modifyVariable = async () => {
-        const [, diff] = await iff(state.variable.variableName.toString() !== state.updatedVariableName.toString(),
+        const [, diff] = await iff(state.variable.id.toString() !== state.updatedVariableName.toString(),
             updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
             updateVariable(state.variable, state.variable.toRow().values)
         )
@@ -433,7 +433,7 @@ function Component(props) {
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteProduct, {
-            variableName: state.variable.variableName.toString(),
+            variableName: state.variable.id.toString(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)
@@ -485,7 +485,7 @@ function Component(props) {
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Input type='text' onChange={onVariableInputChange} value={state.updatedVariableName.toString()} name='variableName' />,
-                                <div className='font-bold text-xl'>{state.variable.variableName.toString()}</div>
+                                <div className='font-bold text-xl'>{state.variable.id.toString()}</div>
                             )
                         }
                     </Item>
@@ -589,13 +589,13 @@ function Component(props) {
                                             iff(state.mode === 'create' || state.mode === 'update',
                                                 <Select onChange={onCompanyProductInputChange} value={state.companies.variable.values.company.toString()} name='company'>
                                                     <option value='' selected disabled hidden>Select Company</option>
-                                                    {companies.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                                    {companies.toArray().map(x => <option value={x.id.toString()}>{x.id.toString()}</option>)}
                                                 </Select>,
                                                 <div className='font-bold text-xl'>{
-                                                    iff(companies.filter(x => x.variableName.toString() === state.companies.variable.values.company.toString()).length() !== 0,
+                                                    iff(companies.filter(x => x.id.toString() === state.companies.variable.values.company.toString()).length() !== 0,
                                                         () => {
-                                                            const referencedVariable = companies.filter(x => x.variableName.toString() === state.companies.variable.values.company.toString()).toArray()[0] as CompanyVariable
-                                                            return <Link to={`/region/${referencedVariable.variableName.toString()}`}>{referencedVariable.variableName.toString()}</Link>
+                                                            const referencedVariable = companies.filter(x => x.id.toString() === state.companies.variable.values.company.toString()).toArray()[0] as CompanyVariable
+                                                            return <Link to={`/region/${referencedVariable.id.toString()}`}>{referencedVariable.id.toString()}</Link>
                                                         }, <Link to={`/region/${state.companies.variable.values.company.toString()}`}>{state.companies.variable.values.company.toString()}</Link>)
                                                 }</div>
                                             )

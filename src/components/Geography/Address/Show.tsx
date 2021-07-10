@@ -165,7 +165,7 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
-                        state.updatedVariableName = action[2].variableName
+                        state.updatedVariableName = action[2].id
                         break
                     }
                     case 'companies': {
@@ -196,21 +196,21 @@ function Component(props) {
 
     const setVariable = useCallback(async () => {
         if (props.match.params[0]) {
-            const rows = await db.addresses.toArray()
+            const rows = await db.Address.toArray()
             var composedVariables = HashSet.of<Immutable<AddressVariable>>().addAll(rows ? rows.map(x => AddressRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.variable.typeName].replace)
             })
-            const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
+            const variables = composedVariables.filter(variable => variable.id.toString() === props.match.params[0])
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as AddressVariable])
 
-                const companyAddressRows = await db.companyAddresses.toArray()
+                const companyAddressRows = await db.CompanyAddress.toArray()
                 var composedCompanyAddressVariables = HashSet.of<Immutable<CompanyAddressVariable>>().addAll(companyAddressRows ? companyAddressRows.map(x => CompanyAddressRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedCompanyAddressVariables = composedCompanyAddressVariables.filter(x => !diff.variables[state.companies.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.companies.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.companies.variable.typeName].replace)
+                    composedCompanyAddressVariables = composedCompanyAddressVariables.filter(x => !diff.variables[state.companies.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.companies.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.companies.variable.typeName].replace)
                 })
                 dispatch(['replace', 'companies', composedCompanyAddressVariables.filter(variable => variable.values.address.toString() === props.match.params[0]) as HashSet<CompanyAddressVariable>])
             }
@@ -219,16 +219,16 @@ function Component(props) {
 
     useEffect(() => { setVariable() }, [setVariable])
 
-    const rows = useLiveQuery(() => db.postalCodes.orderBy('name').toArray())?.map(x => PostalCodeRow.toVariable(x))
+    const rows = useLiveQuery(() => db.PostalCode.orderBy('name').toArray())?.map(x => PostalCodeRow.toVariable(x))
     var postalCodes = HashSet.of<Immutable<PostalCodeVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        postalCodes = postalCodes.filter(x => !diff.variables.PostalCode.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.PostalCode.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.PostalCode.replace)
+        postalCodes = postalCodes.filter(x => !diff.variables.PostalCode.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.PostalCode.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.PostalCode.replace)
     })
 
-    const companyRows = useLiveQuery(() => db.companies.toArray())?.map(x => CompanyRow.toVariable(x))
+    const companyRows = useLiveQuery(() => db.Company.toArray())?.map(x => CompanyRow.toVariable(x))
     var companies = HashSet.of<Immutable<CompanyVariable>>().addAll(companyRows ? companyRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        companies = companies.filter(x => !diff.variables.Company.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.Company.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.Company.replace)
+        companies = companies.filter(x => !diff.variables.Company.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.Company.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.Company.replace)
     })
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -316,7 +316,7 @@ function Component(props) {
     }
 
     const modifyVariable = async () => {
-        const [, diff] = await iff(state.variable.variableName.toString() !== state.updatedVariableName.toString(),
+        const [, diff] = await iff(state.variable.id.toString() !== state.updatedVariableName.toString(),
             updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
             updateVariable(state.variable, state.variable.toRow().values)
         )
@@ -326,7 +326,7 @@ function Component(props) {
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteAddress, {
-            variableName: state.variable.variableName.toString(),
+            variableName: state.variable.id.toString(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)
@@ -379,13 +379,13 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.postalCode.toString()} name='postalCode'>
                                     <option value='' selected disabled hidden>Select Postal Code</option>
-                                    {postalCodes.toArray().map(x => <option value={x.variableName.toString()}>{x.values.name}</option>)}
+                                    {postalCodes.toArray().map(x => <option value={x.id.toString()}>{x.values.name}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{
-                                    iff(postalCodes.filter(x => x.variableName.toString() === state.variable.values.postalCode.toString()).length() !== 0,
+                                    iff(postalCodes.filter(x => x.id.toString() === state.variable.values.postalCode.toString()).length() !== 0,
                                         () => {
-                                            const referencedVariable = postalCodes.filter(x => x.variableName.toString() === state.variable.values.postalCode.toString()).toArray()[0] as PostalCodeVariable
-                                            return <Link to={`/postal-code/${referencedVariable.variableName.toString()}`}>{referencedVariable.values.name}</Link>
+                                            const referencedVariable = postalCodes.filter(x => x.id.toString() === state.variable.values.postalCode.toString()).toArray()[0] as PostalCodeVariable
+                                            return <Link to={`/postal-code/${referencedVariable.id.toString()}`}>{referencedVariable.values.name}</Link>
                                         }, <Link to={`/postal-code/${state.variable.values.postalCode.toString()}`}>{state.variable.values.postalCode.toString()}</Link>)
                                 }</div>
                             )
@@ -454,13 +454,13 @@ function Component(props) {
                                             iff(state.mode === 'create' || state.mode === 'update',
                                                 <Select onChange={onCompanyAddressInputChange} value={state.companies.variable.values.company.toString()} name='company'>
                                                     <option value='' selected disabled hidden>Select Company</option>
-                                                    {companies.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                                    {companies.toArray().map(x => <option value={x.id.toString()}>{x.id.toString()}</option>)}
                                                 </Select>,
                                                 <div className='font-bold text-xl'>{
-                                                    iff(companies.filter(x => x.variableName.toString() === state.companies.variable.values.company.toString()).length() !== 0,
+                                                    iff(companies.filter(x => x.id.toString() === state.companies.variable.values.company.toString()).length() !== 0,
                                                         () => {
-                                                            const referencedVariable = companies.filter(x => x.variableName.toString() === state.companies.variable.values.company.toString()).toArray()[0] as CompanyVariable
-                                                            return <Link to={`/company/${referencedVariable.variableName.toString()}`}>{referencedVariable.variableName.toString()}</Link>
+                                                            const referencedVariable = companies.filter(x => x.id.toString() === state.companies.variable.values.company.toString()).toArray()[0] as CompanyVariable
+                                                            return <Link to={`/company/${referencedVariable.id.toString()}`}>{referencedVariable.id.toString()}</Link>
                                                         }, <Link to={`/company/${state.companies.variable.values.company.toString()}`}>{state.companies.variable.values.company.toString()}</Link>)
                                                 }</div>
                                             )

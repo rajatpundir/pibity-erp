@@ -20,7 +20,6 @@ type FunctionInput =
     | {
         type: NonPrimitiveType
         default?: string
-        variableName?: LispExpression
         values?: { [index: string]: LispExpression }
     }
 
@@ -74,9 +73,6 @@ function getSymbolPathsForFunctionInput(fi: FunctionInput): Array<ReadonlyArray<
             break
         }
         default: {
-            if (fi.variableName !== undefined) {
-                getSymbolPaths(fi.variableName).forEach(x => symbolPaths.push(x))
-            }
             const type = types[fi.type]
             Object.keys(type.keys).forEach(keyName => {
                 if (fi.values !== undefined) {
@@ -314,7 +310,7 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                                     default: {
                                         const referencedVariable = await getVariable(key.type, String(evaluateExpression(fo.values[keyName], symbols)), overlay)
                                         if (referencedVariable !== undefined) {
-                                            createdVariable.values[keyName] = referencedVariable.variableName.toString()
+                                            createdVariable.values[keyName] = referencedVariable.id.toString()
                                         } else {
                                             // Information is not present, return with symbolFlag as false
                                             result[outputName] = createdVariable
@@ -365,7 +361,7 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                                         default: {
                                             const referencedVariable = await getVariable(key.type, String(evaluateExpression(fo.values[keyName], symbols)), overlay)
                                             if (referencedVariable !== undefined) {
-                                                updatedVariable.values[keyName] = referencedVariable.variableName.toString()
+                                                updatedVariable.values[keyName] = referencedVariable.id.toString()
                                             } else {
                                                 // Information is not present, return with symbolFlag as false
                                                 result[outputName] = {
@@ -412,15 +408,11 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                 case 'Timestamp':
                 case 'Time': { break }
                 default: {
-                    if (fi.variableName !== undefined || fi.values !== undefined) {
+                    if (fi.values !== undefined) {
                         const updatedVariable = {
                             typeName: fi.type,
                             variableName: String(symbols[inputName].value),
                             values: {}
-                        }
-                        if (fi.variableName !== undefined) {
-                            updatedVariable.variableName = String(evaluateExpression(fi.variableName, symbols))
-                            diffs = diffs.append(getRemoveVariableDiff(fi.type, String(symbols[inputName].value)))
                         }
                         const variable = await getVariable(fi.type, String(symbols[inputName].value), overlay)
                         if (variable !== undefined) {
@@ -454,7 +446,7 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                                             default: {
                                                 const referencedVariable = await getVariable(key.type, String(evaluateExpression(fi.values[keyName], symbols)), overlay)
                                                 if (referencedVariable !== undefined) {
-                                                    updatedVariable.values[keyName] = referencedVariable.variableName.toString()
+                                                    updatedVariable.values[keyName] = referencedVariable.id.toString()
                                                 } else {
                                                     // Information is not present, return with symbolFlag as false
                                                     return [result, false, mergeDiffs(diffs.toArray())]

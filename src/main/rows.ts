@@ -1,7 +1,7 @@
 import { immerable, Immutable } from 'immer'
 import { HashSet } from 'prelude-ts'
 import { DiffVariable } from './layers'
-import { Number, Decimal, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, CompanyVariable, CompanyProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Company, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip, MaterialReturnSlipItem, BOMItem, ProductionPreparationSlipItem, ScrapMaterialSlip, WarehouseAcceptanceSlip, CompanyProduct, RegionVariable, CountryVariable, Region, StateVariable, Country, DistrictVariable, State, SubdistrictVariable, District, PostalCodeVariable, Subdistrict, AddressVariable, PostalCode, ServiceAreaVariable, CompanyTypeVariable, BankVariable, BankBranchVariable, Bank, Address, BankAccountVariable, BankBranch, CompanyType, ServiceArea, CompanyAddressVariable, CompanyContactVariable, CompanyBankAccountVariable, BankAccount, CompanyAddress, CompanyContact, CompanyBankAccount } from './variables'
+import { Number, Decimal, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, CompanyVariable, CompanyProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Company, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip, MaterialReturnSlipItem, BOMItem, ProductionPreparationSlipItem, ScrapMaterialSlip, WarehouseAcceptanceSlip, CompanyProduct, RegionVariable, CountryVariable, Region, StateVariable, Country, DistrictVariable, State, SubdistrictVariable, District, PostalCodeVariable, Subdistrict, AddressVariable, PostalCode, BankVariable, BankBranchVariable, Bank, Address, BankAccountVariable, BankBranch, CompanyAddressVariable, CompanyContactVariable, CompanyBankAccountVariable, BankAccount, CompanyAddress, CompanyContact, CompanyBankAccount, CompanyTagGroupVariable, CompanyTagVariable, CompanyTagGroup, MappingCompanyTagVariable, CompanyTag, ContactVariable, ContactAddressVariable, Contact, CurrencyVariable, CurrencyRateVariable, Currency, MemoVariable, BankTransactionVariable, Memo, CurrencyRate, ProductCategoryGroupVariable, ProductCategoryGroup, ProductCategoryVariable, ProductCategory, ProductTagGroupVariable, ProductTagVariable, ProductTagGroup, MappingProductTagVariable, ProductTag, BankTransaction, MappingProductTag, ContactAddress, MappingCompanyTag } from './variables'
 
 export type Row =
     | RegionRow
@@ -11,20 +11,32 @@ export type Row =
     | SubdistrictRow
     | PostalCodeRow
     | AddressRow
-    | ServiceAreaRow
-    | CountryRow
+    | CompanyRow
+    | CompanyAddressRow
+    | CompanyTagGroupRow
+    | CompanyTagRow
+    | MappingCompanyTagRow
+    | ContactRow
+    | ContactAddressRow
+    | CompanyContactRow
+    | CurrencyRow
+    | CurrencyRateRow
+    | MemoRow
     | BankRow
     | BankBranchRow
     | BankAccountRow
-    | CompanyRow
-    | CompanyAddressRow
-    | CompanyContactRow
+    | BankTransactionRow
     | CompanyBankAccountRow
+    | ProductCategoryGroupRow
+    | ProductCategoryRow
     | ProductRow
+    | ProductTagGroupRow
+    | ProductTagRow
+    | MappingProductTagRow
     | UOMRow
+    | CompanyProductRow
     | IndentRow
     | IndentItemRow
-    | CompanyProductRow
     | QuotationRow
     | QuotationItemRow
     | PurchaseOrderRow
@@ -50,15 +62,21 @@ export type Row =
 export class RegionRow {
     readonly typeName = 'Region'
     readonly variableName: string
-    values: {}
+    readonly name: string
+    values: {
+        name: string
+    }
 
-    constructor(variableName: string, values: {}) {
+    constructor(variableName: string, values: { name: string }) {
         this.variableName = variableName
         this.values = values
+        this.name = values.name
     }
 
     static toVariable(row: RegionRow): RegionVariable {
-        return new RegionVariable(row.variableName, row.values)
+        return new RegionVariable(row.variableName, {
+            name: row.values.name
+        })
     }
 }
 
@@ -226,33 +244,313 @@ export class AddressRow {
     }
 }
 
-export class ServiceAreaRow {
-    readonly typeName = 'ServiceArea'
+export class CompanyRow {
+    readonly typeName = 'Company'
     readonly variableName: string
-    values: {}
-
-    constructor(variableName: string, values: {}) {
-        this.variableName = variableName
-        this.values = values
+    readonly name: string
+    values: {
+        name: string
+        email: string
+        telephone: string
+        mobile: string
+        website: string
+        gstin: string
+        pan: string
+        iec: string
     }
 
-    static toVariable(row: ServiceAreaRow): ServiceAreaVariable {
-        return new ServiceAreaVariable(row.variableName)
+    constructor(variableName: string, values: { name: string, email: string, telephone: string, mobile: string, website: string, gstin: string, pan: string, iec: string }) {
+        this.variableName = variableName
+        this.values = values
+        this.name = values.name
+    }
+
+    static toVariable(row: CompanyRow): CompanyVariable {
+        return new CompanyVariable(row.variableName, {
+            name: row.values.name,
+            email: row.values.email,
+            telephone: row.values.telephone,
+            mobile: row.values.mobile,
+            website: row.values.website,
+            gstin: row.values.gstin,
+            pan: row.values.pan,
+            iec: row.values.iec,
+        })
     }
 }
 
-export class CompanyTypeRow {
-    readonly typeName = 'CompanyType'
+export class CompanyAddressRow {
+    readonly typeName = 'CompanyAddress'
     readonly variableName: string
-    values: {}
-
-    constructor(variableName: string, values: {}) {
-        this.variableName = variableName
-        this.values = values
+    readonly company: string
+    readonly name: string
+    readonly address: string
+    values: {
+        // UNQ(company, name)
+        // UNQ(company, address)
+        company: string
+        name: string
+        address: string
     }
 
-    static toVariable(row: CompanyTypeRow): CompanyTypeVariable {
-        return new CompanyTypeVariable(row.variableName)
+    constructor(variableName: string, values: { company: string, name: string, address: string }) {
+        this.variableName = variableName
+        this.values = values
+        this.company = values.company
+        this.name = values.name
+        this.address = values.address
+    }
+
+    static toVariable(row: CompanyAddressRow): CompanyAddressVariable {
+        return new CompanyAddressVariable(row.variableName, {
+            company: new Company(row.values.company),
+            name: row.values.name,
+            address: new Address(row.values.address)
+        })
+    }
+}
+
+export class CompanyTagGroupRow {
+    readonly typeName = 'CompanyTagGroup'
+    readonly variableName: string
+    readonly name: string
+    values: {
+        name: string
+    }
+
+    constructor(variableName: string, values: { name: string }) {
+        this.variableName = variableName
+        this.values = values
+        this.name = values.name
+    }
+
+    static toVariable(row: CompanyTagGroupRow): CompanyTagGroupVariable {
+        return new CompanyTagGroupVariable(row.variableName, {
+            name: row.values.name
+        })
+    }
+}
+
+export class CompanyTagRow {
+    readonly typeName = 'CompanyTag'
+    readonly variableName: string
+    readonly group: string
+    readonly name: string
+    values: {
+        group: string
+        name: string
+    }
+
+    constructor(variableName: string, values: { group: string, name: string }) {
+        this.variableName = variableName
+        this.values = values
+        this.group = values.group
+        this.name = values.name
+    }
+
+    static toVariable(row: CompanyTagRow): CompanyTagVariable {
+        return new CompanyTagVariable(row.variableName, {
+            group: new CompanyTagGroup(row.values.group),
+            name: row.values.name
+        })
+    }
+}
+
+export class MappingCompanyTagRow {
+    readonly typeName = 'MappingCompanyTag'
+    readonly variableName: string
+    readonly company: string
+    readonly tag: string
+    values: {
+        company: string
+        tag: string
+    }
+
+    constructor(variableName: string, values: { company: string, tag: string }) {
+        this.variableName = variableName
+        this.values = values
+        this.company = values.company
+        this.tag = values.tag
+    }
+
+    static toVariable(row: MappingCompanyTagRow): MappingCompanyTagVariable {
+        return new MappingCompanyTagVariable(row.variableName, {
+            company: new Company(row.values.company),
+            tag: new CompanyTag(row.values.tag)
+        })
+    }
+}
+
+export class ContactRow {
+    readonly typeName = 'Contact'
+    readonly variableName: string
+    readonly name: string
+    values: {
+        name: string
+        email: string
+        telephone: string
+        mobile: string
+        website: string
+    }
+
+    constructor(variableName: string, values: { name: string, email: string, telephone: string, mobile: string, website: string }) {
+        this.variableName = variableName
+        this.values = values
+        this.name = values.name
+    }
+
+    static toVariable(row: ContactRow): ContactVariable {
+        return new ContactVariable(row.variableName, {
+            name: row.values.name,
+            email: row.values.email,
+            telephone: row.values.telephone,
+            mobile: row.values.mobile,
+            website: row.values.website
+        })
+    }
+}
+
+export class ContactAddressRow {
+    readonly typeName = 'ContactAddress'
+    readonly variableName: string
+    readonly contact: string
+    readonly name: string
+    readonly address: string
+    values: {
+        // UNQ(contact, name)
+        // UNQ(contact, address)
+        contact: string
+        name: string
+        address: string
+    }
+
+    constructor(variableName: string, values: { contact: string, name: string, address: string }) {
+        this.variableName = variableName
+        this.values = values
+        this.contact = values.contact
+        this.name = values.name
+        this.address = values.address
+    }
+
+    static toVariable(row: ContactAddressRow): ContactAddressVariable {
+        return new ContactAddressVariable(row.variableName, {
+            contact: new Contact(row.values.contact),
+            name: row.values.name,
+            address: new Address(row.values.address)
+        })
+    }
+}
+
+export class CompanyContactRow {
+    readonly typeName = 'CompanyContact'
+    readonly variableName: string
+    readonly company: string
+    readonly contact: string
+    values: {
+        // UNQ(company, name)
+        company: string
+        contact: string
+        role: string
+        email: string
+        telephone: string
+        mobile: string
+    }
+
+    constructor(variableName: string, values: { company: string, contact: string, role: string, email: string, telephone: string, mobile: string }) {
+        this.variableName = variableName
+        this.values = values
+        this.company = values.company
+        this.contact = values.contact
+    }
+
+    static toVariable(row: CompanyContactRow): CompanyContactVariable {
+        return new CompanyContactVariable(row.variableName, {
+            company: new Company(row.values.company),
+            contact: new Contact(row.values.contact),
+            role: row.values.role,
+            email: row.values.email,
+            telephone: row.values.telephone,
+            mobile: row.values.mobile
+        })
+    }
+}
+
+export class CurrencyRow {
+    readonly typeName = 'Currency'
+    readonly variableName: string
+    readonly name: string
+    values: {
+        name: string
+    }
+
+    constructor(variableName: string, values: { name: string }) {
+        this.variableName = variableName
+        this.values = values
+        this.name = values.name
+    }
+
+    static toVariable(row: CurrencyRow): CurrencyVariable {
+        return new CurrencyVariable(row.variableName, {
+            name: row.values.name
+        })
+    }
+}
+
+export class CurrencyRateRow {
+    readonly typeName = 'CurrencyRate'
+    readonly variableName: string
+    readonly currency: string
+    readonly startTime: number
+    readonly endTime: number
+    values: {
+        currency: string
+        conversionRate: number
+        startTime: number
+        endTime: number
+    }
+
+    constructor(variableName: string, values: { currency: string, conversionRate: number, startTime: number, endTime: number }) {
+        this.variableName = variableName
+        this.values = values
+        this.currency = values.currency
+        this.startTime = values.startTime
+        this.endTime = values.endTime
+    }
+
+    static toVariable(row: CurrencyRateRow): CurrencyRateVariable {
+        return new CurrencyRateVariable(row.variableName, {
+            currency: new Currency(row.values.currency),
+            conversionRate: row.values.conversionRate,
+            startTime: row.values.startTime,
+            endTime: row.values.endTime
+        })
+    }
+}
+
+export class MemoRow {
+    readonly typeName = 'Memo'
+    readonly variableName: string
+    readonly company: string
+    values: {
+        company: string
+        currency: string
+        amount: number
+        unsettled: number
+    }
+
+    constructor(variableName: string, values: { company: string, currency: string, amount: number, unsettled: number }) {
+        this.variableName = variableName
+        this.values = values
+        this.company = values.company
+    }
+
+    static toVariable(row: MemoRow): MemoVariable {
+        return new MemoVariable(row.variableName, {
+            company: new Company(row.values.company),
+            currency: new Currency(row.values.currency),
+            amount: row.values.amount,
+            unsettled: row.values.unsettled
+        })
     }
 }
 
@@ -324,9 +622,11 @@ export class BankAccountRow {
         bank: string
         bankBranch: string
         accountNumber: string
+        accountName: string
+        currency: string
     }
 
-    constructor(variableName: string, values: { bank: string, bankBranch: string, accountNumber: string }) {
+    constructor(variableName: string, values: { bank: string, bankBranch: string, accountNumber: string, accountName: string, currency: string }) {
         this.variableName = variableName
         this.values = values
         this.bank = values.bank
@@ -337,107 +637,44 @@ export class BankAccountRow {
         return new BankAccountVariable(row.variableName, {
             bank: new Bank(row.values.bank),
             bankBranch: new BankBranch(row.values.bankBranch),
-            accountNumber: row.values.accountNumber
+            accountNumber: row.values.accountNumber,
+            accountName: row.values.accountName,
+            currency: new Currency(row.values.currency)
         })
     }
 }
 
-export class CompanyRow {
-    readonly typeName = 'Company'
+export class BankTransactionRow {
+    readonly typeName = 'BankTransaction'
     readonly variableName: string
+    readonly memo: string
+    readonly bankAccount: string
     values: {
-        email: string
-        telephone: string
-        mobile: string
-        website: string
-        companyType: string
-        serviceArea: string
-        gstin: string
-        pan: string
-        iec: string
+        timestamp: number
+        memo: string
+        currencyRate: string
+        bankAccount: string
+        fromToAccount: string
+        credit: number
+        debit: number
     }
 
-    constructor(variableName: string, values: { email: string, telephone: string, mobile: string, website: string, companyType: string, serviceArea: string, gstin: string, pan: string, iec: string }) {
+    constructor(variableName: string, values: { timestamp: number, memo: string, currencyRate: string, bankAccount: string, fromToAccount: string, credit: number, debit: number }) {
         this.variableName = variableName
         this.values = values
+        this.memo = values.memo
+        this.bankAccount = values.bankAccount
     }
 
-    static toVariable(row: CompanyRow): CompanyVariable {
-        return new CompanyVariable(row.variableName, {
-            email: row.values.email,
-            telephone: row.values.telephone,
-            mobile: row.values.mobile,
-            website: row.values.website,
-            companyType: new CompanyType(row.values.companyType),
-            serviceArea: new ServiceArea(row.values.serviceArea),
-            gstin: row.values.gstin,
-            pan: row.values.pan,
-            iec: row.values.iec,
-        })
-    }
-}
-
-export class CompanyAddressRow {
-    readonly typeName = 'CompanyAddress'
-    readonly variableName: string
-    readonly company: string
-    readonly name: string
-    readonly address: string
-    values: {
-        // UNQ(company, name)
-        // UNQ(company, address)
-        company: string
-        name: string
-        address: string
-    }
-
-    constructor(variableName: string, values: { company: string, name: string, address: string }) {
-        this.variableName = variableName
-        this.values = values
-        this.company = values.company
-        this.name = values.name
-        this.address = values.address
-    }
-
-    static toVariable(row: CompanyAddressRow): CompanyAddressVariable {
-        return new CompanyAddressVariable(row.variableName, {
-            company: new Company(row.values.company),
-            name: row.values.name,
-            address: new Address(row.values.address)
-        })
-    }
-}
-
-export class CompanyContactRow {
-    readonly typeName = 'CompanyContact'
-    readonly variableName: string
-    readonly company: string
-    readonly name: string
-    values: {
-        // UNQ(company, name)
-        company: string
-        name: string
-        designation: string
-        email: string
-        telephone: string
-        mobile: string
-    }
-
-    constructor(variableName: string, values: { company: string, name: string, designation: string, email: string, telephone: string, mobile: string }) {
-        this.variableName = variableName
-        this.values = values
-        this.company = values.company
-        this.name = values.name
-    }
-
-    static toVariable(row: CompanyContactRow): CompanyContactVariable {
-        return new CompanyContactVariable(row.variableName, {
-            company: new Company(row.values.company),
-            name: row.values.name,
-            designation: row.values.designation,
-            email: row.values.email,
-            telephone: row.values.telephone,
-            mobile: row.values.mobile
+    static toVariable(row: BankTransactionRow): BankTransactionVariable {
+        return new BankTransactionVariable(row.variableName, {
+            timestamp: row.values.timestamp,
+            memo: new Memo(row.values.memo),
+            currencyRate: new CurrencyRate(row.values.currencyRate),
+            bankAccount: new BankAccount(row.values.bankAccount),
+            fromToAccount: new BankAccount(row.values.fromToAccount),
+            credit: row.values.credit,
+            debit: row.values.debit
         })
     }
 }
@@ -468,24 +705,164 @@ export class CompanyBankAccountRow {
     }
 }
 
+export class ProductCategoryGroupRow {
+    readonly typeName = 'ProductCategoryGroup'
+    readonly variableName: string
+    readonly parent: string
+    values: {
+        // UNQ(parent)
+        parent: string
+        name: string
+        length: number
+    }
+
+    constructor(variableName: string, values: { parent: string, name: string, length: number }) {
+        this.variableName = variableName
+        this.values = values
+        this.parent = values.parent
+    }
+
+    static toVariable(row: ProductCategoryGroupRow): ProductCategoryGroupVariable {
+        return new ProductCategoryGroupVariable(row.variableName, {
+            parent: new ProductCategoryGroup(row.values.parent),
+            name: row.values.name,
+            length: row.values.length
+        })
+    }
+}
+
+export class ProductCategoryRow {
+    readonly typeName = 'ProductCategory'
+    readonly variableName: string
+    readonly parent: string
+    readonly code: string
+    readonly name: string
+    values: {
+        // UNQ(parent, name)
+        // UNQ(parent, code)
+        parent: string
+        group: string
+        name: string
+        code: string
+        derivedCode: string
+        childCount: number
+    }
+
+    constructor(variableName: string, values: { parent: string, group: string, name: string, code: string, derivedCode: string, childCount: number }) {
+        this.variableName = variableName
+        this.values = values
+        this.parent = values.parent
+        this.code = values.code
+        this.name = values.name
+    }
+
+    static toVariable(row: ProductCategoryRow): ProductCategoryVariable {
+        return new ProductCategoryVariable(row.variableName, {
+            parent: new ProductCategory(row.values.parent),
+            group: new ProductCategoryGroup(row.values.group),
+            name: row.values.name,
+            code: row.values.code,
+            derivedCode: row.values.derivedCode,
+            childCount: row.values.childCount
+        })
+    }
+}
+
 export class ProductRow {
     readonly typeName = 'Product'
     readonly variableName: string
+    readonly name: string
     values: {
-        // UNQ(SKU)
         name: string
-        orderable: boolean
-        consumable: boolean
-        producable: boolean
+        category: string
+        code: string
+        sku: string
     }
 
-    constructor(variableName: string, values: { name: string, orderable: boolean, consumable: boolean, producable: boolean }) {
+    constructor(variableName: string, values: { name: string, category: string, code: string, sku: string }) {
         this.variableName = variableName
         this.values = values
+        this.name = values.name
     }
 
     static toVariable(row: ProductRow): ProductVariable {
-        return new ProductVariable(row.variableName, row.values)
+        return new ProductVariable(row.variableName, {
+            name: row.values.name,
+            category: new ProductCategory(row.values.category),
+            code: row.values.code,
+            sku: row.values.sku
+        })
+    }
+}
+
+export class ProductTagGroupRow {
+    readonly typeName = 'ProductTagGroup'
+    readonly variableName: string
+    readonly name: string
+    values: {
+        name: string
+    }
+
+    constructor(variableName: string, values: { name: string }) {
+        this.variableName = variableName
+        this.values = values
+        this.name = values.name
+    }
+
+    static toVariable(row: ProductTagGroupRow): ProductTagGroupVariable {
+        return new ProductTagGroupVariable(row.variableName, {
+            name: row.values.name
+        })
+    }
+}
+
+export class ProductTagRow {
+    readonly typeName = 'ProductTag'
+    readonly variableName: string
+    readonly group: string
+    readonly name: string
+    values: {
+        group: string
+        name: string
+    }
+
+    constructor(variableName: string, values: { group: string, name: string }) {
+        this.variableName = variableName
+        this.values = values
+        this.group = values.group
+        this.name = values.name
+    }
+
+    static toVariable(row: ProductTagRow): ProductTagVariable {
+        return new ProductTagVariable(row.variableName, {
+            group: new ProductTagGroup(row.values.group),
+            name: row.values.name
+        })
+    }
+}
+
+export class MappingProductTagRow {
+    readonly typeName = 'MappingProductTag'
+    readonly variableName: string
+    readonly product: string
+    readonly tag: string
+    values: {
+        product: string
+        tag: string
+    }
+
+    constructor(variableName: string, values: { product: string, tag: string }) {
+        this.variableName = variableName
+        this.values = values
+        this.product = values.product
+        this.tag = values.tag
+    }
+
+    static toVariable(row: MappingProductTagRow): MappingProductTagVariable {
+        return new MappingProductTagVariable(row.variableName, {
+            product: new Product(row.values.product),
+            tag: new ProductTag(row.values.tag)
+        })
     }
 }
 
@@ -984,15 +1361,21 @@ export class MaterialRequistionSlipItemRow {
 export class BOMRow {
     readonly typeName = 'BOM'
     readonly variableName: string
-    values: {}
+    readonly name: string
+    values: {
+        name: string
+    }
 
-    constructor(variableName: string, values: {}) {
+    constructor(variableName: string, values: { name: string }) {
         this.variableName = variableName
         this.values = values
+        this.name = values.name
     }
 
     static toVariable(row: BOMRow): BOMVariable {
-        return new BOMVariable(row.variableName, row.values)
+        return new BOMVariable(row.variableName, {
+            name: row.values.name
+        })
     }
 }
 
@@ -1159,71 +1542,119 @@ export class DiffRow {
         Region: {
             replace: Array<RegionRow>
             remove: Array<string>
-        }
+        },
         Country: {
             replace: Array<CountryRow>
             remove: Array<string>
-        }
+        },
         State: {
             replace: Array<StateRow>
             remove: Array<string>
-        }
+        },
         District: {
             replace: Array<DistrictRow>
             remove: Array<string>
-        }
+        },
         Subdistrict: {
             replace: Array<SubdistrictRow>
             remove: Array<string>
-        }
+        },
         PostalCode: {
             replace: Array<PostalCodeRow>
             remove: Array<string>
-        }
+        },
         Address: {
             replace: Array<AddressRow>
             remove: Array<string>
-        }
-        ServiceArea: {
-            replace: Array<ServiceAreaRow>
-            remove: Array<string>
-        }
-        CompanyType: {
-            replace: Array<CompanyTypeRow>
-            remove: Array<string>
-        }
-        Bank: {
-            replace: Array<BankRow>
-            remove: Array<string>
-        }
-        BankBranch: {
-            replace: Array<BankBranchRow>
-            remove: Array<string>
-        }
-        BankAccount: {
-            replace: Array<BankAccountRow>
-            remove: Array<string>
-        }
+        },
         Company: {
             replace: Array<CompanyRow>
             remove: Array<string>
-        }
+        },
         CompanyAddress: {
             replace: Array<CompanyAddressRow>
             remove: Array<string>
-        }
+        },
+        CompanyTagGroup: {
+            replace: Array<CompanyTagGroupRow>
+            remove: Array<string>
+        },
+        CompanyTag: {
+            replace: Array<CompanyTagRow>
+            remove: Array<string>
+        },
+        MappingCompanyTag: {
+            replace: Array<MappingCompanyTagRow>
+            remove: Array<string>
+        },
+        Contact: {
+            replace: Array<ContactRow>
+            remove: Array<string>
+        },
+        ContactAddress: {
+            replace: Array<ContactAddressRow>
+            remove: Array<string>
+        },
         CompanyContact: {
             replace: Array<CompanyContactRow>
             remove: Array<string>
-        }
+        },
+        Currency: {
+            replace: Array<CurrencyRow>
+            remove: Array<string>
+        },
+        CurrencyRate: {
+            replace: Array<CurrencyRateRow>
+            remove: Array<string>
+        },
+        Memo: {
+            replace: Array<MemoRow>
+            remove: Array<string>
+        },
+        Bank: {
+            replace: Array<BankRow>
+            remove: Array<string>
+        },
+        BankBranch: {
+            replace: Array<BankBranchRow>
+            remove: Array<string>
+        },
+        BankAccount: {
+            replace: Array<BankAccountRow>
+            remove: Array<string>
+        },
+        BankTransaction: {
+            replace: Array<BankTransactionRow>
+            remove: Array<string>
+        },
         CompanyBankAccount: {
             replace: Array<CompanyBankAccountRow>
             remove: Array<string>
-        }
+        },
+        ProductCategoryGroup: {
+            replace: Array<ProductCategoryGroupRow>
+            remove: Array<string>
+        },
+        ProductCategory: {
+            replace: Array<ProductCategoryRow>
+            remove: Array<string>
+        },
         Product: {
             replace: Array<ProductRow>
             remove: Array<string>
-        }
+        },
+        ProductTagGroup: {
+            replace: Array<ProductTagGroupRow>
+            remove: Array<string>
+        },
+        ProductTag: {
+            replace: Array<ProductTagRow>
+            remove: Array<string>
+        },
+        MappingProductTag: {
+            replace: Array<MappingProductTagRow>
+            remove: Array<string>
+        },
         UOM: {
             replace: Array<UOMRow>
             remove: Array<string>
@@ -1330,169 +1761,217 @@ export class DiffRow {
         Region: {
             replace: Array<RegionRow>
             remove: Array<string>
-        }
+        },
         Country: {
             replace: Array<CountryRow>
             remove: Array<string>
-        }
+        },
         State: {
             replace: Array<StateRow>
             remove: Array<string>
-        }
+        },
         District: {
             replace: Array<DistrictRow>
             remove: Array<string>
-        }
+        },
         Subdistrict: {
             replace: Array<SubdistrictRow>
             remove: Array<string>
-        }
+        },
         PostalCode: {
             replace: Array<PostalCodeRow>
             remove: Array<string>
-        }
+        },
         Address: {
             replace: Array<AddressRow>
             remove: Array<string>
-        }
-        ServiceArea: {
-            replace: Array<ServiceAreaRow>
-            remove: Array<string>
-        }
-        CompanyType: {
-            replace: Array<CompanyTypeRow>
-            remove: Array<string>
-        }
-        Bank: {
-            replace: Array<BankRow>
-            remove: Array<string>
-        }
-        BankBranch: {
-            replace: Array<BankBranchRow>
-            remove: Array<string>
-        }
-        BankAccount: {
-            replace: Array<BankAccountRow>
-            remove: Array<string>
-        }
+        },
         Company: {
             replace: Array<CompanyRow>
             remove: Array<string>
-        }
+        },
         CompanyAddress: {
             replace: Array<CompanyAddressRow>
             remove: Array<string>
-        }
+        },
+        CompanyTagGroup: {
+            replace: Array<CompanyTagGroupRow>
+            remove: Array<string>
+        },
+        CompanyTag: {
+            replace: Array<CompanyTagRow>
+            remove: Array<string>
+        },
+        MappingCompanyTag: {
+            replace: Array<MappingCompanyTagRow>
+            remove: Array<string>
+        },
+        Contact: {
+            replace: Array<ContactRow>
+            remove: Array<string>
+        },
+        ContactAddress: {
+            replace: Array<ContactAddressRow>
+            remove: Array<string>
+        },
         CompanyContact: {
             replace: Array<CompanyContactRow>
             remove: Array<string>
-        }
+        },
+        Currency: {
+            replace: Array<CurrencyRow>
+            remove: Array<string>
+        },
+        CurrencyRate: {
+            replace: Array<CurrencyRateRow>
+            remove: Array<string>
+        },
+        Memo: {
+            replace: Array<MemoRow>
+            remove: Array<string>
+        },
+        Bank: {
+            replace: Array<BankRow>
+            remove: Array<string>
+        },
+        BankBranch: {
+            replace: Array<BankBranchRow>
+            remove: Array<string>
+        },
+        BankAccount: {
+            replace: Array<BankAccountRow>
+            remove: Array<string>
+        },
+        BankTransaction: {
+            replace: Array<BankTransactionRow>
+            remove: Array<string>
+        },
         CompanyBankAccount: {
             replace: Array<CompanyBankAccountRow>
             remove: Array<string>
-        }
+        },
+        ProductCategoryGroup: {
+            replace: Array<ProductCategoryGroupRow>
+            remove: Array<string>
+        },
+        ProductCategory: {
+            replace: Array<ProductCategoryRow>
+            remove: Array<string>
+        },
         Product: {
             replace: Array<ProductRow>
             remove: Array<string>
         },
+        ProductTagGroup: {
+            replace: Array<ProductTagGroupRow>
+            remove: Array<string>
+        },
+        ProductTag: {
+            replace: Array<ProductTagRow>
+            remove: Array<string>
+        },
+        MappingProductTag: {
+            replace: Array<MappingProductTagRow>
+            remove: Array<string>
+        },
         UOM: {
-            replace: Array<UOMRow>,
+            replace: Array<UOMRow>
             remove: Array<string>
         },
         Indent: {
-            replace: Array<IndentRow>,
+            replace: Array<IndentRow>
             remove: Array<string>
         },
         IndentItem: {
-            replace: Array<IndentItemRow>,
+            replace: Array<IndentItemRow>
             remove: Array<string>
         },
         CompanyProduct: {
-            replace: Array<CompanyProductRow>,
+            replace: Array<CompanyProductRow>
             remove: Array<string>
         },
         Quotation: {
-            replace: Array<QuotationRow>,
+            replace: Array<QuotationRow>
             remove: Array<string>
         },
         QuotationItem: {
-            replace: Array<QuotationItemRow>,
+            replace: Array<QuotationItemRow>
             remove: Array<string>
         },
         PurchaseOrder: {
-            replace: Array<PurchaseOrderRow>,
+            replace: Array<PurchaseOrderRow>
             remove: Array<string>
         },
         PurchaseOrderItem: {
-            replace: Array<PurchaseOrderItemRow>,
+            replace: Array<PurchaseOrderItemRow>
             remove: Array<string>
         },
         PurchaseInvoice: {
-            replace: Array<PurchaseInvoiceRow>,
+            replace: Array<PurchaseInvoiceRow>
             remove: Array<string>
         },
         PurchaseInvoiceItem: {
-            replace: Array<PurchaseInvoiceItemRow>,
+            replace: Array<PurchaseInvoiceItemRow>
             remove: Array<string>
         },
         MaterialApprovalSlip: {
-            replace: Array<MaterialApprovalSlipRow>,
+            replace: Array<MaterialApprovalSlipRow>
             remove: Array<string>
         },
         MaterialApprovalSlipItem: {
-            replace: Array<MaterialApprovalSlipItemRow>,
+            replace: Array<MaterialApprovalSlipItemRow>
             remove: Array<string>
         },
         MaterialRejectionSlip: {
-            replace: Array<MaterialRejectionSlipRow>,
+            replace: Array<MaterialRejectionSlipRow>
             remove: Array<string>
         },
         MaterialRejectionSlipItem: {
-            replace: Array<MaterialRejectionSlipItemRow>,
+            replace: Array<MaterialRejectionSlipItemRow>
             remove: Array<string>
         },
         MaterialReturnSlip: {
-            replace: Array<MaterialReturnSlipRow>,
+            replace: Array<MaterialReturnSlipRow>
             remove: Array<string>
         },
         MaterialReturnSlipItem: {
-            replace: Array<MaterialReturnSlipItemRow>,
+            replace: Array<MaterialReturnSlipItemRow>
             remove: Array<string>
         },
         MaterialRequistionSlip: {
-            replace: Array<MaterialRequistionSlipRow>,
+            replace: Array<MaterialRequistionSlipRow>
             remove: Array<string>
         },
         MaterialRequistionSlipItem: {
-            replace: Array<MaterialRequistionSlipItemRow>,
+            replace: Array<MaterialRequistionSlipItemRow>
             remove: Array<string>
         },
         BOM: {
-            replace: Array<BOMRow>,
+            replace: Array<BOMRow>
             remove: Array<string>
         },
         BOMItem: {
-            replace: Array<BOMItemRow>,
+            replace: Array<BOMItemRow>
             remove: Array<string>
         },
         ProductionPreparationSlip: {
-            replace: Array<ProductionPreparationSlipRow>,
+            replace: Array<ProductionPreparationSlipRow>
             remove: Array<string>
         },
         ProductionPreparationSlipItem: {
-            replace: Array<ProductionPreparationSlipItemRow>,
+            replace: Array<ProductionPreparationSlipItemRow>
             remove: Array<string>
         },
         ScrapMaterialSlip: {
-            replace: Array<ScrapMaterialSlipRow>,
+            replace: Array<ScrapMaterialSlipRow>
             remove: Array<string>
         },
         TransferMaterialSlip: {
-            replace: Array<TransferMaterialSlipRow>,
+            replace: Array<TransferMaterialSlipRow>
             remove: Array<string>
         },
         WarehouseAcceptanceSlip: {
-            replace: Array<WarehouseAcceptanceSlipRow>,
+            replace: Array<WarehouseAcceptanceSlipRow>
             remove: Array<string>
         }
     }) {
@@ -1530,13 +2009,49 @@ export class DiffRow {
                 replace: HashSet.of<AddressVariable>().addAll(diff.variables.Address.replace.map(x => AddressRow.toVariable(x))),
                 remove: HashSet.of<Address>().addAll(diff.variables.Address.remove.map(x => new Address(x)))
             },
-            ServiceArea: {
-                replace: HashSet.of<ServiceAreaVariable>().addAll(diff.variables.ServiceArea.replace.map(x => ServiceAreaRow.toVariable(x))),
-                remove: HashSet.of<ServiceArea>().addAll(diff.variables.ServiceArea.remove.map(x => new ServiceArea(x)))
+            Company: {
+                replace: HashSet.of<CompanyVariable>().addAll(diff.variables.Company.replace.map(x => CompanyRow.toVariable(x))),
+                remove: HashSet.of<Company>().addAll(diff.variables.Company.remove.map(x => new Company(x)))
             },
-            CompanyType: {
-                replace: HashSet.of<CompanyTypeVariable>().addAll(diff.variables.CompanyType.replace.map(x => CompanyTypeRow.toVariable(x))),
-                remove: HashSet.of<CompanyType>().addAll(diff.variables.CompanyType.remove.map(x => new CompanyType(x)))
+            CompanyAddress: {
+                replace: HashSet.of<CompanyAddressVariable>().addAll(diff.variables.CompanyAddress.replace.map(x => CompanyAddressRow.toVariable(x))),
+                remove: HashSet.of<CompanyAddress>().addAll(diff.variables.CompanyAddress.remove.map(x => new CompanyAddress(x)))
+            },
+            CompanyTagGroup: {
+                replace: HashSet.of<CompanyTagGroupVariable>().addAll(diff.variables.CompanyTagGroup.replace.map(x => CompanyTagGroupRow.toVariable(x))),
+                remove: HashSet.of<CompanyTagGroup>().addAll(diff.variables.CompanyTagGroup.remove.map(x => new CompanyTagGroup(x)))
+            },
+            CompanyTag: {
+                replace: HashSet.of<CompanyTagVariable>().addAll(diff.variables.CompanyTag.replace.map(x => CompanyTagRow.toVariable(x))),
+                remove: HashSet.of<CompanyTag>().addAll(diff.variables.CompanyTag.remove.map(x => new CompanyTag(x)))
+            },
+            MappingCompanyTag: {
+                replace: HashSet.of<MappingCompanyTagVariable>().addAll(diff.variables.MappingCompanyTag.replace.map(x => MappingCompanyTagRow.toVariable(x))),
+                remove: HashSet.of<MappingCompanyTag>().addAll(diff.variables.MappingCompanyTag.remove.map(x => new MappingCompanyTag(x)))
+            },
+            Contact: {
+                replace: HashSet.of<ContactVariable>().addAll(diff.variables.Contact.replace.map(x => ContactRow.toVariable(x))),
+                remove: HashSet.of<Contact>().addAll(diff.variables.Contact.remove.map(x => new Contact(x)))
+            },
+            ContactAddress: {
+                replace: HashSet.of<ContactAddressVariable>().addAll(diff.variables.ContactAddress.replace.map(x => ContactAddressRow.toVariable(x))),
+                remove: HashSet.of<ContactAddress>().addAll(diff.variables.ContactAddress.remove.map(x => new ContactAddress(x)))
+            },
+            CompanyContact: {
+                replace: HashSet.of<CompanyContactVariable>().addAll(diff.variables.CompanyContact.replace.map(x => CompanyContactRow.toVariable(x))),
+                remove: HashSet.of<CompanyContact>().addAll(diff.variables.CompanyContact.remove.map(x => new CompanyContact(x)))
+            },
+            Currency: {
+                replace: HashSet.of<CurrencyVariable>().addAll(diff.variables.Currency.replace.map(x => CurrencyRow.toVariable(x))),
+                remove: HashSet.of<Currency>().addAll(diff.variables.Currency.remove.map(x => new Currency(x)))
+            },
+            CurrencyRate: {
+                replace: HashSet.of<CurrencyRateVariable>().addAll(diff.variables.CurrencyRate.replace.map(x => CurrencyRateRow.toVariable(x))),
+                remove: HashSet.of<CurrencyRate>().addAll(diff.variables.CurrencyRate.remove.map(x => new CurrencyRate(x)))
+            },
+            Memo: {
+                replace: HashSet.of<MemoVariable>().addAll(diff.variables.Memo.replace.map(x => MemoRow.toVariable(x))),
+                remove: HashSet.of<Memo>().addAll(diff.variables.Memo.remove.map(x => new Memo(x)))
             },
             Bank: {
                 replace: HashSet.of<BankVariable>().addAll(diff.variables.Bank.replace.map(x => BankRow.toVariable(x))),
@@ -1550,25 +2065,37 @@ export class DiffRow {
                 replace: HashSet.of<BankAccountVariable>().addAll(diff.variables.BankAccount.replace.map(x => BankAccountRow.toVariable(x))),
                 remove: HashSet.of<BankAccount>().addAll(diff.variables.BankAccount.remove.map(x => new BankAccount(x)))
             },
-            Company: {
-                replace: HashSet.of<CompanyVariable>().addAll(diff.variables.Company.replace.map(x => CompanyRow.toVariable(x))),
-                remove: HashSet.of<Company>().addAll(diff.variables.Company.remove.map(x => new Company(x)))
-            },
-            CompanyAddress: {
-                replace: HashSet.of<CompanyAddressVariable>().addAll(diff.variables.CompanyAddress.replace.map(x => CompanyAddressRow.toVariable(x))),
-                remove: HashSet.of<CompanyAddress>().addAll(diff.variables.CompanyAddress.remove.map(x => new CompanyAddress(x)))
-            },
-            CompanyContact: {
-                replace: HashSet.of<CompanyContactVariable>().addAll(diff.variables.CompanyContact.replace.map(x => CompanyContactRow.toVariable(x))),
-                remove: HashSet.of<CompanyContact>().addAll(diff.variables.CompanyContact.remove.map(x => new CompanyContact(x)))
+            BankTransaction: {
+                replace: HashSet.of<BankTransactionVariable>().addAll(diff.variables.BankTransaction.replace.map(x => BankTransactionRow.toVariable(x))),
+                remove: HashSet.of<BankTransaction>().addAll(diff.variables.BankTransaction.remove.map(x => new BankTransaction(x)))
             },
             CompanyBankAccount: {
                 replace: HashSet.of<CompanyBankAccountVariable>().addAll(diff.variables.CompanyBankAccount.replace.map(x => CompanyBankAccountRow.toVariable(x))),
                 remove: HashSet.of<CompanyBankAccount>().addAll(diff.variables.CompanyBankAccount.remove.map(x => new CompanyBankAccount(x)))
             },
+            ProductCategoryGroup: {
+                replace: HashSet.of<ProductCategoryGroupVariable>().addAll(diff.variables.ProductCategoryGroup.replace.map(x => ProductCategoryGroupRow.toVariable(x))),
+                remove: HashSet.of<ProductCategoryGroup>().addAll(diff.variables.ProductCategoryGroup.remove.map(x => new ProductCategoryGroup(x)))
+            },
+            ProductCategory: {
+                replace: HashSet.of<ProductCategoryVariable>().addAll(diff.variables.ProductCategory.replace.map(x => ProductCategoryRow.toVariable(x))),
+                remove: HashSet.of<ProductCategory>().addAll(diff.variables.ProductCategory.remove.map(x => new ProductCategory(x)))
+            },
             Product: {
                 replace: HashSet.of<ProductVariable>().addAll(diff.variables.Product.replace.map(x => ProductRow.toVariable(x))),
                 remove: HashSet.of<Product>().addAll(diff.variables.Product.remove.map(x => new Product(x)))
+            },
+            ProductTagGroup: {
+                replace: HashSet.of<ProductTagGroupVariable>().addAll(diff.variables.ProductTagGroup.replace.map(x => ProductTagGroupRow.toVariable(x))),
+                remove: HashSet.of<ProductTagGroup>().addAll(diff.variables.ProductTagGroup.remove.map(x => new ProductTagGroup(x)))
+            },
+            ProductTag: {
+                replace: HashSet.of<ProductTagVariable>().addAll(diff.variables.ProductTag.replace.map(x => ProductTagRow.toVariable(x))),
+                remove: HashSet.of<ProductTag>().addAll(diff.variables.ProductTag.remove.map(x => new ProductTag(x)))
+            },
+            MappingProductTag: {
+                replace: HashSet.of<MappingProductTagVariable>().addAll(diff.variables.MappingProductTag.replace.map(x => MappingProductTagRow.toVariable(x))),
+                remove: HashSet.of<MappingProductTag>().addAll(diff.variables.MappingProductTag.remove.map(x => new MappingProductTag(x)))
             },
             UOM: {
                 replace: HashSet.of<UOMVariable>().addAll(diff.variables.UOM.replace.map(x => UOMRow.toVariable(x))),

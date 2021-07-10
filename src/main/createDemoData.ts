@@ -1669,7 +1669,7 @@ export default async function createDemoData() {
 
     diffs = Vector.of()
     const postal_code_201305: string = res_sd1['postalCodes'].filter(x => x['postalCode'].values.name === '201305')[0]['postalCode']['variableName']
-    const [res_ad1, , ad1] = await executeCircuit(circuits.createAddress, {
+    const [, , ad1] = await executeCircuit(circuits.createAddress, {
         postalCode: postal_code_201305,
         line1: 'Plot No. 18',
         line2: 'Sector 140A ',

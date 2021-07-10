@@ -154,7 +154,7 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
-                        state.updatedVariableName = action[2].variableName
+                        state.updatedVariableName = action[2].id
                         break
                     }
                     case 'items': {
@@ -178,20 +178,20 @@ function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
     const setVariable = useCallback(async () => {
         if (props.match.params[0]) {
-            const rows = await db.materialRejectionSlips.toArray()
+            const rows = await db.MaterialRejectionSlip.toArray()
             var composedVariables = HashSet.of<Immutable<MaterialRejectionSlipVariable>>().addAll(rows ? rows.map(x => MaterialRejectionSlipRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.variable.typeName].replace)
             })
-            const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
+            const variables = composedVariables.filter(variable => variable.id.toString() === props.match.params[0])
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as MaterialRejectionSlipVariable])
-                const itemRows = await db.materialRejectionSlipItems.toArray()
+                const itemRows = await db.MaterialRejectionSlipItem.toArray()
                 var composedItemVariables = HashSet.of<Immutable<MaterialRejectionSlipItemVariable>>().addAll(itemRows ? itemRows.map(x => MaterialRejectionSlipItemRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
                 })
                 const items = composedItemVariables.filter(variable => variable.values.materialRejectionSlip.toString() === props.match.params[0])
                 dispatch(['replace', 'items', items as HashSet<MaterialRejectionSlipItemVariable>])
@@ -201,16 +201,16 @@ function Component(props) {
 
     useEffect(() => { setVariable() }, [setVariable])
 
-    const rows = useLiveQuery(() => db.purchaseInvoices.toArray())?.map(x => PurchaseInvoiceRow.toVariable(x))
+    const rows = useLiveQuery(() => db.PurchaseInvoice.toArray())?.map(x => PurchaseInvoiceRow.toVariable(x))
     var purchaseInvoices = HashSet.of<Immutable<PurchaseInvoiceVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        purchaseInvoices = purchaseInvoices.filter(x => !diff.variables.PurchaseInvoice.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.PurchaseInvoice.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.PurchaseInvoice.replace)
+        purchaseInvoices = purchaseInvoices.filter(x => !diff.variables.PurchaseInvoice.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.PurchaseInvoice.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.PurchaseInvoice.replace)
     })
 
-    const itemRows = useLiveQuery(() => db.purchaseInvoiceItems.where({ purchaseInvoice: state.variable.values.purchaseInvoice.toString() }).toArray())?.map(x => PurchaseInvoiceItemRow.toVariable(x))
+    const itemRows = useLiveQuery(() => db.PurchaseInvoiceItem.where({ purchaseInvoice: state.variable.values.purchaseInvoice.toString() }).toArray())?.map(x => PurchaseInvoiceItemRow.toVariable(x))
     var items = HashSet.of<Immutable<PurchaseInvoiceItemVariable>>().addAll(itemRows ? itemRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        items = items.filter(x => !diff.variables.PurchaseInvoiceItem.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.PurchaseInvoiceItem.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.PurchaseInvoiceItem.replace)
+        items = items.filter(x => !diff.variables.PurchaseInvoiceItem.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.PurchaseInvoiceItem.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.PurchaseInvoiceItem.replace)
         items = items.filter(x => x.values.purchaseInvoice.toString() === state.variable.values.purchaseInvoice.toString())
     })
 
@@ -281,7 +281,7 @@ function Component(props) {
     }
 
     const modifyVariable = async () => {
-        const [, diff] = await iff(state.variable.variableName.toString() !== state.updatedVariableName.toString(),
+        const [, diff] = await iff(state.variable.id.toString() !== state.updatedVariableName.toString(),
             updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
             updateVariable(state.variable, state.variable.toRow().values)
         )
@@ -291,7 +291,7 @@ function Component(props) {
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteMaterialRejectionSlip, {
-            variableName: state.variable.variableName.toString(),
+            variableName: state.variable.id.toString(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)
@@ -344,7 +344,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.purchaseInvoice.toString()} name='purchaseInvoice'>
                                     <option value='' selected disabled hidden>Select item</option>
-                                    {purchaseInvoices.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {purchaseInvoices.toArray().map(x => <option value={x.id.toString()}>{x.id.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.purchaseInvoice.toString()}</div>
                             )
@@ -374,7 +374,7 @@ function Component(props) {
                                         <Label>{item.keys.purchaseInvoiceItem.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.purchaseInvoiceItem.toString()} name='purchaseInvoiceItem'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                            {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                            {items.toArray().map(x => <option value={x.id.toString()}>{x.id.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>

@@ -1920,7 +1920,7 @@ function getSymbols(symbolPaths: Array<ReadonlyArray<string>>, variable: Immutab
     return {
         variableName: {
             type: 'Text',
-            value: variable.variableName.toString(),
+            value: variable.id.toString(),
         },
         values: {
             type: 'Text',

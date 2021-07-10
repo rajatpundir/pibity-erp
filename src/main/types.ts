@@ -1,3 +1,4 @@
+import { LispExpression } from "./lisp"
 
 export type KeyType = PrimitiveType | NonPrimitiveType
 
@@ -20,16 +21,28 @@ export type NonPrimitiveType =
     | 'Subdistrict'
     | 'PostalCode'
     | 'Address'
-    | 'ServiceArea'
-    | 'CompanyType'
+    | 'Company'
+    | 'CompanyAddress'
+    | 'CompanyTagGroup'
+    | 'CompanyTag'
+    | 'MappingCompanyTag'
+    | 'Contact'
+    | 'ContactAddress'
+    | 'CompanyContact'
+    | 'Currency'
+    | 'CurrencyRate'
+    | 'Memo'
     | 'Bank'
     | 'BankBranch'
     | 'BankAccount'
-    | 'Company'
-    | 'CompanyAddress'
-    | 'CompanyContact'
+    | 'BankTransaction'
     | 'CompanyBankAccount'
+    | 'ProductCategoryGroup'
+    | 'ProductCategory'
     | 'Product'
+    | 'ProductTagGroup'
+    | 'ProductTag'
+    | 'MappingProductTag'
     | 'UOM'
     | 'CompanyProduct'
     | 'Indent'
@@ -59,12 +72,17 @@ export type NonPrimitiveType =
 export type Key = {
     order: number
     name: string
-    type: KeyType
+    type: PrimitiveType
+} | {
+    order: number
+    name: string
+    type: 'Formula'
+    returnType: PrimitiveType
+    expression: LispExpression
 }
 
 export type Type = {
     name: string
-    autoId: boolean
     url?: string,
     keys: Record<string, Key>
 }
@@ -72,13 +90,11 @@ export type Type = {
 export const types = {
     Region: {
         name: 'Region',
-        autoId: false,
         url: 'region',
         keys: {}
     },
     Country: {
         name: 'Country',
-        autoId: true,
         url: 'country',
         keys: {
             region: {
@@ -95,7 +111,6 @@ export const types = {
     },
     State: {
         name: 'State',
-        autoId: true,
         url: 'state',
         keys: {
             country: {
@@ -112,7 +127,6 @@ export const types = {
     },
     District: {
         name: 'District',
-        autoId: true,
         url: 'district',
         keys: {
             state: {
@@ -129,7 +143,6 @@ export const types = {
     },
     Subdistrict: {
         name: 'Subdistrict',
-        autoId: true,
         url: 'subdistrict',
         keys: {
             district: {
@@ -146,7 +159,6 @@ export const types = {
     },
     PostalCode: {
         name: 'Postal Code',
-        autoId: true,
         url: 'postal-code',
         keys: {
             subdistrict: {
@@ -163,7 +175,6 @@ export const types = {
     },
     Address: {
         name: 'Address',
-        autoId: true,
         url: 'address',
         keys: {
             postalCode: {
@@ -193,92 +204,8 @@ export const types = {
             }
         }
     },
-    ServiceArea: {
-        name: 'Service Area',
-        autoId: false,
-        url: 'service-area',
-        keys: {}
-    },
-    CompanyType: {
-        name: 'Company Type',
-        autoId: false,
-        url: 'company-type',
-        keys: {}
-    },
-    Bank: {
-        name: 'Bank',
-        autoId: false,
-        url: 'bank',
-        keys: {
-            country: {
-                order: 0,
-                name: 'Country',
-                type: 'Country'
-            },
-            name: {
-                order: 1,
-                name: 'Name',
-                type: 'Text'
-            },
-            website: {
-                order: 2,
-                name: 'Website',
-                type: 'Text'
-            }
-        }
-    },
-    BankBranch: {
-        name: 'Bank Branch',
-        autoId: true,
-        url: 'bank-branch',
-        keys: {
-            bank: {
-                order: 0,
-                name: 'Bank',
-                type: 'Bank'
-            },
-            name: {
-                order: 1,
-                name: 'Name',
-                type: 'Text'
-            },
-            ifsc: {
-                order: 2,
-                name: 'IFSC',
-                type: 'Text'
-            },
-            address: {
-                order: 3,
-                name: 'Address',
-                type: 'Address'
-            }
-        }
-    },
-    BankAccount: {
-        name: 'Bank Account',
-        autoId: true,
-        url: 'bank-account',
-        keys: {
-            bankBranch: {
-                order: 0,
-                name: 'Bank Branch',
-                type: 'BankBranch'
-            },
-            bank: {
-                order: 1,
-                name: 'Bank',
-                type: 'Bank'
-            },
-            accountNumber: {
-                order: 2,
-                name: 'Name',
-                type: 'Text'
-            }
-        }
-    },
     Company: {
         name: 'Company',
-        autoId: false,
         url: 'company',
         keys: {
             email: {
@@ -330,7 +257,6 @@ export const types = {
     },
     CompanyAddress: {
         name: 'Company Address',
-        autoId: true,
         keys: {
             company: {
                 order: 0,
@@ -349,45 +275,298 @@ export const types = {
             }
         }
     },
-    CompanyContact: {
-        name: 'Company Contact',
-        autoId: true,
+    CompanyTagGroup: {
+        name: 'Company Tag Group',
+        url: 'company-tag-group',
+        keys: {}
+    },
+    CompanyTag: {
+        name: 'Company Tag',
+        url: 'company-tag',
+        keys: {
+            group: {
+                order: 0,
+                name: 'Group',
+                type: 'CompanyTagGroup'
+            },
+            name: {
+                order: 1,
+                name: 'Name',
+                type: 'Text'
+            }
+        }
+    },
+    MappingCompanyTag: {
+        name: 'Mapping(Company-Tag)',
         keys: {
             company: {
                 order: 0,
                 name: 'Company',
                 type: 'Company'
             },
+            tag: {
+                order: 1,
+                name: 'Tag',
+                type: 'CompanyTag'
+            }
+        }
+    },
+    Contact: {
+        name: 'Contact',
+        url: 'contact',
+        keys: {
             name: {
                 order: 1,
                 name: 'Name',
                 type: 'Text'
             },
-            designation: {
-                order: 2,
-                name: 'Designation',
-                type: 'Text'
-            },
             email: {
-                order: 3,
+                order: 2,
                 name: 'Email',
                 type: 'Text'
             },
             telephone: {
-                order: 4,
+                order: 3,
                 name: 'Telephone',
                 type: 'Text'
             },
             mobile: {
+                order: 4,
+                name: 'Mobile',
+                type: 'Text'
+            },
+            website: {
                 order: 5,
+                name: 'Website',
+                type: 'Text'
+            }
+        }
+    },
+    ContactAddress: {
+        name: 'Contact Address',
+        keys: {
+            contact: {
+                order: 0,
+                name: 'Contact',
+                type: 'Contact'
+            },
+            address: {
+                order: 1,
+                name: 'Address',
+                type: 'Address'
+            }
+        }
+    },
+    CompanyContact: {
+        name: 'Company Contact',
+        keys: {
+            company: {
+                order: 0,
+                name: 'Company',
+                type: 'Company'
+            },
+            contact: {
+                order: 1,
+                name: 'Contact',
+                type: 'Text'
+            },
+            role: {
+                order: 2,
+                name: 'Role',
+                type: 'Text'
+            },
+            email: {
+                order: 2,
+                name: 'Email',
+                type: 'Text'
+            },
+            telephone: {
+                order: 3,
+                name: 'Telephone',
+                type: 'Text'
+            },
+            mobile: {
+                order: 4,
+                name: 'Mobile',
+                type: 'Text'
+            }
+        }
+    },
+    Currency: {
+        name: 'Currency',
+        url: 'currency',
+        keys: {}
+    },
+    CurrencyRate: {
+        name: 'Currency Rate',
+        keys: {
+            currency: {
+                order: 0,
+                name: 'Currency',
+                type: 'Currency'
+            },
+            conversionRate: {
+                order: 1,
+                name: 'Conversion Rate',
+                type: 'Decimal'
+            },
+            startTime: {
+                order: 2,
+                name: 'Start Time',
+                type: 'Timestamp'
+            },
+            endTime: {
+                order: 3,
+                name: 'End Time',
+                type: 'Timestamp'
+            }
+        }
+    },
+    Memo: {
+        name: 'Memo',
+        keys: {
+            company: {
+                order: 0,
+                name: 'Company',
+                type: 'Company'
+            },
+            currency: {
+                order: 1,
+                name: 'Currency',
+                type: 'Currency'
+            },
+            amount: {
+                order: 2,
+                name: 'Amount',
+                type: 'Decimal'
+            },
+            unsettled: {
+                order: 3,
+                name: 'Unsettled',
+                type: 'Timestamp'
+            }
+        }
+    },
+    Bank: {
+        name: 'Bank',
+        url: 'bank',
+        keys: {
+            country: {
+                order: 0,
+                name: 'Country',
+                type: 'Country'
+            },
+            name: {
+                order: 1,
                 name: 'Name',
                 type: 'Text'
+            },
+            website: {
+                order: 2,
+                name: 'Website',
+                type: 'Text'
+            }
+        }
+    },
+    BankBranch: {
+        name: 'Bank Branch',
+        url: 'bank-branch',
+        keys: {
+            bank: {
+                order: 0,
+                name: 'Bank',
+                type: 'Bank'
+            },
+            name: {
+                order: 1,
+                name: 'Name',
+                type: 'Text'
+            },
+            ifsc: {
+                order: 2,
+                name: 'IFSC',
+                type: 'Text'
+            },
+            address: {
+                order: 3,
+                name: 'Address',
+                type: 'Address'
+            }
+        }
+    },
+    BankAccount: {
+        name: 'Bank Account',
+        url: 'bank-account',
+        keys: {
+            bank: {
+                order: 0,
+                name: 'Bank',
+                type: 'Bank'
+            },
+            bankBranch: {
+                order: 1,
+                name: 'Bank Branch',
+                type: 'BankBranch'
+            },
+            accountNumber: {
+                order: 2,
+                name: 'Account Number',
+                type: 'Text'
+            },
+            accountName: {
+                order: 3,
+                name: 'Account Name',
+                type: 'Text'
+            },
+            currency: {
+                order: 4,
+                name: 'Currency',
+                type: 'Currency'
+            }
+        }
+    },
+    BankTransaction: {
+        name: 'Bank Transaction',
+        keys: {
+            timestamp: {
+                order: 0,
+                name: 'Timestamp',
+                type: 'Timestamp'
+            },
+            memo: {
+                order: 1,
+                name: 'Memo',
+                type: 'Memo'
+            },
+            currencyRate: {
+                order: 2,
+                name: 'Currency Rate',
+                type: 'CurrencyRate'
+            },
+            bankAccount: {
+                order: 3,
+                name: 'Bank Account',
+                type: 'BankAccount'
+            },
+            interactedAccount: {
+                order: 4,
+                name: 'Sender / Receiver',
+                type: 'BankAccount'
+            },
+            credit: {
+                order: 4,
+                name: 'Credit',
+                type: 'Decimal'
+            },
+            debit: {
+                order: 5,
+                name: 'Debit',
+                type: 'Decimal'
             }
         }
     },
     CompanyBankAccount: {
         name: 'Company Bank Account',
-        autoId: true,
         keys: {
             company: {
                 order: 0,
@@ -401,36 +580,150 @@ export const types = {
             }
         }
     },
-    Product: {
-        name: 'SKU',
-        autoId: false,
-        url: 'product',
+    ProductCategoryGroup: {
+        name: 'Product Category Group',
+        url: 'product-catgory-group',
         keys: {
-            name: {
+            parent: {
                 order: 0,
+                name: 'Parent',
+                type: 'ProductCategoryGroup'
+            },
+            name: {
+                order: 1,
                 name: 'Name',
                 type: 'Text'
             },
-            orderable: {
-                order: 1,
-                name: 'Orderable',
-                type: 'Boolean'
-            },
-            consumable: {
+            length: {
                 order: 2,
-                name: 'Consumable',
-                type: 'Boolean'
+                name: 'Length',
+                type: 'Number'
+            }
+        }
+    },
+    ProductCategory: {
+        name: 'ProductCategory',
+        url: 'product-catgory',
+        keys: {
+            parent: {
+                order: 0,
+                name: 'Parent',
+                type: 'ProductCategory'
             },
-            producable: {
+            group: {
+                order: 1,
+                name: 'Group',
+                type: 'ProductCategoryGroup'
+            },
+            name: {
+                order: 2,
+                name: 'Name',
+                type: 'Text'
+            },
+            code: {
                 order: 3,
-                name: 'Producable',
-                type: 'Boolean'
+                name: 'Code',
+                type: 'Text'
+            },
+            derivedCode: {
+                order: 4,
+                name: 'Derived Code',
+                type: 'Formula',
+                returnType: 'Text',
+                expression: {
+                    op: '++',
+                    types: ['Text'],
+                    args: [{
+                        op: '.',
+                        types: [],
+                        args: ['parent', 'derivedCode']
+                    }, {
+                        op: '.',
+                        types: [],
+                        args: ['code']
+                    }]
+                }
+            },
+            childCount: {
+                order: 5,
+                name: 'Child Count',
+                type: 'Number'
+            }
+        }
+    },
+    Product: {
+        name: 'Product',
+        url: 'product',
+        keys: {
+            category: {
+                order: 0,
+                name: 'Category',
+                type: 'ProductCategory'
+            },
+            code: {
+                order: 1,
+                name: 'Code',
+                type: 'Text'
+            },
+            sku: {
+                order: 2,
+                name: 'SKU',
+                type: 'Formula',
+                returnType: 'Text',
+                expression: {
+                    op: '++',
+                    types: ['Text'],
+                    args: [{
+                        op: '.',
+                        types: [],
+                        args: ['parent', 'derivedCode']
+                    }, {
+                        op: '.',
+                        types: [],
+                        args: ['code']
+                    }]
+                }
+            }
+        }
+    },
+    ProductTagGroup: {
+        name: 'Product Tag Group',
+        url: 'product-tag-group',
+        keys: {}
+    },
+    ProductTag: {
+        name: 'Product Tag',
+        url: 'product-tag',
+        keys: {
+            group: {
+                order: 0,
+                name: 'Group',
+                type: 'ProductTagGroup'
+            },
+            name: {
+                order: 1,
+                name: 'Name',
+                type: 'Text'
+            }
+        }
+    },
+    MappingProductTag: {
+        name: 'Mapping(Product-Tag)',
+        keys: {
+            product: {
+                order: 0,
+                name: 'Product',
+                type: 'Product'
+            },
+            tag: {
+                order: 1,
+                name: 'Tag',
+                type: 'ProductTag'
             }
         }
     },
     UOM: {
         name: 'Unit of Measure',
-        autoId: true,
         keys: {
             product: {
                 order: 0,
@@ -451,13 +744,11 @@ export const types = {
     },
     Indent: {
         name: 'Indent',
-        autoId: true,
         url: 'indent',
         keys: {}
     },
     IndentItem: {
         name: 'Indent Item',
-        autoId: true,
         keys: {
             indent: {
                 order: 0,
@@ -518,7 +809,6 @@ export const types = {
     },
     CompanyProduct: {
         name: 'Company Product',
-        autoId: true,
         keys: {
             company: {
                 order: 0,
@@ -534,7 +824,6 @@ export const types = {
     },
     Quotation: {
         name: 'Quotation',
-        autoId: true,
         url: 'quotation',
         keys: {
             indent: {
@@ -551,7 +840,6 @@ export const types = {
     },
     QuotationItem: {
         name: 'Quotation Item',
-        autoId: true,
         keys: {
             quotation: {
                 order: 0,
@@ -572,7 +860,6 @@ export const types = {
     },
     PurchaseOrder: {
         name: 'Purchase Order',
-        autoId: true,
         url: 'purchase-order',
         keys: {
             quotation: {
@@ -584,7 +871,6 @@ export const types = {
     },
     PurchaseOrderItem: {
         name: 'Purchase Order Item',
-        autoId: true,
         keys: {
             purchaseOrder: {
                 order: 0,
@@ -615,7 +901,6 @@ export const types = {
     },
     PurchaseInvoice: {
         name: 'Purchase Invoice',
-        autoId: true,
         url: 'purchase-invoice',
         keys: {
             purchaseOrder: {
@@ -627,7 +912,6 @@ export const types = {
     },
     PurchaseInvoiceItem: {
         name: 'Purchase Invoice Item',
-        autoId: true,
         keys: {
             purchaseInvoice: {
                 order: 0,
@@ -658,7 +942,6 @@ export const types = {
     },
     MaterialApprovalSlip: {
         name: 'Material Approval Slip',
-        autoId: true,
         url: 'material-approved',
         keys: {
             purchaseInvoice: {
@@ -670,7 +953,6 @@ export const types = {
     },
     MaterialApprovalSlipItem: {
         name: 'Material Approval Slip Item',
-        autoId: true,
         keys: {
             materialApprovalSlip: {
                 order: 0,
@@ -696,7 +978,6 @@ export const types = {
     },
     MaterialRejectionSlip: {
         name: 'Material Rejection Slip',
-        autoId: true,
         url: 'material-rejected',
         keys: {
             purchaseInvoice: {
@@ -708,7 +989,6 @@ export const types = {
     },
     MaterialRejectionSlipItem: {
         name: 'Material Rejection Slip Item',
-        autoId: true,
         keys: {
             materialRejectionSlip: {
                 order: 0,
@@ -734,7 +1014,6 @@ export const types = {
     },
     MaterialReturnSlip: {
         name: 'Material Return Note',
-        autoId: true,
         url: 'return',
         keys: {
             materialRejectionSlip: {
@@ -746,7 +1025,6 @@ export const types = {
     },
     MaterialReturnSlipItem: {
         name: 'Material Return Slip Item',
-        autoId: true,
         keys: {
             materialReturnSlip: {
                 order: 0,
@@ -767,7 +1045,6 @@ export const types = {
     },
     MaterialRequistionSlip: {
         name: 'Material Requistion Slip',
-        autoId: true,
         url: 'requistion',
         keys: {
             materialApprovalSlip: {
@@ -779,7 +1056,6 @@ export const types = {
     },
     MaterialRequistionSlipItem: {
         name: 'Material Requistion Slip Item',
-        autoId: true,
         keys: {
             materialRequistionSlip: {
                 order: 0,
@@ -805,13 +1081,11 @@ export const types = {
     },
     BOM: {
         name: 'Bill of Material',
-        autoId: false,
         url: 'bom',
         keys: {}
     },
     BOMItem: {
         name: 'BOM Item',
-        autoId: true,
         keys: {
             bom: {
                 order: 0,
@@ -837,7 +1111,6 @@ export const types = {
     },
     ProductionPreparationSlip: {
         name: 'Production Preparation Slip',
-        autoId: true,
         keys: {
             bom: {
                 order: 0,
@@ -858,7 +1131,6 @@ export const types = {
     },
     ProductionPreparationSlipItem: {
         name: 'Production Preparation SlipItem',
-        autoId: true,
         keys: {
             productionPreparationSlip: {
                 order: 0,
@@ -879,7 +1151,6 @@ export const types = {
     },
     ScrapMaterialSlip: {
         name: 'Scrap Material Slip',
-        autoId: true,
         url: 'material-scrapped',
         keys: {
             productionPreparationSlip: {
@@ -896,7 +1167,6 @@ export const types = {
     },
     TransferMaterialSlip: {
         name: 'Transfer Material Slip',
-        autoId: true,
         url: 'material-transferred',
         keys: {
             productionPreparationSlip: {
@@ -918,7 +1188,6 @@ export const types = {
     },
     WarehouseAcceptanceSlip: {
         name: 'Warehouse Receipt',
-        autoId: true,
         url: 'warehouse-receipt',
         keys: {
             transferMaterialSlip: {

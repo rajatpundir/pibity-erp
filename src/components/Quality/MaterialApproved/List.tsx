@@ -67,11 +67,11 @@ function reducer(state: Draft<State>, action: Action) {
 
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const rows = useLiveQuery(() => db.materialApprovalSlips.orderBy('variableName').toArray())
+    const rows = useLiveQuery(() => db.MaterialApprovalSlip.orderBy('variableName').toArray())
     var composedVariables = Vector.of<Immutable<MaterialApprovalSlipVariable>>().appendAll(rows ? rows.map(x => MaterialApprovalSlipRow.toVariable(x)) : [])
     const diffs = useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
     diffs?.forEach(diff => {
-        composedVariables = composedVariables.filter(x => !diff.variables[state.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).appendAll(diff.variables[state.typeName].replace)
+        composedVariables = composedVariables.filter(x => !diff.variables[state.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).appendAll(diff.variables[state.typeName].replace)
     })
     const variables = composedVariables.filter(variable => applyFilter(state.query, variable)).reverse().toArray()
     const [open, setOpen] = useState(false)

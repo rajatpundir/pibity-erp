@@ -153,7 +153,7 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
-                        state.updatedVariableName = action[2].variableName
+                        state.updatedVariableName = action[2].id
                         break
                     }
                     case 'items': {
@@ -178,20 +178,20 @@ function Component(props) {
 
     const setVariable = useCallback(async () => {
         if (props.match.params[0]) {
-            const rows = await db.materialReturnSlips.toArray()
+            const rows = await db.MaterialReturnSlip.toArray()
             var composedVariables = HashSet.of<Immutable<MaterialReturnSlipVariable>>().addAll(rows ? rows.map(x => MaterialReturnSlipRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.variable.typeName].replace)
             })
-            const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
+            const variables = composedVariables.filter(variable => variable.id.toString() === props.match.params[0])
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as MaterialReturnSlipVariable])
-                const itemRows = await db.materialReturnSlipItems.toArray()
+                const itemRows = await db.MaterialReturnSlipItem.toArray()
                 var composedItemVariables = HashSet.of<Immutable<MaterialReturnSlipItemVariable>>().addAll(itemRows ? itemRows.map(x => MaterialReturnSlipItemRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
                 })
                 const items = composedItemVariables.filter(variable => variable.values.materialReturnSlip.toString() === props.match.params[0])
                 dispatch(['replace', 'items', items as HashSet<MaterialReturnSlipItemVariable>])
@@ -201,16 +201,16 @@ function Component(props) {
 
     useEffect(() => { setVariable() }, [setVariable])
 
-    const rows = useLiveQuery(() => db.materialRejectionSlips.toArray())?.map(x => MaterialRejectionSlipRow.toVariable(x))
+    const rows = useLiveQuery(() => db.MaterialRejectionSlip.toArray())?.map(x => MaterialRejectionSlipRow.toVariable(x))
     var materialRejectionSlips = HashSet.of<Immutable<MaterialRejectionSlipVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        materialRejectionSlips = materialRejectionSlips.filter(x => !diff.variables.MaterialRejectionSlip.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.MaterialRejectionSlip.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.MaterialRejectionSlip.replace)
+        materialRejectionSlips = materialRejectionSlips.filter(x => !diff.variables.MaterialRejectionSlip.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.MaterialRejectionSlip.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.MaterialRejectionSlip.replace)
     })
 
-    const itemRows = useLiveQuery(() => db.materialRejectionSlipItems.where({ materialRejectionSlip: state.variable.values.materialRejectionSlip.toString() }).toArray())?.map(x => MaterialRejectionSlipItemRow.toVariable(x))
+    const itemRows = useLiveQuery(() => db.MaterialRejectionSlipItem.where({ materialRejectionSlip: state.variable.values.materialRejectionSlip.toString() }).toArray())?.map(x => MaterialRejectionSlipItemRow.toVariable(x))
     var items = HashSet.of<Immutable<MaterialRejectionSlipItemVariable>>().addAll(itemRows ? itemRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        items = items.filter(x => !diff.variables.MaterialRejectionSlipItem.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.MaterialRejectionSlipItem.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.MaterialRejectionSlipItem.replace)
+        items = items.filter(x => !diff.variables.MaterialRejectionSlipItem.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.MaterialRejectionSlipItem.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.MaterialRejectionSlipItem.replace)
         items = items.filter(x => x.values.materialRejectionSlip.toString() === state.variable.values.materialRejectionSlip.toString())
     })
 
@@ -281,7 +281,7 @@ function Component(props) {
     }
 
     const modifyVariable = async () => {
-        const [, diff] = await iff(state.variable.variableName.toString() !== state.updatedVariableName.toString(),
+        const [, diff] = await iff(state.variable.id.toString() !== state.updatedVariableName.toString(),
             updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
             updateVariable(state.variable, state.variable.toRow().values)
         )
@@ -291,7 +291,7 @@ function Component(props) {
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteMaterialReturnSlip, {
-            variableName: state.variable.variableName.toString(),
+            variableName: state.variable.id.toString(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)
@@ -344,7 +344,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.materialRejectionSlip.toString()} name='materialRejectionSlip'>
                                     <option value='' selected disabled hidden>Select Material Rejection Slip</option>
-                                    {materialRejectionSlips.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {materialRejectionSlips.toArray().map(x => <option value={x.id.toString()}>{x.id.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.materialRejectionSlip.toString()}</div>
                             )
@@ -374,7 +374,7 @@ function Component(props) {
                                         <Label>{item.keys.materialRejectionSlipItem.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.materialRejectionSlipItem.toString()} name='materialRejectionSlipItem'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                            {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                            {items.toArray().map(x => <option value={x.id.toString()}>{x.id.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>

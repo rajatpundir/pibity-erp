@@ -150,7 +150,7 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
-                        state.updatedVariableName = action[2].variableName
+                        state.updatedVariableName = action[2].id
                         break
                     }
                     case 'items': {
@@ -181,20 +181,20 @@ function Component(props) {
 
     const setVariable = useCallback(async () => {
         if (props.match.params[0]) {
-            const rows = await db.districts.toArray()
+            const rows = await db.District.toArray()
             var composedVariables = HashSet.of<Immutable<DistrictVariable>>().addAll(rows ? rows.map(x => DistrictRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.variable.typeName].replace)
             })
-            const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
+            const variables = composedVariables.filter(variable => variable.id.toString() === props.match.params[0])
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as DistrictVariable])
-                const itemRows = await db.subdistricts.toArray()
+                const itemRows = await db.Subdistrict.toArray()
                 var composedItemVariables = HashSet.of<Immutable<SubdistrictVariable>>().addAll(itemRows ? itemRows.map(x => SubdistrictRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
                 })
                 const items = composedItemVariables.filter(variable => variable.values.district.toString() === props.match.params[0])
                 dispatch(['replace', 'items', items as HashSet<SubdistrictVariable>])
@@ -204,10 +204,10 @@ function Component(props) {
 
     useEffect(() => { setVariable() }, [setVariable])
 
-    const rows = useLiveQuery(() => db.states.orderBy('name').toArray())?.map(x => StateRow.toVariable(x))
+    const rows = useLiveQuery(() => db.State.orderBy('name').toArray())?.map(x => StateRow.toVariable(x))
     var states = HashSet.of<Immutable<StateVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        states = states.filter(x => !diff.variables.State.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.State.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.State.replace)
+        states = states.filter(x => !diff.variables.State.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.State.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.State.replace)
     })
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -269,7 +269,7 @@ function Component(props) {
     }
 
     const modifyVariable = async () => {
-        const [, diff] = await iff(state.variable.variableName.toString() !== state.updatedVariableName.toString(),
+        const [, diff] = await iff(state.variable.id.toString() !== state.updatedVariableName.toString(),
             updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
             updateVariable(state.variable, state.variable.toRow().values)
         )
@@ -279,7 +279,7 @@ function Component(props) {
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteDistrict, {
-            variableName: state.variable.variableName.toString(),
+            variableName: state.variable.id.toString(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)
@@ -332,13 +332,13 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.state.toString()} name='state'>
                                     <option value='' selected disabled hidden>Select State</option>
-                                    {states.toArray().map(x => <option value={x.variableName.toString()}>{x.values.name}</option>)}
+                                    {states.toArray().map(x => <option value={x.id.toString()}>{x.values.name}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{
-                                    iff(states.filter(x => x.variableName.toString() === state.variable.values.state.toString()).length() !== 0, 
+                                    iff(states.filter(x => x.id.toString() === state.variable.values.state.toString()).length() !== 0, 
                                     () => {
-                                        const referencedVariable = states.filter(x => x.variableName.toString() === state.variable.values.state.toString()).toArray()[0] as StateVariable
-                                        return <Link to={`/state/${referencedVariable.variableName.toString()}`}>{referencedVariable.values.name}</Link>
+                                        const referencedVariable = states.filter(x => x.id.toString() === state.variable.values.state.toString()).toArray()[0] as StateVariable
+                                        return <Link to={`/state/${referencedVariable.id.toString()}`}>{referencedVariable.values.name}</Link>
                                     }, <Link to={`/state/${state.variable.values.state.toString()}`}>{state.variable.values.state.toString()}</Link>)
                                 }</div>
                             )

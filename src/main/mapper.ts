@@ -450,7 +450,7 @@ export async function executeMapper(mapper: Mapper, args: MapperArgs, overlay: V
                 const variable = variables[index]
                 if (index < args.args.length) {
                     const functionArgs = args.args[index]
-                    functionArgs[mapper.functionInput] = variable.variableName.toString()
+                    functionArgs[mapper.functionInput] = variable.id.toString()
                     const [functionResult, symbolFlag, diff] = await executeFunction(fx, functionArgs, overlay)
                     if (!symbolFlag) {
                         return [result, false, mergeDiffs(diffs.toArray())]
@@ -459,7 +459,7 @@ export async function executeMapper(mapper: Mapper, args: MapperArgs, overlay: V
                     diffs = diffs.append(diff)
                 } else {
                     const functionArgs = args.args[args.args.length - 1]
-                    functionArgs[mapper.functionInput] = variable.variableName.toString()
+                    functionArgs[mapper.functionInput] = variable.id.toString()
                     const [functionResult, symbolFlag, diff] = await executeFunction(fx, functionArgs, overlay)
                     if (!symbolFlag) {
                         return [result, false, mergeDiffs(diffs.toArray())]

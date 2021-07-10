@@ -159,7 +159,7 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
-                        state.updatedVariableName = action[2].variableName
+                        state.updatedVariableName = action[2].id
                         break
                     }
                     case 'items': {
@@ -184,20 +184,20 @@ function Component(props) {
 
     const setVariable = useCallback(async () => {
         if (props.match.params[0]) {
-            const rows = await db.quotations.toArray()
+            const rows = await db.Quotation.toArray()
             var composedVariables = HashSet.of<Immutable<QuotationVariable>>().addAll(rows ? rows.map(x => QuotationRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.variable.typeName].replace)
             })
-            const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
+            const variables = composedVariables.filter(variable => variable.id.toString() === props.match.params[0])
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as QuotationVariable])
-                const itemRows = await db.quotationItems.toArray()
+                const itemRows = await db.QuotationItem.toArray()
                 var composedItemVariables = HashSet.of<Immutable<QuotationItemVariable>>().addAll(itemRows ? itemRows.map(x => QuotationItemRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
                 })
                 const items = composedItemVariables.filter(variable => variable.values.quotation.toString() === props.match.params[0])
                 dispatch(['replace', 'items', items as HashSet<QuotationItemVariable>])
@@ -207,23 +207,23 @@ function Component(props) {
 
     useEffect(() => { setVariable() }, [setVariable])
 
-    const rows = useLiveQuery(() => db.indents.toArray())?.map(x => IndentRow.toVariable(x))
+    const rows = useLiveQuery(() => db.Indent.toArray())?.map(x => IndentRow.toVariable(x))
     var indents = HashSet.of<Immutable<IndentVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        indents = indents.filter(x => !diff.variables.Indent.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.Indent.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.Indent.replace)
+        indents = indents.filter(x => !diff.variables.Indent.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.Indent.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.Indent.replace)
     })
 
-    const itemRows = useLiveQuery(() => db.indentItems.where({ indent: state.variable.values.indent.toString() }).toArray())?.map(x => IndentItemRow.toVariable(x))
+    const itemRows = useLiveQuery(() => db.IndentItem.where({ indent: state.variable.values.indent.toString() }).toArray())?.map(x => IndentItemRow.toVariable(x))
     var items = HashSet.of<Immutable<IndentItemVariable>>().addAll(itemRows ? itemRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        items = items.filter(x => !diff.variables.IndentItem.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.IndentItem.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.IndentItem.replace)
+        items = items.filter(x => !diff.variables.IndentItem.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.IndentItem.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.IndentItem.replace)
         items = items.filter(x => x.values.indent.toString() === state.variable.values.indent.toString())
     })
 
-    const companyRows = useLiveQuery(() => db.companies.toArray())?.map(x => CompanyRow.toVariable(x))
+    const companyRows = useLiveQuery(() => db.Company.toArray())?.map(x => CompanyRow.toVariable(x))
     var companies = HashSet.of<Immutable<CompanyVariable>>().addAll(companyRows ? companyRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        companies = companies.filter(x => !diff.variables.Company.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.Company.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.Company.replace)
+        companies = companies.filter(x => !diff.variables.Company.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.Company.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.Company.replace)
     })
 
     const quotation = types['Quotation']
@@ -300,7 +300,7 @@ function Component(props) {
     }
 
     const modifyVariable = async () => {
-        const [, diff] = await iff(state.variable.variableName.toString() !== state.updatedVariableName.toString(),
+        const [, diff] = await iff(state.variable.id.toString() !== state.updatedVariableName.toString(),
             updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
             updateVariable(state.variable, state.variable.toRow().values)
         )
@@ -310,7 +310,7 @@ function Component(props) {
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteQuotation, {
-            variableName: state.variable.variableName.toString(),
+            variableName: state.variable.id.toString(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)
@@ -363,7 +363,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.indent.toString()} name='indent'>
                                     <option value='' selected disabled hidden>Select Indent</option>
-                                    {indents.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {indents.toArray().map(x => <option value={x.id.toString()}>{x.id.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.indent.toString()}</div>
                             )
@@ -375,7 +375,7 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.company.toString()} name='company'>
                                     <option value='' selected disabled hidden>Select Company</option>
-                                    {companies.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {companies.toArray().map(x => <option value={x.id.toString()}>{x.id.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{state.variable.values.company.toString()}</div>
                             )
@@ -405,7 +405,7 @@ function Component(props) {
                                         <Label>{item.keys.indentItem.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.indentItem.toString()} name='indentItem'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                            {items.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                            {items.toArray().map(x => <option value={x.id.toString()}>{x.id.toString()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>

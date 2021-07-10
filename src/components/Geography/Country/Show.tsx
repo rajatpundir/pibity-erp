@@ -150,7 +150,7 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
-                        state.updatedVariableName = action[2].variableName
+                        state.updatedVariableName = action[2].id
                         break
                     }
                     case 'items': {
@@ -181,20 +181,20 @@ function Component(props) {
 
     const setVariable = useCallback(async () => {
         if (props.match.params[0]) {
-            const rows = await db.countries.toArray()
+            const rows = await db.Country.toArray()
             var composedVariables = HashSet.of<Immutable<CountryVariable>>().addAll(rows ? rows.map(x => CountryRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.variable.typeName].replace)
             })
-            const variables = composedVariables.filter(variable => variable.variableName.toString() === props.match.params[0])
+            const variables = composedVariables.filter(variable => variable.id.toString() === props.match.params[0])
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as CountryVariable])
-                const itemRows = await db.states.toArray()
+                const itemRows = await db.State.toArray()
                 var composedItemVariables = HashSet.of<Immutable<StateVariable>>().addAll(itemRows ? itemRows.map(x => StateRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
                 })
                 const items = composedItemVariables.filter(variable => variable.values.country.toString() === props.match.params[0])
                 dispatch(['replace', 'items', items as HashSet<StateVariable>])
@@ -204,10 +204,10 @@ function Component(props) {
 
     useEffect(() => { setVariable() }, [setVariable])
 
-    const rows = useLiveQuery(() => db.regions.toArray())?.map(x => RegionRow.toVariable(x))
+    const rows = useLiveQuery(() => db.Region.toArray())?.map(x => RegionRow.toVariable(x))
     var regions = HashSet.of<Immutable<RegionVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        regions = regions.filter(x => !diff.variables.Region.remove.anyMatch(y => x.variableName.toString() === y.toString())).filter(x => !diff.variables.Region.replace.anyMatch(y => y.variableName.toString() === x.variableName.toString())).addAll(diff.variables.Region.replace)
+        regions = regions.filter(x => !diff.variables.Region.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.Region.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.Region.replace)
     })
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -269,7 +269,7 @@ function Component(props) {
     }
 
     const modifyVariable = async () => {
-        const [, diff] = await iff(state.variable.variableName.toString() !== state.updatedVariableName.toString(),
+        const [, diff] = await iff(state.variable.id.toString() !== state.updatedVariableName.toString(),
             updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
             updateVariable(state.variable, state.variable.toRow().values)
         )
@@ -279,7 +279,7 @@ function Component(props) {
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteCountry, {
-            variableName: state.variable.variableName.toString(),
+            variableName: state.variable.id.toString(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)
@@ -332,13 +332,13 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.region.toString()} name='region'>
                                     <option value='' selected disabled hidden>Select Region</option>
-                                    {regions.toArray().map(x => <option value={x.variableName.toString()}>{x.variableName.toString()}</option>)}
+                                    {regions.toArray().map(x => <option value={x.id.toString()}>{x.id.toString()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{
-                                    iff(regions.filter(x => x.variableName.toString() === state.variable.values.region.toString()).length() !== 0, 
+                                    iff(regions.filter(x => x.id.toString() === state.variable.values.region.toString()).length() !== 0, 
                                     () => {
-                                        const referencedVariable = regions.filter(x => x.variableName.toString() === state.variable.values.region.toString()).toArray()[0] as RegionVariable      
-                                        return <Link to={`/region/${referencedVariable.variableName.toString()}`}>{referencedVariable.variableName.toString()}</Link>
+                                        const referencedVariable = regions.filter(x => x.id.toString() === state.variable.values.region.toString()).toArray()[0] as RegionVariable      
+                                        return <Link to={`/region/${referencedVariable.id.toString()}`}>{referencedVariable.id.toString()}</Link>
                                     }, <Link to={`/region/${state.variable.values.region.toString()}`}>{state.variable.values.region.toString()}</Link>)
                                 }</div>
                             )
