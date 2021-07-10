@@ -8,8 +8,8 @@ import { db } from './dexie'
 export function mergeDiffs(diffs: ReadonlyArray<DiffVariable>): DiffVariable {
     const result = diffs.reduce((acc, diff) => {
         Object.keys(diff.variables).forEach(typeName => {
-            acc.variables[typeName].replace = acc.variables[typeName].replace.filter((x: Variable) => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).addAll(diff.variables[typeName].replace)
-            acc.variables[typeName].remove = acc.variables[typeName].remove.filter((x: VariableId) => !diff.variables[typeName].replace.anyMatch(y => x.toString() === y.variableName.toString())).addAll(diff.variables[typeName].remove)
+            acc.variables[typeName].replace = acc.variables[typeName].replace.filter((x: Variable) => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).addAll(diff.variables[typeName].replace)
+            acc.variables[typeName].remove = acc.variables[typeName].remove.filter((x: VariableId) => !diff.variables[typeName].replace.anyMatch(y => x.hashCode() === y.variableName.hashCode())).addAll(diff.variables[typeName].remove)
         })
         return acc
     }, new DiffVariable())
@@ -484,219 +484,219 @@ export class DiffVariable {
         return new DiffRow({
             Region: {
                 replace: this.variables.Region.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.Region.remove.toArray().map(x => x.toString())
+                remove: this.variables.Region.remove.toArray().map(x => x.hashCode())
             },
             Country: {
                 replace: this.variables.Country.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.Country.remove.toArray().map(x => x.toString())
+                remove: this.variables.Country.remove.toArray().map(x => x.hashCode())
             },
             State: {
                 replace: this.variables.State.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.State.remove.toArray().map(x => x.toString())
+                remove: this.variables.State.remove.toArray().map(x => x.hashCode())
             },
             District: {
                 replace: this.variables.District.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.District.remove.toArray().map(x => x.toString())
+                remove: this.variables.District.remove.toArray().map(x => x.hashCode())
             },
             Subdistrict: {
                 replace: this.variables.Subdistrict.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.Subdistrict.remove.toArray().map(x => x.toString())
+                remove: this.variables.Subdistrict.remove.toArray().map(x => x.hashCode())
             },
             PostalCode: {
                 replace: this.variables.PostalCode.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.PostalCode.remove.toArray().map(x => x.toString())
+                remove: this.variables.PostalCode.remove.toArray().map(x => x.hashCode())
             },
             Address: {
                 replace: this.variables.Address.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.Address.remove.toArray().map(x => x.toString())
+                remove: this.variables.Address.remove.toArray().map(x => x.hashCode())
             },
             Company: {
                 replace: this.variables.Company.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.Company.remove.toArray().map(x => x.toString())
+                remove: this.variables.Company.remove.toArray().map(x => x.hashCode())
             },
             CompanyAddress: {
                 replace: this.variables.CompanyAddress.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.CompanyAddress.remove.toArray().map(x => x.toString())
+                remove: this.variables.CompanyAddress.remove.toArray().map(x => x.hashCode())
             },
             CompanyTagGroup: {
                 replace: this.variables.CompanyTagGroup.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.CompanyTagGroup.remove.toArray().map(x => x.toString())
+                remove: this.variables.CompanyTagGroup.remove.toArray().map(x => x.hashCode())
             },
             CompanyTag: {
                 replace: this.variables.CompanyTag.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.CompanyTag.remove.toArray().map(x => x.toString())
+                remove: this.variables.CompanyTag.remove.toArray().map(x => x.hashCode())
             },
             MappingCompanyTag: {
                 replace: this.variables.MappingCompanyTag.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.MappingCompanyTag.remove.toArray().map(x => x.toString())
+                remove: this.variables.MappingCompanyTag.remove.toArray().map(x => x.hashCode())
             },
             Contact: {
                 replace: this.variables.Contact.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.Contact.remove.toArray().map(x => x.toString())
+                remove: this.variables.Contact.remove.toArray().map(x => x.hashCode())
             },
             ContactAddress: {
                 replace: this.variables.ContactAddress.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.ContactAddress.remove.toArray().map(x => x.toString())
+                remove: this.variables.ContactAddress.remove.toArray().map(x => x.hashCode())
             },
             CompanyContact: {
                 replace: this.variables.CompanyContact.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.CompanyContact.remove.toArray().map(x => x.toString())
+                remove: this.variables.CompanyContact.remove.toArray().map(x => x.hashCode())
             },
             Currency: {
                 replace: this.variables.Currency.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.Currency.remove.toArray().map(x => x.toString())
+                remove: this.variables.Currency.remove.toArray().map(x => x.hashCode())
             },
             CurrencyRate: {
                 replace: this.variables.CurrencyRate.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.CurrencyRate.remove.toArray().map(x => x.toString())
+                remove: this.variables.CurrencyRate.remove.toArray().map(x => x.hashCode())
             },
             Memo: {
                 replace: this.variables.Memo.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.Memo.remove.toArray().map(x => x.toString())
+                remove: this.variables.Memo.remove.toArray().map(x => x.hashCode())
             },
             Bank: {
                 replace: this.variables.Bank.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.Bank.remove.toArray().map(x => x.toString())
+                remove: this.variables.Bank.remove.toArray().map(x => x.hashCode())
             },
             BankBranch: {
                 replace: this.variables.BankBranch.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.BankBranch.remove.toArray().map(x => x.toString())
+                remove: this.variables.BankBranch.remove.toArray().map(x => x.hashCode())
             },
             BankAccount: {
                 replace: this.variables.BankAccount.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.BankAccount.remove.toArray().map(x => x.toString())
+                remove: this.variables.BankAccount.remove.toArray().map(x => x.hashCode())
             },
             BankTransaction: {
                 replace: this.variables.BankTransaction.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.BankTransaction.remove.toArray().map(x => x.toString())
+                remove: this.variables.BankTransaction.remove.toArray().map(x => x.hashCode())
             },
             CompanyBankAccount: {
                 replace: this.variables.CompanyBankAccount.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.CompanyBankAccount.remove.toArray().map(x => x.toString())
+                remove: this.variables.CompanyBankAccount.remove.toArray().map(x => x.hashCode())
             },
             ProductCategoryGroup: {
                 replace: this.variables.ProductCategoryGroup.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.ProductCategoryGroup.remove.toArray().map(x => x.toString())
+                remove: this.variables.ProductCategoryGroup.remove.toArray().map(x => x.hashCode())
             },
             ProductCategory: {
                 replace: this.variables.ProductCategory.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.ProductCategory.remove.toArray().map(x => x.toString())
+                remove: this.variables.ProductCategory.remove.toArray().map(x => x.hashCode())
             },
             Product: {
                 replace: this.variables.Product.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.Product.remove.toArray().map(x => x.toString())
+                remove: this.variables.Product.remove.toArray().map(x => x.hashCode())
             },
             ProductTagGroup: {
                 replace: this.variables.ProductTagGroup.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.ProductTagGroup.remove.toArray().map(x => x.toString())
+                remove: this.variables.ProductTagGroup.remove.toArray().map(x => x.hashCode())
             },
             ProductTag: {
                 replace: this.variables.ProductTag.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.ProductTag.remove.toArray().map(x => x.toString())
+                remove: this.variables.ProductTag.remove.toArray().map(x => x.hashCode())
             },
             MappingProductTag: {
                 replace: this.variables.MappingProductTag.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.MappingProductTag.remove.toArray().map(x => x.toString())
+                remove: this.variables.MappingProductTag.remove.toArray().map(x => x.hashCode())
             },
             UOM: {
                 replace: this.variables.UOM.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.UOM.remove.toArray().map(x => x.toString())
+                remove: this.variables.UOM.remove.toArray().map(x => x.hashCode())
             },
             Indent: {
                 replace: this.variables.Indent.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.Indent.remove.toArray().map(x => x.toString())
+                remove: this.variables.Indent.remove.toArray().map(x => x.hashCode())
             },
             IndentItem: {
                 replace: this.variables.IndentItem.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.IndentItem.remove.toArray().map(x => x.toString())
+                remove: this.variables.IndentItem.remove.toArray().map(x => x.hashCode())
             },
             CompanyProduct: {
                 replace: this.variables.CompanyProduct.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.CompanyProduct.remove.toArray().map(x => x.toString())
+                remove: this.variables.CompanyProduct.remove.toArray().map(x => x.hashCode())
             },
             Quotation: {
                 replace: this.variables.Quotation.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.Quotation.remove.toArray().map(x => x.toString())
+                remove: this.variables.Quotation.remove.toArray().map(x => x.hashCode())
             },
             QuotationItem: {
                 replace: this.variables.QuotationItem.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.QuotationItem.remove.toArray().map(x => x.toString())
+                remove: this.variables.QuotationItem.remove.toArray().map(x => x.hashCode())
             },
             PurchaseOrder: {
                 replace: this.variables.PurchaseOrder.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.PurchaseOrder.remove.toArray().map(x => x.toString())
+                remove: this.variables.PurchaseOrder.remove.toArray().map(x => x.hashCode())
             },
             PurchaseOrderItem: {
                 replace: this.variables.PurchaseOrderItem.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.PurchaseOrderItem.remove.toArray().map(x => x.toString())
+                remove: this.variables.PurchaseOrderItem.remove.toArray().map(x => x.hashCode())
             },
             PurchaseInvoice: {
                 replace: this.variables.PurchaseInvoice.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.PurchaseInvoice.remove.toArray().map(x => x.toString())
+                remove: this.variables.PurchaseInvoice.remove.toArray().map(x => x.hashCode())
             },
             PurchaseInvoiceItem: {
                 replace: this.variables.PurchaseInvoiceItem.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.PurchaseInvoiceItem.remove.toArray().map(x => x.toString())
+                remove: this.variables.PurchaseInvoiceItem.remove.toArray().map(x => x.hashCode())
             },
             MaterialApprovalSlip: {
                 replace: this.variables.MaterialApprovalSlip.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.MaterialApprovalSlip.remove.toArray().map(x => x.toString())
+                remove: this.variables.MaterialApprovalSlip.remove.toArray().map(x => x.hashCode())
             },
             MaterialApprovalSlipItem: {
                 replace: this.variables.MaterialApprovalSlipItem.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.MaterialApprovalSlipItem.remove.toArray().map(x => x.toString())
+                remove: this.variables.MaterialApprovalSlipItem.remove.toArray().map(x => x.hashCode())
             },
             MaterialRejectionSlip: {
                 replace: this.variables.MaterialRejectionSlip.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.MaterialRejectionSlip.remove.toArray().map(x => x.toString())
+                remove: this.variables.MaterialRejectionSlip.remove.toArray().map(x => x.hashCode())
             },
             MaterialRejectionSlipItem: {
                 replace: this.variables.MaterialRejectionSlipItem.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.MaterialRejectionSlipItem.remove.toArray().map(x => x.toString())
+                remove: this.variables.MaterialRejectionSlipItem.remove.toArray().map(x => x.hashCode())
             },
             MaterialReturnSlip: {
                 replace: this.variables.MaterialReturnSlip.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.MaterialReturnSlip.remove.toArray().map(x => x.toString())
+                remove: this.variables.MaterialReturnSlip.remove.toArray().map(x => x.hashCode())
             },
             MaterialReturnSlipItem: {
                 replace: this.variables.MaterialReturnSlipItem.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.MaterialReturnSlipItem.remove.toArray().map(x => x.toString())
+                remove: this.variables.MaterialReturnSlipItem.remove.toArray().map(x => x.hashCode())
             },
             MaterialRequistionSlip: {
                 replace: this.variables.MaterialRequistionSlip.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.MaterialRequistionSlip.remove.toArray().map(x => x.toString())
+                remove: this.variables.MaterialRequistionSlip.remove.toArray().map(x => x.hashCode())
             },
             MaterialRequistionSlipItem: {
                 replace: this.variables.MaterialRequistionSlipItem.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.MaterialRequistionSlipItem.remove.toArray().map(x => x.toString())
+                remove: this.variables.MaterialRequistionSlipItem.remove.toArray().map(x => x.hashCode())
             },
             BOM: {
                 replace: this.variables.BOM.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.BOM.remove.toArray().map(x => x.toString())
+                remove: this.variables.BOM.remove.toArray().map(x => x.hashCode())
             },
             BOMItem: {
                 replace: this.variables.BOMItem.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.BOMItem.remove.toArray().map(x => x.toString())
+                remove: this.variables.BOMItem.remove.toArray().map(x => x.hashCode())
             },
             ProductionPreparationSlip: {
                 replace: this.variables.ProductionPreparationSlip.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.ProductionPreparationSlip.remove.toArray().map(x => x.toString())
+                remove: this.variables.ProductionPreparationSlip.remove.toArray().map(x => x.hashCode())
             },
             ProductionPreparationSlipItem: {
                 replace: this.variables.ProductionPreparationSlipItem.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.ProductionPreparationSlipItem.remove.toArray().map(x => x.toString())
+                remove: this.variables.ProductionPreparationSlipItem.remove.toArray().map(x => x.hashCode())
             },
             ScrapMaterialSlip: {
                 replace: this.variables.ScrapMaterialSlip.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.ScrapMaterialSlip.remove.toArray().map(x => x.toString())
+                remove: this.variables.ScrapMaterialSlip.remove.toArray().map(x => x.hashCode())
             },
             TransferMaterialSlip: {
                 replace: this.variables.TransferMaterialSlip.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.TransferMaterialSlip.remove.toArray().map(x => x.toString())
+                remove: this.variables.TransferMaterialSlip.remove.toArray().map(x => x.hashCode())
             },
             WarehouseAcceptanceSlip: {
                 replace: this.variables.WarehouseAcceptanceSlip.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.WarehouseAcceptanceSlip.remove.toArray().map(x => x.toString())
+                remove: this.variables.WarehouseAcceptanceSlip.remove.toArray().map(x => x.hashCode())
             }
         })
     }
@@ -929,223 +929,223 @@ export function getReplaceVariableDiff(variable: Immutable<Variable>): DiffVaria
     return diff
 }
 
-export function getRemoveVariableDiff(typeName: NonPrimitiveType, variableName: string): DiffVariable {
+export function getRemoveVariableDiff(typeName: NonPrimitiveType, id: number): DiffVariable {
     const diff: DiffVariable = new DiffVariable()
     switch (typeName) {
         case 'Region': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Region(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Region(id))
             break
         }
         case 'Country': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Country(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Country(id))
             break
         }
         case 'State': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new State(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new State(id))
             break
         }
         case 'District': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new District(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new District(id))
             break
         }
         case 'Subdistrict': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Subdistrict(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Subdistrict(id))
             break
         }
         case 'PostalCode': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new PostalCode(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new PostalCode(id))
             break
         }
         case 'Address': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Address(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Address(id))
             break
         }
         case 'Company': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Company(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Company(id))
             break
         }
         case 'CompanyAddress': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyAddress(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyAddress(id))
             break
         }
         case 'CompanyTagGroup': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyTagGroup(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyTagGroup(id))
             break
         }
         case 'CompanyTag': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyTag(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyTag(id))
             break
         }
         case 'MappingCompanyTag': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MappingCompanyTag(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MappingCompanyTag(id))
             break
         }
         case 'Contact': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Contact(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Contact(id))
             break
         }
         case 'ContactAddress': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ContactAddress(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ContactAddress(id))
             break
         }
         case 'CompanyContact': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyContact(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyContact(id))
             break
         }
         case 'Currency': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Currency(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Currency(id))
             break
         }
         case 'CurrencyRate': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CurrencyRate(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CurrencyRate(id))
             break
         }
         case 'Memo': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Memo(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Memo(id))
             break
         }
         case 'Bank': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Bank(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Bank(id))
             break
         }
         case 'BankBranch': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new BankBranch(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new BankBranch(id))
             break
         }
         case 'BankAccount': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new BankAccount(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new BankAccount(id))
             break
         }
         case 'BankTransaction': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new BankTransaction(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new BankTransaction(id))
             break
         }
         case 'CompanyBankAccount': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyBankAccount(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyBankAccount(id))
             break
         }
         case 'ProductCategoryGroup': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ProductCategoryGroup(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ProductCategoryGroup(id))
             break
         }
         case 'ProductCategory': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ProductCategory(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ProductCategory(id))
             break
         }
         case 'Product': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Product(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Product(id))
             break
         }
         case 'ProductTagGroup': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ProductTagGroup(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ProductTagGroup(id))
             break
         }
         case 'ProductTag': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ProductTag(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ProductTag(id))
             break
         }
         case 'MappingProductTag': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MappingProductTag(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MappingProductTag(id))
             break
         }
         case 'UOM': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new UOM(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new UOM(id))
             break
         }
         case 'Indent': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Indent(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Indent(id))
             break
         }
         case 'IndentItem': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new IndentItem(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new IndentItem(id))
             break
         }
         case 'CompanyProduct': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyProduct(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyProduct(id))
             break
         }
         case 'Quotation': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Quotation(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Quotation(id))
             break
         }
         case 'QuotationItem': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new QuotationItem(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new QuotationItem(id))
             break
         }
         case 'PurchaseOrder': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new PurchaseOrder(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new PurchaseOrder(id))
             break
         }
         case 'PurchaseOrderItem': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new PurchaseOrderItem(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new PurchaseOrderItem(id))
             break
         }
         case 'PurchaseInvoice': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new PurchaseInvoice(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new PurchaseInvoice(id))
             break
         }
         case 'PurchaseInvoiceItem': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new PurchaseInvoiceItem(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new PurchaseInvoiceItem(id))
             break
         }
         case 'MaterialApprovalSlip': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialApprovalSlip(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialApprovalSlip(id))
             break
         }
         case 'MaterialApprovalSlipItem': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialApprovalSlipItem(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialApprovalSlipItem(id))
             break
         }
         case 'MaterialRejectionSlip': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialRejectionSlip(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialRejectionSlip(id))
             break
         }
         case 'MaterialRejectionSlipItem': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialRejectionSlipItem(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialRejectionSlipItem(id))
             break
         }
         case 'MaterialReturnSlip': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialReturnSlip(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialReturnSlip(id))
             break
         }
         case 'MaterialReturnSlipItem': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialReturnSlipItem(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialReturnSlipItem(id))
             break
         }
         case 'MaterialRequistionSlip': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialRequistionSlip(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialRequistionSlip(id))
             break
         }
         case 'MaterialRequistionSlipItem': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialRequistionSlipItem(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialRequistionSlipItem(id))
             break
         }
         case 'BOM': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new BOM(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new BOM(id))
             break
         }
         case 'BOMItem': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new BOMItem(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new BOMItem(id))
             break
         }
         case 'ProductionPreparationSlip': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ProductionPreparationSlip(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ProductionPreparationSlip(id))
             break
         }
         case 'ProductionPreparationSlipItem': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ProductionPreparationSlipItem(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ProductionPreparationSlipItem(id))
             break
         }
         case 'ScrapMaterialSlip': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ScrapMaterialSlip(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ScrapMaterialSlip(id))
             break
         }
         case 'TransferMaterialSlip': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new TransferMaterialSlip(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new TransferMaterialSlip(id))
             break
         }
         case 'WarehouseAcceptanceSlip': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new WarehouseAcceptanceSlip(variableName))
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new WarehouseAcceptanceSlip(id))
             break
         }
         default: {
@@ -1156,31 +1156,31 @@ export function getRemoveVariableDiff(typeName: NonPrimitiveType, variableName: 
     return diff
 }
 
-export async function getVariable(typeName: NonPrimitiveType, variableName: string, overlay: Vector<DiffVariable> = Vector.of()): Promise<Variable | undefined> {
+export async function getVariable(typeName: NonPrimitiveType, id: number, overlay: Vector<DiffVariable> = Vector.of()): Promise<Variable | undefined> {
     const diffs: Array<DiffVariable> = (await db.diffs.orderBy('id').reverse().toArray()).map(x => DiffRow.toVariable(x))
     switch (typeName) {
         case 'Region': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return RegionRow.toVariable(row) as Variable
             }
@@ -1189,25 +1189,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'Country': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return CountryRow.toVariable(row) as Variable
             }
@@ -1216,25 +1216,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'State': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return StateRow.toVariable(row) as Variable
             }
@@ -1243,25 +1243,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'District': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return DistrictRow.toVariable(row) as Variable
             }
@@ -1270,25 +1270,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'Subdistrict': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return SubdistrictRow.toVariable(row) as Variable
             }
@@ -1297,25 +1297,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'PostalCode': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return PostalCodeRow.toVariable(row) as Variable
             }
@@ -1324,25 +1324,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'Address': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return AddressRow.toVariable(row) as Variable
             }
@@ -1351,25 +1351,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'Company': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return CompanyRow.toVariable(row) as Variable
             }
@@ -1378,25 +1378,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'CompanyAddress': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return CompanyAddressRow.toVariable(row) as Variable
             }
@@ -1405,25 +1405,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'CompanyTagGroup': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return CompanyTagGroupRow.toVariable(row) as Variable
             }
@@ -1432,25 +1432,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'CompanyTag': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return CompanyTagRow.toVariable(row) as Variable
             }
@@ -1459,25 +1459,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'MappingCompanyTag': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return MappingCompanyTagRow.toVariable(row) as Variable
             }
@@ -1486,25 +1486,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'Contact': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return ContactRow.toVariable(row) as Variable
             }
@@ -1513,25 +1513,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'ContactAddress': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return ContactAddressRow.toVariable(row) as Variable
             }
@@ -1540,25 +1540,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'CompanyContact': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return CompanyContactRow.toVariable(row) as Variable
             }
@@ -1567,25 +1567,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'Currency': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return CurrencyRow.toVariable(row) as Variable
             }
@@ -1594,25 +1594,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'CurrencyRate': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return CurrencyRateRow.toVariable(row) as Variable
             }
@@ -1621,25 +1621,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'Memo': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return MemoRow.toVariable(row) as Variable
             }
@@ -1648,25 +1648,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'Bank': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return BankRow.toVariable(row) as Variable
             }
@@ -1675,25 +1675,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'BankBranch': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return BankBranchRow.toVariable(row) as Variable
             }
@@ -1702,25 +1702,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'BankAccount': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return BankAccountRow.toVariable(row) as Variable
             }
@@ -1729,25 +1729,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'BankTransaction': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return BankTransactionRow.toVariable(row) as Variable
             }
@@ -1756,25 +1756,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'CompanyBankAccount': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return CompanyBankAccountRow.toVariable(row) as Variable
             }
@@ -1783,25 +1783,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'ProductCategoryGroup': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return ProductCategoryGroupRow.toVariable(row) as Variable
             }
@@ -1810,25 +1810,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'ProductCategory': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return ProductCategoryRow.toVariable(row) as Variable
             }
@@ -1837,25 +1837,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'Product': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return ProductRow.toVariable(row) as Variable
             }
@@ -1864,25 +1864,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'ProductTagGroup': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return ProductTagGroupRow.toVariable(row) as Variable
             }
@@ -1891,25 +1891,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'ProductTag': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return ProductTagRow.toVariable(row) as Variable
             }
@@ -1918,25 +1918,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'MappingProductTag': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return MappingProductTagRow.toVariable(row) as Variable
             }
@@ -1945,25 +1945,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'UOM': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return UOMRow.toVariable(row) as Variable
             }
@@ -1972,25 +1972,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'Indent': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return IndentRow.toVariable(row) as Variable
             }
@@ -1999,25 +1999,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'IndentItem': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return IndentItemRow.toVariable(row) as Variable
             }
@@ -2026,25 +2026,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'CompanyProduct': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return CompanyProductRow.toVariable(row) as Variable
             }
@@ -2053,25 +2053,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'Quotation': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return QuotationRow.toVariable(row) as Variable
             }
@@ -2080,25 +2080,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'QuotationItem': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return QuotationItemRow.toVariable(row) as Variable
             }
@@ -2107,25 +2107,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'PurchaseOrder': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return PurchaseOrderRow.toVariable(row) as Variable
             }
@@ -2134,25 +2134,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'PurchaseOrderItem': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return PurchaseOrderItemRow.toVariable(row) as Variable
             }
@@ -2161,25 +2161,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'PurchaseInvoice': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return PurchaseInvoiceRow.toVariable(row) as Variable
             }
@@ -2188,25 +2188,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'PurchaseInvoiceItem': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return PurchaseInvoiceItemRow.toVariable(row) as Variable
             }
@@ -2215,25 +2215,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'MaterialApprovalSlip': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return MaterialApprovalSlipRow.toVariable(row) as Variable
             }
@@ -2242,25 +2242,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'MaterialApprovalSlipItem': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return MaterialApprovalSlipItemRow.toVariable(row) as Variable
             }
@@ -2269,25 +2269,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'MaterialRejectionSlip': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return MaterialRejectionSlipRow.toVariable(row) as Variable
             }
@@ -2296,25 +2296,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'MaterialRejectionSlipItem': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return MaterialRejectionSlipItemRow.toVariable(row) as Variable
             }
@@ -2323,25 +2323,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'MaterialReturnSlip': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return MaterialReturnSlipRow.toVariable(row) as Variable
             }
@@ -2350,25 +2350,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'MaterialReturnSlipItem': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return MaterialReturnSlipItemRow.toVariable(row) as Variable
             }
@@ -2377,25 +2377,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'MaterialRequistionSlip': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return MaterialRequistionSlipRow.toVariable(row) as Variable
             }
@@ -2404,25 +2404,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'MaterialRequistionSlipItem': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return MaterialRequistionSlipItemRow.toVariable(row) as Variable
             }
@@ -2431,25 +2431,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'BOM': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return BOMRow.toVariable(row) as Variable
             }
@@ -2458,25 +2458,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'BOMItem': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return BOMItemRow.toVariable(row) as Variable
             }
@@ -2485,25 +2485,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'ProductionPreparationSlip': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return ProductionPreparationSlipRow.toVariable(row) as Variable
             }
@@ -2512,25 +2512,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'ProductionPreparationSlipItem': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return ProductionPreparationSlipItemRow.toVariable(row) as Variable
             }
@@ -2539,25 +2539,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'ScrapMaterialSlip': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return ScrapMaterialSlipRow.toVariable(row) as Variable
             }
@@ -2566,25 +2566,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'TransferMaterialSlip': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return TransferMaterialSlipRow.toVariable(row) as Variable
             }
@@ -2593,25 +2593,25 @@ export async function getVariable(typeName: NonPrimitiveType, variableName: stri
         case 'WarehouseAcceptanceSlip': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
             for (const diff of diffs) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.toString() === variableName) {
+                    if (variable.id.hashCode() === id) {
                         return variable as Variable
                     }
                 }
-                if (diff.variables[typeName].remove.anyMatch(x => x.toString() === variableName)) {
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
                     return undefined
                 }
             }
-            const row = await db[typeName].get(variableName)
+            const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return WarehouseAcceptanceSlipRow.toVariable(row) as Variable
             }
@@ -2631,378 +2631,378 @@ export async function getVariables(typeName: NonPrimitiveType, overlay: Vector<D
         case 'Region': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => RegionRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'Country': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => CountryRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'State': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => StateRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'District': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => DistrictRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'Subdistrict': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => SubdistrictRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'PostalCode': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => PostalCodeRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'Address': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => AddressRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'Company': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => CompanyRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'CompanyAddress': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => CompanyAddressRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'CompanyTagGroup': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => CompanyTagGroupRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'CompanyTag': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => CompanyTagRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'MappingCompanyTag': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => MappingCompanyTagRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'Contact': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => ContactRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'ContactAddress': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => ContactAddressRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'CompanyContact': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => CompanyContactRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'Currency': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => CurrencyRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'CurrencyRate': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => CurrencyRateRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'Memo': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => MemoRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'Bank': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => BankRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'BankBranch': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => BankBranchRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'BankAccount': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => BankAccountRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'BankTransaction': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => BankTransactionRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'CompanyBankAccount': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => CompanyBankAccountRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'ProductCategoryGroup': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => ProductCategoryGroupRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'ProductCategory': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => ProductCategoryRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'Product': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => ProductRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'ProductTagGroup': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => ProductTagGroupRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'ProductTag': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => ProductTagRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'MappingProductTag': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => MappingProductTagRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'UOM': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => UOMRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'Indent': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => IndentRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'IndentItem': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => IndentItemRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'CompanyProduct': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => CompanyProductRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'Quotation': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => QuotationRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'QuotationItem': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => QuotationItemRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'PurchaseOrder': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => PurchaseOrderRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'PurchaseOrderItem': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => PurchaseOrderItemRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'PurchaseInvoice': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => PurchaseInvoiceRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'PurchaseInvoiceItem': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => PurchaseInvoiceItemRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'MaterialApprovalSlip': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => MaterialApprovalSlipRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'MaterialApprovalSlipItem': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => MaterialApprovalSlipItemRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'MaterialRejectionSlip': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => MaterialRejectionSlipRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'MaterialRejectionSlipItem': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => MaterialRejectionSlipItemRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'MaterialReturnSlip': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => MaterialReturnSlipRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'MaterialReturnSlipItem': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => MaterialReturnSlipItemRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'MaterialRequistionSlip': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => MaterialRequistionSlipRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'MaterialRequistionSlipItem': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => MaterialRequistionSlipItemRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'BOM': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => BOMRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'BOMItem': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => BOMItemRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'ProductionPreparationSlip': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => ProductionPreparationSlipRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'ProductionPreparationSlipItem': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => ProductionPreparationSlipItemRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'ScrapMaterialSlip': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => ScrapMaterialSlipRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'TransferMaterialSlip': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => TransferMaterialSlipRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
         case 'WarehouseAcceptanceSlip': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => WarehouseAcceptanceSlipRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.toString() === y.toString())).appendAll(diff.variables[typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }

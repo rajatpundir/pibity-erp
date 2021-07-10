@@ -170,7 +170,7 @@ export class RegionVariable {
     }
 
     toRow(): RegionRow {
-        return new RegionRow(this.id.toString(), this.values)
+        return new RegionRow(this.id.hashCode(), this.values)
     }
 }
 
@@ -224,8 +224,8 @@ export class CountryVariable {
     }
 
     toRow(): CountryRow {
-        return new CountryRow(this.id.toString(), {
-            region: this.values.region.toString(),
+        return new CountryRow(this.id.hashCode(), {
+            region: this.values.region.hashCode(),
             name: this.values.name
         })
     }
@@ -281,8 +281,8 @@ export class StateVariable {
     }
 
     toRow(): StateRow {
-        return new StateRow(this.id.toString(), {
-            country: this.values.country.toString(),
+        return new StateRow(this.id.hashCode(), {
+            country: this.values.country.hashCode(),
             name: this.values.name
         })
     }
@@ -338,8 +338,8 @@ export class DistrictVariable {
     }
 
     toRow(): DistrictRow {
-        return new DistrictRow(this.id.toString(), {
-            state: this.values.state.toString(),
+        return new DistrictRow(this.id.hashCode(), {
+            state: this.values.state.hashCode(),
             name: this.values.name
         })
     }
@@ -395,8 +395,8 @@ export class SubdistrictVariable {
     }
 
     toRow(): SubdistrictRow {
-        return new SubdistrictRow(this.id.toString(), {
-            district: this.values.district.toString(),
+        return new SubdistrictRow(this.id.hashCode(), {
+            district: this.values.district.hashCode(),
             name: this.values.name
         })
     }
@@ -452,8 +452,8 @@ export class PostalCodeVariable {
     }
 
     toRow(): PostalCodeRow {
-        return new PostalCodeRow(this.id.toString(), {
-            subdistrict: this.values.subdistrict.toString(),
+        return new PostalCodeRow(this.id.hashCode(), {
+            subdistrict: this.values.subdistrict.hashCode(),
             name: this.values.name
         })
     }
@@ -512,8 +512,8 @@ export class AddressVariable {
     }
 
     toRow(): AddressRow {
-        return new AddressRow(this.id.toString(), {
-            postalCode: this.values.postalCode.toString(),
+        return new AddressRow(this.id.hashCode(), {
+            postalCode: this.values.postalCode.hashCode(),
             line1: this.values.line1,
             line2: this.values.line2,
             latitude: this.values.latitude,
@@ -577,7 +577,7 @@ export class CompanyVariable {
     }
 
     toRow(): CompanyRow {
-        return new CompanyRow(this.id.toString(), {
+        return new CompanyRow(this.id.hashCode(), {
             name: this.values.name,
             email: this.values.email,
             telephone: this.values.telephone,
@@ -642,10 +642,10 @@ export class CompanyAddressVariable {
     }
 
     toRow(): CompanyAddressRow {
-        return new CompanyAddressRow(this.id.toString(), {
-            company: this.values.company.toString(),
+        return new CompanyAddressRow(this.id.hashCode(), {
+            company: this.values.company.hashCode(),
             name: this.values.name,
-            address: this.values.address.toString()
+            address: this.values.address.hashCode()
         })
     }
 }
@@ -698,7 +698,7 @@ export class CompanyTagGroupVariable {
     }
 
     toRow(): CompanyTagGroupRow {
-        return new CompanyTagGroupRow(this.id.toString(), {
+        return new CompanyTagGroupRow(this.id.hashCode(), {
             name: this.values.name
         })
     }
@@ -754,8 +754,8 @@ export class CompanyTagVariable {
     }
 
     toRow(): CompanyTagRow {
-        return new CompanyTagRow(this.id.toString(), {
-            group: this.values.group.toString(),
+        return new CompanyTagRow(this.id.hashCode(), {
+            group: this.values.group.hashCode(),
             name: this.values.name
         })
     }
@@ -810,9 +810,9 @@ export class MappingCompanyTagVariable {
     }
 
     toRow(): MappingCompanyTagRow {
-        return new MappingCompanyTagRow(this.id.toString(), {
-            company: this.values.company.toString(),
-            tag: this.values.tag.toString()
+        return new MappingCompanyTagRow(this.id.hashCode(), {
+            company: this.values.company.hashCode(),
+            tag: this.values.tag.hashCode()
         })
     }
 }
@@ -872,7 +872,7 @@ export class ContactVariable {
     }
 
     toRow(): ContactRow {
-        return new ContactRow(this.id.toString(), {
+        return new ContactRow(this.id.hashCode(), {
             name: this.values.name,
             email: this.values.email,
             telephone: this.values.telephone,
@@ -934,10 +934,10 @@ export class ContactAddressVariable {
     }
 
     toRow(): ContactAddressRow {
-        return new ContactAddressRow(this.id.toString(), {
-            contact: this.values.contact.toString(),
+        return new ContactAddressRow(this.id.hashCode(), {
+            contact: this.values.contact.hashCode(),
             name: this.values.name,
-            address: this.values.address.toString()
+            address: this.values.address.hashCode()
         })
     }
 }
@@ -996,9 +996,9 @@ export class CompanyContactVariable {
     }
 
     toRow(): CompanyContactRow {
-        return new CompanyContactRow(this.id.toString(), {
-            company: this.values.company.toString(),
-            contact: this.values.contact.toString(),
+        return new CompanyContactRow(this.id.hashCode(), {
+            company: this.values.company.hashCode(),
+            contact: this.values.contact.hashCode(),
             role: this.values.role,
             email: this.values.email,
             telephone: this.values.telephone,
@@ -1055,7 +1055,7 @@ export class CurrencyVariable {
     }
 
     toRow(): CurrencyRow {
-        return new CurrencyRow(this.id.toString(), this.values)
+        return new CurrencyRow(this.id.hashCode(), this.values)
     }
 }
 
@@ -1110,8 +1110,8 @@ export class CurrencyRateVariable {
     }
 
     toRow(): CurrencyRateRow {
-        return new CurrencyRateRow(this.id.toString(), {
-            currency: this.values.currency.toString(),
+        return new CurrencyRateRow(this.id.hashCode(), {
+            currency: this.values.currency.hashCode(),
             conversionRate: this.values.conversionRate,
             startTime: this.values.startTime,
             endTime: this.values.endTime
@@ -1170,9 +1170,9 @@ export class MemoVariable {
     }
 
     toRow(): MemoRow {
-        return new MemoRow(this.id.toString(), {
-            company: this.values.company.toString(),
-            currency: this.values.currency.toString(),
+        return new MemoRow(this.id.hashCode(), {
+            company: this.values.company.hashCode(),
+            currency: this.values.currency.hashCode(),
             amount: this.values.amount,
             unsettled: this.values.unsettled
         })
@@ -1230,8 +1230,8 @@ export class BankVariable {
     }
 
     toRow(): BankRow {
-        return new BankRow(this.id.toString(), {
-            country: this.values.country.toString(),
+        return new BankRow(this.id.hashCode(), {
+            country: this.values.country.hashCode(),
             name: this.values.name,
             website: this.values.website
         })
@@ -1291,11 +1291,11 @@ export class BankBranchVariable {
     }
 
     toRow(): BankBranchRow {
-        return new BankBranchRow(this.id.toString(), {
-            bank: this.values.bank.toString(),
+        return new BankBranchRow(this.id.hashCode(), {
+            bank: this.values.bank.hashCode(),
             name: this.values.name,
             ifsc: this.values.ifsc,
-            address: this.values.address.toString()
+            address: this.values.address.hashCode()
         })
     }
 }
@@ -1353,12 +1353,12 @@ export class BankAccountVariable {
     }
 
     toRow(): BankAccountRow {
-        return new BankAccountRow(this.id.toString(), {
-            bank: this.values.bank.toString(),
-            bankBranch: this.values.bankBranch.toString(),
+        return new BankAccountRow(this.id.hashCode(), {
+            bank: this.values.bank.hashCode(),
+            bankBranch: this.values.bankBranch.hashCode(),
             accountNumber: this.values.accountNumber,
             accountName: this.values.accountName,
-            currency: this.values.currency.toString()
+            currency: this.values.currency.hashCode()
         })
     }
 }
@@ -1417,12 +1417,12 @@ export class BankTransactionVariable {
     }
 
     toRow(): BankTransactionRow {
-        return new BankTransactionRow(this.id.toString(), {
+        return new BankTransactionRow(this.id.hashCode(), {
             timestamp: this.values.timestamp,
-            memo: this.values.memo.toString(),
-            currencyRate: this.values.currencyRate.toString(),
-            bankAccount: this.values.bankAccount.toString(),
-            fromToAccount: this.values.fromToAccount.toString(),
+            memo: this.values.memo.hashCode(),
+            currencyRate: this.values.currencyRate.hashCode(),
+            bankAccount: this.values.bankAccount.hashCode(),
+            fromToAccount: this.values.fromToAccount.hashCode(),
             credit: this.values.credit,
             debit: this.values.debit
         })
@@ -1479,9 +1479,9 @@ export class CompanyBankAccountVariable {
     }
 
     toRow(): CompanyBankAccountRow {
-        return new CompanyBankAccountRow(this.id.toString(), {
-            company: this.values.company.toString(),
-            bankAccount: this.values.bankAccount.toString()
+        return new CompanyBankAccountRow(this.id.hashCode(), {
+            company: this.values.company.hashCode(),
+            bankAccount: this.values.bankAccount.hashCode()
         })
     }
 }
@@ -1537,8 +1537,8 @@ export class ProductCategoryGroupVariable {
     }
 
     toRow(): ProductCategoryGroupRow {
-        return new ProductCategoryGroupRow(this.id.toString(), {
-            parent: this.values.parent.toString(),
+        return new ProductCategoryGroupRow(this.id.hashCode(), {
+            parent: this.values.parent.hashCode(),
             name: this.values.name,
             length: this.values.length
         })
@@ -1600,9 +1600,9 @@ export class ProductCategoryVariable {
     }
 
     toRow(): ProductCategoryRow {
-        return new ProductCategoryRow(this.id.toString(), {
-            parent: this.values.parent.toString(),
-            group: this.values.group.toString(),
+        return new ProductCategoryRow(this.id.hashCode(), {
+            parent: this.values.parent.hashCode(),
+            group: this.values.group.hashCode(),
             name: this.values.name,
             code: this.values.code,
             derivedCode: this.values.derivedCode,
@@ -1662,9 +1662,9 @@ export class ProductVariable {
     }
 
     toRow(): ProductRow {
-        return new ProductRow(this.id.toString(), {
+        return new ProductRow(this.id.hashCode(), {
             name: this.values.name,
-            category: this.values.category.toString(),
+            category: this.values.category.hashCode(),
             code: this.values.code,
             sku: this.values.sku
         })
@@ -1719,7 +1719,7 @@ export class ProductTagGroupVariable {
     }
 
     toRow(): ProductTagGroupRow {
-        return new ProductTagGroupRow(this.id.toString(), {
+        return new ProductTagGroupRow(this.id.hashCode(), {
             name: this.values.name
         })
     }
@@ -1775,8 +1775,8 @@ export class ProductTagVariable {
     }
 
     toRow(): ProductTagRow {
-        return new ProductTagRow(this.id.toString(), {
-            group: this.values.group.toString(),
+        return new ProductTagRow(this.id.hashCode(), {
+            group: this.values.group.hashCode(),
             name: this.values.name
         })
     }
@@ -1831,9 +1831,9 @@ export class MappingProductTagVariable {
     }
 
     toRow(): MappingProductTagRow {
-        return new MappingProductTagRow(this.id.toString(), {
-            product: this.values.product.toString(),
-            tag: this.values.tag.toString()
+        return new MappingProductTagRow(this.id.hashCode(), {
+            product: this.values.product.hashCode(),
+            tag: this.values.tag.hashCode()
         })
     }
 }
@@ -1889,8 +1889,8 @@ export class UOMVariable {
     }
 
     toRow(): UOMRow {
-        return new UOMRow(this.id.toString(), {
-            product: this.values.product.toString(),
+        return new UOMRow(this.id.hashCode(), {
+            product: this.values.product.hashCode(),
             name: this.values.name,
             conversionRate: this.values.conversionRate
         })
@@ -1948,7 +1948,7 @@ export class IndentVariable {
     }
 
     toRow(): IndentRow {
-        return new IndentRow(this.id.toString(), this.values)
+        return new IndentRow(this.id.hashCode(), this.values)
     }
 }
 
@@ -2019,11 +2019,11 @@ export class IndentItemVariable {
     }
 
     toRow(): IndentItemRow {
-        return new IndentItemRow(this.id.toString(), {
-            indent: this.values.indent.toString(),
-            product: this.values.product.toString(),
+        return new IndentItemRow(this.id.hashCode(), {
+            indent: this.values.indent.hashCode(),
+            product: this.values.product.hashCode(),
             quantity: this.values.quantity,
-            uom: this.values.uom.toString(),
+            uom: this.values.uom.hashCode(),
             ordered: this.values.ordered,
             received: this.values.received,
             approved: this.values.approved,
@@ -2085,9 +2085,9 @@ export class CompanyProductVariable {
     }
 
     toRow(): CompanyProductRow {
-        return new CompanyProductRow(this.id.toString(), {
-            company: this.values.company.toString(),
-            product: this.values.product.toString()
+        return new CompanyProductRow(this.id.hashCode(), {
+            company: this.values.company.hashCode(),
+            product: this.values.product.hashCode()
         })
     }
 }
@@ -2141,9 +2141,9 @@ export class QuotationVariable {
     }
 
     toRow(): QuotationRow {
-        return new QuotationRow(this.id.toString(), {
-            indent: this.values.indent.toString(),
-            company: this.values.company.toString()
+        return new QuotationRow(this.id.hashCode(), {
+            indent: this.values.indent.hashCode(),
+            company: this.values.company.hashCode()
         })
     }
 }
@@ -2201,9 +2201,9 @@ export class QuotationItemVariable {
     }
 
     toRow(): QuotationItemRow {
-        return new QuotationItemRow(this.id.toString(), {
-            quotation: this.values.quotation.toString(),
-            indentItem: this.values.indentItem.toString(),
+        return new QuotationItemRow(this.id.hashCode(), {
+            quotation: this.values.quotation.hashCode(),
+            indentItem: this.values.indentItem.hashCode(),
             quantity: this.values.quantity
         })
     }
@@ -2257,8 +2257,8 @@ export class PurchaseOrderVariable {
     }
 
     toRow(): PurchaseOrderRow {
-        return new PurchaseOrderRow(this.id.toString(), {
-            quotation: this.values.quotation.toString()
+        return new PurchaseOrderRow(this.id.hashCode(), {
+            quotation: this.values.quotation.hashCode()
         })
     }
 }
@@ -2319,9 +2319,9 @@ export class PurchaseOrderItemVariable {
     }
 
     toRow(): PurchaseOrderItemRow {
-        return new PurchaseOrderItemRow(this.id.toString(), {
-            purchaseOrder: this.values.purchaseOrder.toString(),
-            quotationItem: this.values.quotationItem.toString(),
+        return new PurchaseOrderItemRow(this.id.hashCode(), {
+            purchaseOrder: this.values.purchaseOrder.hashCode(),
+            quotationItem: this.values.quotationItem.hashCode(),
             quantity: this.values.quantity,
             price: this.values.price,
             received: this.values.received
@@ -2377,8 +2377,8 @@ export class PurchaseInvoiceVariable {
     }
 
     toRow(): PurchaseInvoiceRow {
-        return new PurchaseInvoiceRow(this.id.toString(), {
-            purchaseOrder: this.values.purchaseOrder.toString()
+        return new PurchaseInvoiceRow(this.id.hashCode(), {
+            purchaseOrder: this.values.purchaseOrder.hashCode()
         })
     }
 }
@@ -2439,9 +2439,9 @@ export class PurchaseInvoiceItemVariable {
     }
 
     toRow(): PurchaseInvoiceItemRow {
-        return new PurchaseInvoiceItemRow(this.id.toString(), {
-            purchaseInvoice: this.values.purchaseInvoice.toString(),
-            purchaseOrderItem: this.values.purchaseOrderItem.toString(),
+        return new PurchaseInvoiceItemRow(this.id.hashCode(), {
+            purchaseInvoice: this.values.purchaseInvoice.hashCode(),
+            purchaseOrderItem: this.values.purchaseOrderItem.hashCode(),
             quantity: this.values.quantity,
             approved: this.values.approved,
             rejected: this.values.approved
@@ -2497,8 +2497,8 @@ export class MaterialApprovalSlipVariable {
     }
 
     toRow(): MaterialApprovalSlipRow {
-        return new MaterialApprovalSlipRow(this.id.toString(), {
-            purchaseInvoice: this.values.purchaseInvoice.toString()
+        return new MaterialApprovalSlipRow(this.id.hashCode(), {
+            purchaseInvoice: this.values.purchaseInvoice.hashCode()
         })
     }
 }
@@ -2558,9 +2558,9 @@ export class MaterialApprovalSlipItemVariable {
     }
 
     toRow(): MaterialApprovalSlipItemRow {
-        return new MaterialApprovalSlipItemRow(this.id.toString(), {
-            materialApprovalSlip: this.values.materialApprovalSlip.toString(),
-            purchaseInvoiceItem: this.values.purchaseInvoiceItem.toString(),
+        return new MaterialApprovalSlipItemRow(this.id.hashCode(), {
+            materialApprovalSlip: this.values.materialApprovalSlip.hashCode(),
+            purchaseInvoiceItem: this.values.purchaseInvoiceItem.hashCode(),
             quantity: this.values.quantity,
             requisted: this.values.requisted
         })
@@ -2615,8 +2615,8 @@ export class MaterialRejectionSlipVariable {
     }
 
     toRow(): MaterialRejectionSlipRow {
-        return new MaterialRejectionSlipRow(this.id.toString(), {
-            purchaseInvoice: this.values.purchaseInvoice.toString()
+        return new MaterialRejectionSlipRow(this.id.hashCode(), {
+            purchaseInvoice: this.values.purchaseInvoice.hashCode()
         })
     }
 }
@@ -2676,9 +2676,9 @@ export class MaterialRejectionSlipItemVariable {
     }
 
     toRow(): MaterialRejectionSlipItemRow {
-        return new MaterialRejectionSlipItemRow(this.id.toString(), {
-            materialRejectionSlip: this.values.materialRejectionSlip.toString(),
-            purchaseInvoiceItem: this.values.purchaseInvoiceItem.toString(),
+        return new MaterialRejectionSlipItemRow(this.id.hashCode(), {
+            materialRejectionSlip: this.values.materialRejectionSlip.hashCode(),
+            purchaseInvoiceItem: this.values.purchaseInvoiceItem.hashCode(),
             quantity: this.values.quantity,
             returned: this.values.returned
         })
@@ -2733,8 +2733,8 @@ export class MaterialReturnSlipVariable {
     }
 
     toRow(): MaterialReturnSlipRow {
-        return new MaterialReturnSlipRow(this.id.toString(), {
-            materialRejectionSlip: this.values.materialRejectionSlip.toString()
+        return new MaterialReturnSlipRow(this.id.hashCode(), {
+            materialRejectionSlip: this.values.materialRejectionSlip.hashCode()
         })
     }
 }
@@ -2792,9 +2792,9 @@ export class MaterialReturnSlipItemVariable {
     }
 
     toRow(): MaterialReturnSlipItemRow {
-        return new MaterialReturnSlipItemRow(this.id.toString(), {
-            materialReturnSlip: this.values.materialReturnSlip.toString(),
-            materialRejectionSlipItem: this.values.materialRejectionSlipItem.toString(),
+        return new MaterialReturnSlipItemRow(this.id.hashCode(), {
+            materialReturnSlip: this.values.materialReturnSlip.hashCode(),
+            materialRejectionSlipItem: this.values.materialRejectionSlipItem.hashCode(),
             quantity: this.values.quantity
         })
     }
@@ -2848,8 +2848,8 @@ export class MaterialRequistionSlipVariable {
     }
 
     toRow(): MaterialRequistionSlipRow {
-        return new MaterialRequistionSlipRow(this.id.toString(), {
-            materialApprovalSlip: this.values.materialApprovalSlip.toString()
+        return new MaterialRequistionSlipRow(this.id.hashCode(), {
+            materialApprovalSlip: this.values.materialApprovalSlip.hashCode()
         })
     }
 }
@@ -2909,9 +2909,9 @@ export class MaterialRequistionSlipItemVariable {
     }
 
     toRow(): MaterialRequistionSlipItemRow {
-        return new MaterialRequistionSlipItemRow(this.id.toString(), {
-            materialRequistionSlip: this.values.materialRequistionSlip.toString(),
-            materialApprovalSlipItem: this.values.materialApprovalSlipItem.toString(),
+        return new MaterialRequistionSlipItemRow(this.id.hashCode(), {
+            materialRequistionSlip: this.values.materialRequistionSlip.hashCode(),
+            materialApprovalSlipItem: this.values.materialApprovalSlipItem.hashCode(),
             quantity: this.values.quantity,
             consumed: this.values.consumed
         })
@@ -2966,7 +2966,7 @@ export class BOMVariable {
     }
 
     toRow(): BOMRow {
-        return new BOMRow(this.id.toString(), this.values)
+        return new BOMRow(this.id.hashCode(), this.values)
     }
 }
 
@@ -3024,11 +3024,11 @@ export class BOMItemVariable {
     }
 
     toRow(): BOMItemRow {
-        return new BOMItemRow(this.id.toString(), {
-            bom: this.values.bom.toString(),
-            product: this.values.product.toString(),
+        return new BOMItemRow(this.id.hashCode(), {
+            bom: this.values.bom.hashCode(),
+            product: this.values.product.hashCode(),
             quantity: this.values.quantity,
-            uom: this.values.uom.toString()
+            uom: this.values.uom.hashCode()
         })
     }
 }
@@ -3084,8 +3084,8 @@ export class ProductionPreparationSlipVariable {
     }
 
     toRow(): ProductionPreparationSlipRow {
-        return new ProductionPreparationSlipRow(this.id.toString(), {
-            bom: this.values.bom.toString(),
+        return new ProductionPreparationSlipRow(this.id.hashCode(), {
+            bom: this.values.bom.hashCode(),
             approved: this.values.approved,
             scrapped: this.values.scrapped
         })
@@ -3146,10 +3146,10 @@ export class ProductionPreparationSlipItemVariable {
     }
 
     toRow(): ProductionPreparationSlipItemRow {
-        return new ProductionPreparationSlipItemRow(this.id.toString(), {
-            productionPreparationSlip: this.values.productionPreparationSlip.toString(),
+        return new ProductionPreparationSlipItemRow(this.id.hashCode(), {
+            productionPreparationSlip: this.values.productionPreparationSlip.hashCode(),
             bomItem: this.values.bomItem,
-            materialRequistionSlipItem: this.values.materialRequistionSlipItem.toString()
+            materialRequistionSlipItem: this.values.materialRequistionSlipItem.hashCode()
         })
     }
 }
@@ -3204,8 +3204,8 @@ export class ScrapMaterialSlipVariable {
     }
 
     toRow(): ScrapMaterialSlipRow {
-        return new ScrapMaterialSlipRow(this.id.toString(), {
-            productionPreparationSlip: this.values.productionPreparationSlip.toString(),
+        return new ScrapMaterialSlipRow(this.id.hashCode(), {
+            productionPreparationSlip: this.values.productionPreparationSlip.hashCode(),
             quantity: this.values.quantity
         })
     }
@@ -3263,8 +3263,8 @@ export class TransferMaterialSlipVariable {
     }
 
     toRow(): TransferMaterialSlipRow {
-        return new TransferMaterialSlipRow(this.id.toString(), {
-            productionPreparationSlip: this.values.productionPreparationSlip.toString(),
+        return new TransferMaterialSlipRow(this.id.hashCode(), {
+            productionPreparationSlip: this.values.productionPreparationSlip.hashCode(),
             quantity: this.values.quantity,
             transferred: this.values.transferred
         })
@@ -3321,8 +3321,8 @@ export class WarehouseAcceptanceSlipVariable {
     }
 
     toRow(): WarehouseAcceptanceSlipRow {
-        return new WarehouseAcceptanceSlipRow(this.id.toString(), {
-            transferMaterialSlip: this.values.transferMaterialSlip.toString(),
+        return new WarehouseAcceptanceSlipRow(this.id.hashCode(), {
+            transferMaterialSlip: this.values.transferMaterialSlip.hashCode(),
             quantity: this.values.quantity
         })
     }

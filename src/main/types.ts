@@ -91,7 +91,13 @@ export const types = {
     Region: {
         name: 'Region',
         url: 'region',
-        keys: {}
+        keys: {
+            name: {
+                order: 0,
+                name: 'Region',
+                type: 'Text'
+            }
+        }
     },
     Country: {
         name: 'Country',
@@ -278,7 +284,13 @@ export const types = {
     CompanyTagGroup: {
         name: 'Company Tag Group',
         url: 'company-tag-group',
-        keys: {}
+        keys: {
+            name: {
+                order: 0,
+                name: 'Tag Group',
+                type: 'Text'
+            }
+        }
     },
     CompanyTag: {
         name: 'Company Tag',
@@ -395,7 +407,13 @@ export const types = {
     Currency: {
         name: 'Currency',
         url: 'currency',
-        keys: {}
+        keys: {
+            name: {
+                order: 0,
+                name: 'Currency',
+                type: 'Text'
+            }
+        }
     },
     CurrencyRate: {
         name: 'Currency Rate',
@@ -689,7 +707,13 @@ export const types = {
     ProductTagGroup: {
         name: 'Product Tag Group',
         url: 'product-tag-group',
-        keys: {}
+        keys: {
+            name: {
+                order: 0,
+                name: 'Tag Group',
+                type: 'Text'
+            }
+        }
     },
     ProductTag: {
         name: 'Product Tag',
@@ -1082,7 +1106,13 @@ export const types = {
     BOM: {
         name: 'Bill of Material',
         url: 'bom',
-        keys: {}
+        keys: {
+            name: {
+                order: 0,
+                name: 'BOM',
+                type: 'Text'
+            }
+        }
     },
     BOMItem: {
         name: 'BOM Item',
