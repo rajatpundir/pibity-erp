@@ -23,12 +23,6 @@ export type FunctionName =
     | 'createAddress'
     | 'deleteAddress'
 
-    | 'createServiceArea'
-    | 'deleteServiceArea'
-
-    | 'createCompanyType'
-    | 'deleteCompanyType'
-
     | 'createBank'
     | 'deleteBank'
 
@@ -139,12 +133,6 @@ export const functions: Record<FunctionName, Function> = {
             region: {
                 type: 'Region',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: '.',
-                    types: [],
-                    args: ['variableName']
-                },
                 values: {}
             }
         }
@@ -159,13 +147,12 @@ export const functions: Record<FunctionName, Function> = {
             region: {
                 type: 'Region',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -182,12 +169,6 @@ export const functions: Record<FunctionName, Function> = {
             country: {
                 type: 'Country',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     region: {
                         expectedReturnType: 'Text',
@@ -215,13 +196,12 @@ export const functions: Record<FunctionName, Function> = {
             country: {
                 type: 'Country',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -238,12 +218,6 @@ export const functions: Record<FunctionName, Function> = {
             state: {
                 type: 'State',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     country: {
                         expectedReturnType: 'Text',
@@ -271,13 +245,12 @@ export const functions: Record<FunctionName, Function> = {
             state: {
                 type: 'State',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -294,12 +267,6 @@ export const functions: Record<FunctionName, Function> = {
             district: {
                 type: 'District',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     state: {
                         expectedReturnType: 'Text',
@@ -327,13 +294,12 @@ export const functions: Record<FunctionName, Function> = {
             district: {
                 type: 'District',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -350,12 +316,6 @@ export const functions: Record<FunctionName, Function> = {
             subdistrict: {
                 type: 'Subdistrict',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     district: {
                         expectedReturnType: 'Text',
@@ -383,13 +343,12 @@ export const functions: Record<FunctionName, Function> = {
             subdistrict: {
                 type: 'Subdistrict',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -406,12 +365,6 @@ export const functions: Record<FunctionName, Function> = {
             postalCode: {
                 type: 'PostalCode',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     subdistrict: {
                         expectedReturnType: 'Text',
@@ -439,13 +392,12 @@ export const functions: Record<FunctionName, Function> = {
             postalCode: {
                 type: 'PostalCode',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -471,12 +423,6 @@ export const functions: Record<FunctionName, Function> = {
             address: {
                 type: 'Address',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     postalCode: {
                         expectedReturnType: 'Text',
@@ -522,93 +468,12 @@ export const functions: Record<FunctionName, Function> = {
             address: {
                 type: 'Address',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
-            }
-        }
-    },
-    createServiceArea: {
-        inputs: {
-            variableName: {
-                type: 'Text'
-            }
-        },
-        outputs: {
-            serviceArea: {
-                type: 'ServiceArea',
-                op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: '.',
-                    types: [],
-                    args: ['variableName']
-                },
-                values: {}
-            }
-        }
-    },
-    deleteServiceArea: {
-        inputs: {
-            variableName: {
-                type: 'ServiceArea'
-            }
-        },
-        outputs: {
-            serviceArea: {
-                type: 'ServiceArea',
-                op: 'delete',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: '.',
-                    types: [],
-                    args: ['variableName']
-                },
-                values: {}
-            }
-        }
-    },
-    createCompanyType: {
-        inputs: {
-            variableName: {
-                type: 'Text'
-            }
-        },
-        outputs: {
-            companyType: {
-                type: 'CompanyType',
-                op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: '.',
-                    types: [],
-                    args: ['variableName']
-                },
-                values: {}
-            }
-        }
-    },
-    deleteCompanyType: {
-        inputs: {
-            variableName: {
-                type: 'CompanyType'
-            }
-        },
-        outputs: {
-            companyType: {
-                type: 'CompanyType',
-                op: 'delete',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: '.',
-                    types: [],
-                    args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -628,12 +493,6 @@ export const functions: Record<FunctionName, Function> = {
             bank: {
                 type: 'Bank',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     country: {
                         expectedReturnType: 'Text',
@@ -667,13 +526,12 @@ export const functions: Record<FunctionName, Function> = {
             bank: {
                 type: 'Bank',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -696,12 +554,6 @@ export const functions: Record<FunctionName, Function> = {
             bankBranch: {
                 type: 'BankBranch',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     bank: {
                         expectedReturnType: 'Text',
@@ -741,13 +593,12 @@ export const functions: Record<FunctionName, Function> = {
             bankBranch: {
                 type: 'BankBranch',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -767,12 +618,6 @@ export const functions: Record<FunctionName, Function> = {
             bankAccount: {
                 type: 'BankAccount',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     bank: {
                         expectedReturnType: 'Text',
@@ -806,13 +651,12 @@ export const functions: Record<FunctionName, Function> = {
             bankAccount: {
                 type: 'BankAccount',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -833,12 +677,6 @@ export const functions: Record<FunctionName, Function> = {
             website: {
                 type: 'Text'
             },
-            companyType: {
-                type: 'CompanyType'
-            },
-            serviceArea: {
-                type: 'ServiceArea'
-            },
             gstin: {
                 type: 'Text'
             },
@@ -853,12 +691,6 @@ export const functions: Record<FunctionName, Function> = {
             company: {
                 type: 'Company',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: '.',
-                    types: [],
-                    args: ['variableName']
-                },
                 values: {
                     email: {
                         expectedReturnType: 'Text',
@@ -928,13 +760,12 @@ export const functions: Record<FunctionName, Function> = {
             company: {
                 type: 'Company',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -954,12 +785,6 @@ export const functions: Record<FunctionName, Function> = {
             companyAddress: {
                 type: 'CompanyAddress',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     company: {
                         expectedReturnType: 'Text',
@@ -993,13 +818,12 @@ export const functions: Record<FunctionName, Function> = {
             companyAddress: {
                 type: 'CompanyAddress',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -1028,12 +852,6 @@ export const functions: Record<FunctionName, Function> = {
             companyContact: {
                 type: 'CompanyContact',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     company: {
                         expectedReturnType: 'Text',
@@ -1085,13 +903,12 @@ export const functions: Record<FunctionName, Function> = {
             companyContact: {
                 type: 'CompanyContact',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -1108,12 +925,6 @@ export const functions: Record<FunctionName, Function> = {
             companyBankAccount: {
                 type: 'CompanyBankAccount',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     company: {
                         expectedReturnType: 'Text',
@@ -1141,13 +952,12 @@ export const functions: Record<FunctionName, Function> = {
             companyBankAccount: {
                 type: 'CompanyBankAccount',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -1173,12 +983,6 @@ export const functions: Record<FunctionName, Function> = {
             product: {
                 type: 'Product',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: '.',
-                    types: [],
-                    args: ['variableName']
-                },
                 values: {
                     name: {
                         expectedReturnType: 'Text',
@@ -1218,13 +1022,12 @@ export const functions: Record<FunctionName, Function> = {
             product: {
                 type: 'Product',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -1244,12 +1047,6 @@ export const functions: Record<FunctionName, Function> = {
             uom: {
                 type: 'UOM',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     product: {
                         expectedReturnType: 'Text',
@@ -1283,13 +1080,12 @@ export const functions: Record<FunctionName, Function> = {
             uom: {
                 type: 'UOM',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -1299,12 +1095,6 @@ export const functions: Record<FunctionName, Function> = {
             indent: {
                 type: 'Indent',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {}
             }
         }
@@ -1319,13 +1109,12 @@ export const functions: Record<FunctionName, Function> = {
             indent: {
                 type: 'Indent',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -1348,12 +1137,6 @@ export const functions: Record<FunctionName, Function> = {
             indentItem: {
                 type: 'IndentItem',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     indent: {
                         expectedReturnType: 'Text',
@@ -1435,13 +1218,12 @@ export const functions: Record<FunctionName, Function> = {
             indentItem: {
                 type: 'IndentItem',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -1458,12 +1240,6 @@ export const functions: Record<FunctionName, Function> = {
             companyProduct: {
                 type: 'CompanyProduct',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     company: {
                         expectedReturnType: 'Text',
@@ -1491,13 +1267,12 @@ export const functions: Record<FunctionName, Function> = {
             companyProduct: {
                 type: 'CompanyProduct',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -1514,12 +1289,6 @@ export const functions: Record<FunctionName, Function> = {
             quotation: {
                 type: 'Quotation',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     indent: {
                         expectedReturnType: 'Text',
@@ -1547,13 +1316,12 @@ export const functions: Record<FunctionName, Function> = {
             quotation: {
                 type: 'Quotation',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -1573,12 +1341,6 @@ export const functions: Record<FunctionName, Function> = {
             quotationItem: {
                 type: 'QuotationItem',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     quotation: {
                         expectedReturnType: 'Text',
@@ -1612,13 +1374,12 @@ export const functions: Record<FunctionName, Function> = {
             quotationItem: {
                 type: 'QuotationItem',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -1632,12 +1393,6 @@ export const functions: Record<FunctionName, Function> = {
             purchaseOrder: {
                 type: 'PurchaseOrder',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     quotation: {
                         expectedReturnType: 'Text',
@@ -1659,13 +1414,12 @@ export const functions: Record<FunctionName, Function> = {
             purchaseOrder: {
                 type: 'PurchaseOrder',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -1688,12 +1442,6 @@ export const functions: Record<FunctionName, Function> = {
             purchaseOrderItem: {
                 type: 'PurchaseOrderItem',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     purchaseOrder: {
                         expectedReturnType: 'Text',
@@ -1739,13 +1487,12 @@ export const functions: Record<FunctionName, Function> = {
             purchaseOrderItem: {
                 type: 'PurchaseOrderItem',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -1759,12 +1506,6 @@ export const functions: Record<FunctionName, Function> = {
             purchaseInvoice: {
                 type: 'PurchaseInvoice',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     purchaseOrder: {
                         expectedReturnType: 'Text',
@@ -1786,13 +1527,12 @@ export const functions: Record<FunctionName, Function> = {
             purchaseInvoice: {
                 type: 'PurchaseInvoice',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -1812,12 +1552,6 @@ export const functions: Record<FunctionName, Function> = {
             purchaseInvoiceItem: {
                 type: 'PurchaseInvoiceItem',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     purchaseInvoice: {
                         expectedReturnType: 'Text',
@@ -1863,13 +1597,12 @@ export const functions: Record<FunctionName, Function> = {
             purchaseInvoiceItem: {
                 type: 'PurchaseInvoiceItem',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -1883,12 +1616,6 @@ export const functions: Record<FunctionName, Function> = {
             materialApprovalSlip: {
                 type: 'MaterialApprovalSlip',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     purchaseInvoice: {
                         expectedReturnType: 'Text',
@@ -1910,13 +1637,12 @@ export const functions: Record<FunctionName, Function> = {
             materialApprovalSlip: {
                 type: 'MaterialApprovalSlip',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -1936,12 +1662,6 @@ export const functions: Record<FunctionName, Function> = {
             materialApprovalSlipItem: {
                 type: 'MaterialApprovalSlipItem',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     materialApprovalSlip: {
                         expectedReturnType: 'Text',
@@ -1981,13 +1701,12 @@ export const functions: Record<FunctionName, Function> = {
             materialApprovalSlipItem: {
                 type: 'MaterialApprovalSlipItem',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -2001,12 +1720,6 @@ export const functions: Record<FunctionName, Function> = {
             materialRejectionSlip: {
                 type: 'MaterialRejectionSlip',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     purchaseInvoice: {
                         expectedReturnType: 'Text',
@@ -2028,13 +1741,12 @@ export const functions: Record<FunctionName, Function> = {
             materialRejectionSlip: {
                 type: 'MaterialRejectionSlip',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -2054,12 +1766,6 @@ export const functions: Record<FunctionName, Function> = {
             materialRejectionSlipItem: {
                 type: 'MaterialRejectionSlipItem',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     materialRejectionSlip: {
                         expectedReturnType: 'Text',
@@ -2099,13 +1805,12 @@ export const functions: Record<FunctionName, Function> = {
             materialRejectionSlipItem: {
                 type: 'MaterialRejectionSlipItem',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -2119,12 +1824,6 @@ export const functions: Record<FunctionName, Function> = {
             materialReturnSlip: {
                 type: 'MaterialReturnSlip',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     materialRejectionSlip: {
                         expectedReturnType: 'Text',
@@ -2146,13 +1845,12 @@ export const functions: Record<FunctionName, Function> = {
             materialReturnSlip: {
                 type: 'MaterialReturnSlip',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -2172,12 +1870,6 @@ export const functions: Record<FunctionName, Function> = {
             materialReturnSlipItem: {
                 type: 'MaterialReturnSlipItem',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     materialReturnSlip: {
                         expectedReturnType: 'Text',
@@ -2211,13 +1903,12 @@ export const functions: Record<FunctionName, Function> = {
             materialReturnSlipItem: {
                 type: 'MaterialReturnSlipItem',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -2231,12 +1922,6 @@ export const functions: Record<FunctionName, Function> = {
             materialRequistionSlip: {
                 type: 'MaterialRequistionSlip',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     materialApprovalSlip: {
                         expectedReturnType: 'Text',
@@ -2258,13 +1943,12 @@ export const functions: Record<FunctionName, Function> = {
             materialRequistionSlip: {
                 type: 'MaterialRequistionSlip',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -2284,12 +1968,6 @@ export const functions: Record<FunctionName, Function> = {
             materialRequistionSlipItem: {
                 type: 'MaterialRequistionSlipItem',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     materialRequistionSlip: {
                         expectedReturnType: 'Text',
@@ -2329,13 +2007,12 @@ export const functions: Record<FunctionName, Function> = {
             materialRequistionSlipItem: {
                 type: 'MaterialRequistionSlipItem',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -2349,12 +2026,6 @@ export const functions: Record<FunctionName, Function> = {
             bom: {
                 type: 'BOM',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: '.',
-                    types: [],
-                    args: ['variableName']
-                },
                 values: {}
             }
         }
@@ -2369,13 +2040,12 @@ export const functions: Record<FunctionName, Function> = {
             bom: {
                 type: 'BOM',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -2398,12 +2068,6 @@ export const functions: Record<FunctionName, Function> = {
             bomItem: {
                 type: 'BOMItem',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     bom: {
                         expectedReturnType: 'Text',
@@ -2443,13 +2107,12 @@ export const functions: Record<FunctionName, Function> = {
             bomItem: {
                 type: 'BOMItem',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -2463,12 +2126,6 @@ export const functions: Record<FunctionName, Function> = {
             productionPreparationSlip: {
                 type: 'ProductionPreparationSlip',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     bom: {
                         expectedReturnType: 'Text',
@@ -2502,13 +2159,12 @@ export const functions: Record<FunctionName, Function> = {
             productionPreparationSlip: {
                 type: 'ProductionPreparationSlip',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -2528,12 +2184,6 @@ export const functions: Record<FunctionName, Function> = {
             bomItem: {
                 type: 'ProductionPreparationSlipItem',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     productionPreparationSlip: {
                         expectedReturnType: 'Text',
@@ -2567,13 +2217,12 @@ export const functions: Record<FunctionName, Function> = {
             productionPreparationSlipItem: {
                 type: 'ProductionPreparationSlipItem',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -2590,12 +2239,6 @@ export const functions: Record<FunctionName, Function> = {
             scrapMaterialSlip: {
                 type: 'ScrapMaterialSlip',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     productionPreparationSlip: {
                         expectedReturnType: 'Text',
@@ -2623,13 +2266,12 @@ export const functions: Record<FunctionName, Function> = {
             scrapMaterialSlip: {
                 type: 'ScrapMaterialSlip',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -2646,12 +2288,6 @@ export const functions: Record<FunctionName, Function> = {
             transferMaterialSlip: {
                 type: 'TransferMaterialSlip',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     productionPreparationSlip: {
                         expectedReturnType: 'Text',
@@ -2685,13 +2321,12 @@ export const functions: Record<FunctionName, Function> = {
             transferMaterialSlip: {
                 type: 'TransferMaterialSlip',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     },
@@ -2708,12 +2343,6 @@ export const functions: Record<FunctionName, Function> = {
             warehouseAcceptanceSlip: {
                 type: 'WarehouseAcceptanceSlip',
                 op: 'create',
-                variableName: {
-                    expectedReturnType: 'Text',
-                    op: 'fake',
-                    types: [],
-                    args: ['{{datatype.uuid}}']
-                },
                 values: {
                     transferMaterialSlip: {
                         expectedReturnType: 'Text',
@@ -2741,13 +2370,12 @@ export const functions: Record<FunctionName, Function> = {
             warehouseAcceptanceSlip: {
                 type: 'WarehouseAcceptanceSlip',
                 op: 'delete',
-                variableName: {
+                id: {
                     expectedReturnType: 'Text',
                     op: '.',
                     types: [],
                     args: ['variableName']
-                },
-                values: {}
+                }
             }
         }
     }

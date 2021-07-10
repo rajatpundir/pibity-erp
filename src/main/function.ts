@@ -29,10 +29,20 @@ type FunctionOutput =
         value: LispExpression
     }
     | {
-        op: 'create' | 'update' | 'delete'
+        op: 'create'
         type: NonPrimitiveType
-        variableName: LispExpression
         values: { [index: string]: LispExpression }
+    }
+    | {
+        op: 'update'
+        type: NonPrimitiveType
+        id: LispExpression
+        values: { [index: string]: LispExpression }
+    }
+    | {
+        op: 'delete'
+        type: NonPrimitiveType
+        id: LispExpression
     }
 
 export type Function = {
