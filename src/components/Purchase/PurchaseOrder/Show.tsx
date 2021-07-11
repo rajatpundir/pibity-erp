@@ -58,8 +58,8 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new PurchaseOrderVariable('', { quotation: new Quotation('') }),
-        updatedVariableName: new PurchaseOrder(''),
+        variable: new PurchaseOrderVariable(-1, { quotation: new Quotation(-1) }),
+        updatedVariableName: new PurchaseOrder(-1),
         items: {
             typeName: 'PurchaseOrderItem',
             query: getQuery('PurchaseOrderItem'),
@@ -67,7 +67,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['values', 'quotationItem'], ['values', 'quotationItem', 'values', 'quotation'], ['values', 'quantity']),
-            variable: new PurchaseOrderItemVariable('', { purchaseOrder: new PurchaseOrder(''), quotationItem: new QuotationItem(''), quantity: 0, price: 0, received: 0 }),
+            variable: new PurchaseOrderItemVariable(-1, { purchaseOrder: new PurchaseOrder(-1), quotationItem: new QuotationItem(-1), quantity: 0, price: 0, received: 0 }),
             variables: HashSet.of()
         }
     }

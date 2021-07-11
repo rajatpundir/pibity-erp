@@ -61,8 +61,8 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new AddressVariable('', { postalCode: new PostalCode(''), line1: '', line2: '', latitude: 0, longitude: 0 }),
-        updatedVariableName: new Address(''),
+        variable: new AddressVariable(-1, { postalCode: new PostalCode(-1), line1: '', line2: '', latitude: 0, longitude: 0 }),
+        updatedVariableName: new Address(-1),
         companies: {
             typeName: 'CompanyAddress',
             query: getQuery('CompanyAddress'),
@@ -70,7 +70,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['values', 'company']),
-            variable: new CompanyAddressVariable('', { company: new Company(''), name: '', address: new Address('') }),
+            variable: new CompanyAddressVariable(-1, { company: new Company(-1), name: '', address: new Address(-1) }),
             variables: HashSet.of<CompanyAddressVariable>()
         }
     }
@@ -150,7 +150,7 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.companies.variables = state.companies.variables.add(new CompanyAddressVariable('', { company: new Company(state.companies.variable.values.company.toString()), name: '', address: new Address('') }))
+                        state.companies.variables = state.companies.variables.add(new CompanyAddressVariable(-1, { company: new Company(state.companies.variable.values.company.toString()), name: '', address: new Address(-1) }))
                         state.companies.variable = initialState.companies.variable
                         break
                     }

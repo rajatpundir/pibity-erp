@@ -81,8 +81,8 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new ProductVariable('', { name: '', orderable: true, consumable: true, producable: false }),
-        updatedVariableName: new Product(''),
+        variable: new ProductVariable(-1, { name: -1, orderable: true, consumable: true, producable: false }),
+        updatedVariableName: new Product(-1),
         uoms: {
             typeName: 'UOM',
             query: getQuery('UOM'),
@@ -90,7 +90,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['values', 'name'], ['values', 'conversionRate']),
-            variable: new UOMVariable('', { product: new Product(''), name: '', conversionRate: 1 }),
+            variable: new UOMVariable(-1, { product: new Product(-1), name: -1, conversionRate: 1 }),
             variables: HashSet.of<UOMVariable>()
         },
         companies: {
@@ -100,7 +100,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['values', 'company']),
-            variable: new CompanyProductVariable('', { company: new Company(''), product: new Product('') }),
+            variable: new CompanyProductVariable(-1, { company: new Company(-1), product: new Product(-1) }),
             variables: HashSet.of<CompanyProductVariable>()
         }
     }
@@ -181,7 +181,7 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.uoms.variables = state.uoms.variables.add(new UOMVariable('', { product: new Product(''), name: state.uoms.variable.values.name, conversionRate: state.uoms.variable.values.conversionRate }))
+                        state.uoms.variables = state.uoms.variables.add(new UOMVariable(-1, { product: new Product(-1), name: state.uoms.variable.values.name, conversionRate: state.uoms.variable.values.conversionRate }))
                         state.uoms.variable = initialState.uoms.variable
                         break
                     }
@@ -221,7 +221,7 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.companies.variables = state.companies.variables.add(new CompanyProductVariable('', { company: new Company(state.companies.variable.values.company.toString()), product: new Product('') }))
+                        state.companies.variables = state.companies.variables.add(new CompanyProductVariable(-1, { company: new Company(state.companies.variable.values.company.toString()), product: new Product(-1) }))
                         state.companies.variable = initialState.companies.variable
                         break
                     }

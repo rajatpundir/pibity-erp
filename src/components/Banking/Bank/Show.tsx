@@ -62,8 +62,8 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new BankVariable('', { country: new Country(''), name: '', website: '' }),
-        updatedVariableName: new Bank(''),
+        variable: new BankVariable(-1, { country: new Country(-1), name: '', website: '' }),
+        updatedVariableName: new Bank(-1),
         items: {
             typeName: 'BankBranch',
             query: getQuery('BankBranch'),
@@ -71,7 +71,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['variableName'], ['values', 'name'], ['values', 'ifsc']),
-            variable: new BankBranchVariable('', { bank: new Bank(''), name: '', ifsc: '', address: new Address('') }),
+            variable: new BankBranchVariable(-1, { bank: new Bank(-1), name: '', ifsc: '', address: new Address(-1) }),
             variables: HashSet.of<BankBranchVariable>()
         }
     }
@@ -155,7 +155,7 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.items.variables = state.items.variables.add(new BankBranchVariable('', { bank: new Bank(''), name: state.items.variable.values.name, ifsc: state.items.variable.values.ifsc, address: new Address(state.items.variable.values.address.toString()) }))
+                        state.items.variables = state.items.variables.add(new BankBranchVariable(-1, { bank: new Bank(-1), name: state.items.variable.values.name, ifsc: state.items.variable.values.ifsc, address: new Address(state.items.variable.values.address.toString()) }))
                         state.items.variable = initialState.items.variable
                         break
                     }

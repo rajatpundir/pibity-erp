@@ -61,8 +61,8 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new PostalCodeVariable('', { subdistrict: new Subdistrict(''), name: '' }),
-        updatedVariableName: new PostalCode(''),
+        variable: new PostalCodeVariable(-1, { subdistrict: new Subdistrict(-1), name: '' }),
+        updatedVariableName: new PostalCode(-1),
         items: {
             typeName: 'Address',
             query: getQuery('Address'),
@@ -70,7 +70,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['variableName'], ['values', 'line1'], ['values', 'line2'], ['values', 'latitude'], ['values', 'longitude']),
-            variable: new AddressVariable('', { postalCode: new PostalCode(''), line1: '', line2: '', latitude: 0, longitude: 0 }),
+            variable: new AddressVariable(-1, { postalCode: new PostalCode(-1), line1: '', line2: '', latitude: 0, longitude: 0 }),
             variables: HashSet.of<AddressVariable>()
         }
     }
@@ -150,8 +150,8 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.items.variables = state.items.variables.add(new AddressVariable('', {
-                            postalCode: new PostalCode(''),
+                        state.items.variables = state.items.variables.add(new AddressVariable(-1, {
+                            postalCode: new PostalCode(-1),
                             line1: state.items.variable.values.line1,
                             line2: state.items.variable.values.line2,
                             latitude: state.items.variable.values.latitude,

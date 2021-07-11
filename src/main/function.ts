@@ -421,10 +421,10 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                     if (fi.values !== undefined) {
                         const updatedVariable = {
                             typeName: fi.type,
-                            variableName: String(symbols[inputName].value),
+                            variableName: parseInt(String(symbols[inputName].value)),
                             values: {}
                         }
-                        const variable = await getVariable(fi.type, String(symbols[inputName].value), overlay)
+                        const variable = await getVariable(fi.type, parseInt(String(symbols[inputName].value)), overlay)
                         if (variable !== undefined) {
                             Object.keys(variable.values).forEach(keyName => {
                                 updatedVariable.values[keyName] = variable.values[keyName]

@@ -60,8 +60,8 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new BankBranchVariable('', { bank: new Bank(''), name: '', ifsc: '', address: new Address('') }),
-        updatedVariableName: new BankBranch(''),
+        variable: new BankBranchVariable(-1, { bank: new Bank(-1), name: '', ifsc: '', address: new Address(-1) }),
+        updatedVariableName: new BankBranch(-1),
         items: {
             typeName: 'BankAccount',
             query: getQuery('BankAccount'),
@@ -69,7 +69,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['variableName'], ['values', 'accountNumber']),
-            variable: new BankAccountVariable('', { bank: new Bank(''), bankBranch: new BankBranch(''), accountNumber: '' }),
+            variable: new BankAccountVariable(-1, { bank: new Bank(-1), bankBranch: new BankBranch(-1), accountNumber: '' }),
             variables: HashSet.of<BankAccountVariable>()
         }
     }

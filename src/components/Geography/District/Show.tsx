@@ -58,8 +58,8 @@ function Component(props) {
 
     const initialState: StateS = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new DistrictVariable('', { state: new State(''), name: '' }),
-        updatedVariableName: new District(''),
+        variable: new DistrictVariable(-1, { state: new State(-1), name: '' }),
+        updatedVariableName: new District(-1),
         items: {
             typeName: 'Subdistrict',
             query: getQuery('Subdistrict'),
@@ -67,7 +67,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['variableName'], ['values', 'name']),
-            variable: new SubdistrictVariable('', { district: new District(''), name: '' }),
+            variable: new SubdistrictVariable(-1, { district: new District(-1), name: '' }),
             variables: HashSet.of<SubdistrictVariable>()
         }
     }
@@ -135,7 +135,7 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.items.variables = state.items.variables.add(new SubdistrictVariable('', { district: new District(''), name: state.items.variable.values.name }))
+                        state.items.variables = state.items.variables.add(new SubdistrictVariable(-1, { district: new District(-1), name: state.items.variable.values.name }))
                         state.items.variable = initialState.items.variable
                         break
                     }

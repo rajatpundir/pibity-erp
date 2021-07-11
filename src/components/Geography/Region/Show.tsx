@@ -56,8 +56,8 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new RegionVariable('', {}),
-        updatedVariableName: new Region(''),
+        variable: new RegionVariable(-1, {}),
+        updatedVariableName: new Region(-1),
         items: {
             typeName: 'Country',
             query: getQuery('Country'),
@@ -65,7 +65,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['variableName'], ['values', 'name']),
-            variable: new CountryVariable('', { region: new Region(''), name: '' }),
+            variable: new CountryVariable(-1, { region: new Region(-1), name: '' }),
             variables: HashSet.of<CountryVariable>()
         }
     }
@@ -124,7 +124,7 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.items.variables = state.items.variables.add(new CountryVariable('', { region: new Region(''), name: state.items.variable.values.name }))
+                        state.items.variables = state.items.variables.add(new CountryVariable(-1, { region: new Region(-1), name: state.items.variable.values.name }))
                         state.items.variable = initialState.items.variable
                         break
                     }

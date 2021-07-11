@@ -57,8 +57,8 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new MaterialRequistionSlipVariable('', { materialApprovalSlip: new MaterialApprovalSlip('') }),
-        updatedVariableName: new MaterialRequistionSlip(''),
+        variable: new MaterialRequistionSlipVariable(-1, { materialApprovalSlip: new MaterialApprovalSlip(-1) }),
+        updatedVariableName: new MaterialRequistionSlip(-1),
         items: {
             typeName: 'MaterialRequistionSlipItem',
             query: getQuery('MaterialRequistionSlipItem'),
@@ -66,7 +66,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['values', 'materialApprovalSlipItem'], ['values', 'quantity']),
-            variable: new MaterialRequistionSlipItemVariable('', { materialRequistionSlip: new MaterialRequistionSlip(''), materialApprovalSlipItem: new MaterialApprovalSlipItem(''), quantity: 0, consumed: 0 }),
+            variable: new MaterialRequistionSlipItemVariable(-1, { materialRequistionSlip: new MaterialRequistionSlip(-1), materialApprovalSlipItem: new MaterialApprovalSlipItem(-1), quantity: 0, consumed: 0 }),
             variables: HashSet.of()
         }
     }

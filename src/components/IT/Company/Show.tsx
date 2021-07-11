@@ -106,8 +106,8 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new CompanyVariable('', { email: '', telephone: '', mobile: '', website: '', companyType: new CompanyType(''), serviceArea: new ServiceArea(''), gstin: '', pan: '', iec: '' }),
-        updatedVariableName: new Company(''),
+        variable: new CompanyVariable(-1, { email: '', telephone: '', mobile: '', website: '', gstin: '', pan: '', iec: '' }),
+        updatedVariableName: new Company(-1),
         addresses: {
             typeName: 'CompanyAddress',
             query: getQuery('CompanyAddress'),
@@ -115,7 +115,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['values', 'name'], ['values', 'address'], ['values', 'address', 'values', 'line1'], ['values', 'address', 'values', 'line2']),
-            variable: new CompanyAddressVariable('', { company: new Company(''), name: '', address: new Address('') }),
+            variable: new CompanyAddressVariable(-1, { company: new Company(-1), name: '', address: new Address(-1) }),
             variables: HashSet.of<CompanyAddressVariable>()
         },
         bankAccounts: {
@@ -125,7 +125,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['values', 'bankAccount'], ['values', 'bankAccount', 'values', 'accountNumber']),
-            variable: new CompanyBankAccountVariable('', { company: new Company(''), bankAccount: new BankAccount('') }),
+            variable: new CompanyBankAccountVariable(-1, { company: new Company(-1), bankAccount: new BankAccount(-1) }),
             variables: HashSet.of<CompanyBankAccountVariable>()
         },
         products: {
@@ -135,7 +135,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['values', 'product']),
-            variable: new CompanyProductVariable('', { company: new Company(''), product: new Product('') }),
+            variable: new CompanyProductVariable(-1, { company: new Company(-1), product: new Product(-1) }),
             variables: HashSet.of<CompanyProductVariable>()
         }
     }
@@ -242,8 +242,8 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.addresses.variables = state.addresses.variables.add(new CompanyAddressVariable('', {
-                            company: new Company(''),
+                        state.addresses.variables = state.addresses.variables.add(new CompanyAddressVariable(-1, {
+                            company: new Company(-1),
                             name: state.addresses.variable.values.name,
                             address: new Address(state.addresses.variable.values.address.toString())
                         }))
@@ -286,8 +286,8 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.bankAccounts.variables = state.bankAccounts.variables.add(new CompanyBankAccountVariable('', {
-                            company: new Company(''),
+                        state.bankAccounts.variables = state.bankAccounts.variables.add(new CompanyBankAccountVariable(-1, {
+                            company: new Company(-1),
                             bankAccount: new BankAccount(state.bankAccounts.variable.values.bankAccount.toString())
                         }))
                         state.bankAccounts.variable = initialState.bankAccounts.variable
@@ -329,8 +329,8 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.products.variables = state.products.variables.add(new CompanyProductVariable('', {
-                            company: new Company(''),
+                        state.products.variables = state.products.variables.add(new CompanyProductVariable(-1, {
+                            company: new Company(-1),
                             product: new Product(state.products.variable.values.product.toString())
                         }))
                         state.products.variable = initialState.products.variable

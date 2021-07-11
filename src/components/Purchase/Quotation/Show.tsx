@@ -59,8 +59,8 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new QuotationVariable('', { indent: new Indent(''), company: new Company(''), }),
-        updatedVariableName: new Quotation(''),
+        variable: new QuotationVariable(-1, { indent: new Indent(-1), company: new Company(-1), }),
+        updatedVariableName: new Quotation(-1),
         items: {
             typeName: 'QuotationItem',
             query: getQuery('QuotationItem'),
@@ -68,7 +68,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['values', 'indentItem'], ['values', 'quantity']),
-            variable: new QuotationItemVariable('', { quotation: new Quotation(''), indentItem: new IndentItem(''), quantity: 0 }),
+            variable: new QuotationItemVariable(-1, { quotation: new Quotation(-1), indentItem: new IndentItem(-1), quantity: 0 }),
             variables: HashSet.of<QuotationItemVariable>()
         }
     }

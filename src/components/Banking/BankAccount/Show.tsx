@@ -59,8 +59,8 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new BankAccountVariable('', { bank: new Bank(''), bankBranch: new BankBranch(''), accountNumber: '' }),
-        updatedVariableName: new BankAccount(''),
+        variable: new BankAccountVariable(-1, { bank: new Bank(-1), bankBranch: new BankBranch(-1), accountNumber: '' }),
+        updatedVariableName: new BankAccount(-1),
         companies: {
             typeName: 'CompanyBankAccount',
             query: getQuery('CompanyBankAccount'),
@@ -68,7 +68,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['values', 'company']),
-            variable: new CompanyBankAccountVariable('', { company: new Company(''), bankAccount: new BankAccount('') }),
+            variable: new CompanyBankAccountVariable(-1, { company: new Company(-1), bankAccount: new BankAccount(-1) }),
             variables: HashSet.of<CompanyBankAccountVariable>()
         }
     }
@@ -140,7 +140,7 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.companies.variables = state.companies.variables.add(new CompanyBankAccountVariable('', { company: new Company(state.companies.variable.values.company.toString()), bankAccount: new BankAccount('') }))
+                        state.companies.variables = state.companies.variables.add(new CompanyBankAccountVariable(-1, { company: new Company(state.companies.variable.values.company.toString()), bankAccount: new BankAccount(-1) }))
                         state.companies.variable = initialState.companies.variable
                         break
                     }

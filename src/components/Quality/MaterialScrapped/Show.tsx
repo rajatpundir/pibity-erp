@@ -35,8 +35,8 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new ScrapMaterialSlipVariable('', { productionPreparationSlip: new ProductionPreparationSlip(''), quantity: 0 }),
-        updatedVariableName: new ScrapMaterialSlip('')
+        variable: new ScrapMaterialSlipVariable(-1, { productionPreparationSlip: new ProductionPreparationSlip(-1), quantity: 0 }),
+        updatedVariableName: new ScrapMaterialSlip(-1)
     }
 
     function reducer(state: Draft<State>, action: Action) {

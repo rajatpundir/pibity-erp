@@ -56,8 +56,8 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new IndentVariable('', {}),
-        updatedVariableName: new Indent(''),
+        variable: new IndentVariable(-1, {}),
+        updatedVariableName: new Indent(-1),
         items: {
             typeName: 'IndentItem',
             query: getQuery('IndentItem'),
@@ -65,7 +65,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['values', 'product'], ['values', 'quantity'], ['values', 'uom', 'values', 'name'], ['values', 'ordered'], ['values', 'received'], ['values', 'approved'], ['values', 'rejected'], ['values', 'returned'], ['values', 'requisted'], ['values', 'consumed']),
-            variable: new IndentItemVariable('', { indent: new Indent(''), product: new Product(''), quantity: 0, uom: new UOM(''), ordered: 0, received: 0, approved: 0, rejected: 0, returned: 0, requisted: 0, consumed: 0 }),
+            variable: new IndentItemVariable(-1, { indent: new Indent(-1), product: new Product(-1), quantity: 0, uom: new UOM(-1), ordered: 0, received: 0, approved: 0, rejected: 0, returned: 0, requisted: 0, consumed: 0 }),
             variables: HashSet.of<IndentItemVariable>()
         }
     }
@@ -124,7 +124,7 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.items.variables = state.items.variables.add(new IndentItemVariable('', { indent: new Indent(state.items.variable.values.indent.toString()), product: new Product(state.items.variable.values.product.toString()), quantity: state.items.variable.values.quantity, uom: new UOM(state.items.variable.values.uom.toString()), ordered: state.items.variable.values.ordered, received: state.items.variable.values.received, approved: state.items.variable.values.approved, rejected: state.items.variable.values.rejected, returned: state.items.variable.values.returned, requisted: state.items.variable.values.requisted, consumed: state.items.variable.values.consumed }))
+                        state.items.variables = state.items.variables.add(new IndentItemVariable(-1, { indent: new Indent(state.items.variable.values.indent.toString()), product: new Product(state.items.variable.values.product.toString()), quantity: state.items.variable.values.quantity, uom: new UOM(state.items.variable.values.uom.toString()), ordered: state.items.variable.values.ordered, received: state.items.variable.values.received, approved: state.items.variable.values.approved, rejected: state.items.variable.values.rejected, returned: state.items.variable.values.returned, requisted: state.items.variable.values.requisted, consumed: state.items.variable.values.consumed }))
                         state.items.variable = initialState.items.variable
                         break
                     }
@@ -332,7 +332,7 @@ function Component(props) {
                         <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
                             <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
                                 <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
-                                <Container area={none} layout={Grid.layouts.uom} className=''>
+                                <Container area={none} layout={Grid.layouts.uom}>
                                     <Item>
                                         <Label>{item.keys.product.name}</Label>
                                         <Select onChange={onItemInputChange} value={state.items.variable.values.product.toString()} name='product'>

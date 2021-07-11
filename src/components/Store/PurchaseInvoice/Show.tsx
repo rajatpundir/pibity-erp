@@ -57,8 +57,8 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new PurchaseInvoiceVariable('', { purchaseOrder: new PurchaseOrder('') }),
-        updatedVariableName: new PurchaseInvoice(''),
+        variable: new PurchaseInvoiceVariable(-1, { purchaseOrder: new PurchaseOrder(-1) }),
+        updatedVariableName: new PurchaseInvoice(-1),
         items: {
             typeName: 'PurchaseInvoiceItem',
             query: getQuery('PurchaseInvoiceItem'),
@@ -66,7 +66,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['values', 'purchaseOrderItem'], ['values', 'purchaseOrderItem', 'values', 'purchaseOrder'], ['values', 'quantity']),
-            variable: new PurchaseInvoiceItemVariable('', { purchaseInvoice: new PurchaseInvoice(''), purchaseOrderItem: new PurchaseOrderItem(''), quantity: 0, approved: 0, rejected: 0 }),
+            variable: new PurchaseInvoiceItemVariable(-1, { purchaseInvoice: new PurchaseInvoice(-1), purchaseOrderItem: new PurchaseOrderItem(-1), quantity: 0, approved: 0, rejected: 0 }),
             variables: HashSet.of()
         }
     }
@@ -138,7 +138,7 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.items.variables = state.items.variables.add(new PurchaseInvoiceItemVariable('', { purchaseInvoice: new PurchaseInvoice(state.items.variable.values.purchaseInvoice.toString()), purchaseOrderItem: new PurchaseOrderItem(state.items.variable.values.purchaseOrderItem.toString()), quantity: 0, approved: 0, rejected: 0 }))
+                        state.items.variables = state.items.variables.add(new PurchaseInvoiceItemVariable(-1, { purchaseInvoice: new PurchaseInvoice(state.items.variable.values.purchaseInvoice.toString()), purchaseOrderItem: new PurchaseOrderItem(state.items.variable.values.purchaseOrderItem.toString()), quantity: 0, approved: 0, rejected: 0 }))
                         state.items.variable = initialState.items.variable
                         break
                     }

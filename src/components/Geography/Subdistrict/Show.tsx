@@ -58,8 +58,8 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new SubdistrictVariable('', { district: new District(''), name: '' }),
-        updatedVariableName: new Subdistrict(''),
+        variable: new SubdistrictVariable(-1, { district: new District(-1), name: '' }),
+        updatedVariableName: new Subdistrict(-1),
         items: {
             typeName: 'PostalCode',
             query: getQuery('PostalCode'),
@@ -67,7 +67,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['variableName'], ['values', 'name']),
-            variable: new PostalCodeVariable('', { subdistrict: new Subdistrict(''), name: '' }),
+            variable: new PostalCodeVariable(-1, { subdistrict: new Subdistrict(-1), name: '' }),
             variables: HashSet.of<PostalCodeVariable>()
         }
     }
@@ -135,7 +135,7 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.items.variables = state.items.variables.add(new PostalCodeVariable('', { subdistrict: new Subdistrict(''), name: state.items.variable.values.name }))
+                        state.items.variables = state.items.variables.add(new PostalCodeVariable(-1, { subdistrict: new Subdistrict(-1), name: state.items.variable.values.name }))
                         state.items.variable = initialState.items.variable
                         break
                     }

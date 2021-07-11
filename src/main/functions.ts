@@ -1,157 +1,152 @@
 import { Function } from './function'
 
 export type FunctionName =
-
     | 'createRegion'
     | 'deleteRegion'
-
     | 'createCountry'
     | 'deleteCountry'
-
     | 'createState'
     | 'deleteState'
-
     | 'createDistrict'
     | 'deleteDistrict'
-
     | 'createSubdistrict'
     | 'deleteSubdistrict'
-
     | 'createPostalCode'
     | 'deletePostalCode'
-
     | 'createAddress'
     | 'deleteAddress'
-
-    | 'createBank'
-    | 'deleteBank'
-
-    | 'createBankBranch'
-    | 'deleteBankBranch'
-
-    | 'createBankAccount'
-    | 'deleteBankAccount'
-
     | 'createCompany'
     | 'deleteCompany'
-
     | 'createCompanyAddress'
     | 'deleteCompanyAddress'
-
+    | 'createCompanyTagGroup'
+    | 'deleteCompanyTagGroup'
+    | 'createCompanyTag'
+    | 'deleteCompanyTag'
+    | 'createMappingCompanyTag'
+    | 'deleteMappingCompanyTag'
+    | 'createContact'
+    | 'deleteContact'
+    | 'createContactAddress'
+    | 'deleteContactAddress'
     | 'createCompanyContact'
     | 'deleteCompanyContact'
-
+    | 'createCurrency'
+    | 'deleteCurrency'
+    | 'createCurrencyRate'
+    | 'deleteCurrencyRate'
+    | 'createMemo'
+    | 'deleteMemo'
+    | 'createBank'
+    | 'deleteBank'
+    | 'createBankBranch'
+    | 'deleteBankBranch'
+    | 'createBankAccount'
+    | 'deleteBankAccount'
+    | 'createBankTransaction'
+    | 'deleteBankTransaction'
     | 'createCompanyBankAccount'
     | 'deleteCompanyBankAccount'
-
+    | 'createProductCategoryGroup'
+    | 'deleteProductCategoryGroup'
+    | 'createProductCategory'
+    | 'deleteProductCategory'
     | 'createProduct'
     | 'deleteProduct'
-
+    | 'createProductTagGroup'
+    | 'deleteProductTagGroup'
+    | 'createProductTag'
+    | 'deleteProductTag'
+    | 'createMappingProductTag'
+    | 'deleteMappingProductTag'
     | 'createUOM'
     | 'deleteUOM'
-
     | 'createIndent'
     | 'deleteIndent'
-
     | 'createIndentItem'
     | 'deleteIndentItem'
-
     | 'createCompanyProduct'
     | 'deleteCompanyProduct'
-
     | 'createQuotation'
     | 'deleteQuotation'
-
     | 'createQuotationItem'
     | 'deleteQuotationItem'
-
     | 'createPurchaseOrder'
     | 'deletePurchaseOrder'
-
     | 'createPurchaseOrderItem'
     | 'deletePurchaseOrderItem'
-
     | 'createPurchaseInvoice'
     | 'deletePurchaseInvoice'
-
     | 'createPurchaseInvoiceItem'
     | 'deletePurchaseInvoiceItem'
-
     | 'createMaterialApprovalSlip'
     | 'deleteMaterialApprovalSlip'
-
     | 'createMaterialApprovalSlipItem'
     | 'deleteMaterialApprovalSlipItem'
-
     | 'createMaterialRejectionSlip'
     | 'deleteMaterialRejectionSlip'
-
     | 'createMaterialRejectionSlipItem'
     | 'deleteMaterialRejectionSlipItem'
-
     | 'createMaterialReturnSlip'
     | 'deleteMaterialReturnSlip'
-
     | 'createMaterialReturnSlipItem'
     | 'deleteMaterialReturnSlipItem'
-
     | 'createMaterialRequistionSlip'
     | 'deleteMaterialRequistionSlip'
-
     | 'createMaterialRequistionSlipItem'
     | 'deleteMaterialRequistionSlipItem'
-
     | 'createBOM'
     | 'deleteBOM'
-
     | 'createBOMItem'
     | 'deleteBOMItem'
-
     | 'createProductionPreparationSlip'
     | 'deleteProductionPreparationSlip'
-
     | 'createProductionPreparationSlipItem'
     | 'deleteProductionPreparationSlipItem'
-
     | 'createScrapMaterialSlip'
     | 'deleteScrapMaterialSlip'
-
     | 'createTransferMaterialSlip'
     | 'deleteTransferMaterialSlip'
-
     | 'createWarehouseAcceptanceSlip'
     | 'deleteWarehouseAcceptanceSlip'
 
 export const functions: Record<FunctionName, Function> = {
     createRegion: {
         inputs: {
-            variableName: {
+            name: {
                 type: 'Text'
             }
         },
         outputs: {
-            region: {
+            variable: {
                 type: 'Region',
                 op: 'create',
-                values: {}
+                values: {
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    }
+                }
             }
         }
     },
     deleteRegion: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'Region'
             }
         },
         outputs: {
-            region: {
+            variable: {
                 type: 'Region',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -166,12 +161,12 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            country: {
+            variable: {
                 type: 'Country',
                 op: 'create',
                 values: {
                     region: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['region']
@@ -188,19 +183,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteCountry: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'Country'
             }
         },
         outputs: {
-            country: {
+            variable: {
                 type: 'Country',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -215,12 +210,12 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            state: {
+            variable: {
                 type: 'State',
                 op: 'create',
                 values: {
                     country: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['country']
@@ -237,19 +232,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteState: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'State'
             }
         },
         outputs: {
-            state: {
+            variable: {
                 type: 'State',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -264,12 +259,12 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            district: {
+            variable: {
                 type: 'District',
                 op: 'create',
                 values: {
                     state: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['state']
@@ -286,19 +281,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteDistrict: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'District'
             }
         },
         outputs: {
-            district: {
+            variable: {
                 type: 'District',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -313,12 +308,12 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            subdistrict: {
+            variable: {
                 type: 'Subdistrict',
                 op: 'create',
                 values: {
                     district: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['district']
@@ -335,19 +330,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteSubdistrict: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'Subdistrict'
             }
         },
         outputs: {
-            subdistrict: {
+            variable: {
                 type: 'Subdistrict',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -362,12 +357,12 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            postalCode: {
+            variable: {
                 type: 'PostalCode',
                 op: 'create',
                 values: {
                     subdistrict: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['subdistrict']
@@ -384,19 +379,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deletePostalCode: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'PostalCode'
             }
         },
         outputs: {
-            postalCode: {
+            variable: {
                 type: 'PostalCode',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -420,12 +415,12 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            address: {
+            variable: {
                 type: 'Address',
                 op: 'create',
                 values: {
                     postalCode: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['postalCode']
@@ -460,209 +455,26 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteAddress: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'Address'
             }
         },
         outputs: {
-            address: {
+            variable: {
                 type: 'Address',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
-                }
-            }
-        }
-    },
-    createBank: {
-        inputs: {
-            country: {
-                type: 'Country'
-            },
-            name: {
-                type: 'Text'
-            },
-            website: {
-                type: 'Text'
-            }
-        },
-        outputs: {
-            bank: {
-                type: 'Bank',
-                op: 'create',
-                values: {
-                    country: {
-                        expectedReturnType: 'Text',
-                        op: '.',
-                        types: [],
-                        args: ['country']
-                    },
-                    name: {
-                        expectedReturnType: 'Text',
-                        op: '.',
-                        types: [],
-                        args: ['name']
-                    },
-                    website: {
-                        expectedReturnType: 'Text',
-                        op: '.',
-                        types: [],
-                        args: ['website']
-                    }
-                }
-            }
-        }
-    },
-    deleteBank: {
-        inputs: {
-            variableName: {
-                type: 'Bank'
-            }
-        },
-        outputs: {
-            bank: {
-                type: 'Bank',
-                op: 'delete',
-                id: {
-                    expectedReturnType: 'Text',
-                    op: '.',
-                    types: [],
-                    args: ['variableName']
-                }
-            }
-        }
-    },
-    createBankBranch: {
-        inputs: {
-            bank: {
-                type: 'Bank'
-            },
-            name: {
-                type: 'Text'
-            },
-            ifsc: {
-                type: 'Text'
-            },
-            address: {
-                type: 'Address'
-            }
-        },
-        outputs: {
-            bankBranch: {
-                type: 'BankBranch',
-                op: 'create',
-                values: {
-                    bank: {
-                        expectedReturnType: 'Text',
-                        op: '.',
-                        types: [],
-                        args: ['bank']
-                    },
-                    name: {
-                        expectedReturnType: 'Text',
-                        op: '.',
-                        types: [],
-                        args: ['name']
-                    },
-                    ifsc: {
-                        expectedReturnType: 'Text',
-                        op: '.',
-                        types: [],
-                        args: ['ifsc']
-                    },
-                    address: {
-                        expectedReturnType: 'Text',
-                        op: '.',
-                        types: [],
-                        args: ['address']
-                    }
-                }
-            }
-        }
-    },
-    deleteBankBranch: {
-        inputs: {
-            variableName: {
-                type: 'BankBranch'
-            }
-        },
-        outputs: {
-            bankBranch: {
-                type: 'BankBranch',
-                op: 'delete',
-                id: {
-                    expectedReturnType: 'Text',
-                    op: '.',
-                    types: [],
-                    args: ['variableName']
-                }
-            }
-        }
-    },
-    createBankAccount: {
-        inputs: {
-            bank: {
-                type: 'Bank'
-            },
-            bankBranch: {
-                type: 'BankBranch'
-            },
-            accountNumber: {
-                type: 'Text'
-            }
-        },
-        outputs: {
-            bankAccount: {
-                type: 'BankAccount',
-                op: 'create',
-                values: {
-                    bank: {
-                        expectedReturnType: 'Text',
-                        op: '.',
-                        types: [],
-                        args: ['bank']
-                    },
-                    bankBranch: {
-                        expectedReturnType: 'Text',
-                        op: '.',
-                        types: [],
-                        args: ['bankBranch']
-                    },
-                    accountNumber: {
-                        expectedReturnType: 'Text',
-                        op: '.',
-                        types: [],
-                        args: ['accountNumber']
-                    }
-                }
-            }
-        }
-    },
-    deleteBankAccount: {
-        inputs: {
-            variableName: {
-                type: 'BankAccount'
-            }
-        },
-        outputs: {
-            bankAccount: {
-                type: 'BankAccount',
-                op: 'delete',
-                id: {
-                    expectedReturnType: 'Text',
-                    op: '.',
-                    types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
     },
     createCompany: {
         inputs: {
-            variableName: {
+            name: {
                 type: 'Text'
             },
             email: {
@@ -688,10 +500,16 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            company: {
+            variable: {
                 type: 'Company',
                 op: 'create',
                 values: {
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    },
                     email: {
                         expectedReturnType: 'Text',
                         op: '.',
@@ -715,18 +533,6 @@ export const functions: Record<FunctionName, Function> = {
                         op: '.',
                         types: [],
                         args: ['website']
-                    },
-                    companyType: {
-                        expectedReturnType: 'Text',
-                        op: '.',
-                        types: [],
-                        args: ['companyType']
-                    },
-                    serviceArea: {
-                        expectedReturnType: 'Text',
-                        op: '.',
-                        types: [],
-                        args: ['serviceArea']
                     },
                     gstin: {
                         expectedReturnType: 'Text',
@@ -752,19 +558,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteCompany: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'Company'
             }
         },
         outputs: {
-            company: {
+            variable: {
                 type: 'Company',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -782,12 +588,12 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            companyAddress: {
+            variable: {
                 type: 'CompanyAddress',
                 op: 'create',
                 values: {
                     company: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['company']
@@ -799,7 +605,7 @@ export const functions: Record<FunctionName, Function> = {
                         args: ['name']
                     },
                     address: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['address']
@@ -810,19 +616,291 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteCompanyAddress: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'CompanyAddress'
             }
         },
         outputs: {
-            companyAddress: {
+            variable: {
                 type: 'CompanyAddress',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
+                }
+            }
+        }
+    },
+    createCompanyTagGroup: {
+        inputs: {
+            name: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'CompanyTagGroup',
+                op: 'create',
+                values: {
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    }
+                }
+            }
+        }
+    },
+    deleteCompanyTagGroup: {
+        inputs: {
+            id: {
+                type: 'CompanyTagGroup'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'CompanyTagGroup',
+                op: 'delete',
+                id: {
+                    expectedReturnType: 'Number',
+                    op: '.',
+                    types: [],
+                    args: ['id']
+                }
+            }
+        }
+    },
+    createCompanyTag: {
+        inputs: {
+            group: {
+                type: 'CompanyTagGroup'
+            },
+            name: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'CompanyTag',
+                op: 'create',
+                values: {
+                    group: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['group']
+                    },
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    }
+                }
+            }
+        }
+    },
+    deleteCompanyTag: {
+        inputs: {
+            id: {
+                type: 'CompanyTag'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'CompanyTag',
+                op: 'delete',
+                id: {
+                    expectedReturnType: 'Number',
+                    op: '.',
+                    types: [],
+                    args: ['id']
+                }
+            }
+        }
+    },
+    createMappingCompanyTag: {
+        inputs: {
+            company: {
+                type: 'Company'
+            },
+            tag: {
+                type: 'CompanyTag'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'MappingCompanyTag',
+                op: 'create',
+                values: {
+                    company: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['company']
+                    },
+                    tag: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['tag']
+                    }
+                }
+            }
+        }
+    },
+    deleteMappingCompanyTag: {
+        inputs: {
+            id: {
+                type: 'MappingCompanyTag'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'MappingCompanyTag',
+                op: 'delete',
+                id: {
+                    expectedReturnType: 'Number',
+                    op: '.',
+                    types: [],
+                    args: ['id']
+                }
+            }
+        }
+    },
+    createContact: {
+        inputs: {
+            name: {
+                type: 'Text'
+            },
+            email: {
+                type: 'Text'
+            },
+            telephone: {
+                type: 'Text'
+            },
+            mobile: {
+                type: 'Text'
+            },
+            website: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'Contact',
+                op: 'create',
+                values: {
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    },
+                    email: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['email']
+                    },
+                    telephone: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['telephone']
+                    },
+                    mobile: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['mobile']
+                    },
+                    website: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['website']
+                    }
+                }
+            }
+        }
+    },
+    deleteContact: {
+        inputs: {
+            id: {
+                type: 'Contact'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'Contact',
+                op: 'delete',
+                id: {
+                    expectedReturnType: 'Number',
+                    op: '.',
+                    types: [],
+                    args: ['id']
+                }
+            }
+        }
+    },
+    createContactAddress: {
+        inputs: {
+            contact: {
+                type: 'Contact'
+            },
+            name: {
+                type: 'Text'
+            },
+            address: {
+                type: 'Address'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'ContactAddress',
+                op: 'create',
+                values: {
+                    contact: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['contact']
+                    },
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    },
+                    address: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['address']
+                    }
+                }
+            }
+        }
+    },
+    deleteContactAddress: {
+        inputs: {
+            id: {
+                type: 'ContactAddress'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'ContactAddress',
+                op: 'delete',
+                id: {
+                    expectedReturnType: 'Number',
+                    op: '.',
+                    types: [],
+                    args: ['id']
                 }
             }
         }
@@ -832,10 +910,10 @@ export const functions: Record<FunctionName, Function> = {
             company: {
                 type: 'Company'
             },
-            name: {
-                type: 'Text'
+            contact: {
+                type: 'Contact'
             },
-            designation: {
+            role: {
                 type: 'Text'
             },
             email: {
@@ -849,27 +927,27 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            companyContact: {
+            variable: {
                 type: 'CompanyContact',
                 op: 'create',
                 values: {
                     company: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['company']
                     },
-                    name: {
-                        expectedReturnType: 'Text',
+                    contact: {
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
-                        args: ['name']
+                        args: ['contact']
                     },
-                    designation: {
+                    role: {
                         expectedReturnType: 'Text',
                         op: '.',
                         types: [],
-                        args: ['designation']
+                        args: ['role']
                     },
                     email: {
                         expectedReturnType: 'Text',
@@ -895,19 +973,488 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteCompanyContact: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'CompanyContact'
             }
         },
         outputs: {
-            companyContact: {
+            variable: {
                 type: 'CompanyContact',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
+                }
+            }
+        }
+    },
+    createCurrency: {
+        inputs: {
+            name: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'Currency',
+                op: 'create',
+                values: {
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    }
+                }
+            }
+        }
+    },
+    deleteCurrency: {
+        inputs: {
+            id: {
+                type: 'Currency'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'Currency',
+                op: 'delete',
+                id: {
+                    expectedReturnType: 'Number',
+                    op: '.',
+                    types: [],
+                    args: ['id']
+                }
+            }
+        }
+    },
+    createCurrencyRate: {
+        inputs: {
+            currency: {
+                type: 'Currency'
+            },
+            conversionRate: {
+                type: 'Decimal'
+            },
+            startTime: {
+                type: 'Timestamp'
+            },
+            endTime: {
+                type: 'Timestamp'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'CurrencyRate',
+                op: 'create',
+                values: {
+                    currency: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['currency']
+                    },
+                    conversionRate: {
+                        expectedReturnType: 'Decimal',
+                        op: '.',
+                        types: [],
+                        args: ['conversionRate']
+                    },
+                    startTime: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['startTime']
+                    },
+                    endTime: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['endTime']
+                    }
+                }
+            }
+        }
+    },
+    deleteCurrencyRate: {
+        inputs: {
+            id: {
+                type: 'CurrencyRate'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'CurrencyRate',
+                op: 'delete',
+                id: {
+                    expectedReturnType: 'Number',
+                    op: '.',
+                    types: [],
+                    args: ['id']
+                }
+            }
+        }
+    },
+    createMemo: {
+        inputs: {
+            company: {
+                type: 'Company'
+            },
+            currency: {
+                type: 'Currency'
+            },
+            amount: {
+                type: 'Decimal'
+            },
+            unsettled: {
+                type: 'Decimal'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'Memo',
+                op: 'create',
+                values: {
+                    company: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['company']
+                    },
+                    currency: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['currency']
+                    },
+                    amount: {
+                        expectedReturnType: 'Decimal',
+                        op: '.',
+                        types: [],
+                        args: ['amount']
+                    },
+                    unsettled: {
+                        expectedReturnType: 'Decimal',
+                        op: '.',
+                        types: [],
+                        args: ['unsettled']
+                    }
+                }
+            }
+        }
+    },
+    deleteMemo: {
+        inputs: {
+            id: {
+                type: 'Memo'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'Memo',
+                op: 'delete',
+                id: {
+                    expectedReturnType: 'Number',
+                    op: '.',
+                    types: [],
+                    args: ['id']
+                }
+            }
+        }
+    },
+    createBank: {
+        inputs: {
+            country: {
+                type: 'Country'
+            },
+            name: {
+                type: 'Text'
+            },
+            website: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'Bank',
+                op: 'create',
+                values: {
+                    country: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['country']
+                    },
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    },
+                    website: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['website']
+                    }
+                }
+            }
+        }
+    },
+    deleteBank: {
+        inputs: {
+            id: {
+                type: 'Bank'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'Bank',
+                op: 'delete',
+                id: {
+                    expectedReturnType: 'Number',
+                    op: '.',
+                    types: [],
+                    args: ['id']
+                }
+            }
+        }
+    },
+    createBankBranch: {
+        inputs: {
+            bank: {
+                type: 'Bank'
+            },
+            name: {
+                type: 'Text'
+            },
+            ifsc: {
+                type: 'Text'
+            },
+            address: {
+                type: 'Address'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'BankBranch',
+                op: 'create',
+                values: {
+                    bank: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['bank']
+                    },
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    },
+                    ifsc: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['ifsc']
+                    },
+                    address: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['address']
+                    }
+                }
+            }
+        }
+    },
+    deleteBankBranch: {
+        inputs: {
+            id: {
+                type: 'BankBranch'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'BankBranch',
+                op: 'delete',
+                id: {
+                    expectedReturnType: 'Number',
+                    op: '.',
+                    types: [],
+                    args: ['id']
+                }
+            }
+        }
+    },
+    createBankAccount: {
+        inputs: {
+            bank: {
+                type: 'Bank'
+            },
+            bankBranch: {
+                type: 'BankBranch'
+            },
+            accountNumber: {
+                type: 'Text'
+            },
+            accountName: {
+                type: 'Text'
+            },
+            currency: {
+                type: 'Currency'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'BankAccount',
+                op: 'create',
+                values: {
+                    bank: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['bank']
+                    },
+                    bankBranch: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['bankBranch']
+                    },
+                    accountNumber: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['accountNumber']
+                    },
+                    accountName: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['accountName']
+                    },
+                    currency: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['currency']
+                    }
+                }
+            }
+        }
+    },
+    deleteBankAccount: {
+        inputs: {
+            id: {
+                type: 'BankAccount'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'BankAccount',
+                op: 'delete',
+                id: {
+                    expectedReturnType: 'Number',
+                    op: '.',
+                    types: [],
+                    args: ['id']
+                }
+            }
+        }
+    },
+    createBankTransaction: {
+        inputs: {
+            timestamp: {
+                type: 'Timestamp'
+            },
+            memo: {
+                type: 'Memo'
+            },
+            currencyRate: {
+                type: 'CurrencyRate'
+            },
+            bankAccount: {
+                type: 'BankAccount'
+            },
+            fromToAccount: {
+                type: 'BankAccount'
+            },
+            credit: {
+                type: 'Decimal'
+            },
+            debit: {
+                type: 'Decimal'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'BankTransaction',
+                op: 'create',
+                values: {
+                    timestamp: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['timestamp']
+                    },
+                    memo: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['memo']
+                    },
+                    currencyRate: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['currencyRate']
+                    },
+                    bankAccount: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['bankAccount']
+                    },
+                    fromToAccount: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['fromToAccount']
+                    },
+                    credit: {
+                        expectedReturnType: 'Decimal',
+                        op: '.',
+                        types: [],
+                        args: ['credit']
+                    },
+                    debit: {
+                        expectedReturnType: 'Decimal',
+                        op: '.',
+                        types: [],
+                        args: ['debit']
+                    }
+                }
+            }
+        }
+    },
+    deleteBankTransaction: {
+        inputs: {
+            id: {
+                type: 'BankTransaction'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'BankTransaction',
+                op: 'delete',
+                id: {
+                    expectedReturnType: 'Number',
+                    op: '.',
+                    types: [],
+                    args: ['id']
                 }
             }
         }
@@ -922,18 +1469,18 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            companyBankAccount: {
+            variable: {
                 type: 'CompanyBankAccount',
                 op: 'create',
                 values: {
                     company: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['company']
                     },
                     bankAccount: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['bankAccount']
@@ -944,43 +1491,183 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteCompanyBankAccount: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'CompanyBankAccount'
             }
         },
         outputs: {
-            companyBankAccount: {
+            variable: {
                 type: 'CompanyBankAccount',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
+                }
+            }
+        }
+    },
+    createProductCategoryGroup: {
+        inputs: {
+            parent: {
+                type: 'ProductCategoryGroup'
+            },
+            name: {
+                type: 'Text'
+            },
+            length: {
+                type: 'Number'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'ProductCategoryGroup',
+                op: 'create',
+                values: {
+                    parent: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['parent']
+                    },
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    },
+                    length: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['length']
+                    }
+                }
+            }
+        }
+    },
+    deleteProductCategoryGroup: {
+        inputs: {
+            id: {
+                type: 'ProductCategoryGroup'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'ProductCategoryGroup',
+                op: 'delete',
+                id: {
+                    expectedReturnType: 'Number',
+                    op: '.',
+                    types: [],
+                    args: ['id']
+                }
+            }
+        }
+    },
+    createProductCategory: {
+        inputs: {
+            parent: {
+                type: 'ProductCategory'
+            },
+            group: {
+                type: 'ProductCategoryGroup'
+            },
+            name: {
+                type: 'Text'
+            },
+            code: {
+                type: 'Text'
+            },
+            derivedCode: {
+                type: 'Text'
+            },
+            childCount: {
+                type: 'Number'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'ProductCategory',
+                op: 'create',
+                values: {
+                    parent: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['parent']
+                    },
+                    group: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['group']
+                    },
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    },
+                    code: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['code']
+                    },
+                    derivedCode: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['derivedCode']
+                    },
+                    childCount: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['childCount']
+                    }
+                }
+            }
+        }
+    },
+    deleteProductCategory: {
+        inputs: {
+            id: {
+                type: 'ProductCategory'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'ProductCategory',
+                op: 'delete',
+                id: {
+                    expectedReturnType: 'Number',
+                    op: '.',
+                    types: [],
+                    args: ['id']
                 }
             }
         }
     },
     createProduct: {
         inputs: {
-            variableName: {
-                type: 'Text'
-            },
             name: {
                 type: 'Text'
             },
-            orderable: {
-                type: 'Boolean'
+            category: {
+                type: 'ProductCategory'
             },
-            consumable: {
-                type: 'Boolean'
+            code: {
+                type: 'Text'
             },
-            producable: {
-                type: 'Boolean'
+            sku: {
+                type: 'Text'
             }
         },
         outputs: {
-            product: {
+            variable: {
                 type: 'Product',
                 op: 'create',
                 values: {
@@ -990,23 +1677,23 @@ export const functions: Record<FunctionName, Function> = {
                         types: [],
                         args: ['name']
                     },
-                    orderable: {
-                        expectedReturnType: 'Boolean',
+                    category: {
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
-                        args: ['orderable']
+                        args: ['category']
                     },
-                    consumable: {
-                        expectedReturnType: 'Boolean',
+                    code: {
+                        expectedReturnType: 'Text',
                         op: '.',
                         types: [],
-                        args: ['consumable']
+                        args: ['code']
                     },
-                    producable: {
-                        expectedReturnType: 'Boolean',
+                    sku: {
+                        expectedReturnType: 'Text',
                         op: '.',
                         types: [],
-                        args: ['producable']
+                        args: ['sku']
                     }
                 }
             }
@@ -1014,19 +1701,157 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteProduct: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'Product'
             }
         },
         outputs: {
-            product: {
+            variable: {
                 type: 'Product',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
+                }
+            }
+        }
+    },
+    createProductTagGroup: {
+        inputs: {
+            name: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'ProductTagGroup',
+                op: 'create',
+                values: {
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    }
+                }
+            }
+        }
+    },
+    deleteProductTagGroup: {
+        inputs: {
+            id: {
+                type: 'ProductTagGroup'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'ProductTagGroup',
+                op: 'delete',
+                id: {
+                    expectedReturnType: 'Number',
+                    op: '.',
+                    types: [],
+                    args: ['id']
+                }
+            }
+        }
+    },
+    createProductTag: {
+        inputs: {
+            group: {
+                type: 'ProductTagGroup'
+            },
+            name: {
+                type: 'Text'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'ProductTag',
+                op: 'create',
+                values: {
+                    group: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['group']
+                    },
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    }
+                }
+            }
+        }
+    },
+    deleteProductTag: {
+        inputs: {
+            id: {
+                type: 'ProductTag'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'ProductTag',
+                op: 'delete',
+                id: {
+                    expectedReturnType: 'Number',
+                    op: '.',
+                    types: [],
+                    args: ['id']
+                }
+            }
+        }
+    },
+    createMappingProductTag: {
+        inputs: {
+            product: {
+                type: 'Product'
+            },
+            tag: {
+                type: 'ProductTag'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'MappingProductTag',
+                op: 'create',
+                values: {
+                    product: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['product']
+                    },
+                    tag: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['tag']
+                    }
+                }
+            }
+        }
+    },
+    deleteMappingProductTag: {
+        inputs: {
+            id: {
+                type: 'MappingProductTag'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'MappingProductTag',
+                op: 'delete',
+                id: {
+                    expectedReturnType: 'Number',
+                    op: '.',
+                    types: [],
+                    args: ['id']
                 }
             }
         }
@@ -1044,12 +1869,12 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            uom: {
+            variable: {
                 type: 'UOM',
                 op: 'create',
                 values: {
                     product: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['product']
@@ -1072,19 +1897,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteUOM: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'UOM'
             }
         },
         outputs: {
-            uom: {
+            variable: {
                 type: 'UOM',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -1092,7 +1917,7 @@ export const functions: Record<FunctionName, Function> = {
     createIndent: {
         inputs: {},
         outputs: {
-            indent: {
+            variable: {
                 type: 'Indent',
                 op: 'create',
                 values: {}
@@ -1101,19 +1926,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteIndent: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'Indent'
             }
         },
         outputs: {
-            indent: {
+            variable: {
                 type: 'Indent',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -1134,18 +1959,18 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            indentItem: {
+            variable: {
                 type: 'IndentItem',
                 op: 'create',
                 values: {
                     indent: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['indent']
                     },
                     product: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['product']
@@ -1157,7 +1982,7 @@ export const functions: Record<FunctionName, Function> = {
                         args: ['quantity']
                     },
                     uom: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['uom']
@@ -1210,19 +2035,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteIndentItem: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'IndentItem'
             }
         },
         outputs: {
-            indentItem: {
+            variable: {
                 type: 'IndentItem',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -1237,18 +2062,18 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            companyProduct: {
+            variable: {
                 type: 'CompanyProduct',
                 op: 'create',
                 values: {
                     company: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['company']
                     },
                     product: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['product']
@@ -1259,19 +2084,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteCompanyProduct: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'CompanyProduct'
             }
         },
         outputs: {
-            companyProduct: {
+            variable: {
                 type: 'CompanyProduct',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -1286,18 +2111,18 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            quotation: {
+            variable: {
                 type: 'Quotation',
                 op: 'create',
                 values: {
                     indent: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['indent']
                     },
                     company: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['company']
@@ -1308,19 +2133,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteQuotation: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'Quotation'
             }
         },
         outputs: {
-            quotation: {
+            variable: {
                 type: 'Quotation',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -1338,18 +2163,18 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            quotationItem: {
+            variable: {
                 type: 'QuotationItem',
                 op: 'create',
                 values: {
                     quotation: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['quotation']
                     },
                     indentItem: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['indentItem']
@@ -1366,19 +2191,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteQuotationItem: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'QuotationItem'
             }
         },
         outputs: {
-            quotationItem: {
+            variable: {
                 type: 'QuotationItem',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -1390,12 +2215,12 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            purchaseOrder: {
+            variable: {
                 type: 'PurchaseOrder',
                 op: 'create',
                 values: {
                     quotation: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['quotation']
@@ -1406,19 +2231,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deletePurchaseOrder: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'PurchaseOrder'
             }
         },
         outputs: {
-            purchaseOrder: {
+            variable: {
                 type: 'PurchaseOrder',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -1439,18 +2264,18 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            purchaseOrderItem: {
+            variable: {
                 type: 'PurchaseOrderItem',
                 op: 'create',
                 values: {
                     purchaseOrder: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['purchaseOrder']
                     },
                     quotationItem: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['quotationItem']
@@ -1479,19 +2304,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deletePurchaseOrderItem: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'PurchaseOrderItem'
             }
         },
         outputs: {
-            purchaseOrderItem: {
+            variable: {
                 type: 'PurchaseOrderItem',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -1503,12 +2328,12 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            purchaseInvoice: {
+            variable: {
                 type: 'PurchaseInvoice',
                 op: 'create',
                 values: {
                     purchaseOrder: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['purchaseOrder']
@@ -1519,19 +2344,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deletePurchaseInvoice: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'PurchaseInvoice'
             }
         },
         outputs: {
-            purchaseInvoice: {
+            variable: {
                 type: 'PurchaseInvoice',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -1549,18 +2374,18 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            purchaseInvoiceItem: {
+            variable: {
                 type: 'PurchaseInvoiceItem',
                 op: 'create',
                 values: {
                     purchaseInvoice: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['purchaseInvoice']
                     },
                     purchaseOrderItem: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['purchaseOrderItem']
@@ -1589,19 +2414,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deletePurchaseInvoiceItem: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'PurchaseInvoiceItem'
             }
         },
         outputs: {
-            purchaseInvoiceItem: {
+            variable: {
                 type: 'PurchaseInvoiceItem',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -1613,12 +2438,12 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            materialApprovalSlip: {
+            variable: {
                 type: 'MaterialApprovalSlip',
                 op: 'create',
                 values: {
                     purchaseInvoice: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['purchaseInvoice']
@@ -1629,19 +2454,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteMaterialApprovalSlip: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'MaterialApprovalSlip'
             }
         },
         outputs: {
-            materialApprovalSlip: {
+            variable: {
                 type: 'MaterialApprovalSlip',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -1659,18 +2484,18 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            materialApprovalSlipItem: {
+            variable: {
                 type: 'MaterialApprovalSlipItem',
                 op: 'create',
                 values: {
                     materialApprovalSlip: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['materialApprovalSlip']
                     },
                     purchaseInvoiceItem: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['purchaseInvoiceItem']
@@ -1693,19 +2518,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteMaterialApprovalSlipItem: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'MaterialApprovalSlipItem'
             }
         },
         outputs: {
-            materialApprovalSlipItem: {
+            variable: {
                 type: 'MaterialApprovalSlipItem',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -1717,12 +2542,12 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            materialRejectionSlip: {
+            variable: {
                 type: 'MaterialRejectionSlip',
                 op: 'create',
                 values: {
                     purchaseInvoice: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['purchaseInvoice']
@@ -1733,19 +2558,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteMaterialRejectionSlip: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'MaterialRejectionSlip'
             }
         },
         outputs: {
-            materialRejectionSlip: {
+            variable: {
                 type: 'MaterialRejectionSlip',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -1763,18 +2588,18 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            materialRejectionSlipItem: {
+            variable: {
                 type: 'MaterialRejectionSlipItem',
                 op: 'create',
                 values: {
                     materialRejectionSlip: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['materialRejectionSlip']
                     },
                     purchaseInvoiceItem: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['purchaseInvoiceItem']
@@ -1797,19 +2622,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteMaterialRejectionSlipItem: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'MaterialRejectionSlipItem'
             }
         },
         outputs: {
-            materialRejectionSlipItem: {
+            variable: {
                 type: 'MaterialRejectionSlipItem',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -1821,12 +2646,12 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            materialReturnSlip: {
+            variable: {
                 type: 'MaterialReturnSlip',
                 op: 'create',
                 values: {
                     materialRejectionSlip: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['materialRejectionSlip']
@@ -1837,19 +2662,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteMaterialReturnSlip: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'MaterialReturnSlip'
             }
         },
         outputs: {
-            materialReturnSlip: {
+            variable: {
                 type: 'MaterialReturnSlip',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -1867,18 +2692,18 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            materialReturnSlipItem: {
+            variable: {
                 type: 'MaterialReturnSlipItem',
                 op: 'create',
                 values: {
                     materialReturnSlip: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['materialReturnSlip']
                     },
                     materialRejectionSlipItem: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['materialRejectionSlipItem']
@@ -1895,19 +2720,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteMaterialReturnSlipItem: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'MaterialReturnSlipItem'
             }
         },
         outputs: {
-            materialReturnSlipItem: {
+            variable: {
                 type: 'MaterialReturnSlipItem',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -1919,12 +2744,12 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            materialRequistionSlip: {
+            variable: {
                 type: 'MaterialRequistionSlip',
                 op: 'create',
                 values: {
                     materialApprovalSlip: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['materialApprovalSlip']
@@ -1935,19 +2760,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteMaterialRequistionSlip: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'MaterialRequistionSlip'
             }
         },
         outputs: {
-            materialRequistionSlip: {
+            variable: {
                 type: 'MaterialRequistionSlip',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -1965,18 +2790,18 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            materialRequistionSlipItem: {
+            variable: {
                 type: 'MaterialRequistionSlipItem',
                 op: 'create',
                 values: {
                     materialRequistionSlip: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['materialRequistionSlip']
                     },
                     materialApprovalSlipItem: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['materialApprovalSlipItem']
@@ -1999,52 +2824,59 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteMaterialRequistionSlipItem: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'MaterialRequistionSlipItem'
             }
         },
         outputs: {
-            materialRequistionSlipItem: {
+            variable: {
                 type: 'MaterialRequistionSlipItem',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
     },
     createBOM: {
         inputs: {
-            variableName: {
+            name: {
                 type: 'Text'
             }
         },
         outputs: {
-            bom: {
+            variable: {
                 type: 'BOM',
                 op: 'create',
-                values: {}
+                values: {
+                    name: {
+                        expectedReturnType: 'Text',
+                        op: '.',
+                        types: [],
+                        args: ['name']
+                    }
+                }
             }
         }
     },
     deleteBOM: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'BOM'
             }
         },
         outputs: {
-            bom: {
+            variable: {
                 type: 'BOM',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -2065,18 +2897,18 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            bomItem: {
+            variable: {
                 type: 'BOMItem',
                 op: 'create',
                 values: {
                     bom: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['bom']
                     },
                     product: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['product']
@@ -2088,7 +2920,7 @@ export const functions: Record<FunctionName, Function> = {
                         args: ['quantity']
                     },
                     uom: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['uom']
@@ -2099,19 +2931,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteBOMItem: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'BOMItem'
             }
         },
         outputs: {
-            bomItem: {
+            variable: {
                 type: 'BOMItem',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -2123,12 +2955,12 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            productionPreparationSlip: {
+            variable: {
                 type: 'ProductionPreparationSlip',
                 op: 'create',
                 values: {
                     bom: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['bom']
@@ -2151,19 +2983,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteProductionPreparationSlip: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'ProductionPreparationSlip'
             }
         },
         outputs: {
-            productionPreparationSlip: {
+            variable: {
                 type: 'ProductionPreparationSlip',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -2181,12 +3013,12 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            bomItem: {
+            variable: {
                 type: 'ProductionPreparationSlipItem',
                 op: 'create',
                 values: {
                     productionPreparationSlip: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['productionPreparationSlip']
@@ -2198,7 +3030,7 @@ export const functions: Record<FunctionName, Function> = {
                         args: ['bomItem']
                     },
                     materialRequistionSlipItem: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['materialRequistionSlipItem']
@@ -2209,19 +3041,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteProductionPreparationSlipItem: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'ProductionPreparationSlipItem'
             }
         },
         outputs: {
-            productionPreparationSlipItem: {
+            variable: {
                 type: 'ProductionPreparationSlipItem',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -2236,12 +3068,12 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            scrapMaterialSlip: {
+            variable: {
                 type: 'ScrapMaterialSlip',
                 op: 'create',
                 values: {
                     productionPreparationSlip: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['productionPreparationSlip']
@@ -2258,19 +3090,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteScrapMaterialSlip: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'ScrapMaterialSlip'
             }
         },
         outputs: {
-            scrapMaterialSlip: {
+            variable: {
                 type: 'ScrapMaterialSlip',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -2285,12 +3117,12 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            transferMaterialSlip: {
+            variable: {
                 type: 'TransferMaterialSlip',
                 op: 'create',
                 values: {
                     productionPreparationSlip: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['productionPreparationSlip']
@@ -2313,19 +3145,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteTransferMaterialSlip: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'TransferMaterialSlip'
             }
         },
         outputs: {
-            transferMaterialSlip: {
+            variable: {
                 type: 'TransferMaterialSlip',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
@@ -2340,12 +3172,12 @@ export const functions: Record<FunctionName, Function> = {
             }
         },
         outputs: {
-            warehouseAcceptanceSlip: {
+            variable: {
                 type: 'WarehouseAcceptanceSlip',
                 op: 'create',
                 values: {
                     transferMaterialSlip: {
-                        expectedReturnType: 'Text',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['transferMaterialSlip']
@@ -2362,19 +3194,19 @@ export const functions: Record<FunctionName, Function> = {
     },
     deleteWarehouseAcceptanceSlip: {
         inputs: {
-            variableName: {
+            id: {
                 type: 'WarehouseAcceptanceSlip'
             }
         },
         outputs: {
-            warehouseAcceptanceSlip: {
+            variable: {
                 type: 'WarehouseAcceptanceSlip',
                 op: 'delete',
                 id: {
-                    expectedReturnType: 'Text',
+                    expectedReturnType: 'Number',
                     op: '.',
                     types: [],
-                    args: ['variableName']
+                    args: ['id']
                 }
             }
         }
