@@ -1,92 +1,77 @@
 import { Circuit } from "./circuit"
 
 export type CircuitName =
-
     | 'createRegion'
     | 'deleteRegion'
-
     | 'createCountry'
     | 'deleteCountry'
-
     | 'createState'
     | 'deleteState'
-
     | 'createDistrict'
     | 'deleteDistrict'
-
     | 'createSubdistrict'
     | 'deleteSubdistrict'
-
     | 'createPostalCode'
     | 'deletePostalCode'
-
     | 'createAddress'
     | 'deleteAddress'
-
-    | 'createServiceArea'
-    | 'deleteServiceArea'
-
-    | 'createCompanyType'
-    | 'deleteCompanyType'
-
-    | 'createBank'
-    | 'deleteBank'
-
-    | 'createBankBranch'
-    | 'deleteBankBranch'
-
-    | 'createBankAccount'
-    | 'deleteBankAccount'
-
     | 'createCompany'
     | 'deleteCompany'
-
+    | 'createCompanyTagGroup'
+    | 'deleteCompanyTagGroup'
+    | 'createContact'
+    | 'deleteContact'
+    | 'createCurrency'
+    | 'deleteCurrency'
+    | 'createMemo'
+    | 'deleteMemo'
+    | 'createBank'
+    | 'deleteBank'
+    | 'createBankBranch'
+    | 'deleteBankBranch'
+    | 'createBankAccount'
+    | 'deleteBankAccount'
+    | 'createBankTransaction'
+    | 'deleteBankTransaction'
+    | 'createProductCategoryGroup'
+    | 'deleteProductCategoryGroup'
+    | 'createProductCategory'
+    | 'deleteProductCategory'
     | 'createProduct'
     | 'deleteProduct'
-
+    | 'createProductTagGroup'
+    | 'deleteProductTagGroup'
     | 'createIndent'
     | 'deleteIndent'
-
     | 'createQuotation'
     | 'deleteQuotation'
-
     | 'createPurchaseOrder'
     | 'deletePurchaseOrder'
-
     | 'createPurchaseInvoice'
     | 'deletePurchaseInvoice'
-
     | 'createMaterialApprovalSlip'
     | 'deleteMaterialApprovalSlip'
-
     | 'createMaterialRejectionSlip'
     | 'deleteMaterialRejectionSlip'
-
     | 'createMaterialReturnSlip'
     | 'deleteMaterialReturnSlip'
-
     | 'createMaterialRequistionSlip'
     | 'deleteMaterialRequistionSlip'
-
     | 'createBOM'
     | 'deleteBOM'
-
     | 'createProductionPreparationSlip'
     | 'deleteProductionPreparationSlip'
-
     | 'createScrapMaterialSlip'
     | 'deleteScrapMaterialSlip'
-
     | 'createTransferMaterialSlip'
     | 'deleteTransferMaterialSlip'
-
     | 'createWarehouseAcceptanceSlip'
     | 'deleteWarehouseAcceptanceSlip'
 
 export const circuits: Record<CircuitName, Circuit> = {
     createRegion: {
         inputs: {
-            variableName: {
+            name: {
                 type: 'Text'
             },
             items: {
@@ -99,31 +84,31 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'createRegion',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    name: ['input', 'name']
                 }
             },
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'createCountries',
+                exec: 'createCountry',
                 connect: {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        region: ['computation', 'c1', 'region']
+                        region: ['computation', 'c1', 'variable']
                     }
                 }
             }
         },
         outputs: {
-            region: ['c1', 'region'],
-            countries: ['c2', '']
+            region: ['c1', 'variable'],
+            countryList: ['c2', '']
         }
     },
     deleteRegion: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'Region'
             },
             items: {
                 type: []
@@ -133,10 +118,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'mapper',
-                exec: 'deleteCountries',
+                exec: 'deleteCountry',
                 connect: {
                     queryParams: {
-                        region: ['input', 'variableName']
+                        region: ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -147,12 +132,12 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteRegion',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            region: ['c2', 'region']
+            region: ['c2', 'variable']
         }
     },
     createCountry: {
@@ -180,25 +165,25 @@ export const circuits: Record<CircuitName, Circuit> = {
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'createStates',
+                exec: 'createState',
                 connect: {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        country: ['computation', 'c1', 'country']
+                        country: ['computation', 'c1', 'variable']
                     }
                 }
             }
         },
         outputs: {
-            country: ['c1', 'country'],
-            states: ['c2', '']
+            country: ['c1', 'variable'],
+            stateList: ['c2', '']
         }
     },
     deleteCountry: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'Country'
             },
             items: {
                 type: []
@@ -208,10 +193,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'mapper',
-                exec: 'deleteStates',
+                exec: 'deleteState',
                 connect: {
                     queryParams: {
-                        country: ['input', 'variableName']
+                        country: ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -222,12 +207,12 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteCountry',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            country: ['c2', 'country']
+            country: ['c2', 'variable']
         }
     },
     createState: {
@@ -255,25 +240,25 @@ export const circuits: Record<CircuitName, Circuit> = {
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'createDistricts',
+                exec: 'createDistrict',
                 connect: {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        state: ['computation', 'c1', 'state']
+                        state: ['computation', 'c1', 'variable']
                     }
                 }
             }
         },
         outputs: {
-            state: ['c1', 'state'],
-            districts: ['c2', '']
+            state: ['c1', 'variable'],
+            districtList: ['c2', '']
         }
     },
     deleteState: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'State'
             },
             items: {
                 type: []
@@ -283,10 +268,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'mapper',
-                exec: 'deleteDistricts',
+                exec: 'deleteDistrict',
                 connect: {
                     queryParams: {
-                        state: ['input', 'variableName']
+                        state: ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -297,12 +282,12 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteState',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            state: ['c2', 'state']
+            state: ['c2', 'variable']
         }
     },
     createDistrict: {
@@ -330,25 +315,25 @@ export const circuits: Record<CircuitName, Circuit> = {
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'createSubdistricts',
+                exec: 'createSubdistrict',
                 connect: {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        district: ['computation', 'c1', 'district']
+                        district: ['computation', 'c1', 'variable']
                     }
                 }
             }
         },
         outputs: {
-            district: ['c1', 'district'],
-            subdistricts: ['c2', '']
+            district: ['c1', 'variable'],
+            subdistrictList: ['c2', '']
         }
     },
     deleteDistrict: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'District'
             },
             items: {
                 type: []
@@ -358,10 +343,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'mapper',
-                exec: 'deleteSubdistricts',
+                exec: 'deleteSubdistrict',
                 connect: {
                     queryParams: {
-                        'district': ['input', 'variableName']
+                        'district': ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -372,12 +357,12 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteDistrict',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            district: ['c2', 'district']
+            district: ['c2', 'variable']
         }
     },
     createSubdistrict: {
@@ -405,25 +390,25 @@ export const circuits: Record<CircuitName, Circuit> = {
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'createPostalCodes',
+                exec: 'createPostalCode',
                 connect: {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        subdistrict: ['computation', 'c1', 'subdistrict']
+                        subdistrict: ['computation', 'c1', 'variable']
                     }
                 }
             }
         },
         outputs: {
-            subdistrict: ['c1', 'subdistrict'],
-            postalCodes: ['c2', '']
+            subdistrict: ['c1', 'variable'],
+            postalCodeList: ['c2', '']
         }
     },
     deleteSubdistrict: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'Subdistrict'
             },
             items: {
                 type: []
@@ -433,10 +418,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'mapper',
-                exec: 'deletePostalCodes',
+                exec: 'deletePostalCode',
                 connect: {
                     queryParams: {
-                        subdistrict: ['input', 'variableName']
+                        subdistrict: ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -447,12 +432,12 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteSubdistrict',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            subdistrict: ['c2', 'subdistrict']
+            subdistrict: ['c2', 'variable']
         }
     },
     createPostalCode: {
@@ -480,25 +465,25 @@ export const circuits: Record<CircuitName, Circuit> = {
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'createAddresses',
+                exec: 'createAddress',
                 connect: {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        postalCode: ['computation', 'c1', 'postalCode']
+                        postalCode: ['computation', 'c1', 'variable']
                     }
                 }
             }
         },
         outputs: {
-            postalCode: ['c1', 'postalCode'],
-            addresses: ['c2', '']
+            postalCode: ['c1', 'variable'],
+            addressList: ['c2', '']
         }
     },
     deletePostalCode: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'PostalCode'
             },
             items: {
                 type: []
@@ -508,10 +493,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'mapper',
-                exec: 'deleteAddresses',
+                exec: 'deleteAddress',
                 connect: {
                     queryParams: {
-                        region: ['input', 'variableName']
+                        region: ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -522,12 +507,12 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deletePostalCode',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            postalCode: ['c2', 'postalCode']
+            postalCode: ['c2', 'variable']
         }
     },
     createAddress: {
@@ -563,13 +548,13 @@ export const circuits: Record<CircuitName, Circuit> = {
             }
         },
         outputs: {
-            address: ['c1', 'address']
+            address: ['c1', 'variable']
         }
     },
     deleteAddress: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'Address'
             }
         },
         computations: {
@@ -578,92 +563,504 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteAddress',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            address: ['c1', 'address']
+            address: ['c1', 'variable']
         }
     },
-    createServiceArea: {
+    createCompany: {
         inputs: {
-            variableName: {
+            name: {
                 type: 'Text'
+            },
+            email: {
+                type: 'Text'
+            },
+            telephone: {
+                type: 'Text'
+            },
+            mobile: {
+                type: 'Text'
+            },
+            website: {
+                type: 'Text'
+            },
+            gstin: {
+                type: 'Text'
+            },
+            pan: {
+                type: 'Text'
+            },
+            iec: {
+                type: 'Text'
+            },
+            addresses: {
+                type: []
+            },
+            tags: {
+                type: []
+            },
+            contacts: {
+                type: []
+            },
+            bankAccounts: {
+                type: []
+            },
+            products: {
+                type: []
             }
         },
         computations: {
             c1: {
                 order: 1,
                 type: 'function',
-                exec: 'createServiceArea',
+                exec: 'createCompany',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    name: ['input', 'name'],
+                    email: ['input', 'email'],
+                    telephone: ['input', 'telephone'],
+                    mobile: ['input', 'mobile'],
+                    website: ['input', 'website'],
+                    gstin: ['input', 'gstin'],
+                    pan: ['input', 'pan'],
+                    iec: ['input', 'iec']
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'mapper',
+                exec: 'createCompanyAddress',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'addresses'],
+                    overrides: {
+                        company: ['computation', 'c1', 'variable']
+                    }
+                }
+            },
+            c3: {
+                order: 3,
+                type: 'mapper',
+                exec: 'createMappingCompanyTag',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'tags'],
+                    overrides: {
+                        company: ['computation', 'c1', 'variable']
+                    }
+                }
+            },
+            c4: {
+                order: 4,
+                type: 'mapper',
+                exec: 'createCompanyContact',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'contacts'],
+                    overrides: {
+                        company: ['computation', 'c1', 'variable']
+                    }
+                }
+            },
+            c5: {
+                order: 5,
+                type: 'mapper',
+                exec: 'createCompanyBankAccount',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'bankAccounts'],
+                    overrides: {
+                        company: ['computation', 'c1', 'variable']
+                    }
+                }
+            },
+            c6: {
+                order: 6,
+                type: 'mapper',
+                exec: 'createCompanyProduct',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'products'],
+                    overrides: {
+                        company: ['computation', 'c1', 'variable']
+                    }
                 }
             }
         },
         outputs: {
-            serviceArea: ['c1', 'serviceArea']
+            company: ['c1', 'variable'],
+            companyAddressList: ['c2', ''],
+            mappingCompanyTagList: ['c3', ''],
+            companyContactList: ['c4', ''],
+            companyBankAccountList: ['c5', ''],
+            companyProductList: ['c6', '']
         }
     },
-    deleteServiceArea: {
+    deleteCompany: {
         inputs: {
-            variableName: {
+            id: {
+                type: 'Company'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'mapper',
+                exec: 'deleteCompanyAddress',
+                connect: {
+                    queryParams: {
+                        company: ['input', 'id']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'mapper',
+                exec: 'deleteMappingCompanyTag',
+                connect: {
+                    queryParams: {
+                        company: ['input', 'id']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c3: {
+                order: 3,
+                type: 'mapper',
+                exec: 'deleteCompanyContact',
+                connect: {
+                    queryParams: {
+                        company: ['input', 'id']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c4: {
+                order: 4,
+                type: 'mapper',
+                exec: 'deleteCompanyBankAccount',
+                connect: {
+                    queryParams: {
+                        company: ['input', 'id']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c5: {
+                order: 5,
+                type: 'mapper',
+                exec: 'deleteCompanyProduct',
+                connect: {
+                    queryParams: {
+                        company: ['input', 'id']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c6: {
+                order: 6,
+                type: 'function',
+                exec: 'deleteCompany',
+                connect: {
+                    id: ['input', 'id']
+                }
+            }
+        },
+        outputs: {
+            company: ['c6', 'variable']
+        }
+    },
+    createCompanyTagGroup: {
+        inputs: {
+            name: {
                 type: 'Text'
+            },
+            items: {
+                type: []
             }
         },
         computations: {
             c1: {
                 order: 1,
                 type: 'function',
-                exec: 'deleteServiceArea',
+                exec: 'createCompanyTagGroup',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    name: ['input', 'name']
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'mapper',
+                exec: 'createCompanyTag',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'items'],
+                    overrides: {
+                        group: ['computation', 'c1', 'variable']
+                    }
                 }
             }
         },
         outputs: {
-            serviceArea: ['c1', 'serviceArea']
+            companyTagGroup: ['c1', 'variable'],
+            companyTagList: ['c2', '']
         }
     },
-    createCompanyType: {
+    deleteCompanyTagGroup: {
         inputs: {
-            variableName: {
+            id: {
+                type: 'CompanyTagGroup'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'mapper',
+                exec: 'deleteCompanyTag',
+                connect: {
+                    queryParams: {
+                        group: ['input', 'id']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'function',
+                exec: 'deleteCompanyTagGroup',
+                connect: {
+                    id: ['input', 'id']
+                }
+            }
+        },
+        outputs: {
+            companyTagGroup: ['c2', 'variable']
+        }
+    },
+    createContact: {
+        inputs: {
+            name: {
                 type: 'Text'
+            },
+            email: {
+                type: 'Text'
+            },
+            telephone: {
+                type: 'Text'
+            },
+            mobile: {
+                type: 'Text'
+            },
+            website: {
+                type: 'Text'
+            },
+            addresses: {
+                type: []
             }
         },
         computations: {
             c1: {
                 order: 1,
                 type: 'function',
-                exec: 'createCompanyType',
+                exec: 'createContact',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    name: ['input', 'name'],
+                    email: ['input', 'email'],
+                    telephone: ['input', 'telephone'],
+                    mobile: ['input', 'mobile'],
+                    website: ['input', 'website']
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'mapper',
+                exec: 'createContactAddress',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'addresses'],
+                    overrides: {
+                        contact: ['computation', 'c1', 'variable']
+                    }
                 }
             }
         },
         outputs: {
-            companyType: ['c1', 'companyType']
+            contact: ['c1', 'variable'],
+            contactAddressList: ['c2', '']
         }
     },
-    deleteCompanyType: {
+    deleteContact: {
         inputs: {
-            variableName: {
+            id: {
+                type: 'Contact'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'mapper',
+                exec: 'deleteContactAddress',
+                connect: {
+                    queryParams: {
+                        contact: ['input', 'id']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'function',
+                exec: 'deleteContact',
+                connect: {
+                    id: ['input', 'id']
+                }
+            }
+        },
+        outputs: {
+            contact: ['c2', 'variable']
+        }
+    },
+    createCurrency: {
+        inputs: {
+            name: {
                 type: 'Text'
+            },
+            items: {
+                type: []
             }
         },
         computations: {
             c1: {
                 order: 1,
                 type: 'function',
-                exec: 'deleteCompanyType',
+                exec: 'createCurrency',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    name: ['input', 'name']
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'mapper',
+                exec: 'createCurrencyRate',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'items'],
+                    overrides: {
+                        currency: ['computation', 'c1', 'variable']
+                    }
                 }
             }
         },
         outputs: {
-            companyType: ['c1', 'companyType']
+            currency: ['c1', 'variable'],
+            currencyRatList: ['c2', '']
+        }
+    },
+    deleteCurrency: {
+        inputs: {
+            id: {
+                type: 'Currency'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'mapper',
+                exec: 'deleteCurrencyRate',
+                connect: {
+                    queryParams: {
+                        currency: ['input', 'id']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'function',
+                exec: 'deleteCurrency',
+                connect: {
+                    id: ['input', 'id']
+                }
+            }
+        },
+        outputs: {
+            currency: ['c2', 'variable']
+        }
+    },
+    createMemo: {
+        inputs: {
+            company: {
+                type: 'Company'
+            },
+            currency: {
+                type: 'Currency'
+            },
+            amount: {
+                type: 'Decimal'
+            },
+            unsettled: {
+                type: 'Decimal'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'createMemo',
+                connect: {
+                    company: ['input', 'company'],
+                    currency: ['input', 'currency'],
+                    amount: ['input', 'amount'],
+                    unsettled: ['input', 'unsettled']
+                }
+            }
+        },
+        outputs: {
+            memo: ['c1', 'variable']
+        }
+    },
+    deleteMemo: {
+        inputs: {
+            id: {
+                type: 'Memo'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'deleteMemo',
+                connect: {
+                    id: ['input', 'id']
+                }
+            }
+        },
+        outputs: {
+            memo: ['c1', 'variable']
         }
     },
     createBank: {
@@ -695,25 +1092,25 @@ export const circuits: Record<CircuitName, Circuit> = {
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'createBankBranches',
+                exec: 'createBankBranch',
                 connect: {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        bank: ['computation', 'c1', 'bank']
+                        bank: ['computation', 'c1', 'variable']
                     }
                 }
             }
         },
         outputs: {
-            bank: ['c1', 'bank'],
-            bankBranches: ['c2', '']
+            bank: ['c1', 'variable'],
+            bankBranchList: ['c2', '']
         }
     },
     deleteBank: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'Bank'
             },
             items: {
                 type: []
@@ -723,10 +1120,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'mapper',
-                exec: 'deleteBankBranches',
+                exec: 'deleteBankBranch',
                 connect: {
                     queryParams: {
-                        bank: ['input', 'variableName']
+                        bank: ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -737,12 +1134,12 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteBank',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            bank: ['c2', 'bank']
+            bank: ['c2', 'variable']
         }
     },
     createBankBranch: {
@@ -778,26 +1175,26 @@ export const circuits: Record<CircuitName, Circuit> = {
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'createBankAccounts',
+                exec: 'createBankAccount',
                 connect: {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
                         bank: ['input', 'bank'],
-                        bankBranch: ['computation', 'c1', 'bankBranch']
+                        bankBranch: ['computation', 'c1', 'variable']
                     }
                 }
             }
         },
         outputs: {
-            bankBranch: ['c1', 'bankBranch'],
-            bankAccounts: ['c2', '']
+            bankBranch: ['c1', 'variable'],
+            bankAccountList: ['c2', '']
         }
     },
     deleteBankBranch: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'BankBranch'
             },
             items: {
                 type: []
@@ -807,10 +1204,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'mapper',
-                exec: 'deleteBankAccounts',
+                exec: 'deleteBankAccount',
                 connect: {
                     queryParams: {
-                        bankBranch: ['input', 'variableName']
+                        bankBranch: ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -821,12 +1218,12 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteBankBranch',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            bankBranch: ['c2', 'bankBranch']
+            bankBranch: ['c2', 'variable']
         }
     },
     createBankAccount: {
@@ -840,6 +1237,12 @@ export const circuits: Record<CircuitName, Circuit> = {
             accountNumber: {
                 type: 'Text'
             },
+            accountName: {
+                type: 'Text'
+            },
+            currency: {
+                type: 'Currency'
+            },
             companies: {
                 type: []
             }
@@ -852,31 +1255,33 @@ export const circuits: Record<CircuitName, Circuit> = {
                 connect: {
                     bank: ['input', 'bank'],
                     bankBranch: ['input', 'bankBranch'],
-                    accountNumber: ['input', 'accountNumber']
+                    accountNumber: ['input', 'accountNumber'],
+                    accountName: ['input', 'accountName'],
+                    currency: ['input', 'currency']
                 }
             },
             c2: {
                 order: 3,
                 type: 'mapper',
-                exec: 'createBankAccountCompanies',
+                exec: 'createBankAccountCompany',
                 connect: {
                     queryParams: {},
                     args: ['input', 'companies'],
                     overrides: {
-                        bankAccount: ['computation', 'c1', 'bankAccount']
+                        bankAccount: ['computation', 'c1', 'variable']
                     }
                 }
             }
         },
         outputs: {
-            bankAccount: ['c1', 'bankAccount'],
-            companies: ['c2', '']
+            bankAccount: ['c1', 'variable'],
+            bankAccountCompanyList: ['c2', '']
         }
     },
     deleteBankAccount: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'BankAccount'
             },
             items: {
                 type: []
@@ -886,10 +1291,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 2,
                 type: 'mapper',
-                exec: 'deleteBankAccountCompanies',
+                exec: 'deleteBankAccountCompany',
                 connect: {
                     queryParams: {
-                        'bankAccount': ['input', 'variableName']
+                        'bankAccount': ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -900,221 +1305,199 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteBankAccount',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            bankAccount: ['c2', 'bankAccount']
+            bankAccount: ['c2', 'variable']
         }
     },
-    createCompany: {
+    createBankTransaction: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            timestamp: {
+                type: 'Timestamp'
             },
-            email: {
-                type: 'Text'
+            memo: {
+                type: 'Memo'
             },
-            telephone: {
-                type: 'Text'
+            currencyRate: {
+                type: 'CurrencyRate'
             },
-            mobile: {
-                type: 'Text'
+            bankAccount: {
+                type: 'BankAccount'
             },
-            website: {
-                type: 'Text'
+            fromToAccount: {
+                type: 'BankAccount'
             },
-            companyType: {
-                type: 'CompanyType'
+            credit: {
+                type: 'Decimal'
             },
-            serviceArea: {
-                type: 'ServiceArea'
-            },
-            gstin: {
-                type: 'Text'
-            },
-            pan: {
-                type: 'Text'
-            },
-            iec: {
-                type: 'Text'
-            },
-            addresses: {
-                type: []
-            },
-            contacts: {
-                type: []
-            },
-            bankAccounts: {
-                type: []
-            },
-            products: {
-                type: []
+            debit: {
+                type: 'Decimal'
             }
         },
         computations: {
             c1: {
                 order: 1,
                 type: 'function',
-                exec: 'createCompany',
+                exec: 'createBankTransaction',
                 connect: {
-                    variableName: ['input', 'variableName'],
-                    email: ['input', 'email'],
-                    telephone: ['input', 'telephone'],
-                    mobile: ['input', 'mobile'],
-                    website: ['input', 'website'],
-                    companyType: ['input', 'companyType'],
-                    serviceArea: ['input', 'serviceArea'],
-                    gstin: ['input', 'gstin'],
-                    pan: ['input', 'pan'],
-                    iec: ['input', 'iec']
-                }
-            },
-            c2: {
-                order: 2,
-                type: 'mapper',
-                exec: 'createCompanyAddresses',
-                connect: {
-                    queryParams: {},
-                    args: ['input', 'addresses'],
-                    overrides: {
-                        company: ['computation', 'c1', 'company']
-                    }
-                }
-            },
-            c3: {
-                order: 3,
-                type: 'mapper',
-                exec: 'createCompanyContacts',
-                connect: {
-                    queryParams: {},
-                    args: ['input', 'contacts'],
-                    overrides: {
-                        company: ['computation', 'c1', 'company']
-                    }
-                }
-            },
-            c4: {
-                order: 4,
-                type: 'mapper',
-                exec: 'createCompanyBankAccounts',
-                connect: {
-                    queryParams: {},
-                    args: ['input', 'bankAccounts'],
-                    overrides: {
-                        company: ['computation', 'c1', 'company']
-                    }
-                }
-            },
-            c5: {
-                order: 5,
-                type: 'mapper',
-                exec: 'createCompanyProducts',
-                connect: {
-                    queryParams: {},
-                    args: ['input', 'products'],
-                    overrides: {
-                        company: ['computation', 'c1', 'company']
-                    }
+                    timestamp: ['input', 'timestamp'],
+                    memo: ['input', 'memo'],
+                    currencyRate: ['input', 'currencyRate'],
+                    bankAccount: ['input', 'bankAccount'],
+                    fromToAccount: ['input', 'fromToAccount'],
+                    credit: ['input', 'credit'],
+                    debit: ['input', 'debit']
                 }
             }
         },
         outputs: {
-            company: ['c1', 'company'],
-            addresses: ['c2', ''],
-            contacts: ['c3', ''],
-            bankAccounts: ['c4', ''],
-            products: ['c5', '']
+            bankTransaction: ['c1', 'variable']
         }
     },
-    deleteCompany: {
+    deleteBankTransaction: {
         inputs: {
-            variableName: {
-                type: 'Text'
-            },
-            items: {
-                type: []
+            id: {
+                type: 'BankTransaction'
             }
         },
         computations: {
             c1: {
                 order: 1,
-                type: 'mapper',
-                exec: 'deleteCompanyAddresses',
-                connect: {
-                    queryParams: {
-                        company: ['input', 'variableName']
-                    },
-                    args: ['input', 'items'],
-                    overrides: {}
-                }
-            },
-            c2: {
-                order: 2,
-                type: 'mapper',
-                exec: 'deleteCompanyContacts',
-                connect: {
-                    queryParams: {
-                        company: ['input', 'variableName']
-                    },
-                    args: ['input', 'items'],
-                    overrides: {}
-                }
-            },
-            c3: {
-                order: 3,
-                type: 'mapper',
-                exec: 'deleteCompanyBankAccounts',
-                connect: {
-                    queryParams: {
-                        company: ['input', 'variableName']
-                    },
-                    args: ['input', 'items'],
-                    overrides: {}
-                }
-            },
-            c4: {
-                order: 4,
-                type: 'mapper',
-                exec: 'deleteCompanyProducts',
-                connect: {
-                    queryParams: {
-                        company: ['input', 'variableName']
-                    },
-                    args: ['input', 'items'],
-                    overrides: {}
-                }
-            },
-            c5: {
-                order: 5,
                 type: 'function',
-                exec: 'deleteCompany',
+                exec: 'deleteBankTransaction',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            company: ['c5', 'company']
+            bankTransaction: ['c1', 'variable']
         }
     },
-    createProduct: {
+    createProductCategoryGroup: {
         inputs: {
-            sku: {
-                type: 'Text'
+            parent: {
+                type: 'ProductCategoryGroup'
             },
             name: {
                 type: 'Text'
             },
-            orderable: {
-                type: 'Boolean'
+            length: {
+                type: 'Number'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'createProductCategoryGroup',
+                connect: {
+                    parent: ['input', 'parent'],
+                    name: ['input', 'name'],
+                    length: ['input', 'length']
+                }
+            }
+        },
+        outputs: {
+            productCategoryGroup: ['c1', 'variable']
+        }
+    },
+    deleteProductCategoryGroup: {
+        inputs: {
+            id: {
+                type: 'ProductCategoryGroup'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'deleteProductCategoryGroup',
+                connect: {
+                    id: ['input', 'id']
+                }
+            }
+        },
+        outputs: {
+            productCategoryGroup: ['c1', 'variable']
+        }
+    },
+    createProductCategory: {
+        inputs: {
+            parent: {
+                type: 'ProductCategory'
             },
-            consumable: {
-                type: 'Boolean'
+            group: {
+                type: 'ProductCategoryGroup'
             },
-            producable: {
-                type: 'Boolean'
+            name: {
+                type: 'Text'
+            },
+            code: {
+                type: 'Text'
+            },
+            derivedCode: {
+                type: 'Text'
+            },
+            childCount: {
+                type: 'Number'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'createProductCategory',
+                connect: {
+                    parent: ['input', 'parent'],
+                    group: ['input', 'group'],
+                    name: ['input', 'name'],
+                    code: ['input', 'code'],
+                    derivedCode: ['input', 'derivedCode'],
+                    childCount: ['input', 'childCount']
+                }
+            }
+        },
+        outputs: {
+            productCategory: ['c1', 'variable']
+        }
+    },
+    deleteProductCategory: {
+        inputs: {
+            id: {
+                type: 'ProductCategory'
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'deleteProductCategory',
+                connect: {
+                    id: ['input', 'id']
+                }
+            }
+        },
+        outputs: {
+            productCategory: ['c1', 'variable']
+        }
+    },
+    createProduct: {
+        inputs: {
+            name: {
+                type: 'Text'
+            },
+            category: {
+                type: 'ProductCategory'
+            },
+            code: {
+                type: 'Text'
+            },
+            sku: {
+                type: 'Text'
             },
             uoms: {
                 type: []
@@ -1129,48 +1512,60 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'createProduct',
                 connect: {
-                    variableName: ['input', 'sku'],
                     name: ['input', 'name'],
-                    orderable: ['input', 'orderable'],
-                    consumable: ['input', 'consumable'],
-                    producable: ['input', 'producable']
+                    category: ['input', 'category'],
+                    code: ['input', 'code'],
+                    sku: ['input', 'sku']
                 }
             },
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'createUOMs',
+                exec: 'createUOM',
                 connect: {
                     queryParams: {},
                     args: ['input', 'uoms'],
                     overrides: {
-                        product: ['computation', 'c1', 'product']
+                        product: ['computation', 'c1', 'variable']
                     }
                 }
             },
             c3: {
                 order: 3,
                 type: 'mapper',
-                exec: 'createProductCompanies',
+                exec: 'createProductCompany',
                 connect: {
                     queryParams: {},
                     args: ['input', 'companies'],
                     overrides: {
-                        product: ['computation', 'c1', 'product']
+                        product: ['computation', 'c1', 'variable']
+                    }
+                }
+            },
+            c4: {
+                order: 4,
+                type: 'mapper',
+                exec: 'createMappingProductTag',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'tags'],
+                    overrides: {
+                        product: ['computation', 'c1', 'variable']
                     }
                 }
             }
         },
         outputs: {
-            product: ['c1', 'product'],
-            uoms: ['c2', ''],
-            companies: ['c3', '']
+            product: ['c1', 'variable'],
+            uomList: ['c2', ''],
+            createproductCompanyList: ['c3', ''],
+            mappingProductTagList: ['c4', '']
         }
     },
     deleteProduct: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'Product'
             },
             items: {
                 type: []
@@ -1180,10 +1575,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'mapper',
-                exec: 'deleteUOMs',
+                exec: 'deleteUOM',
                 connect: {
                     queryParams: {
-                        'product': ['input', 'variableName']
+                        'product': ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -1192,10 +1587,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'deleteProductCompanies',
+                exec: 'deleteProductCompany',
                 connect: {
                     queryParams: {
-                        'product': ['input', 'variableName']
+                        'product': ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -1203,15 +1598,98 @@ export const circuits: Record<CircuitName, Circuit> = {
             },
             c3: {
                 order: 3,
+                type: 'mapper',
+                exec: 'deleteMappingProductTag',
+                connect: {
+                    queryParams: {
+                        company: ['input', 'id']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c4: {
+                order: 4,
                 type: 'function',
                 exec: 'deleteProduct',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            product: ['c3', 'product']
+            product: ['c3', 'variable']
+        }
+    },
+    createProductTagGroup: {
+        inputs: {
+            name: {
+                type: 'Text'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'function',
+                exec: 'createProductTagGroup',
+                connect: {
+                    name: ['input', 'name']
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'mapper',
+                exec: 'createProductTag',
+                connect: {
+                    queryParams: {},
+                    args: ['input', 'items'],
+                    overrides: {
+                        group: ['computation', 'c1', 'variable']
+                    }
+                }
+            }
+        },
+        outputs: {
+            productTagGroup: ['c1', 'variable'],
+            productTagList: ['c2', '']
+        }
+    },
+    deleteProductTagGroup: {
+        inputs: {
+            id: {
+                type: 'ProductTagGroup'
+            },
+            items: {
+                type: []
+            }
+        },
+        computations: {
+            c1: {
+                order: 1,
+                type: 'mapper',
+                exec: 'deleteProductTag',
+                connect: {
+                    queryParams: {
+                        group: ['input', 'id']
+                    },
+                    args: ['input', 'items'],
+                    overrides: {}
+                }
+            },
+            c2: {
+                order: 2,
+                type: 'function',
+                exec: 'deleteProductTagGroup',
+                connect: {
+                    id: ['input', 'id']
+                }
+            }
+        },
+        outputs: {
+            productTagGroup: ['c2', 'variable']
         }
     },
     createIndent: {
@@ -1230,25 +1708,25 @@ export const circuits: Record<CircuitName, Circuit> = {
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'createIndentItems',
+                exec: 'createIndentItem',
                 connect: {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        indent: ['computation', 'c1', 'indent']
+                        indent: ['computation', 'c1', 'variable']
                     }
                 }
             }
         },
         outputs: {
-            indent: ['c1', 'indent'],
-            items: ['c2', '']
+            indent: ['c1', 'variable'],
+            indentItemList: ['c2', '']
         }
     },
     deleteIndent: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'Indent'
             },
             items: {
                 type: []
@@ -1258,10 +1736,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'mapper',
-                exec: 'deleteIndentItems',
+                exec: 'deleteIndentItem',
                 connect: {
                     queryParams: {
-                        'indent': ['input', 'variableName']
+                        'indent': ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -1272,12 +1750,12 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteIndent',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            indent: ['c2', 'indent']
+            indent: ['c2', 'variable']
         }
     },
     createQuotation: {
@@ -1305,25 +1783,25 @@ export const circuits: Record<CircuitName, Circuit> = {
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'createQuotationItems',
+                exec: 'createQuotationItem',
                 connect: {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        quotation: ['computation', 'c1', 'quotation']
+                        quotation: ['computation', 'c1', 'variable']
                     }
                 }
             }
         },
         outputs: {
-            quotation: ['c1', 'quotation'],
-            items: ['c2', '']
+            quotation: ['c1', 'variable'],
+            quotationItemList: ['c2', '']
         }
     },
     deleteQuotation: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'Quotation'
             },
             items: {
                 type: []
@@ -1333,10 +1811,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'mapper',
-                exec: 'deleteQuotationItems',
+                exec: 'deleteQuotationItem',
                 connect: {
                     queryParams: {
-                        'quotation': ['input', 'variableName']
+                        'quotation': ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -1347,12 +1825,12 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteQuotation',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            quotation: ['c2', 'quotation']
+            quotation: ['c2', 'variable']
         }
     },
     createPurchaseOrder: {
@@ -1376,25 +1854,25 @@ export const circuits: Record<CircuitName, Circuit> = {
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'createPurchaseOrderItems',
+                exec: 'createPurchaseOrderItem',
                 connect: {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        purchaseOrder: ['computation', 'c1', 'purchaseOrder']
+                        purchaseOrder: ['computation', 'c1', 'variable']
                     }
                 }
             }
         },
         outputs: {
-            purchaseOrder: ['c1', 'purchaseOrder'],
-            items: ['c2', '']
+            purchaseOrder: ['c1', 'variable'],
+            purchaseOrderItemList: ['c2', '']
         }
     },
     deletePurchaseOrder: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'PurchaseOrder'
             },
             items: {
                 type: []
@@ -1404,10 +1882,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'mapper',
-                exec: 'deletePurchaseOrderItems',
+                exec: 'deletePurchaseOrderItem',
                 connect: {
                     queryParams: {
-                        'purchaseOrder': ['input', 'variableName']
+                        'purchaseOrder': ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -1418,12 +1896,12 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deletePurchaseOrder',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            purchaseOrder: ['c2', 'purchaseOrder']
+            purchaseOrder: ['c2', 'variable']
         }
     },
     createPurchaseInvoice: {
@@ -1447,25 +1925,25 @@ export const circuits: Record<CircuitName, Circuit> = {
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'createPurchaseInvoiceItems',
+                exec: 'createPurchaseInvoiceItem',
                 connect: {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        purchaseInvoice: ['computation', 'c1', 'purchaseInvoice']
+                        purchaseInvoice: ['computation', 'c1', 'variable']
                     }
                 }
             }
         },
         outputs: {
-            purchaseInvoice: ['c1', 'purchaseInvoice'],
-            items: ['c2', '']
+            purchaseInvoice: ['c1', 'variable'],
+            purchaseInvoiceItemList: ['c2', '']
         }
     },
     deletePurchaseInvoice: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'PurchaseInvoice'
             },
             items: {
                 type: []
@@ -1475,10 +1953,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'mapper',
-                exec: 'deletePurchaseInvoiceItems',
+                exec: 'deletePurchaseInvoiceItem',
                 connect: {
                     queryParams: {
-                        'purchaseInvoice': ['input', 'variableName']
+                        'purchaseInvoice': ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -1489,12 +1967,12 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deletePurchaseInvoice',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            purchaseInvoice: ['c2', 'purchaseInvoice']
+            purchaseInvoice: ['c2', 'variable']
         }
     },
     createMaterialApprovalSlip: {
@@ -1518,25 +1996,25 @@ export const circuits: Record<CircuitName, Circuit> = {
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'createMaterialApprovalSlipItems',
+                exec: 'createMaterialApprovalSlipItem',
                 connect: {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        materialApprovalSlip: ['computation', 'c1', 'materialApprovalSlip']
+                        materialApprovalSlip: ['computation', 'c1', 'variable']
                     }
                 }
             }
         },
         outputs: {
-            materialApprovalSlip: ['c1', 'materialApprovalSlip'],
-            items: ['c2', '']
+            materialApprovalSlip: ['c1', 'variable'],
+            materialApprovalSlipItemList: ['c2', '']
         }
     },
     deleteMaterialApprovalSlip: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'MaterialApprovalSlip'
             },
             items: {
                 type: []
@@ -1546,10 +2024,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'mapper',
-                exec: 'deleteMaterialApprovalSlipItems',
+                exec: 'deleteMaterialApprovalSlipItem',
                 connect: {
                     queryParams: {
-                        'materialApprovalSlip': ['input', 'variableName']
+                        'materialApprovalSlip': ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -1560,12 +2038,12 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteMaterialApprovalSlip',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            materialApprovalSlip: ['c2', 'materialApprovalSlip']
+            materialApprovalSlip: ['c2', 'variable']
         }
     },
     createMaterialRejectionSlip: {
@@ -1589,25 +2067,25 @@ export const circuits: Record<CircuitName, Circuit> = {
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'createMaterialRejectionSlipItems',
+                exec: 'createMaterialRejectionSlipItem',
                 connect: {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        materialRejectionSlip: ['computation', 'c1', 'materialRejectionSlip']
+                        materialRejectionSlip: ['computation', 'c1', 'variable']
                     }
                 }
             }
         },
         outputs: {
-            materialRejectionSlip: ['c1', 'materialRejectionSlip'],
-            items: ['c2', '']
+            materialRejectionSlip: ['c1', 'variable'],
+            materialRejectionSlipItemList: ['c2', '']
         }
     },
     deleteMaterialRejectionSlip: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'MaterialRejectionSlip'
             },
             items: {
                 type: []
@@ -1617,10 +2095,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'mapper',
-                exec: 'deleteMaterialRejectionSlipItems',
+                exec: 'deleteMaterialRejectionSlipItem',
                 connect: {
                     queryParams: {
-                        'materialRejectionSlip': ['input', 'variableName']
+                        'materialRejectionSlip': ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -1631,12 +2109,12 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteMaterialRejectionSlip',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            materialRejectionSlip: ['c2', 'materialRejectionSlip']
+            materialRejectionSlip: ['c2', 'variable']
         }
     },
     createMaterialReturnSlip: {
@@ -1660,25 +2138,25 @@ export const circuits: Record<CircuitName, Circuit> = {
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'createMaterialReturnSlipItems',
+                exec: 'createMaterialReturnSlipItem',
                 connect: {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        materialReturnSlip: ['computation', 'c1', 'materialReturnSlip']
+                        materialReturnSlip: ['computation', 'c1', 'variable']
                     }
                 }
             }
         },
         outputs: {
-            materialReturnSlip: ['c1', 'materialReturnSlip'],
-            items: ['c2', '']
+            materialReturnSlip: ['c1', 'variable'],
+            materialReturnSlipItemList: ['c2', '']
         }
     },
     deleteMaterialReturnSlip: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'MaterialReturnSlip'
             },
             items: {
                 type: []
@@ -1688,10 +2166,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'mapper',
-                exec: 'deleteMaterialReturnSlipItems',
+                exec: 'deleteMaterialReturnSlipItem',
                 connect: {
                     queryParams: {
-                        'materialReturnSlip': ['input', 'variableName']
+                        'materialReturnSlip': ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -1702,12 +2180,12 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteMaterialReturnSlip',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            materialReturnSlip: ['c2', 'materialReturnSlip']
+            materialReturnSlip: ['c2', 'variable']
         }
     },
     createMaterialRequistionSlip: {
@@ -1731,25 +2209,25 @@ export const circuits: Record<CircuitName, Circuit> = {
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'createMaterialRequistionSlipItems',
+                exec: 'createMaterialRequistionSlipItem',
                 connect: {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        materialRequistionSlip: ['computation', 'c1', 'materialRequistionSlip']
+                        materialRequistionSlip: ['computation', 'c1', 'variable']
                     }
                 }
             }
         },
         outputs: {
-            materialRequistionSlip: ['c1', 'materialRequistionSlip'],
-            items: ['c2', '']
+            materialRequistionSlip: ['c1', 'variable'],
+            materialRequistionSlipItemList: ['c2', '']
         }
     },
     deleteMaterialRequistionSlip: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'MaterialRequistionSlip'
             },
             items: {
                 type: []
@@ -1759,10 +2237,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'mapper',
-                exec: 'deleteMaterialRequistionSlipItems',
+                exec: 'deleteMaterialRequistionSlipItem',
                 connect: {
                     queryParams: {
-                        'materialRequistionSlip': ['input', 'variableName']
+                        'materialRequistionSlip': ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -1773,17 +2251,17 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteMaterialRequistionSlip',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            materialRequistionSlip: ['c2', 'materialRequistionSlip']
+            materialRequistionSlip: ['c2', 'variable']
         }
     },
     createBOM: {
         inputs: {
-            variableName: {
+            name: {
                 type: 'Text'
             },
             items: {
@@ -1796,31 +2274,31 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'createBOM',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    name: ['input', 'name']
                 }
             },
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'createBOMItems',
+                exec: 'createBOMItem',
                 connect: {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        bom: ['computation', 'c1', 'bom']
+                        bom: ['computation', 'c1', 'variable']
                     }
                 }
             }
         },
         outputs: {
-            bom: ['c1', 'bom'],
-            items: ['c2', '']
+            bom: ['c1', 'variable'],
+            bomItemList: ['c2', '']
         }
     },
     deleteBOM: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'BOM'
             },
             items: {
                 type: []
@@ -1830,10 +2308,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'mapper',
-                exec: 'deleteBOMItems',
+                exec: 'deleteBOMItem',
                 connect: {
                     queryParams: {
-                        'bom': ['input', 'variableName']
+                        'bom': ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -1844,12 +2322,12 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteBOM',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            bom: ['c2', 'bom']
+            bom: ['c2', 'variable']
         }
     },
     createProductionPreparationSlip: {
@@ -1873,25 +2351,25 @@ export const circuits: Record<CircuitName, Circuit> = {
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'createProductionPreparationSlipItems',
+                exec: 'createProductionPreparationSlipItem',
                 connect: {
                     queryParams: {},
                     args: ['input', 'items'],
                     overrides: {
-                        productionPreparationSlip: ['computation', 'c1', 'productionPreparationSlip']
+                        productionPreparationSlip: ['computation', 'c1', 'variable']
                     }
                 }
             }
         },
         outputs: {
-            productionPreparationSlip: ['c1', 'productionPreparationSlip'],
-            items: ['c2', '']
+            productionPreparationSlip: ['c1', 'variable'],
+            productionPreparationSlipItemList: ['c2', '']
         }
     },
     deleteProductionPreparationSlip: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'ProductionPreparationSlip'
             },
             items: {
                 type: []
@@ -1901,10 +2379,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'mapper',
-                exec: 'deleteProductionPreparationSlipItems',
+                exec: 'deleteProductionPreparationSlipItem',
                 connect: {
                     queryParams: {
-                        'productionPreparationSlip': ['input', 'variableName']
+                        'productionPreparationSlip': ['input', 'id']
                     },
                     args: ['input', 'items'],
                     overrides: {}
@@ -1915,12 +2393,12 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteProductionPreparationSlip',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            productionPreparationSlip: ['c2', 'productionPreparationSlip']
+            productionPreparationSlip: ['c2', 'variable']
         }
     },
     createScrapMaterialSlip: {
@@ -1944,13 +2422,13 @@ export const circuits: Record<CircuitName, Circuit> = {
             }
         },
         outputs: {
-            scrapMaterialSlip: ['c1', 'scrapMaterialSlip']
+            scrapMaterialSlip: ['c1', 'variable']
         }
     },
     deleteScrapMaterialSlip: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'ScrapMaterialSlip'
             }
         },
         computations: {
@@ -1959,12 +2437,12 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteScrapMaterialSlip',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            scrapMaterialSlip: ['c1', 'scrapMaterialSlip']
+            scrapMaterialSlip: ['c1', 'variable']
         }
     },
     createTransferMaterialSlip: {
@@ -1988,13 +2466,13 @@ export const circuits: Record<CircuitName, Circuit> = {
             }
         },
         outputs: {
-            transferMaterialSlip: ['c1', 'transferMaterialSlip']
+            transferMaterialSlip: ['c1', 'variable']
         }
     },
     deleteTransferMaterialSlip: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'TransferMaterialSlip'
             }
         },
         computations: {
@@ -2003,12 +2481,12 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteTransferMaterialSlip',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            transferMaterialSlip: ['c1', 'transferMaterialSlip']
+            transferMaterialSlip: ['c1', 'variable']
         }
     },
     createWarehouseAcceptanceSlip: {
@@ -2032,13 +2510,13 @@ export const circuits: Record<CircuitName, Circuit> = {
             }
         },
         outputs: {
-            warehouseAcceptanceSlip: ['c1', 'warehouseAcceptanceSlip']
+            warehouseAcceptanceSlip: ['c1', 'variable']
         }
     },
     deleteWarehouseAcceptanceSlip: {
         inputs: {
-            variableName: {
-                type: 'Text'
+            id: {
+                type: 'WarehouseAcceptanceSlip'
             }
         },
         computations: {
@@ -2047,12 +2525,12 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'function',
                 exec: 'deleteWarehouseAcceptanceSlip',
                 connect: {
-                    variableName: ['input', 'variableName']
+                    id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            warehouseAcceptanceSlip: ['c1', 'warehouseAcceptanceSlip']
+            warehouseAcceptanceSlip: ['c1', 'variable']
         }
     }
 }

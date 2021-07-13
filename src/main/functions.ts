@@ -53,6 +53,8 @@ export type FunctionName =
     | 'deleteProductCategory'
     | 'createProduct'
     | 'deleteProduct'
+    | 'createCompanyProduct'
+    | 'deleteCompanyProduct'
     | 'createProductTagGroup'
     | 'deleteProductTagGroup'
     | 'createProductTag'
@@ -65,8 +67,6 @@ export type FunctionName =
     | 'deleteIndent'
     | 'createIndentItem'
     | 'deleteIndentItem'
-    | 'createCompanyProduct'
-    | 'deleteCompanyProduct'
     | 'createQuotation'
     | 'deleteQuotation'
     | 'createQuotationItem'
@@ -1718,6 +1718,55 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
+    createCompanyProduct: {
+        inputs: {
+            company: {
+                type: 'Company'
+            },
+            product: {
+                type: 'Product'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'CompanyProduct',
+                op: 'create',
+                values: {
+                    company: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['company']
+                    },
+                    product: {
+                        expectedReturnType: 'Number',
+                        op: '.',
+                        types: [],
+                        args: ['product']
+                    }
+                }
+            }
+        }
+    },
+    deleteCompanyProduct: {
+        inputs: {
+            id: {
+                type: 'CompanyProduct'
+            }
+        },
+        outputs: {
+            variable: {
+                type: 'CompanyProduct',
+                op: 'delete',
+                id: {
+                    expectedReturnType: 'Number',
+                    op: '.',
+                    types: [],
+                    args: ['id']
+                }
+            }
+        }
+    },
     createProductTagGroup: {
         inputs: {
             name: {
@@ -2042,55 +2091,6 @@ export const functions: Record<FunctionName, Function> = {
         outputs: {
             variable: {
                 type: 'IndentItem',
-                op: 'delete',
-                id: {
-                    expectedReturnType: 'Number',
-                    op: '.',
-                    types: [],
-                    args: ['id']
-                }
-            }
-        }
-    },
-    createCompanyProduct: {
-        inputs: {
-            company: {
-                type: 'Company'
-            },
-            product: {
-                type: 'Product'
-            }
-        },
-        outputs: {
-            variable: {
-                type: 'CompanyProduct',
-                op: 'create',
-                values: {
-                    company: {
-                        expectedReturnType: 'Number',
-                        op: '.',
-                        types: [],
-                        args: ['company']
-                    },
-                    product: {
-                        expectedReturnType: 'Number',
-                        op: '.',
-                        types: [],
-                        args: ['product']
-                    }
-                }
-            }
-        }
-    },
-    deleteCompanyProduct: {
-        inputs: {
-            id: {
-                type: 'CompanyProduct'
-            }
-        },
-        outputs: {
-            variable: {
-                type: 'CompanyProduct',
                 op: 'delete',
                 id: {
                     expectedReturnType: 'Number',

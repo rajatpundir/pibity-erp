@@ -40,11 +40,11 @@ export type NonPrimitiveType =
     | 'ProductCategoryGroup'
     | 'ProductCategory'
     | 'Product'
+    | 'CompanyProduct'
     | 'ProductTagGroup'
     | 'ProductTag'
     | 'MappingProductTag'
     | 'UOM'
-    | 'CompanyProduct'
     | 'Indent'
     | 'IndentItem'
     | 'Quotation'
@@ -704,6 +704,21 @@ export const types = {
             }
         }
     },
+    CompanyProduct: {
+        name: 'Company Product',
+        keys: {
+            company: {
+                order: 0,
+                name: 'Company',
+                type: 'Company'
+            },
+            product: {
+                order: 1,
+                name: 'Product',
+                type: 'Product'
+            }
+        }
+    },
     ProductTagGroup: {
         name: 'Product Tag Group',
         url: 'product-tag-group',
@@ -828,21 +843,6 @@ export const types = {
                 order: 10,
                 name: 'Consumed',
                 type: 'Number'
-            }
-        }
-    },
-    CompanyProduct: {
-        name: 'Company Product',
-        keys: {
-            company: {
-                order: 0,
-                name: 'Company',
-                type: 'Company'
-            },
-            product: {
-                order: 1,
-                name: 'Product',
-                type: 'Product'
             }
         }
     },

@@ -30,13 +30,13 @@ class Database extends Dexie {
     ProductCategoryGroup: Dexie.Table<Immutable<ProductCategoryGroupRow>, string>
     ProductCategory: Dexie.Table<Immutable<ProductCategoryRow>, string>
     Product: Dexie.Table<Immutable<ProductRow>, string>
+    CompanyProduct: Dexie.Table<Immutable<CompanyProductRow>, string>
     ProductTagGroup: Dexie.Table<Immutable<ProductTagGroupRow>, string>
     ProductTag: Dexie.Table<Immutable<ProductTagRow>, string>
     MappingProductTag: Dexie.Table<Immutable<MappingProductTagRow>, string>
     UOM: Dexie.Table<Immutable<UOMRow>, string>
     Indent: Dexie.Table<Immutable<IndentRow>, string>
     IndentItem: Dexie.Table<Immutable<IndentItemRow>, string>
-    CompanyProduct: Dexie.Table<Immutable<CompanyProductRow>, string>
     Quotation: Dexie.Table<Immutable<QuotationRow>, string>
     QuotationItem: Dexie.Table<Immutable<QuotationItemRow>, string>
     PurchaseOrder: Dexie.Table<Immutable<PurchaseOrderRow>, string>
@@ -90,13 +90,13 @@ class Database extends Dexie {
             ProductCategoryGroup: '&id, &parent',
             ProductCategory: '&id, [parent+name], [parent+code]',
             Product: '&id, name',
+            CompanyProduct: '&id, [company+product], company',
             ProductTagGroup: '&id, name',
             ProductTag: '&id, [group+name], group, name',
             MappingProductTag: '&id, [product+tag], product, tag',
             UOM: '&id, [product+name], product',
             Indent: '&id',
             IndentItem: '&id, [indent+product], indent',
-            CompanyProduct: '&id, [company+product], company',
             Quotation: '&id',
             QuotationItem: '&id, [quotation+indentItem], quotation',
             PurchaseOrder: '&id',
@@ -147,13 +147,13 @@ class Database extends Dexie {
         this.ProductCategoryGroup = this.table('ProductCategoryGroup')
         this.ProductCategory = this.table('ProductCategory')
         this.Product = this.table('Product')
+        this.CompanyProduct = this.table('CompanyProduct')
         this.ProductTagGroup = this.table('ProductTagGroup')
         this.ProductTag = this.table('ProductTag')
         this.MappingProductTag = this.table('MappingProductTag')
         this.UOM = this.table('UOM')
         this.Indent = this.table('Indent')
         this.IndentItem = this.table('IndentItem')
-        this.CompanyProduct = this.table('CompanyProduct')
         this.Quotation = this.table('Quotation')
         this.QuotationItem = this.table('QuotationItem')
         this.PurchaseOrder = this.table('PurchaseOrder')
@@ -203,13 +203,13 @@ class Database extends Dexie {
         this.ProductCategoryGroup.mapToClass(ProductCategoryGroupRow)
         this.ProductCategory.mapToClass(ProductCategoryRow)
         this.Product.mapToClass(ProductRow)
+        this.CompanyProduct.mapToClass(CompanyProductRow)
         this.ProductTagGroup.mapToClass(ProductTagGroupRow)
         this.ProductTag.mapToClass(ProductTagRow)
         this.MappingProductTag.mapToClass(MappingProductTagRow)
         this.UOM.mapToClass(UOMRow)
         this.Indent.mapToClass(IndentRow)
         this.IndentItem.mapToClass(IndentItemRow)
-        this.CompanyProduct.mapToClass(CompanyProductRow)
         this.Quotation.mapToClass(QuotationRow)
         this.QuotationItem.mapToClass(QuotationItemRow)
         this.PurchaseOrder.mapToClass(PurchaseOrderRow)

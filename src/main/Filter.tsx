@@ -17,7 +17,7 @@ import { isNonPrimitive } from './mapper'
 const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full min-w-max h-6 rounded-sm inline-block`
 
 export type Query = {
-    variableName: {
+    id: {
         checked: boolean
         operator: 'equals' | 'like'
         value: string
@@ -156,13 +156,13 @@ export type Query = {
 }
 
 export type Args =
-    | ['variableName', 'checked', boolean]
-    | ['variableName', 'operator', 'equals' | 'like', string]
-    | ['variableName', 'operator', 'between' | 'notBetween', [string, string]]
-    | ['variableName', 'operator', 'in', Array<string>]
-    | ['variableName', 'equals' | 'like', string]
-    | ['variableName', 'between' | 'notBetween', [string, string]]
-    | ['variableName', 'in', Array<string>]
+    | ['id', 'checked', boolean]
+    | ['id', 'operator', 'equals' | 'like', string]
+    | ['id', 'operator', 'between' | 'notBetween', [string, string]]
+    | ['id', 'operator', 'in', Array<string>]
+    | ['id', 'equals' | 'like', string]
+    | ['id', 'between' | 'notBetween', [string, string]]
+    | ['id', 'in', Array<string>]
     | ['values', string, 'checked', boolean]
     | ['values', string, 'operator', 'equals' | 'like', string]
     | ['values', string, 'operator', 'between' | 'notBetween', [string, string]]
@@ -234,30 +234,30 @@ function FilterRows(props: FilterRowsProps) {
     return (<>
         <Cell justify='center' className="px-1" row={`${startRow + 1}/${startRow + 2}`} column={`${startColumn + 1}/${startColumn + 2}`}>
             <Checkbox className="w-2"
-                checked={props.query.variableName.checked}
+                checked={props.query.id.checked}
                 color='primary'
                 inputProps={{ 'aria-label': 'secondary checkbox' }}
-                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => props.updateQuery(Y(['variableName', 'checked', event.target.checked], props.parent))}
+                onChange={async (event: React.ChangeEvent<HTMLInputElement>) => props.updateQuery(Y(['id', 'checked', event.target.checked], props.parent))}
             />
         </Cell>
         <Cell className="px-1" row={`${startRow + 1}/${startRow + 2}`} column={`${startColumn + 2}/${startColumn + 3}`}>{type.name}</Cell>
         <Cell className="px-1" row={`${startRow + 1}/${startRow + 2}`} column={`${startColumn + 3}/${startColumn + 4}`}>
             {
-                props.query.variableName.checked ? <select value={props.query.variableName.operator}
+                props.query.id.checked ? <select value={props.query.id.operator}
                     onChange={async (event) => {
                         switch (event.target.value) {
                             case 'equals':
                             case 'like': {
-                                props.updateQuery(Y(['variableName', 'operator', event.target.value, ''], props.parent))
+                                props.updateQuery(Y(['id', 'operator', event.target.value, ''], props.parent))
                                 return
                             }
                             case 'between':
                             case 'notBetween': {
-                                props.updateQuery(Y(['variableName', 'operator', event.target.value, ['', '']], props.parent))
+                                props.updateQuery(Y(['id', 'operator', event.target.value, ['', '']], props.parent))
                                 return
                             }
                             case 'in': {
-                                props.updateQuery(Y(['variableName', 'operator', event.target.value, ['']], props.parent))
+                                props.updateQuery(Y(['id', 'operator', event.target.value, ['']], props.parent))
                                 return
                             }
                         }
@@ -273,61 +273,61 @@ function FilterRows(props: FilterRowsProps) {
         </Cell>
         <Cell className="px-1" row={`${startRow + 1}/${startRow + 2}`} column={`${startColumn + 4}/${startColumn + 5}`}>
             {
-                props.query.variableName.checked ?
+                props.query.id.checked ?
                     (() => {
-                        const operator = props.query.variableName.operator
+                        const operator = props.query.id.operator
                         switch (operator) {
                             case 'equals':
                             case 'like': {
-                                return (<Input className="m-1" value={props.query.variableName.value}
-                                    onChange={async (event: React.ChangeEvent<HTMLInputElement>) => props.updateQuery(Y(['variableName', operator, event.target.value], props.parent))} />)
+                                return (<Input className="m-1" value={props.query.id.value}
+                                    onChange={async (event: React.ChangeEvent<HTMLInputElement>) => props.updateQuery(Y(['id', operator, event.target.value], props.parent))} />)
                             }
                             case 'between':
                             case 'notBetween': {
                                 return (
                                     <div className="flex">
                                         <Input className="m-1"
-                                            value={props.query.variableName.value[0]}
-                                            onChange={async (event: React.ChangeEvent<HTMLInputElement>) => props.updateQuery(Y(['variableName', operator, [event.target.value, props.query.variableName.value[1]]], props.parent))} />
+                                            value={props.query.id.value[0]}
+                                            onChange={async (event: React.ChangeEvent<HTMLInputElement>) => props.updateQuery(Y(['id', operator, [event.target.value, props.query.id.value[1]]], props.parent))} />
                                         <Input className="m-1"
-                                            value={props.query.variableName.value[1]}
-                                            onChange={async (event: React.ChangeEvent<HTMLInputElement>) => props.updateQuery(Y(['variableName', operator, [props.query.variableName.value[0], event.target.value]], props.parent))} />
+                                            value={props.query.id.value[1]}
+                                            onChange={async (event: React.ChangeEvent<HTMLInputElement>) => props.updateQuery(Y(['id', operator, [props.query.id.value[0], event.target.value]], props.parent))} />
                                     </div>
                                 )
                             }
                             case 'in': {
-                                if (props.query.variableName.operator === "in") {
-                                    const values = props.query.variableName.value
+                                if (props.query.id.operator === "in") {
+                                    const values = props.query.id.value
                                     return (<div className="flex">
                                         {
-                                            props.query.variableName.value.map((_value, index) => {
+                                            props.query.id.value.map((_value, index) => {
                                                 return (
                                                     <Input className="m-1"
-                                                        value={props.query.variableName.value[index]}
+                                                        value={props.query.id.value[index]}
                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                             if (index === 0) {
-                                                                props.updateQuery(Y(['variableName', operator,
+                                                                props.updateQuery(Y(['id', operator,
                                                                     [
                                                                         event.target.value,
-                                                                        ...values.slice(index + 1, props.query.variableName.value.length)
+                                                                        ...values.slice(index + 1, props.query.id.value.length)
                                                                     ]], props.parent))
                                                             } else if (index === values.length - 1) {
-                                                                props.updateQuery(Y(['variableName', operator,
+                                                                props.updateQuery(Y(['id', operator,
                                                                     [...values.slice(0, index),
                                                                     event.target.value
                                                                     ]], props.parent))
                                                             } else {
-                                                                props.updateQuery(Y(['variableName', operator,
+                                                                props.updateQuery(Y(['id', operator,
                                                                     [...values.slice(0, index),
                                                                     event.target.value,
-                                                                    ...values.slice(index + 1, props.query.variableName.value.length)
+                                                                    ...values.slice(index + 1, props.query.id.value.length)
                                                                     ]], props.parent))
                                                             }
                                                         }} />
                                                 )
                                             })
                                         }
-                                        <button onClick={async () => props.updateQuery(Y(['variableName', operator, [...values, '']], props.parent))}
+                                        <button onClick={async () => props.updateQuery(Y(['id', operator, [...values, '']], props.parent))}
                                             className="focus:outline-none">
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
@@ -335,7 +335,7 @@ function FilterRows(props: FilterRowsProps) {
                                         </button>
                                         <button onClick={async () => {
                                             if (values.length !== 1) {
-                                                props.updateQuery(Y(['variableName', operator, [...values.slice(0, values.length - 1)]], props.parent))
+                                                props.updateQuery(Y(['id', operator, [...values.slice(0, values.length - 1)]], props.parent))
                                             }
                                         }} className="focus:outline-none">
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1340,7 +1340,7 @@ export function getQuery(typeName: string): Query {
             }
         }
     }, {
-        variableName: {
+        id: {
             checked: false,
             operator: 'equals',
             value: ''
@@ -1351,19 +1351,19 @@ export function getQuery(typeName: string): Query {
 
 export function updateQuery(query: Query, args: Args) {
     switch (args[0]) {
-        case 'variableName': {
+        case 'id': {
             switch (args[1]) {
                 case 'checked': {
-                    query.variableName.checked = args[2]
+                    query.id.checked = args[2]
                     return
                 }
                 case 'operator': {
-                    query.variableName.operator = args[2]
-                    query.variableName.value = args[3]
+                    query.id.operator = args[2]
+                    query.id.value = args[3]
                     return
                 }
                 default: {
-                    query.variableName.value = args[2]
+                    query.id.value = args[2]
                     return
                 }
             }
@@ -1408,16 +1408,16 @@ function getExpression(query: Immutable<Query>, parent?: S): LispExpression {
         types: ['Boolean'],
         args: []
     }
-    if (query.variableName.checked === true) {
-        switch (query.variableName.operator) {
+    if (query.id.checked === true) {
+        switch (query.id.operator) {
             case 'equals': {
                 expression.args = [...expression.args, {
                     op: '==',
                     types: ['Text'],
-                    args: [query.variableName.value, {
+                    args: [query.id.value, {
                         op: '.',
                         types: [],
-                        args: J(['variableName'], parent)
+                        args: J(['id'], parent)
                     }]
                 }]
                 break
@@ -1426,10 +1426,10 @@ function getExpression(query: Immutable<Query>, parent?: S): LispExpression {
                 expression.args = [...expression.args, {
                     op: 'regex',
                     types: ['Text'],
-                    args: [query.variableName.value, {
+                    args: [query.id.value, {
                         op: '.',
                         types: [],
-                        args: J(['variableName'], parent)
+                        args: J(['id'], parent)
                     }]
                 }]
                 break
@@ -1441,18 +1441,18 @@ function getExpression(query: Immutable<Query>, parent?: S): LispExpression {
                     args: [{
                         op: '<=',
                         types: ['Text'],
-                        args: [query.variableName.value[0], {
+                        args: [query.id.value[0], {
                             op: '.',
                             types: [],
-                            args: J(['variableName'], parent)
+                            args: J(['id'], parent)
                         }]
                     }, {
                         op: '>=',
                         types: ['Text'],
-                        args: [query.variableName.value[1], {
+                        args: [query.id.value[1], {
                             op: '.',
                             types: [],
-                            args: J(['variableName'], parent)
+                            args: J(['id'], parent)
                         }]
                     }]
                 }]
@@ -1468,16 +1468,16 @@ function getExpression(query: Immutable<Query>, parent?: S): LispExpression {
                         args: [{
                             op: '.',
                             types: [],
-                            args: J(['variableName'], parent)
-                        }, query.variableName.value[0]]
+                            args: J(['id'], parent)
+                        }, query.id.value[0]]
                     }, {
                         op: '>',
                         types: ['Text'],
                         args: [{
                             op: '.',
                             types: [],
-                            args: J(['variableName'], parent)
-                        }, query.variableName.value[1]]
+                            args: J(['id'], parent)
+                        }, query.id.value[1]]
                     }]
                 }]
                 break
@@ -1486,14 +1486,14 @@ function getExpression(query: Immutable<Query>, parent?: S): LispExpression {
                 expression.args = [...expression.args, {
                     op: 'or',
                     types: ['Boolean'],
-                    args: query.variableName.value.map(x => {
+                    args: query.id.value.map(x => {
                         return ({
                             op: '==',
                             types: ['Text'],
                             args: [x, {
                                 op: '.',
                                 types: [],
-                                args: J(['variableName'], parent)
+                                args: J(['id'], parent)
                             }]
                         })
                     })
@@ -1918,7 +1918,7 @@ function getSymbolPaths(expression: LispExpression): Array<ReadonlyArray<string>
 function getSymbols(symbolPaths: Array<ReadonlyArray<string>>, variable: Immutable<Variable>): Symbols {
     const type = types[variable.typeName]
     return {
-        variableName: {
+        id: {
             type: 'Text',
             value: variable.id.toString(),
         },

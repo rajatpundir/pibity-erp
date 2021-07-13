@@ -37,13 +37,13 @@ export type Variable =
     | ProductCategoryGroupVariable
     | ProductCategoryVariable
     | ProductVariable
+    | CompanyProductVariable
     | ProductTagGroupVariable
     | ProductTagVariable
     | MappingProductTagVariable
     | UOMVariable
     | IndentVariable
     | IndentItemVariable
-    | CompanyProductVariable
     | QuotationVariable
     | QuotationItemVariable
     | PurchaseOrderVariable
@@ -1671,6 +1671,63 @@ export class ProductVariable {
     }
 }
 
+export class CompanyProduct {
+    constructor(private id: number) { }
+
+    equals(other: CompanyProduct): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.id === other.id
+    }
+
+    hashCode(): number {
+        return this.id
+    }
+
+    toString(): string {
+        return String(this.id)
+    }
+}
+
+export class CompanyProductVariable {
+    [immerable] = true
+    readonly typeName = 'CompanyProduct'
+    readonly id: CompanyProduct
+    values: {
+        // UNQ(company, product)
+        company: Company
+        product: Product
+    }
+
+    constructor(id: number, values: { company: Company, product: Product }) {
+        this.id = new CompanyProduct(id)
+        this.values = values
+    }
+
+    equals(other: CompanyProductVariable): boolean {
+        if (!other) {
+            return false;
+        }
+        return this.values.company.equals(other.values.company) && this.values.product.equals(other.values.product)
+    }
+
+    hashCode(): number {
+        return this.id.hashCode()
+    }
+
+    toString(): string {
+        return JSON.stringify(this, null, 2)
+    }
+
+    toRow(): CompanyProductRow {
+        return new CompanyProductRow(this.id.hashCode(), {
+            company: this.values.company.hashCode(),
+            product: this.values.product.hashCode()
+        })
+    }
+}
+
 export class ProductTagGroup {
     constructor(private id: number) { }
 
@@ -2031,63 +2088,6 @@ export class IndentItemVariable {
             returned: this.values.returned,
             requisted: this.values.requisted,
             consumed: this.values.consumed,
-        })
-    }
-}
-
-export class CompanyProduct {
-    constructor(private id: number) { }
-
-    equals(other: CompanyProduct): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.id === other.id
-    }
-
-    hashCode(): number {
-        return this.id
-    }
-
-    toString(): string {
-        return String(this.id)
-    }
-}
-
-export class CompanyProductVariable {
-    [immerable] = true
-    readonly typeName = 'CompanyProduct'
-    readonly id: CompanyProduct
-    values: {
-        // UNQ(company, product)
-        company: Company
-        product: Product
-    }
-
-    constructor(id: number, values: { company: Company, product: Product }) {
-        this.id = new CompanyProduct(id)
-        this.values = values
-    }
-
-    equals(other: CompanyProductVariable): boolean {
-        if (!other) {
-            return false;
-        }
-        return this.values.company.equals(other.values.company) && this.values.product.equals(other.values.product)
-    }
-
-    hashCode(): number {
-        return this.id.hashCode()
-    }
-
-    toString(): string {
-        return JSON.stringify(this, null, 2)
-    }
-
-    toRow(): CompanyProductRow {
-        return new CompanyProductRow(this.id.hashCode(), {
-            company: this.values.company.hashCode(),
-            product: this.values.product.hashCode()
         })
     }
 }

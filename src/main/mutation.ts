@@ -158,6 +158,10 @@ export function createVariable(typeName: NonPrimitiveType, values: object): [Var
             code: String(values['code']),
             sku: String(values['sku'])
         }) as Variable,
+        'CompanyProduct': () => new CompanyProductVariable(id, {
+            company: new Company(values['company']),
+            product: new Product(values['product'])
+        }),
         'ProductTagGroup': () => new ProductTagGroupVariable(id, {
             name: String(values['name'])
         }),
@@ -187,10 +191,6 @@ export function createVariable(typeName: NonPrimitiveType, values: object): [Var
             returned: parseInt(String(values['returned'])),
             requisted: parseInt(String(values['requisted'])),
             consumed: parseInt(String(values['consumed']))
-        }),
-        'CompanyProduct': () => new CompanyProductVariable(id, {
-            company: new Company(values['company']),
-            product: new Product(values['product'])
         }),
         'Quotation': () => new QuotationVariable(id, {
             indent: new Indent(values['indent']),
@@ -514,6 +514,13 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
             })
             break
         }
+        case 'CompanyProduct': {
+            updatedVariable = new CompanyProductVariable(variable.id.hashCode(), {
+                company: values['company'] !== undefined ? new Company(values['company']) : new Company(variable.values.company.hashCode()),
+                product: values['product'] !== undefined ? new Product(values['product']) : new Product(variable.values.product.hashCode())
+            })
+            break
+        }
         case 'ProductTagGroup': {
             updatedVariable = new ProductTagGroupVariable(variable.id.hashCode(), {
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name
@@ -559,13 +566,6 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
                 returned: values['returned'] !== undefined ? parseInt(values['returned']) : variable.values.returned,
                 requisted: values['requisted'] !== undefined ? parseInt(values['requisted']) : variable.values.requisted,
                 consumed: values['consumed'] !== undefined ? parseInt(values['consumed']) : variable.values.consumed
-            })
-            break
-        }
-        case 'CompanyProduct': {
-            updatedVariable = new CompanyProductVariable(variable.id.hashCode(), {
-                company: values['company'] !== undefined ? new Company(values['company']) : new Company(variable.values.company.hashCode()),
-                product: values['product'] !== undefined ? new Product(values['product']) : new Product(variable.values.product.hashCode())
             })
             break
         }

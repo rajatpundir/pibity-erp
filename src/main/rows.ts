@@ -30,11 +30,11 @@ export type Row =
     | ProductCategoryGroupRow
     | ProductCategoryRow
     | ProductRow
+    | CompanyProductRow
     | ProductTagGroupRow
     | ProductTagRow
     | MappingProductTagRow
     | UOMRow
-    | CompanyProductRow
     | IndentRow
     | IndentItemRow
     | QuotationRow
@@ -795,6 +795,32 @@ export class ProductRow {
     }
 }
 
+export class CompanyProductRow {
+    readonly typeName = 'CompanyProduct'
+    readonly id: number
+    readonly company: number
+    readonly product: number
+    values: {
+        // UNQ(company, product)
+        company: number
+        product: number
+    }
+
+    constructor(id: number, values: { company: number, product: number }) {
+        this.id = id
+        this.values = values
+        this.company = values.company
+        this.product = values.product
+    }
+
+    static toVariable(row: CompanyProductRow): CompanyProductVariable {
+        return new CompanyProductVariable(row.id, {
+            company: new Company(row.values.company),
+            product: new Product(row.values.product)
+        })
+    }
+}
+
 export class ProductTagGroupRow {
     readonly typeName = 'ProductTagGroup'
     readonly id: number
@@ -962,32 +988,6 @@ export class IndentItemRow {
             returned: row.values.returned,
             requisted: row.values.requisted,
             consumed: row.values.consumed
-        })
-    }
-}
-
-export class CompanyProductRow {
-    readonly typeName = 'CompanyProduct'
-    readonly id: number
-    readonly company: number
-    readonly product: number
-    values: {
-        // UNQ(company, product)
-        company: number
-        product: number
-    }
-
-    constructor(id: number, values: { company: number, product: number }) {
-        this.id = id
-        this.values = values
-        this.company = values.company
-        this.product = values.product
-    }
-
-    static toVariable(row: CompanyProductRow): CompanyProductVariable {
-        return new CompanyProductVariable(row.id, {
-            company: new Company(row.values.company),
-            product: new Product(row.values.product)
         })
     }
 }
@@ -1643,6 +1643,10 @@ export class DiffRow {
             replace: Array<ProductRow>
             remove: Array<number>
         },
+        CompanyProduct: {
+            replace: Array<CompanyProductRow>
+            remove: Array<number>
+        },
         ProductTagGroup: {
             replace: Array<ProductTagGroupRow>
             remove: Array<number>
@@ -1665,10 +1669,6 @@ export class DiffRow {
         },
         IndentItem: {
             replace: Array<IndentItemRow>
-            remove: Array<number>
-        },
-        CompanyProduct: {
-            replace: Array<CompanyProductRow>
             remove: Array<number>
         },
         Quotation: {
@@ -1862,6 +1862,10 @@ export class DiffRow {
             replace: Array<ProductRow>
             remove: Array<number>
         },
+        CompanyProduct: {
+            replace: Array<CompanyProductRow>
+            remove: Array<number>
+        },
         ProductTagGroup: {
             replace: Array<ProductTagGroupRow>
             remove: Array<number>
@@ -1884,10 +1888,6 @@ export class DiffRow {
         },
         IndentItem: {
             replace: Array<IndentItemRow>
-            remove: Array<number>
-        },
-        CompanyProduct: {
-            replace: Array<CompanyProductRow>
             remove: Array<number>
         },
         Quotation: {
@@ -2085,6 +2085,10 @@ export class DiffRow {
                 replace: HashSet.of<ProductVariable>().addAll(diff.variables.Product.replace.map(x => ProductRow.toVariable(x))),
                 remove: HashSet.of<Product>().addAll(diff.variables.Product.remove.map(x => new Product(x)))
             },
+            CompanyProduct: {
+                replace: HashSet.of<CompanyProductVariable>().addAll(diff.variables.CompanyProduct.replace.map(x => CompanyProductRow.toVariable(x))),
+                remove: HashSet.of<CompanyProduct>().addAll(diff.variables.CompanyProduct.remove.map(x => new CompanyProduct(x)))
+            },
             ProductTagGroup: {
                 replace: HashSet.of<ProductTagGroupVariable>().addAll(diff.variables.ProductTagGroup.replace.map(x => ProductTagGroupRow.toVariable(x))),
                 remove: HashSet.of<ProductTagGroup>().addAll(diff.variables.ProductTagGroup.remove.map(x => new ProductTagGroup(x)))
@@ -2108,10 +2112,6 @@ export class DiffRow {
             IndentItem: {
                 replace: HashSet.of<IndentItemVariable>().addAll(diff.variables.IndentItem.replace.map(x => IndentItemRow.toVariable(x))),
                 remove: HashSet.of<IndentItem>().addAll(diff.variables.IndentItem.remove.map(x => new IndentItem(x)))
-            },
-            CompanyProduct: {
-                replace: HashSet.of<CompanyProductVariable>().addAll(diff.variables.CompanyProduct.replace.map(x => CompanyProductRow.toVariable(x))),
-                remove: HashSet.of<CompanyProduct>().addAll(diff.variables.CompanyProduct.remove.map(x => new CompanyProduct(x)))
             },
             Quotation: {
                 replace: HashSet.of<QuotationVariable>().addAll(diff.variables.Quotation.replace.map(x => QuotationRow.toVariable(x))),

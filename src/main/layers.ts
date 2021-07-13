@@ -121,6 +121,10 @@ type DiffVariables = {
         replace: HashSet<Immutable<ProductVariable>>,
         remove: HashSet<Immutable<Product>>
     },
+    CompanyProduct: {
+        replace: HashSet<Immutable<CompanyProductVariable>>,
+        remove: HashSet<Immutable<CompanyProduct>>
+    },
     ProductTagGroup: {
         replace: HashSet<Immutable<ProductTagGroupVariable>>,
         remove: HashSet<Immutable<ProductTagGroup>>
@@ -144,10 +148,6 @@ type DiffVariables = {
     IndentItem: {
         replace: HashSet<Immutable<IndentItemVariable>>,
         remove: HashSet<Immutable<IndentItem>>
-    },
-    CompanyProduct: {
-        replace: HashSet<Immutable<CompanyProductVariable>>,
-        remove: HashSet<Immutable<CompanyProduct>>
     },
     Quotation: {
         replace: HashSet<Immutable<QuotationVariable>>,
@@ -346,6 +346,10 @@ export class DiffVariable {
             replace: HashSet.of(),
             remove: HashSet.of()
         },
+        CompanyProduct: {
+            replace: HashSet.of(),
+            remove: HashSet.of()
+        },
         ProductTagGroup: {
             replace: HashSet.of(),
             remove: HashSet.of()
@@ -367,10 +371,6 @@ export class DiffVariable {
             remove: HashSet.of()
         },
         IndentItem: {
-            replace: HashSet.of(),
-            remove: HashSet.of()
-        },
-        CompanyProduct: {
             replace: HashSet.of(),
             remove: HashSet.of()
         },
@@ -586,6 +586,10 @@ export class DiffVariable {
                 replace: this.variables.Product.replace.toArray().map(x => x.toRow()),
                 remove: this.variables.Product.remove.toArray().map(x => x.hashCode())
             },
+            CompanyProduct: {
+                replace: this.variables.CompanyProduct.replace.toArray().map(x => x.toRow()),
+                remove: this.variables.CompanyProduct.remove.toArray().map(x => x.hashCode())
+            },
             ProductTagGroup: {
                 replace: this.variables.ProductTagGroup.replace.toArray().map(x => x.toRow()),
                 remove: this.variables.ProductTagGroup.remove.toArray().map(x => x.hashCode())
@@ -609,10 +613,6 @@ export class DiffVariable {
             IndentItem: {
                 replace: this.variables.IndentItem.replace.toArray().map(x => x.toRow()),
                 remove: this.variables.IndentItem.remove.toArray().map(x => x.hashCode())
-            },
-            CompanyProduct: {
-                replace: this.variables.CompanyProduct.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.CompanyProduct.remove.toArray().map(x => x.hashCode())
             },
             Quotation: {
                 replace: this.variables.Quotation.replace.toArray().map(x => x.toRow()),
@@ -809,6 +809,10 @@ export function getReplaceVariableDiff(variable: Immutable<Variable>): DiffVaria
             diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
+        case 'CompanyProduct': {
+            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
+            break
+        }
         case 'ProductTagGroup': {
             diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
@@ -830,10 +834,6 @@ export function getReplaceVariableDiff(variable: Immutable<Variable>): DiffVaria
             break
         }
         case 'IndentItem': {
-            diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
-            break
-        }
-        case 'CompanyProduct': {
             diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
@@ -1036,6 +1036,10 @@ export function getRemoveVariableDiff(typeName: NonPrimitiveType, id: number): D
             diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Product(id))
             break
         }
+        case 'CompanyProduct': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyProduct(id))
+            break
+        }
         case 'ProductTagGroup': {
             diff.variables[typeName].remove = diff.variables[typeName].remove.add(new ProductTagGroup(id))
             break
@@ -1058,10 +1062,6 @@ export function getRemoveVariableDiff(typeName: NonPrimitiveType, id: number): D
         }
         case 'IndentItem': {
             diff.variables[typeName].remove = diff.variables[typeName].remove.add(new IndentItem(id))
-            break
-        }
-        case 'CompanyProduct': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new CompanyProduct(id))
             break
         }
         case 'Quotation': {
@@ -1861,6 +1861,33 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
             }
             return undefined
         }
+        case 'CompanyProduct': {
+            for (const diff of overlay.reverse().toArray()) {
+                for (const variable of diff.variables[typeName].replace.toArray()) {
+                    if (variable.id.hashCode() === id) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
+                    return undefined
+                }
+            }
+            for (const diff of diffs) {
+                for (const variable of diff.variables[typeName].replace.toArray()) {
+                    if (variable.id.hashCode() === id) {
+                        return variable as Variable
+                    }
+                }
+                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
+                    return undefined
+                }
+            }
+            const row = await db[typeName].get(String(id))
+            if (row !== undefined) {
+                return CompanyProductRow.toVariable(row) as Variable
+            }
+            return undefined
+        }
         case 'ProductTagGroup': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
@@ -2020,33 +2047,6 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
             const row = await db[typeName].get(String(id))
             if (row !== undefined) {
                 return IndentItemRow.toVariable(row) as Variable
-            }
-            return undefined
-        }
-        case 'CompanyProduct': {
-            for (const diff of overlay.reverse().toArray()) {
-                for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.hashCode() === id) {
-                        return variable as Variable
-                    }
-                }
-                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
-                    return undefined
-                }
-            }
-            for (const diff of diffs) {
-                for (const variable of diff.variables[typeName].replace.toArray()) {
-                    if (variable.id.hashCode() === id) {
-                        return variable as Variable
-                    }
-                }
-                if (diff.variables[typeName].remove.anyMatch(x => x.hashCode() === id)) {
-                    return undefined
-                }
-            }
-            const row = await db[typeName].get(String(id))
-            if (row !== undefined) {
-                return CompanyProductRow.toVariable(row) as Variable
             }
             return undefined
         }
@@ -2810,6 +2810,13 @@ export async function getVariables(typeName: NonPrimitiveType, overlay: Vector<D
             })
             return composedVariables
         }
+        case 'CompanyProduct': {
+            let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => CompanyProductRow.toVariable(x)) : [])
+            diffs?.forEach(diff => {
+                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
+            })
+            return composedVariables
+        }
         case 'ProductTagGroup': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => ProductTagGroupRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
@@ -2847,13 +2854,6 @@ export async function getVariables(typeName: NonPrimitiveType, overlay: Vector<D
         }
         case 'IndentItem': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => IndentItemRow.toVariable(x)) : [])
-            diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
-            })
-            return composedVariables
-        }
-        case 'CompanyProduct': {
-            let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => CompanyProductRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
                 composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })

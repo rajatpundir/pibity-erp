@@ -8,58 +8,6 @@ export default async function createDemoData() {
     db.diffs.clear()
     var diffs = Vector.of<DiffVariable>()
 
-    const [, , ct1] = await executeCircuit(circuits.createCompanyType, {
-        variableName: 'Ltd'
-    })
-    diffs = diffs.append(ct1)
-
-    const [, , ct2] = await executeCircuit(circuits.createCompanyType, {
-        variableName: 'Pvt Ltd'
-    })
-    diffs = diffs.append(ct2)
-
-    const [, , ct3] = await executeCircuit(circuits.createCompanyType, {
-        variableName: 'Proprietorship'
-    })
-    diffs = diffs.append(ct3)
-
-    const [, , ct4] = await executeCircuit(circuits.createCompanyType, {
-        variableName: 'Partnership'
-    })
-    diffs = diffs.append(ct4)
-
-    const [, , ct5] = await executeCircuit(circuits.createCompanyType, {
-        variableName: 'Corporation'
-    })
-    diffs = diffs.append(ct5)
-
-    const [, , ct6] = await executeCircuit(circuits.createCompanyType, {
-        variableName: 'Franchise'
-    })
-    diffs = diffs.append(ct6)
-
-    const [, , sa1] = await executeCircuit(circuits.createServiceArea, {
-        variableName: 'Local'
-    })
-    diffs = diffs.append(sa1)
-
-    const [, , sa2] = await executeCircuit(circuits.createServiceArea, {
-        variableName: 'Regional'
-    })
-    diffs = diffs.append(sa2)
-
-    const [, , sa3] = await executeCircuit(circuits.createServiceArea, {
-        variableName: 'National'
-    })
-    diffs = diffs.append(sa3)
-
-    const [, , sa4] = await executeCircuit(circuits.createServiceArea, {
-        variableName: 'International'
-    })
-    diffs = diffs.append(sa4)
-
-    db.diffs.put(mergeDiffs(diffs.toArray()).toRow())
-
     const [, , s1] = await executeCircuit(circuits.createCompany, {
         variableName: 'Vistas LLP',
         email: 'vistaselectricals@gmail.com',

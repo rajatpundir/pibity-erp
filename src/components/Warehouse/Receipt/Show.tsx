@@ -4,7 +4,7 @@ import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
-import { TransferMaterialSlip, TransferMaterialSlipVariable, WarehouseAcceptanceSlip, WarehouseAcceptanceSlipVariable } from '../../../main/variables'
+import { TransferMaterialSlip, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import { withRouter } from 'react-router-dom'
 import { executeCircuit } from '../../../main/circuit'
@@ -19,7 +19,6 @@ import { updateVariable } from '../../../main/mutation'
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: WarehouseAcceptanceSlipVariable
-    updatedVariableName: WarehouseAcceptanceSlip
 }>
 
 export type Action =
@@ -35,8 +34,7 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new WarehouseAcceptanceSlipVariable(-1, { transferMaterialSlip: new TransferMaterialSlip(-1), quantity: 0 }),
-        updatedVariableName: new WarehouseAcceptanceSlip(-1)
+        variable: new WarehouseAcceptanceSlipVariable(-1, { transferMaterialSlip: new TransferMaterialSlip(-1), quantity: 0 })
     }
 
     function reducer(state: Draft<State>, action: Action) {
@@ -77,7 +75,6 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
-                        state.updatedVariableName = action[2].id
                         break
                     }
                     default: {
@@ -127,7 +124,7 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'transferMaterialSlip': {
-                        dispatch(['variable', 'values', event.target.name, new TransferMaterialSlip(event.target.value)])
+                        dispatch(['variable', 'values', event.target.name, new TransferMaterialSlip(parseInt(event.target.value))])
                         break
                     }
                     case 'quantity': {
@@ -151,10 +148,7 @@ function Component(props) {
     }
 
     const modifyVariable = async () => {
-        const [, diff] = await iff(state.variable.id.toString() !== state.updatedVariableName.toString(),
-            updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
-            updateVariable(state.variable, state.variable.toRow().values)
-        )
+        const [, diff] = await updateVariable(state.variable, state.variable.toRow().values)
         console.log(diff)
         db.diffs.put(diff.toRow())
     }
