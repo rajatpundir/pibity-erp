@@ -43,7 +43,7 @@ export type Action =
     | ['items', 'offset', number]
     | ['items', 'page', number]
     | ['items', 'query', Args]
-    | ['items', 'variable', 'values', 'name', string]
+    | ['items', 'variable', 'name', string]
     | ['items', 'addVariable']
 
     | ['replace', 'variable', RegionVariable]
@@ -105,9 +105,9 @@ function Component(props) {
                         break
                     }
                     case 'variable': {
-                        switch (action[3]) {
+                        switch (action[2]) {
                             case 'name': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                         }
@@ -187,7 +187,7 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'name': {
-                        dispatch(['items', 'variable', 'values', event.target.name, event.target.value])
+                        dispatch(['items', 'variable', event.target.name, event.target.value])
                         break
                     }
                 }

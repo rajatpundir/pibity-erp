@@ -40,14 +40,14 @@ export type Action =
     | ['resetVariable', State]
 
 
-    | ['variable', 'values', 'purchaseInvoice', PurchaseInvoice]
+    | ['variable', 'purchaseInvoice', PurchaseInvoice]
 
     | ['items', 'limit', number]
     | ['items', 'offset', number]
     | ['items', 'page', number]
     | ['items', 'query', Args]
-    | ['items', 'variable', 'values', 'purchaseInvoiceItem', PurchaseInvoiceItem]
-    | ['items', 'variable', 'values', 'quantity', number]
+    | ['items', 'variable', 'purchaseInvoiceItem', PurchaseInvoiceItem]
+    | ['items', 'variable', 'quantity', number]
     | ['items', 'addVariable']
 
     | ['replace', 'variable', MaterialRejectionSlipVariable]
@@ -85,17 +85,13 @@ function Component(props) {
             }
             case 'variable': {
                 switch (action[1]) {
-                    case 'values': {
-                        switch (action[2]) {
-                            case 'purchaseInvoice': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            default: {
-                                const _exhaustiveCheck: never = action;
-                                return _exhaustiveCheck;
-                            }
-                        }
+                    case 'purchaseInvoice': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
                     }
                 }
                 break
@@ -120,13 +116,13 @@ function Component(props) {
                         break
                     }
                     case 'variable': {
-                        switch (action[3]) {
+                        switch (action[2]) {
                             case 'purchaseInvoiceItem': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                             case 'quantity': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                             default: {
@@ -222,7 +218,7 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'purchaseInvoice': {
-                        dispatch(['variable', 'values', event.target.name, new PurchaseInvoice(parseInt(event.target.value))])
+                        dispatch(['variable', event.target.name, new PurchaseInvoice(parseInt(event.target.value))])
                         break
                     }
                 }
@@ -235,11 +231,11 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'purchaseInvoiceItem': {
-                        dispatch(['items', 'variable', 'values', event.target.name, new PurchaseInvoiceItem(parseInt(event.target.value))])
+                        dispatch(['items', 'variable', event.target.name, new PurchaseInvoiceItem(parseInt(event.target.value))])
                         break
                     }
                     case 'quantity': {
-                        dispatch(['items', 'variable', 'values', event.target.name, parseInt(event.target.value)])
+                        dispatch(['items', 'variable', event.target.name, parseInt(event.target.value)])
                         break
                     }
                 }

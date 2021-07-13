@@ -40,16 +40,16 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
-    | ['variable', 'values', 'bank', Bank]
-    | ['variable', 'values', 'name', string]
-    | ['variable', 'values', 'ifsc', string]
-    | ['variable', 'values', 'address', Address]
+    | ['variable', 'bank', Bank]
+    | ['variable', 'name', string]
+    | ['variable', 'ifsc', string]
+    | ['variable', 'address', Address]
 
     | ['items', 'limit', number]
     | ['items', 'offset', number]
     | ['items', 'page', number]
     | ['items', 'query', Args]
-    | ['items', 'variable', 'values', 'accountNumber', string]
+    | ['items', 'variable', 'accountNumber', string]
     | ['items', 'addVariable']
 
     | ['replace', 'variable', BankBranchVariable]
@@ -87,29 +87,25 @@ function Component(props) {
             }
             case 'variable': {
                 switch (action[1]) {
-                    case 'values': {
-                        switch (action[2]) {
-                            case 'bank': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'name': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'ifsc': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'address': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            default: {
-                                const _exhaustiveCheck: never = action;
-                                return _exhaustiveCheck;
-                            }
-                        }
+                    case 'bank': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'name': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'ifsc': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'address': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
                     }
                 }
                 break
@@ -134,9 +130,9 @@ function Component(props) {
                         break
                     }
                     case 'variable': {
-                        switch (action[3]) {
+                        switch (action[2]) {
                             case 'accountNumber': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                         }
@@ -228,19 +224,19 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'bank': {
-                        dispatch(['variable', 'values', event.target.name, new Bank(parseInt(event.target.value))])
+                        dispatch(['variable', event.target.name, new Bank(parseInt(event.target.value))])
                         break
                     }
                     case 'name': {
-                        dispatch(['variable', 'values', event.target.name, event.target.value])
+                        dispatch(['variable', event.target.name, event.target.value])
                         break
                     }
                     case 'ifsc': {
-                        dispatch(['variable', 'values', event.target.name, event.target.value])
+                        dispatch(['variable', event.target.name, event.target.value])
                         break
                     }
                     case 'address': {
-                        dispatch(['variable', 'values', event.target.name, new Address(parseInt(event.target.value))])
+                        dispatch(['variable', event.target.name, new Address(parseInt(event.target.value))])
                         break
                     }
                 }
@@ -253,7 +249,7 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'accountNumber': {
-                        dispatch(['items', 'variable', 'values', event.target.name, event.target.value])
+                        dispatch(['items', 'variable', event.target.name, event.target.value])
                         break
                     }
                 }

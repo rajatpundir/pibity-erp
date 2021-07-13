@@ -40,14 +40,14 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', StateS]
 
-    | ['variable', 'values', 'country', Country]
-    | ['variable', 'values', 'name', string]
+    | ['variable', 'country', Country]
+    | ['variable', 'name', string]
 
     | ['items', 'limit', number]
     | ['items', 'offset', number]
     | ['items', 'page', number]
     | ['items', 'query', Args]
-    | ['items', 'variable', 'values', 'name', string]
+    | ['items', 'variable', 'name', string]
     | ['items', 'addVariable']
 
     | ['replace', 'variable', StateVariable]
@@ -85,21 +85,17 @@ function Component(props) {
             }
             case 'variable': {
                 switch (action[1]) {
-                    case 'values': {
-                        switch (action[2]) {
-                            case 'country': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'name': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            default: {
-                                const _exhaustiveCheck: never = action;
-                                return _exhaustiveCheck;
-                            }
-                        }
+                    case 'country': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'name': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
                     }
                 }
                 break
@@ -124,9 +120,9 @@ function Component(props) {
                         break
                     }
                     case 'variable': {
-                        switch (action[3]) {
+                        switch (action[2]) {
                             case 'name': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                         }
@@ -212,11 +208,11 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'country': {
-                        dispatch(['variable', 'values', event.target.name, new Country(parseInt(event.target.value))])
+                        dispatch(['variable', event.target.name, new Country(parseInt(event.target.value))])
                         break
                     }
                     case 'name': {
-                        dispatch(['variable', 'values', event.target.name, event.target.value])
+                        dispatch(['variable', event.target.name, event.target.value])
                         break
                     }
                 }
@@ -229,7 +225,7 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'name': {
-                        dispatch(['items', 'variable', 'values', event.target.name, event.target.value])
+                        dispatch(['items', 'variable', event.target.name, event.target.value])
                         break
                     }
                 }
@@ -329,11 +325,11 @@ function Component(props) {
                                     {countries.toArray().map(x => <option value={x.id.hashCode()}>{x.values.name}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{
-                                    iff(countries.filter(x => x.id.hashCode() === state.variable.values.country.hashCode()).length() !== 0, 
-                                    () => {
-                                        const referencedVariable = countries.filter(x => x.id.hashCode() === state.variable.values.country.hashCode()).toArray()[0] as CountryVariable      
-                                        return <Link to={`/country/${referencedVariable.id.hashCode()}`}>{referencedVariable.values.name}</Link>
-                                    }, <Link to={`/country/${state.variable.values.country.hashCode()}`}>{state.variable.values.country.hashCode()}</Link>)
+                                    iff(countries.filter(x => x.id.hashCode() === state.variable.values.country.hashCode()).length() !== 0,
+                                        () => {
+                                            const referencedVariable = countries.filter(x => x.id.hashCode() === state.variable.values.country.hashCode()).toArray()[0] as CountryVariable
+                                            return <Link to={`/country/${referencedVariable.id.hashCode()}`}>{referencedVariable.values.name}</Link>
+                                        }, <Link to={`/country/${state.variable.values.country.hashCode()}`}>{state.variable.values.country.hashCode()}</Link>)
                                 }</div>
                             )
                         }

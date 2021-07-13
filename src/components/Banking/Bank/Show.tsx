@@ -40,18 +40,18 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
-    | ['variable', 'values', 'country', Country]
-    | ['variable', 'values', 'name', string]
-    | ['variable', 'values', 'website', string]
+    | ['variable', 'country', Country]
+    | ['variable', 'name', string]
+    | ['variable', 'website', string]
 
     | ['items', 'limit', number]
     | ['items', 'offset', number]
     | ['items', 'page', number]
     | ['items', 'query', Args]
-    | ['items', 'variable', 'values', 'bank', Bank]
-    | ['items', 'variable', 'values', 'name', string]
-    | ['items', 'variable', 'values', 'ifsc', string]
-    | ['items', 'variable', 'values', 'address', Address]
+    | ['items', 'variable', 'bank', Bank]
+    | ['items', 'variable', 'name', string]
+    | ['items', 'variable', 'ifsc', string]
+    | ['items', 'variable', 'address', Address]
     | ['items', 'addVariable']
 
     | ['replace', 'variable', BankVariable]
@@ -89,25 +89,21 @@ function Component(props) {
             }
             case 'variable': {
                 switch (action[1]) {
-                    case 'values': {
-                        switch (action[2]) {
-                            case 'country': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'name': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'website': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            default: {
-                                const _exhaustiveCheck: never = action;
-                                return _exhaustiveCheck;
-                            }
-                        }
+                    case 'country': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'name': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'website': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
                     }
                 }
                 break
@@ -132,21 +128,21 @@ function Component(props) {
                         break
                     }
                     case 'variable': {
-                        switch (action[3]) {
+                        switch (action[2]) {
                             case 'bank': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                             case 'name': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                             case 'ifsc': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                             case 'address': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                         }
@@ -238,15 +234,15 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'country': {
-                        dispatch(['variable', 'values', event.target.name, new Country(parseInt(event.target.value))])
+                        dispatch(['variable', event.target.name, new Country(parseInt(event.target.value))])
                         break
                     }
                     case 'name': {
-                        dispatch(['variable', 'values', event.target.name, event.target.value])
+                        dispatch(['variable', event.target.name, event.target.value])
                         break
                     }
                     case 'website': {
-                        dispatch(['variable', 'values', event.target.name, event.target.value])
+                        dispatch(['variable', event.target.name, event.target.value])
                         break
                     }
                 }
@@ -259,19 +255,19 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'bank': {
-                        dispatch(['items', 'variable', 'values', event.target.name, new Bank(parseInt(event.target.value))])
+                        dispatch(['items', 'variable', event.target.name, new Bank(parseInt(event.target.value))])
                         break
                     }
                     case 'name': {
-                        dispatch(['items', 'variable', 'values', event.target.name, event.target.value])
+                        dispatch(['items', 'variable', event.target.name, event.target.value])
                         break
                     }
                     case 'ifsc': {
-                        dispatch(['items', 'variable', 'values', event.target.name, event.target.value])
+                        dispatch(['items', 'variable', event.target.name, event.target.value])
                         break
                     }
                     case 'address': {
-                        dispatch(['items', 'variable', 'values', event.target.name, new Address(parseInt(event.target.value))])
+                        dispatch(['items', 'variable', event.target.name, new Address(parseInt(event.target.value))])
                         break
                     }
                 }

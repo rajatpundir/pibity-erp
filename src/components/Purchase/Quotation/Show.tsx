@@ -40,15 +40,15 @@ export type Action =
     | ['resetVariable', State]
 
 
-    | ['variable', 'values', 'indent', Indent]
-    | ['variable', 'values', 'company', Company]
+    | ['variable', 'indent', Indent]
+    | ['variable', 'company', Company]
 
     | ['items', 'limit', number]
     | ['items', 'offset', number]
     | ['items', 'page', number]
     | ['items', 'query', Args]
-    | ['items', 'variable', 'values', 'indentItem', IndentItem]
-    | ['items', 'variable', 'values', 'quantity', number]
+    | ['items', 'variable', 'indentItem', IndentItem]
+    | ['items', 'variable', 'quantity', number]
     | ['items', 'addVariable']
 
     | ['replace', 'variable', QuotationVariable]
@@ -86,21 +86,17 @@ function Component(props) {
             }
             case 'variable': {
                 switch (action[1]) {
-                    case 'values': {
-                        switch (action[2]) {
-                            case 'indent': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'company': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            default: {
-                                const _exhaustiveCheck: never = action;
-                                return _exhaustiveCheck;
-                            }
-                        }
+                    case 'indent': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'company': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
                     }
                 }
                 break
@@ -125,13 +121,13 @@ function Component(props) {
                         break
                     }
                     case 'variable': {
-                        switch (action[3]) {
+                        switch (action[2]) {
                             case 'indentItem': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                             case 'quantity': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                             default: {
@@ -234,11 +230,11 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'indent': {
-                        dispatch(['variable', 'values', event.target.name, new Indent(parseInt(event.target.value))])
+                        dispatch(['variable', event.target.name, new Indent(parseInt(event.target.value))])
                         break
                     }
                     case 'company': {
-                        dispatch(['variable', 'values', event.target.name, new Company(parseInt(event.target.value))])
+                        dispatch(['variable', event.target.name, new Company(parseInt(event.target.value))])
                         break
                     }
                 }
@@ -251,11 +247,11 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'indentItem': {
-                        dispatch(['items', 'variable', 'values', event.target.name, new IndentItem(parseInt(event.target.value))])
+                        dispatch(['items', 'variable', event.target.name, new IndentItem(parseInt(event.target.value))])
                         break
                     }
                     case 'quantity': {
-                        dispatch(['items', 'variable', 'values', event.target.name, parseInt(event.target.value)])
+                        dispatch(['items', 'variable', event.target.name, parseInt(event.target.value)])
                         break
                     }
 

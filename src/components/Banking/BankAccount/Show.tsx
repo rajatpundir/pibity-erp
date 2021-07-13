@@ -40,15 +40,15 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
-    | ['variable', 'values', 'bank', Bank]
-    | ['variable', 'values', 'bankBranch', BankBranch]
-    | ['variable', 'values', 'accountNumber', string]
+    | ['variable', 'bank', Bank]
+    | ['variable', 'bankBranch', BankBranch]
+    | ['variable', 'accountNumber', string]
 
     | ['companies', 'limit', number]
     | ['companies', 'offset', number]
     | ['companies', 'page', number]
     | ['companies', 'query', Args]
-    | ['companies', 'variable', 'values', 'company', Company]
+    | ['companies', 'variable', 'company', Company]
     | ['companies', 'addVariable']
 
     | ['replace', 'variable', BankAccountVariable]
@@ -86,25 +86,21 @@ function Component(props) {
             }
             case 'variable': {
                 switch (action[1]) {
-                    case 'values': {
-                        switch (action[2]) {
-                            case 'bank': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'bankBranch': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'accountNumber': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            default: {
-                                const _exhaustiveCheck: never = action;
-                                return _exhaustiveCheck;
-                            }
-                        }
+                    case 'bank': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'bankBranch': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'accountNumber': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
                     }
                 }
                 break
@@ -129,9 +125,9 @@ function Component(props) {
                         break
                     }
                     case 'variable': {
-                        switch (action[3]) {
+                        switch (action[2]) {
                             case 'company': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                         }
@@ -230,15 +226,15 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'bank': {
-                        dispatch(['variable', 'values', event.target.name, new Bank(parseInt(event.target.value))])
+                        dispatch(['variable', event.target.name, new Bank(parseInt(event.target.value))])
                         break
                     }
                     case 'bankBranch': {
-                        dispatch(['variable', 'values', event.target.name, new BankBranch(parseInt(event.target.value))])
+                        dispatch(['variable', event.target.name, new BankBranch(parseInt(event.target.value))])
                         break
                     }
                     case 'accountNumber': {
-                        dispatch(['variable', 'values', event.target.name, event.target.value])
+                        dispatch(['variable', event.target.name, event.target.value])
                         break
                     }
                 }
@@ -251,7 +247,7 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'company': {
-                        dispatch(['companies', 'variable', 'values', event.target.name, new Company(parseInt(event.target.value))])
+                        dispatch(['companies', 'variable', event.target.name, new Company(parseInt(event.target.value))])
                         break
                     }
                 }

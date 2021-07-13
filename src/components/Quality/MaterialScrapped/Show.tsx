@@ -25,8 +25,8 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
-    | ['variable', 'values', 'productionPreparationSlip', ProductionPreparationSlip]
-    | ['variable', 'values', 'quantity', number]
+    | ['variable', 'productionPreparationSlip', ProductionPreparationSlip]
+    | ['variable', 'quantity', number]
 
     | ['replace', 'variable', ScrapMaterialSlipVariable]
 
@@ -52,21 +52,17 @@ function Component(props) {
             }
             case 'variable': {
                 switch (action[1]) {
-                    case 'values': {
-                        switch (action[2]) {
-                            case 'productionPreparationSlip': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'quantity': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            default: {
-                                const _exhaustiveCheck: never = action;
-                                return _exhaustiveCheck;
-                            }
-                        }
+                    case 'productionPreparationSlip': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'quantity': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
                     }
                 }
                 break
@@ -107,11 +103,11 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'productionPreparationSlip': {
-                        dispatch(['variable', 'values', event.target.name, new ProductionPreparationSlip(parseInt(event.target.value))])
+                        dispatch(['variable', event.target.name, new ProductionPreparationSlip(parseInt(event.target.value))])
                         break
                     }
                     case 'quantity': {
-                        dispatch(['variable', 'values', event.target.name, parseInt(event.target.value)])
+                        dispatch(['variable', event.target.name, parseInt(event.target.value)])
                         break
                     }
                 }

@@ -43,9 +43,9 @@ export type Action =
     | ['items', 'offset', number]
     | ['items', 'page', number]
     | ['items', 'query', Args]
-    | ['items', 'variable', 'values', 'product', Product]
-    | ['items', 'variable', 'values', 'quantity', number]
-    | ['items', 'variable', 'values', 'uom', UOM]
+    | ['items', 'variable', 'product', Product]
+    | ['items', 'variable', 'quantity', number]
+    | ['items', 'variable', 'uom', UOM]
     | ['items', 'addVariable']
 
     | ['replace', 'variable', BOMVariable]
@@ -110,17 +110,17 @@ function Component(props) {
                         break
                     }
                     case 'variable': {
-                        switch (action[3]) {
+                        switch (action[2]) {
                             case 'product': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                             case 'quantity': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                             case 'uom': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                             default: {
@@ -213,15 +213,15 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'product': {
-                        dispatch(['items', 'variable', 'values', event.target.name, new Product(parseInt(event.target.value))])
+                        dispatch(['items', 'variable', event.target.name, new Product(parseInt(event.target.value))])
                         break
                     }
                     case 'quantity': {
-                        dispatch(['items', 'variable', 'values', event.target.name, parseInt(event.target.value)])
+                        dispatch(['items', 'variable', event.target.name, parseInt(event.target.value)])
                         break
                     }
                     case 'uom': {
-                        dispatch(['items', 'variable', 'values', event.target.name, new UOM(parseInt(event.target.value))])
+                        dispatch(['items', 'variable', event.target.name, new UOM(parseInt(event.target.value))])
                         break
                     }
                 }

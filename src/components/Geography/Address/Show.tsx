@@ -40,17 +40,17 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
-    | ['variable', 'values', 'postalCode', PostalCode]
-    | ['variable', 'values', 'line1', string]
-    | ['variable', 'values', 'line2', string]
-    | ['variable', 'values', 'latitude', number]
-    | ['variable', 'values', 'longitude', number]
+    | ['variable', 'postalCode', PostalCode]
+    | ['variable', 'line1', string]
+    | ['variable', 'line2', string]
+    | ['variable', 'latitude', number]
+    | ['variable', 'longitude', number]
 
     | ['companies', 'limit', number]
     | ['companies', 'offset', number]
     | ['companies', 'page', number]
     | ['companies', 'query', Args]
-    | ['companies', 'variable', 'values', 'company', Company]
+    | ['companies', 'variable', 'company', Company]
     | ['companies', 'addVariable']
 
     | ['replace', 'variable', AddressVariable]
@@ -88,33 +88,29 @@ function Component(props) {
             }
             case 'variable': {
                 switch (action[1]) {
-                    case 'values': {
-                        switch (action[2]) {
-                            case 'postalCode': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'line1': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'line2': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'latitude': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'longitude': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            default: {
-                                const _exhaustiveCheck: never = action;
-                                return _exhaustiveCheck;
-                            }
-                        }
+                    case 'postalCode': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'line1': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'line2': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'latitude': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'longitude': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
                     }
                 }
                 break
@@ -139,9 +135,9 @@ function Component(props) {
                         break
                     }
                     case 'variable': {
-                        switch (action[3]) {
+                        switch (action[2]) {
                             case 'company': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                         }
@@ -233,23 +229,23 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'postalCode': {
-                        dispatch(['variable', 'values', event.target.name, new PostalCode(parseInt(event.target.value))])
+                        dispatch(['variable', event.target.name, new PostalCode(parseInt(event.target.value))])
                         break
                     }
                     case 'line1': {
-                        dispatch(['variable', 'values', event.target.name, event.target.value])
+                        dispatch(['variable', event.target.name, event.target.value])
                         break
                     }
                     case 'line2': {
-                        dispatch(['variable', 'values', event.target.name, event.target.value])
+                        dispatch(['variable', event.target.name, event.target.value])
                         break
                     }
                     case 'latitude': {
-                        dispatch(['variable', 'values', event.target.name, parseFloat(event.target.value)])
+                        dispatch(['variable', event.target.name, parseFloat(event.target.value)])
                         break
                     }
                     case 'longitude': {
-                        dispatch(['variable', 'values', event.target.name, parseFloat(event.target.value)])
+                        dispatch(['variable', event.target.name, parseFloat(event.target.value)])
                         break
                     }
                 }
@@ -262,7 +258,7 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'company': {
-                        dispatch(['companies', 'variable', 'values', event.target.name, new Company(parseInt(event.target.value))])
+                        dispatch(['companies', 'variable', event.target.name, new Company(parseInt(event.target.value))])
                         break
                     }
                 }

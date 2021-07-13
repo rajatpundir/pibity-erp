@@ -40,17 +40,17 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
-    | ['variable', 'values', 'subdistrict', Subdistrict]
-    | ['variable', 'values', 'name', string]
+    | ['variable', 'subdistrict', Subdistrict]
+    | ['variable', 'name', string]
 
     | ['items', 'limit', number]
     | ['items', 'offset', number]
     | ['items', 'page', number]
     | ['items', 'query', Args]
-    | ['items', 'variable', 'values', 'line1', string]
-    | ['items', 'variable', 'values', 'line2', string]
-    | ['items', 'variable', 'values', 'latitude', number]
-    | ['items', 'variable', 'values', 'longitude', number]
+    | ['items', 'variable', 'line1', string]
+    | ['items', 'variable', 'line2', string]
+    | ['items', 'variable', 'latitude', number]
+    | ['items', 'variable', 'longitude', number]
     | ['items', 'addVariable']
 
     | ['replace', 'variable', PostalCodeVariable]
@@ -88,21 +88,17 @@ function Component(props) {
             }
             case 'variable': {
                 switch (action[1]) {
-                    case 'values': {
-                        switch (action[2]) {
-                            case 'subdistrict': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'name': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            default: {
-                                const _exhaustiveCheck: never = action;
-                                return _exhaustiveCheck;
-                            }
-                        }
+                    case 'subdistrict': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'name': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
                     }
                 }
                 break
@@ -127,21 +123,21 @@ function Component(props) {
                         break
                     }
                     case 'variable': {
-                        switch (action[3]) {
+                        switch (action[2]) {
                             case 'line1': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                             case 'line2': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                             case 'latitude': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                             case 'longitude': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                         }
@@ -233,11 +229,11 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'subdistrict': {
-                        dispatch(['variable', 'values', event.target.name, new Subdistrict(parseInt(event.target.value))])
+                        dispatch(['variable', event.target.name, new Subdistrict(parseInt(event.target.value))])
                         break
                     }
                     case 'name': {
-                        dispatch(['variable', 'values', event.target.name, event.target.value])
+                        dispatch(['variable', event.target.name, event.target.value])
                         break
                     }
                 }
@@ -250,19 +246,19 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'line1': {
-                        dispatch(['items', 'variable', 'values', event.target.name, event.target.value])
+                        dispatch(['items', 'variable', event.target.name, event.target.value])
                         break
                     }
                     case 'line2': {
-                        dispatch(['items', 'variable', 'values', event.target.name, event.target.value])
+                        dispatch(['items', 'variable', event.target.name, event.target.value])
                         break
                     }
                     case 'latitude': {
-                        dispatch(['items', 'variable', 'values', event.target.name, parseFloat(event.target.value)])
+                        dispatch(['items', 'variable', event.target.name, parseFloat(event.target.value)])
                         break
                     }
                     case 'longitude': {
-                        dispatch(['items', 'variable', 'values', event.target.name, parseFloat(event.target.value)])
+                        dispatch(['items', 'variable', event.target.name, parseFloat(event.target.value)])
                         break
                     }
                 }

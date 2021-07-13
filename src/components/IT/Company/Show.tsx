@@ -60,37 +60,37 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
-    | ['variable', 'values', 'email', string]
-    | ['variable', 'values', 'telephone', string]
-    | ['variable', 'values', 'mobile', string]
-    | ['variable', 'values', 'website', string]
-    | ['variable', 'values', 'gstin', string]
-    | ['variable', 'values', 'pan', string]
-    | ['variable', 'values', 'iec', string]
+    | ['variable', 'email', string]
+    | ['variable', 'telephone', string]
+    | ['variable', 'mobile', string]
+    | ['variable', 'website', string]
+    | ['variable', 'gstin', string]
+    | ['variable', 'pan', string]
+    | ['variable', 'iec', string]
 
     | ['addresses', 'limit', number]
     | ['addresses', 'offset', number]
     | ['addresses', 'page', number]
     | ['addresses', 'query', Args]
-    | ['addresses', 'variable', 'values', 'company', Company]
-    | ['addresses', 'variable', 'values', 'name', string]
-    | ['addresses', 'variable', 'values', 'address', Address]
+    | ['addresses', 'variable', 'company', Company]
+    | ['addresses', 'variable', 'name', string]
+    | ['addresses', 'variable', 'address', Address]
     | ['addresses', 'addVariable']
 
     | ['bankAccounts', 'limit', number]
     | ['bankAccounts', 'offset', number]
     | ['bankAccounts', 'page', number]
     | ['bankAccounts', 'query', Args]
-    | ['bankAccounts', 'variable', 'values', 'company', Company]
-    | ['bankAccounts', 'variable', 'values', 'bankAccount', BankAccount]
+    | ['bankAccounts', 'variable', 'company', Company]
+    | ['bankAccounts', 'variable', 'bankAccount', BankAccount]
     | ['bankAccounts', 'addVariable']
 
     | ['products', 'limit', number]
     | ['products', 'offset', number]
     | ['products', 'page', number]
     | ['products', 'query', Args]
-    | ['products', 'variable', 'values', 'company', Company]
-    | ['products', 'variable', 'values', 'product', Product]
+    | ['products', 'variable', 'company', Company]
+    | ['products', 'variable', 'product', Product]
     | ['products', 'addVariable']
 
     | ['replace', 'variable', CompanyVariable]
@@ -102,7 +102,7 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new CompanyVariable(-1, { email: '', telephone: '', mobile: '', website: '', gstin: '', pan: '', iec: '' }),
+        variable: new CompanyVariable(-1, { name: '', email: '', telephone: '', mobile: '', website: '', gstin: '', pan: '', iec: '' }),
         addresses: {
             typeName: 'CompanyAddress',
             query: getQuery('CompanyAddress'),
@@ -150,41 +150,41 @@ function Component(props) {
             }
             case 'variable': {
                 switch (action[1]) {
-                    case 'values': {
-                        switch (action[2]) {
-                            case 'email': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'telephone': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'mobile': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'website': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'gstin': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'pan': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'iec': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            default: {
-                                const _exhaustiveCheck: never = action;
-                                return _exhaustiveCheck;
-                            }
-                        }
+                    case 'name': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'email': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'telephone': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'mobile': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'website': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'gstin': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'pan': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'iec': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
                     }
                 }
                 break
@@ -209,13 +209,13 @@ function Component(props) {
                         break
                     }
                     case 'variable': {
-                        switch (action[3]) {
+                        switch (action[2]) {
                             case 'name': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                             case 'address': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                         }
@@ -257,9 +257,9 @@ function Component(props) {
                         break
                     }
                     case 'variable': {
-                        switch (action[3]) {
+                        switch (action[2]) {
                             case 'bankAccount': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                         }
@@ -300,9 +300,9 @@ function Component(props) {
                         break
                     }
                     case 'variable': {
-                        switch (action[3]) {
+                        switch (action[2]) {
                             case 'product': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                         }
@@ -433,31 +433,31 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'email': {
-                        dispatch(['variable', 'values', event.target.name, event.target.value])
+                        dispatch(['variable', event.target.name, event.target.value])
                         break
                     }
                     case 'telephone': {
-                        dispatch(['variable', 'values', event.target.name, event.target.value])
+                        dispatch(['variable', event.target.name, event.target.value])
                         break
                     }
                     case 'mobile': {
-                        dispatch(['variable', 'values', event.target.name, event.target.value])
+                        dispatch(['variable', event.target.name, event.target.value])
                         break
                     }
                     case 'website': {
-                        dispatch(['variable', 'values', event.target.name, event.target.value])
+                        dispatch(['variable', event.target.name, event.target.value])
                         break
                     }
                     case 'gstin': {
-                        dispatch(['variable', 'values', event.target.name, event.target.value])
+                        dispatch(['variable', event.target.name, event.target.value])
                         break
                     }
                     case 'pan': {
-                        dispatch(['variable', 'values', event.target.name, event.target.value])
+                        dispatch(['variable', event.target.name, event.target.value])
                         break
                     }
                     case 'iec': {
-                        dispatch(['variable', 'values', event.target.name, event.target.value])
+                        dispatch(['variable', event.target.name, event.target.value])
                         break
                     }
                 }
@@ -470,11 +470,11 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'name': {
-                        dispatch(['addresses', 'variable', 'values', event.target.name, event.target.value])
+                        dispatch(['addresses', 'variable', event.target.name, event.target.value])
                         break
                     }
                     case 'address': {
-                        dispatch(['addresses', 'variable', 'values', event.target.name, new Address(parseInt(event.target.value))])
+                        dispatch(['addresses', 'variable', event.target.name, new Address(parseInt(event.target.value))])
                         break
                     }
                 }
@@ -487,7 +487,7 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'bankAccount': {
-                        dispatch(['bankAccounts', 'variable', 'values', event.target.name, new BankAccount(parseInt(event.target.value))])
+                        dispatch(['bankAccounts', 'variable', event.target.name, new BankAccount(parseInt(event.target.value))])
                         break
                     }
                 }
@@ -500,7 +500,7 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'product': {
-                        dispatch(['products', 'variable', 'values', event.target.name, new Product(parseInt(event.target.value))])
+                        dispatch(['products', 'variable', event.target.name, new Product(parseInt(event.target.value))])
                         break
                     }
                 }

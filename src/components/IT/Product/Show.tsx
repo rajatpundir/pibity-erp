@@ -51,24 +51,24 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
-    | ['variable', 'values', 'name', string]
-    | ['variable', 'values', 'orderable', boolean]
-    | ['variable', 'values', 'consumable', boolean]
-    | ['variable', 'values', 'producable', boolean]
+    | ['variable', 'name', string]
+    | ['variable', 'orderable', boolean]
+    | ['variable', 'consumable', boolean]
+    | ['variable', 'producable', boolean]
 
     | ['uoms', 'limit', number]
     | ['uoms', 'offset', number]
     | ['uoms', 'page', number]
     | ['uoms', 'query', Args]
-    | ['uoms', 'variable', 'values', 'name', string]
-    | ['uoms', 'variable', 'values', 'conversionRate', number]
+    | ['uoms', 'variable', 'name', string]
+    | ['uoms', 'variable', 'conversionRate', number]
     | ['uoms', 'addVariable']
 
     | ['companies', 'limit', number]
     | ['companies', 'offset', number]
     | ['companies', 'page', number]
     | ['companies', 'query', Args]
-    | ['companies', 'variable', 'values', 'company', Company]
+    | ['companies', 'variable', 'company', Company]
     | ['companies', 'addVariable']
 
     | ['replace', 'variable', ProductVariable]
@@ -117,23 +117,19 @@ function Component(props) {
             }
             case 'variable': {
                 switch (action[1]) {
-                    case 'values': {
-                        switch (action[2]) {
-                            case 'name': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            case 'orderable':
-                            case 'consumable':
-                            case 'producable': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            default: {
-                                const _exhaustiveCheck: never = action;
-                                return _exhaustiveCheck;
-                            }
-                        }
+                    case 'name': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'orderable':
+                    case 'consumable':
+                    case 'producable': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
                     }
                 }
                 break
@@ -158,13 +154,13 @@ function Component(props) {
                         break
                     }
                     case 'variable': {
-                        switch (action[3]) {
+                        switch (action[2]) {
                             case 'name': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                             case 'conversionRate': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                         }
@@ -202,9 +198,9 @@ function Component(props) {
                         break
                     }
                     case 'variable': {
-                        switch (action[3]) {
+                        switch (action[2]) {
                             case 'company': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                         }
@@ -306,7 +302,7 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'name': {
-                        dispatch(['variable', 'values', event.target.name, event.target.value])
+                        dispatch(['variable', event.target.name, event.target.value])
                         break
                     }
                 }
@@ -319,7 +315,7 @@ function Component(props) {
             case 'orderable':
             case 'consumable':
             case 'producable': {
-                dispatch(['variable', 'values', event.target.name, event.target.checked])
+                dispatch(['variable', event.target.name, event.target.checked])
                 break
             }
         }
@@ -330,11 +326,11 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'name': {
-                        dispatch(['uoms', 'variable', 'values', event.target.name, event.target.value])
+                        dispatch(['uoms', 'variable', event.target.name, event.target.value])
                         break
                     }
                     case 'conversionRate': {
-                        dispatch(['uoms', 'variable', 'values', event.target.name, parseFloat(event.target.value)])
+                        dispatch(['uoms', 'variable', event.target.name, parseFloat(event.target.value)])
                         break
                     }
                 }
@@ -347,7 +343,7 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'company': {
-                        dispatch(['companies', 'variable', 'values', event.target.name, new Company(parseInt(event.target.value))])
+                        dispatch(['companies', 'variable', event.target.name, new Company(parseInt(event.target.value))])
                         break
                     }
                 }

@@ -39,14 +39,14 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
-    | ['variable', 'values', 'materialApprovalSlip', MaterialApprovalSlip]
+    | ['variable', 'materialApprovalSlip', MaterialApprovalSlip]
 
     | ['items', 'limit', number]
     | ['items', 'offset', number]
     | ['items', 'page', number]
     | ['items', 'query', Args]
-    | ['items', 'variable', 'values', 'materialApprovalSlipItem', MaterialApprovalSlipItem]
-    | ['items', 'variable', 'values', 'quantity', number]
+    | ['items', 'variable', 'materialApprovalSlipItem', MaterialApprovalSlipItem]
+    | ['items', 'variable', 'quantity', number]
     | ['items', 'addVariable']
 
     | ['replace', 'variable', MaterialRequistionSlipVariable]
@@ -84,17 +84,13 @@ function Component(props) {
             }
             case 'variable': {
                 switch (action[1]) {
-                    case 'values': {
-                        switch (action[2]) {
-                            case 'materialApprovalSlip': {
-                                state[action[0]][action[1]][action[2]] = action[3]
-                                break
-                            }
-                            default: {
-                                const _exhaustiveCheck: never = action;
-                                return _exhaustiveCheck;
-                            }
-                        }
+                    case 'materialApprovalSlip': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    default: {
+                        const _exhaustiveCheck: never = action;
+                        return _exhaustiveCheck;
                     }
                 }
                 break
@@ -119,13 +115,13 @@ function Component(props) {
                         break
                     }
                     case 'variable': {
-                        switch (action[3]) {
+                        switch (action[2]) {
                             case 'materialApprovalSlipItem': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                             case 'quantity': {
-                                state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                state[action[0]][action[1]][action[2]] = action[3]
                                 break
                             }
                             default: {
@@ -222,7 +218,7 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'materialApprovalSlip': {
-                        dispatch(['variable', 'values', event.target.name, new MaterialApprovalSlip(parseInt(event.target.value))])
+                        dispatch(['variable', event.target.name, new MaterialApprovalSlip(parseInt(event.target.value))])
                         break
                     }
                 }
@@ -235,11 +231,11 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'materialApprovalSlipItem': {
-                        dispatch(['items', 'variable', 'values', event.target.name, new MaterialApprovalSlipItem(parseInt(event.target.value))])
+                        dispatch(['items', 'variable', event.target.name, new MaterialApprovalSlipItem(parseInt(event.target.value))])
                         break
                     }
                     case 'quantity': {
-                        dispatch(['items', 'variable', 'values', event.target.name, parseInt(event.target.value)])
+                        dispatch(['items', 'variable', event.target.name, parseInt(event.target.value)])
                         break
                     }
                 }
