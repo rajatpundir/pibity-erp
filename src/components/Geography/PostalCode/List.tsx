@@ -35,7 +35,7 @@ const initialState: State = {
     limit: 5,
     offset: 0,
     page: 1,
-    columns: Vector.of(['variableName'], ['values', 'subdistrict', 'values', 'name'], ['values', 'name'])
+    columns: Vector.of(['values', 'subdistrict', 'values', 'name'], ['values', 'name'])
 }
 
 function reducer(state: Draft<State>, action: Action) {
@@ -66,7 +66,7 @@ function reducer(state: Draft<State>, action: Action) {
 
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const rows = useLiveQuery(() => db.PostalCode.orderBy('variableName').toArray())
+    const rows = useLiveQuery(() => db.PostalCode.orderBy('id').toArray())
     var composedVariables = Vector.of<Immutable<PostalCodeVariable>>().appendAll(rows ? rows.map(x => PostalCodeRow.toVariable(x)) : [])
     const diffs = useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
     diffs?.forEach(diff => {

@@ -285,7 +285,7 @@ function Component(props) {
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deletePurchaseOrder, {
-            variableName: state.variable.id.hashCode(),
+            id: state.variable.id.hashCode(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)

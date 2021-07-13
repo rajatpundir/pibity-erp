@@ -35,7 +35,7 @@ const initialState: State = {
     limit: 5,
     offset: 0,
     page: 1,
-    columns: Vector.of(['variableName'], ['values', 'bank', 'values', 'name'], ['values', 'name'], ['values', 'ifsc'])
+    columns: Vector.of(['values', 'bank', 'values', 'name'], ['values', 'name'], ['values', 'ifsc'])
 }
 
 function reducer(state: Draft<State>, action: Action) {
@@ -66,7 +66,7 @@ function reducer(state: Draft<State>, action: Action) {
 
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const rows = useLiveQuery(() => db.BankBranch.orderBy('variableName').toArray())
+    const rows = useLiveQuery(() => db.BankBranch.orderBy('id').toArray())
     var composedVariables = Vector.of<Immutable<BankBranchVariable>>().appendAll(rows ? rows.map(x => BankBranchRow.toVariable(x)) : [])
     const diffs = useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
     diffs?.forEach(diff => {

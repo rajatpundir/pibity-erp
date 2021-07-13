@@ -64,7 +64,7 @@ function Component(props) {
             limit: 5,
             offset: 0,
             page: 1,
-            columns: Vector.of(['variableName'], ['values', 'name']),
+            columns: Vector.of(['values', 'name']),
             variable: new SubdistrictVariable(-1, { district: new District(-1), name: '' }),
             variables: HashSet.of<SubdistrictVariable>()
         }
@@ -273,7 +273,7 @@ function Component(props) {
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteDistrict, {
-            variableName: state.variable.id.hashCode(),
+            id: state.variable.id.hashCode(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)

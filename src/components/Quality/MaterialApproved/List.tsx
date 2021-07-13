@@ -36,7 +36,7 @@ const initialState: State = {
     limit: 5,
     offset: 0,
     page: 1,
-    columns: Vector.of(['variableName'], ['values', 'purchaseInvoice'])
+    columns: Vector.of(['values', 'purchaseInvoice'])
 }
 
 function reducer(state: Draft<State>, action: Action) {
@@ -67,7 +67,7 @@ function reducer(state: Draft<State>, action: Action) {
 
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const rows = useLiveQuery(() => db.MaterialApprovalSlip.orderBy('variableName').toArray())
+    const rows = useLiveQuery(() => db.MaterialApprovalSlip.orderBy('id').toArray())
     var composedVariables = Vector.of<Immutable<MaterialApprovalSlipVariable>>().appendAll(rows ? rows.map(x => MaterialApprovalSlipRow.toVariable(x)) : [])
     const diffs = useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
     diffs?.forEach(diff => {

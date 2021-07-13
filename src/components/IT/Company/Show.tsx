@@ -60,7 +60,6 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
-    | ['variable', 'variableName', Company]
     | ['variable', 'values', 'email', string]
     | ['variable', 'values', 'telephone', string]
     | ['variable', 'values', 'mobile', string]
@@ -151,12 +150,6 @@ function Component(props) {
             }
             case 'variable': {
                 switch (action[1]) {
-                    case 'variableName': {
-                        if (state.mode === 'create') {
-                            state[action[0]][action[1]] = action[2]
-                        }
-                        break
-                    }
                     case 'values': {
                         switch (action[2]) {
                             case 'email': {
@@ -437,10 +430,6 @@ function Component(props) {
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
-            case 'variableName': {
-                dispatch(['variable', 'variableName', new Company(parseInt(event.target.value))])
-                break
-            }
             default: {
                 switch (event.target.name) {
                     case 'email': {
@@ -552,7 +541,7 @@ function Component(props) {
 
     const createVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createCompany, {
-            variableName: state.variable.id.hashCode(),
+            id: state.variable.id.hashCode(),
             email: state.variable.values.email,
             telephone: state.variable.values.telephone,
             mobile: state.variable.values.mobile,
@@ -592,7 +581,7 @@ function Component(props) {
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteCompany, {
-            variableName: state.variable.id.hashCode(),
+            id: state.variable.id.hashCode(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)

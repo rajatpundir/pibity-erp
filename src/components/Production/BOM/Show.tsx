@@ -39,8 +39,6 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
-    | ['variable', 'variableName', BOM]
-
     | ['items', 'limit', number]
     | ['items', 'offset', number]
     | ['items', 'page', number]
@@ -85,12 +83,6 @@ function Component(props) {
             }
             case 'variable': {
                 switch (action[1]) {
-                    case 'variableName': {
-                        if (state.mode === 'create') {
-                            state[action[0]][action[1]] = action[2]
-                        }
-                        break
-                    }
                     default: {
                         const _exhaustiveCheck: never = action;
                         return _exhaustiveCheck;
@@ -216,15 +208,6 @@ function Component(props) {
     const [addItemDrawer, toggleAddItemDrawer] = useState(false)
     const [itemFilter, toggleItemFilter] = useState(false)
 
-    const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        switch (event.target.name) {
-            case 'variableName': {
-                dispatch(['variable', 'variableName', new BOM(parseInt(event.target.value))])
-                break
-            }
-        }
-    }
-
     const onItemInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
             default: {
@@ -262,7 +245,7 @@ function Component(props) {
 
     const createVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createBOM, {
-            variableName: state.variable.id.hashCode(),
+            id: state.variable.id.hashCode(),
             items: state.items.variables.toArray().map(item => {
                 return {
                     product: item.values.product.hashCode(),
@@ -285,7 +268,7 @@ function Component(props) {
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteBOM, {
-            variableName: state.variable.id.hashCode(),
+            id: state.variable.id.hashCode(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)

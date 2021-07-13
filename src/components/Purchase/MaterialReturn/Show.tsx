@@ -63,7 +63,7 @@ function Component(props) {
             limit: 5,
             offset: 0,
             page: 1,
-            columns: Vector.of(['variableName'], ['values', 'materialRejectionSlipItem'], ['values', 'materialRejectionSlipItem', 'values', 'purchaseInvoice'], ['values', 'quantity']),
+            columns: Vector.of(['values', 'materialRejectionSlipItem'], ['values', 'materialRejectionSlipItem', 'values', 'purchaseInvoice'], ['values', 'quantity']),
             variable: new MaterialReturnSlipItemVariable(-1, { materialReturnSlip: new MaterialReturnSlip(-1), materialRejectionSlipItem: new MaterialRejectionSlipItem(-1), quantity: 0 }),
             variables: HashSet.of()
         }
@@ -285,7 +285,7 @@ function Component(props) {
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteMaterialReturnSlip, {
-            variableName: state.variable.id.hashCode(),
+            id: state.variable.id.hashCode(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)

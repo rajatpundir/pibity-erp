@@ -51,7 +51,6 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
-    | ['variable', 'variableName', Product]
     | ['variable', 'values', 'name', string]
     | ['variable', 'values', 'orderable', boolean]
     | ['variable', 'values', 'consumable', boolean]
@@ -118,12 +117,6 @@ function Component(props) {
             }
             case 'variable': {
                 switch (action[1]) {
-                    case 'variableName': {
-                        if (state.mode === 'create') {
-                            state[action[0]][action[1]] = action[2]
-                        }
-                        break
-                    }
                     case 'values': {
                         switch (action[2]) {
                             case 'name': {
@@ -310,10 +303,6 @@ function Component(props) {
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         switch (event.target.name) {
-            case 'variableName': {
-                dispatch(['variable', 'variableName', new Product(parseInt(event.target.value))])
-                break
-            }
             default: {
                 switch (event.target.name) {
                     case 'name': {
@@ -426,7 +415,7 @@ function Component(props) {
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteProduct, {
-            variableName: state.variable.id.hashCode(),
+            id: state.variable.id.hashCode(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)

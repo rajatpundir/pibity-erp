@@ -39,8 +39,6 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
-    | ['variable', 'variableName', Region]
-
     | ['items', 'limit', number]
     | ['items', 'offset', number]
     | ['items', 'page', number]
@@ -55,14 +53,14 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new RegionVariable(-1, {}),
+        variable: new RegionVariable(-1, { name: '' }),
         items: {
             typeName: 'Country',
             query: getQuery('Country'),
             limit: 5,
             offset: 0,
             page: 1,
-            columns: Vector.of(['variableName'], ['values', 'name']),
+            columns: Vector.of(['values', 'name']),
             variable: new CountryVariable(-1, { region: new Region(-1), name: '' }),
             variables: HashSet.of<CountryVariable>()
         }
@@ -83,12 +81,7 @@ function Component(props) {
             }
             case 'variable': {
                 switch (action[1]) {
-                    case 'variableName': {
-                        if (state.mode === 'create') {
-                            state[action[0]][action[1]] = action[2]
-                        }
-                        break
-                    }
+
                 }
                 break
             }
@@ -189,15 +182,6 @@ function Component(props) {
 
     useEffect(() => { setVariable() }, [setVariable])
 
-    const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        switch (event.target.name) {
-            case 'variableName': {
-                dispatch(['variable', 'variableName', new Region(parseInt(event.target.value))])
-                break
-            }
-        }
-    }
-
     const onItemInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         switch (event.target.name) {
             default: {
@@ -227,7 +211,7 @@ function Component(props) {
 
     const createVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createRegion, {
-            variableName: state.variable.id.hashCode(),
+            id: state.variable.id.hashCode(),
             items: state.items.variables.toArray().map(country => {
                 return {
                     name: country.values.name
@@ -248,7 +232,7 @@ function Component(props) {
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteRegion, {
-            variableName: state.variable.id.hashCode(),
+            id: state.variable.id.hashCode(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)

@@ -160,7 +160,7 @@ export async function executeCircuit(circuit: Circuit, args: object, overlay: Ve
                                     }
                                     case 'computation': {
                                         if (typeof computationResults[z[1]][z[2]] === 'object')
-                                            x[y] = computationResults[z[1]][z[2]]['variableName']
+                                            x[y] = computationResults[z[1]][z[2]]['id']
                                         else
                                             x[y] = computationResults[z[1]][z[2]]
                                         break
@@ -182,7 +182,7 @@ export async function executeCircuit(circuit: Circuit, args: object, overlay: Ve
                                     }
                                     case 'computation': {
                                         if (typeof computationResults[z[1]][z[2]] === 'object')
-                                            x[y] = computationResults[z[1]][z[2]]['variableName']
+                                            x[y] = computationResults[z[1]][z[2]]['id']
                                         else
                                             x[y] = computationResults[z[1]][z[2]]
                                         break

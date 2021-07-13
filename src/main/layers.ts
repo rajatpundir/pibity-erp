@@ -9,7 +9,7 @@ export function mergeDiffs(diffs: ReadonlyArray<DiffVariable>): DiffVariable {
     const result = diffs.reduce((acc, diff) => {
         Object.keys(diff.variables).forEach(typeName => {
             acc.variables[typeName].replace = acc.variables[typeName].replace.filter((x: Variable) => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).addAll(diff.variables[typeName].replace)
-            acc.variables[typeName].remove = acc.variables[typeName].remove.filter((x: VariableId) => !diff.variables[typeName].replace.anyMatch(y => x.hashCode() === y.variableName.hashCode())).addAll(diff.variables[typeName].remove)
+            acc.variables[typeName].remove = acc.variables[typeName].remove.filter((x: VariableId) => !diff.variables[typeName].replace.anyMatch(y => x.hashCode() === y.id.hashCode())).addAll(diff.variables[typeName].remove)
         })
         return acc
     }, new DiffVariable())
@@ -2626,7 +2626,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
 
 export async function getVariables(typeName: NonPrimitiveType, overlay: Vector<DiffVariable> = Vector.of()): Promise<Vector<Immutable<Variable>>> {
     const diffs: Array<DiffVariable> = (await db.diffs.orderBy('id').reverse().toArray()).map(x => DiffRow.toVariable(x))
-    const rows = await db[typeName].orderBy('variableName').toArray()
+    const rows = await db[typeName].orderBy('id').toArray()
     switch (typeName) {
         case 'Region': {
             let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => RegionRow.toVariable(x)) : [])

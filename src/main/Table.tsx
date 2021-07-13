@@ -119,7 +119,7 @@ const layouts: { [index: string]: GridLayout } = {
 function W(type: Type, path: Array<string>): string {
     if (path.length !== 0) {
         switch (path[0]) {
-            case 'variableName': {
+            case 'id': {
                 return type.name
             }
             case 'values': {
@@ -143,7 +143,7 @@ async function Q(variable: Immutable<Variable>, path: Array<string>): Promise<[s
     const type = types[variable.typeName] as Type
     if (path.length !== 0) {
         switch (path[0]) {
-            case 'variableName': {
+            case 'id': {
                 return [variable.id.toString(), type.url ? type.url : '']
             }
             case 'values': {

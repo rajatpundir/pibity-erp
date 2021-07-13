@@ -139,7 +139,7 @@ function Component(props) {
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteScrapMaterialSlip, {
-            variableName: state.variable.id.hashCode()
+            id: state.variable.id.hashCode()
         })
         console.log(result, symbolFlag, diff)
         if (symbolFlag) {

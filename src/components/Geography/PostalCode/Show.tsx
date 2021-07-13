@@ -67,7 +67,7 @@ function Component(props) {
             limit: 5,
             offset: 0,
             page: 1,
-            columns: Vector.of(['variableName'], ['values', 'line1'], ['values', 'line2'], ['values', 'latitude'], ['values', 'longitude']),
+            columns: Vector.of(['values', 'line1'], ['values', 'line2'], ['values', 'latitude'], ['values', 'longitude']),
             variable: new AddressVariable(-1, { postalCode: new PostalCode(-1), line1: '', line2: '', latitude: 0, longitude: 0 }),
             variables: HashSet.of<AddressVariable>()
         }
@@ -311,7 +311,7 @@ function Component(props) {
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deletePostalCode, {
-            variableName: state.variable.id.hashCode(),
+            id: state.variable.id.hashCode(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)
