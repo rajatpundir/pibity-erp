@@ -23,7 +23,6 @@ import { updateVariable } from '../../../main/mutation'
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: RegionVariable
-    updatedVariableName: Region
     items: {
         typeName: 'Country'
         query: Query
@@ -57,7 +56,6 @@ function Component(props) {
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
         variable: new RegionVariable(-1, {}),
-        updatedVariableName: new Region(-1),
         items: {
             typeName: 'Country',
             query: getQuery('Country'),
@@ -89,7 +87,6 @@ function Component(props) {
                         if (state.mode === 'create') {
                             state[action[0]][action[1]] = action[2]
                         }
-                        state.updatedVariableName = action[2]
                         break
                     }
                 }
@@ -139,7 +136,6 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
-                        state.updatedVariableName = action[2].id
                         break
                     }
                     case 'items': {
@@ -174,18 +170,18 @@ function Component(props) {
             var composedVariables = HashSet.of<Immutable<RegionVariable>>().addAll(rows ? rows.map(x => RegionRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.variable.typeName].replace)
             })
-            const variables = composedVariables.filter(variable => variable.id.toString() === props.match.params[0])
+            const variables = composedVariables.filter(variable => variable.id.hashCode() === props.match.params[0])
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as RegionVariable])
                 const itemRows = await db.Country.toArray()
                 var composedItemVariables = HashSet.of<Immutable<CountryVariable>>().addAll(itemRows ? itemRows.map(x => CountryRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.items.variable.typeName].replace)
                 })
-                const items = composedItemVariables.filter(variable => variable.values.region.toString() === props.match.params[0])
+                const items = composedItemVariables.filter(variable => variable.values.region.hashCode() === props.match.params[0])
                 dispatch(['replace', 'items', items as HashSet<CountryVariable>])
             }
         }
@@ -196,7 +192,7 @@ function Component(props) {
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         switch (event.target.name) {
             case 'variableName': {
-                dispatch(['variable', 'variableName', new Region(event.target.value)])
+                dispatch(['variable', 'variableName', new Region(parseInt(event.target.value))])
                 break
             }
         }
@@ -231,7 +227,7 @@ function Component(props) {
 
     const createVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createRegion, {
-            variableName: state.variable.id.toString(),
+            variableName: state.variable.id.hashCode(),
             items: state.items.variables.toArray().map(country => {
                 return {
                     name: country.values.name
@@ -245,17 +241,14 @@ function Component(props) {
     }
 
     const modifyVariable = async () => {
-        const [, diff] = await iff(state.variable.id.toString() !== state.updatedVariableName.toString(),
-            updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
-            updateVariable(state.variable, state.variable.toRow().values)
-        )
+        const [, diff] = await updateVariable(state.variable, state.variable.toRow().values)
         console.log(diff)
         db.diffs.put(diff.toRow())
     }
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteRegion, {
-            variableName: state.variable.id.toString(),
+            variableName: state.variable.id.hashCode(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)
@@ -306,8 +299,8 @@ function Component(props) {
                         <Label>{region.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Input type='text' onChange={onVariableInputChange} value={state.updatedVariableName.toString()} name='variableName' />,
-                                <div className='font-bold text-xl'>{state.variable.id.toString()}</div>
+                                <Input type='text' onChange={onVariableInputChange} value={state.updatedVariableName.hashCode()} name='variableName' />,
+                                <div className='font-bold text-xl'>{state.variable.id.hashCode()}</div>
                             )
                         }
                     </Item>

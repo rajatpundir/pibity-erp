@@ -19,7 +19,6 @@ import { updateVariable } from '../../../main/mutation'
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: TransferMaterialSlipVariable
-    updatedVariableName: TransferMaterialSlip
 }>
 
 export type Action =
@@ -35,8 +34,7 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new TransferMaterialSlipVariable(-1, { productionPreparationSlip: new ProductionPreparationSlip(-1), quantity: 0, transferred: 0 }),
-        updatedVariableName: new TransferMaterialSlip(-1)
+        variable: new TransferMaterialSlipVariable(-1, { productionPreparationSlip: new ProductionPreparationSlip(-1), quantity: 0, transferred: 0 })
     }
 
     function reducer(state: Draft<State>, action: Action) {
@@ -77,7 +75,6 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
-                        state.updatedVariableName = action[2].id
                         break
                     }
                     default: {
@@ -102,9 +99,9 @@ function Component(props) {
             var composedVariables = HashSet.of<Immutable<TransferMaterialSlipVariable>>().addAll(rows ? rows.map(x => TransferMaterialSlipRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.variable.typeName].replace)
             })
-            const variables = composedVariables.filter(variable => variable.id.toString() === props.match.params[0])
+            const variables = composedVariables.filter(variable => variable.id.hashCode() === props.match.params[0])
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as TransferMaterialSlipVariable])
@@ -117,7 +114,7 @@ function Component(props) {
     const rows = useLiveQuery(() => db.ProductionPreparationSlip.toArray())?.map(x => ProductionPreparationSlipRow.toVariable(x))
     var productionPreparationSlips = HashSet.of<Immutable<ProductionPreparationSlipVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        productionPreparationSlips = productionPreparationSlips.filter(x => !diff.variables.ProductionPreparationSlip.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.ProductionPreparationSlip.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.ProductionPreparationSlip.replace)
+        productionPreparationSlips = productionPreparationSlips.filter(x => !diff.variables.ProductionPreparationSlip.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.ProductionPreparationSlip.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.ProductionPreparationSlip.replace)
     })
 
     const transferMaterialSlip = types['TransferMaterialSlip']
@@ -127,7 +124,7 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'productionPreparationSlip': {
-                        dispatch(['variable', 'values', event.target.name, new ProductionPreparationSlip(event.target.value)])
+                        dispatch(['variable', 'values', event.target.name, new ProductionPreparationSlip(parseInt(event.target.value))])
                         break
                     }
                     case 'quantity': {
@@ -151,17 +148,14 @@ function Component(props) {
     }
 
     const modifyVariable = async () => {
-        const [, diff] = await iff(state.variable.id.toString() !== state.updatedVariableName.toString(),
-            updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
-            updateVariable(state.variable, state.variable.toRow().values)
-        )
+        const [, diff] = await updateVariable(state.variable, state.variable.toRow().values)
         console.log(diff)
         db.diffs.put(diff.toRow())
     }
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteTransferMaterialSlip, {
-            variableName: state.variable.id.toString()
+            variableName: state.variable.id.hashCode()
         })
         console.log(result, symbolFlag, diff)
         if (symbolFlag) {
@@ -211,11 +205,11 @@ function Component(props) {
                         <Label>{transferMaterialSlip.keys.productionPreparationSlip.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Select onChange={onVariableInputChange} value={state.variable.values.productionPreparationSlip.toString()} name='productionPreparationSlip'>
+                                <Select onChange={onVariableInputChange} value={state.variable.values.productionPreparationSlip.hashCode()} name='productionPreparationSlip'>
                                     <option value='' selected disabled hidden>Select item</option>
-                                    {productionPreparationSlips.toArray().map(x => <option value={x.id.toString()}>{x.id.toString()}</option>)}
+                                    {productionPreparationSlips.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
                                 </Select>,
-                                <div className='font-bold text-xl'>{state.variable.values.productionPreparationSlip.toString()}</div>
+                                <div className='font-bold text-xl'>{state.variable.values.productionPreparationSlip.hashCode()}</div>
                             )
                         }
                     </Item>
@@ -224,7 +218,7 @@ function Component(props) {
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Input type='number' onChange={onVariableInputChange} value={state.variable.values.quantity} name='quantity' />,
-                                <div className='font-bold text-xl'>{state.variable.values.quantity.toString()}</div>
+                                <div className='font-bold text-xl'>{state.variable.values.quantity}</div>
                             )
                         }
                     </Item>

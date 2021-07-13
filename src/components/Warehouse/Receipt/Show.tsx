@@ -99,9 +99,9 @@ function Component(props) {
             var composedVariables = HashSet.of<Immutable<WarehouseAcceptanceSlipVariable>>().addAll(rows ? rows.map(x => WarehouseAcceptanceSlipRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.variable.typeName].replace)
             })
-            const variables = composedVariables.filter(variable => variable.id.toString() === props.match.params[0])
+            const variables = composedVariables.filter(variable => variable.id.hashCode() === props.match.params[0])
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as WarehouseAcceptanceSlipVariable])
@@ -114,7 +114,7 @@ function Component(props) {
     const rows = useLiveQuery(() => db.TransferMaterialSlip.toArray())?.map(x => TransferMaterialSlipRow.toVariable(x))
     var transferMaterialSlips = HashSet.of<Immutable<TransferMaterialSlipVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        transferMaterialSlips = transferMaterialSlips.filter(x => !diff.variables.TransferMaterialSlip.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.TransferMaterialSlip.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.TransferMaterialSlip.replace)
+        transferMaterialSlips = transferMaterialSlips.filter(x => !diff.variables.TransferMaterialSlip.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.TransferMaterialSlip.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.TransferMaterialSlip.replace)
     })
 
     const warehouseAcceptanceSlip = types['WarehouseAcceptanceSlip']
@@ -155,7 +155,7 @@ function Component(props) {
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteWarehouseAcceptanceSlip, {
-            variableName: state.variable.id.toString()
+            variableName: state.variable.id.hashCode()
         })
         console.log(result, symbolFlag, diff)
         if (symbolFlag) {
@@ -205,11 +205,11 @@ function Component(props) {
                         <Label>{warehouseAcceptanceSlip.keys.transferMaterialSlip.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Select onChange={onVariableInputChange} value={state.variable.values.transferMaterialSlip.toString()} name='transferMaterialSlip'>
+                                <Select onChange={onVariableInputChange} value={state.variable.values.transferMaterialSlip.hashCode()} name='transferMaterialSlip'>
                                     <option value='' selected disabled hidden>Select item</option>
-                                    {transferMaterialSlips.toArray().map(x => <option value={x.id.toString()}>{x.id.toString()}</option>)}
+                                    {transferMaterialSlips.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
                                 </Select>,
-                                <div className='font-bold text-xl'>{state.variable.values.transferMaterialSlip.toString()}</div>
+                                <div className='font-bold text-xl'>{state.variable.values.transferMaterialSlip.hashCode()}</div>
                             )
                         }
                     </Item>
@@ -218,7 +218,7 @@ function Component(props) {
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Input type='number' onChange={onVariableInputChange} value={state.variable.values.quantity} name='quantity' />,
-                                <div className='font-bold text-xl'>{state.variable.values.quantity.toString()}</div>
+                                <div className='font-bold text-xl'>{state.variable.values.quantity}</div>
                             )
                         }
                     </Item>

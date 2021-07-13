@@ -24,7 +24,6 @@ import { useLiveQuery } from 'dexie-react-hooks'
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: BankBranchVariable
-    updatedVariableName: BankBranch
     items: {
         typeName: 'BankAccount'
         query: Query
@@ -61,7 +60,6 @@ function Component(props) {
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
         variable: new BankBranchVariable(-1, { bank: new Bank(-1), name: '', ifsc: '', address: new Address(-1) }),
-        updatedVariableName: new BankBranch(-1),
         items: {
             typeName: 'BankAccount',
             query: getQuery('BankAccount'),
@@ -145,7 +143,7 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.items.variables = state.items.variables.add(new BankAccountVariable('', { bank: new Bank(state.items.variable.values.bank.toString()), bankBranch: new BankBranch(state.items.variable.values.bankBranch.toString()), accountNumber: state.items.variable.values.accountNumber }))
+                        state.items.variables = state.items.variables.add(new BankAccountVariable(-1, { bank: new Bank(state.items.variable.values.bank.hashCode()), bankBranch: new BankBranch(state.items.variable.values.bankBranch.hashCode()), accountNumber: state.items.variable.values.accountNumber }))
                         state.items.variable = initialState.items.variable
                         break
                     }
@@ -160,7 +158,6 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
-                        state.updatedVariableName = action[2].id
                         break
                     }
                     case 'items': {
@@ -195,18 +192,18 @@ function Component(props) {
             var composedVariables = HashSet.of<Immutable<BankBranchVariable>>().addAll(rows ? rows.map(x => BankBranchRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.variable.typeName].replace)
             })
-            const variables = composedVariables.filter(variable => variable.id.toString() === props.match.params[0])
+            const variables = composedVariables.filter(variable => variable.id.hashCode() === props.match.params[0])
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as BankBranchVariable])
                 const itemRows = await db.BankAccount.toArray()
                 var composedItemVariables = HashSet.of<Immutable<BankAccountVariable>>().addAll(itemRows ? itemRows.map(x => BankAccountRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.items.variable.typeName].replace)
                 })
-                const items = composedItemVariables.filter(variable => variable.values.bankBranch.toString() === props.match.params[0])
+                const items = composedItemVariables.filter(variable => variable.values.bankBranch.hashCode() === props.match.params[0])
                 dispatch(['replace', 'items', items as HashSet<BankAccountVariable>])
             }
         }
@@ -217,13 +214,13 @@ function Component(props) {
     const rows = useLiveQuery(() => db.Bank.orderBy('name').toArray())?.map(x => BankRow.toVariable(x))
     var banks = HashSet.of<Immutable<BankVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        banks = banks.filter(x => !diff.variables.Bank.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.Bank.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.Bank.replace)
+        banks = banks.filter(x => !diff.variables.Bank.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Bank.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Bank.replace)
     })
 
     const addressRows = useLiveQuery(() => db.Address.toArray())?.map(x => AddressRow.toVariable(x))
     var addresses = HashSet.of<Immutable<AddressVariable>>().addAll(addressRows ? addressRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        addresses = addresses.filter(x => !diff.variables.Address.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.Address.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.Address.replace)
+        addresses = addresses.filter(x => !diff.variables.Address.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Address.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Address.replace)
     })
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -231,7 +228,7 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'bank': {
-                        dispatch(['variable', 'values', event.target.name, new Bank(event.target.value)])
+                        dispatch(['variable', 'values', event.target.name, new Bank(parseInt(event.target.value))])
                         break
                     }
                     case 'name': {
@@ -243,7 +240,7 @@ function Component(props) {
                         break
                     }
                     case 'address': {
-                        dispatch(['variable', 'values', event.target.name, new Address(event.target.value)])
+                        dispatch(['variable', 'values', event.target.name, new Address(parseInt(event.target.value))])
                         break
                     }
                 }
@@ -280,10 +277,10 @@ function Component(props) {
 
     const createVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createBankBranch, {
-            bank: state.variable.values.bank.toString(),
+            bank: state.variable.values.bank.hashCode(),
             name: state.variable.values.name,
             ifsc: state.variable.values.ifsc,
-            address: state.variable.values.address.toString(),
+            address: state.variable.values.address.hashCode(),
             items: state.items.variables.toArray().map(state => {
                 return { accountNumber: state.values.accountNumber }
             })
@@ -295,17 +292,14 @@ function Component(props) {
     }
 
     const modifyVariable = async () => {
-        const [, diff] = await iff(state.variable.id.toString() !== state.updatedVariableName.toString(),
-            updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
-            updateVariable(state.variable, state.variable.toRow().values)
-        )
+        const [, diff] = await updateVariable(state.variable, state.variable.toRow().values)
         console.log(diff)
         db.diffs.put(diff.toRow())
     }
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteBankBranch, {
-            variableName: state.variable.id.toString(),
+            variableName: state.variable.id.hashCode(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)
@@ -356,16 +350,16 @@ function Component(props) {
                         <Label>{bankBranch.keys.bank.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Select onChange={onVariableInputChange} value={state.variable.values.bank.toString()} name='bank'>
+                                <Select onChange={onVariableInputChange} value={state.variable.values.bank.hashCode()} name='bank'>
                                     <option value='' selected disabled hidden>Select Bank</option>
-                                    {banks.toArray().map(x => <option value={x.id.toString()}>{x.values.name}</option>)}
+                                    {banks.toArray().map(x => <option value={x.id.hashCode()}>{x.values.name}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{
-                                    iff(banks.filter(x => x.id.toString() === state.variable.values.bank.toString()).length() !== 0,
+                                    iff(banks.filter(x => x.id.hashCode() === state.variable.values.bank.hashCode()).length() !== 0,
                                         () => {
-                                            const referencedVariable = banks.filter(x => x.id.toString() === state.variable.values.bank.toString()).toArray()[0] as BankVariable
-                                            return <Link to={`/bank/${referencedVariable.id.toString()}`}>{referencedVariable.values.name}</Link>
-                                        }, <Link to={`/bank/${state.variable.values.bank.toString()}`}>{state.variable.values.bank.toString()}</Link>)
+                                            const referencedVariable = banks.filter(x => x.id.hashCode() === state.variable.values.bank.hashCode()).toArray()[0] as BankVariable
+                                            return <Link to={`/bank/${referencedVariable.id.hashCode()}`}>{referencedVariable.values.name}</Link>
+                                        }, <Link to={`/bank/${state.variable.values.bank.hashCode()}`}>{state.variable.values.bank.hashCode()}</Link>)
                                 }</div>
                             )
                         }
@@ -392,12 +386,12 @@ function Component(props) {
                         <Label>{bankBranch.keys.address.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Select onChange={onVariableInputChange} value={state.variable.values.address.toString()} name='address'>
+                                <Select onChange={onVariableInputChange} value={state.variable.values.address.hashCode()} name='address'>
                                     <option value='' selected disabled hidden>Select Address</option>
-                                    {addresses.toArray().map(x => <option value={x.id.toString()}>{x.id.toString()}</option>)}
+                                    {addresses.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{
-                                    <Link to={`/address/${state.variable.values.address.toString()}`}>{state.variable.values.address.toString()}</Link>
+                                    <Link to={`/address/${state.variable.values.address.hashCode()}`}>{state.variable.values.address.hashCode()}</Link>
                                 }</div>
                             )
                         }

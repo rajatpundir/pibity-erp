@@ -24,7 +24,6 @@ import { useLiveQuery } from 'dexie-react-hooks'
 type StateS = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: DistrictVariable
-    updatedVariableName: District
     items: {
         typeName: 'Subdistrict'
         query: Query
@@ -59,7 +58,6 @@ function Component(props) {
     const initialState: StateS = {
         mode: props.match.params[0] ? 'show' : 'create',
         variable: new DistrictVariable(-1, { state: new State(-1), name: '' }),
-        updatedVariableName: new District(-1),
         items: {
             typeName: 'Subdistrict',
             query: getQuery('Subdistrict'),
@@ -150,7 +148,6 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
-                        state.updatedVariableName = action[2].id
                         break
                     }
                     case 'items': {
@@ -185,18 +182,18 @@ function Component(props) {
             var composedVariables = HashSet.of<Immutable<DistrictVariable>>().addAll(rows ? rows.map(x => DistrictRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.variable.typeName].replace)
             })
-            const variables = composedVariables.filter(variable => variable.id.toString() === props.match.params[0])
+            const variables = composedVariables.filter(variable => variable.id.hashCode() === props.match.params[0])
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as DistrictVariable])
                 const itemRows = await db.Subdistrict.toArray()
                 var composedItemVariables = HashSet.of<Immutable<SubdistrictVariable>>().addAll(itemRows ? itemRows.map(x => SubdistrictRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.items.variable.typeName].replace)
                 })
-                const items = composedItemVariables.filter(variable => variable.values.district.toString() === props.match.params[0])
+                const items = composedItemVariables.filter(variable => variable.values.district.hashCode() === props.match.params[0])
                 dispatch(['replace', 'items', items as HashSet<SubdistrictVariable>])
             }
         }
@@ -207,7 +204,7 @@ function Component(props) {
     const rows = useLiveQuery(() => db.State.orderBy('name').toArray())?.map(x => StateRow.toVariable(x))
     var states = HashSet.of<Immutable<StateVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        states = states.filter(x => !diff.variables.State.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.State.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.State.replace)
+        states = states.filter(x => !diff.variables.State.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.State.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.State.replace)
     })
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -215,7 +212,7 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'state': {
-                        dispatch(['variable', 'values', event.target.name, new State(event.target.value)])
+                        dispatch(['variable', 'values', event.target.name, new State(parseInt(event.target.value))])
                         break
                     }
                     case 'name': {
@@ -256,7 +253,7 @@ function Component(props) {
 
     const createVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createDistrict, {
-            state: state.variable.values.state.toString(),
+            state: state.variable.values.state.hashCode(),
             name: state.variable.values.name,
             items: state.items.variables.toArray().map(state => {
                 return { name: state.values.name }
@@ -269,17 +266,14 @@ function Component(props) {
     }
 
     const modifyVariable = async () => {
-        const [, diff] = await iff(state.variable.id.toString() !== state.updatedVariableName.toString(),
-            updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
-            updateVariable(state.variable, state.variable.toRow().values)
-        )
+        const [, diff] = await updateVariable(state.variable, state.variable.toRow().values)
         console.log(diff)
         db.diffs.put(diff.toRow())
     }
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteDistrict, {
-            variableName: state.variable.id.toString(),
+            variableName: state.variable.id.hashCode(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)
@@ -330,16 +324,16 @@ function Component(props) {
                         <Label>{district.keys.state.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Select onChange={onVariableInputChange} value={state.variable.values.state.toString()} name='state'>
+                                <Select onChange={onVariableInputChange} value={state.variable.values.state.hashCode()} name='state'>
                                     <option value='' selected disabled hidden>Select State</option>
-                                    {states.toArray().map(x => <option value={x.id.toString()}>{x.values.name}</option>)}
+                                    {states.toArray().map(x => <option value={x.id.hashCode()}>{x.values.name}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{
-                                    iff(states.filter(x => x.id.toString() === state.variable.values.state.toString()).length() !== 0, 
+                                    iff(states.filter(x => x.id.hashCode() === state.variable.values.state.hashCode()).length() !== 0, 
                                     () => {
-                                        const referencedVariable = states.filter(x => x.id.toString() === state.variable.values.state.toString()).toArray()[0] as StateVariable
-                                        return <Link to={`/state/${referencedVariable.id.toString()}`}>{referencedVariable.values.name}</Link>
-                                    }, <Link to={`/state/${state.variable.values.state.toString()}`}>{state.variable.values.state.toString()}</Link>)
+                                        const referencedVariable = states.filter(x => x.id.hashCode() === state.variable.values.state.hashCode()).toArray()[0] as StateVariable
+                                        return <Link to={`/state/${referencedVariable.id.hashCode()}`}>{referencedVariable.values.name}</Link>
+                                    }, <Link to={`/state/${state.variable.values.state.hashCode()}`}>{state.variable.values.state.hashCode()}</Link>)
                                 }</div>
                             )
                         }

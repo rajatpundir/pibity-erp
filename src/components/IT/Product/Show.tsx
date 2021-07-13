@@ -25,7 +25,6 @@ import { useLiveQuery } from 'dexie-react-hooks'
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: ProductVariable
-    updatedVariableName: Product
     uoms: {
         typeName: 'UOM'
         query: Query
@@ -82,7 +81,6 @@ function Component(props) {
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
         variable: new ProductVariable(-1, { name: -1, orderable: true, consumable: true, producable: false }),
-        updatedVariableName: new Product(-1),
         uoms: {
             typeName: 'UOM',
             query: getQuery('UOM'),
@@ -124,7 +122,6 @@ function Component(props) {
                         if (state.mode === 'create') {
                             state[action[0]][action[1]] = action[2]
                         }
-                        state.updatedVariableName = action[2]
                         break
                     }
                     case 'values': {
@@ -221,7 +218,7 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.companies.variables = state.companies.variables.add(new CompanyProductVariable(-1, { company: new Company(state.companies.variable.values.company.toString()), product: new Product(-1) }))
+                        state.companies.variables = state.companies.variables.add(new CompanyProductVariable(-1, { company: new Company(state.companies.variable.values.company.hashCode()), product: new Product(-1) }))
                         state.companies.variable = initialState.companies.variable
                         break
                     }
@@ -236,7 +233,6 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
-                        state.updatedVariableName = action[2].id
                         break
                     }
                     case 'uoms': {
@@ -279,9 +275,9 @@ function Component(props) {
             var composedVariables = HashSet.of<Immutable<ProductVariable>>().addAll(rows ? rows.map(x => ProductRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.variable.typeName].replace)
             })
-            const variables = composedVariables.filter(variable => variable.id.toString() === props.match.params[0])
+            const variables = composedVariables.filter(variable => variable.id.hashCode() === props.match.params[0])
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as ProductVariable])
@@ -289,17 +285,17 @@ function Component(props) {
                 const itemRows = await db.UOM.toArray()
                 var composedItemVariables = HashSet.of<Immutable<UOMVariable>>().addAll(itemRows ? itemRows.map(x => UOMRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.uoms.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.uoms.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.uoms.variable.typeName].replace)
+                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.uoms.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.uoms.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.uoms.variable.typeName].replace)
                 })
-                const items = composedItemVariables.filter(variable => variable.values.product.toString() === props.match.params[0])
+                const items = composedItemVariables.filter(variable => variable.values.product.hashCode() === props.match.params[0])
                 dispatch(['replace', 'uoms', items as HashSet<UOMVariable>])
 
                 const companyProductRows = await db.CompanyProduct.toArray()
                 var composedCompanyProductVariables = HashSet.of<Immutable<CompanyProductVariable>>().addAll(companyProductRows ? companyProductRows.map(x => CompanyProductRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedCompanyProductVariables = composedCompanyProductVariables.filter(x => !diff.variables[state.companies.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.companies.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.companies.variable.typeName].replace)
+                    composedCompanyProductVariables = composedCompanyProductVariables.filter(x => !diff.variables[state.companies.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.companies.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.companies.variable.typeName].replace)
                 })
-                dispatch(['replace', 'companies', composedCompanyProductVariables.filter(variable => variable.values.product.toString() === props.match.params[0]) as HashSet<CompanyProductVariable>])
+                dispatch(['replace', 'companies', composedCompanyProductVariables.filter(variable => variable.values.product.hashCode() === props.match.params[0]) as HashSet<CompanyProductVariable>])
             }
         }
     }, [state.variable.typeName, state.uoms.variable.typeName, state.companies.variable.typeName, props.match.params, dispatch])
@@ -309,13 +305,13 @@ function Component(props) {
     const companyRows = useLiveQuery(() => db.Company.toArray())?.map(x => CompanyRow.toVariable(x))
     var companies = HashSet.of<Immutable<CompanyVariable>>().addAll(companyRows ? companyRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        companies = companies.filter(x => !diff.variables.Company.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.Company.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.Company.replace)
+        companies = companies.filter(x => !diff.variables.Company.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Company.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Company.replace)
     })
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         switch (event.target.name) {
             case 'variableName': {
-                dispatch(['variable', 'variableName', new Product(event.target.value)])
+                dispatch(['variable', 'variableName', new Product(parseInt(event.target.value))])
                 break
             }
             default: {
@@ -362,7 +358,7 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'company': {
-                        dispatch(['companies', 'variable', 'values', event.target.name, new Company(event.target.value)])
+                        dispatch(['companies', 'variable', 'values', event.target.name, new Company(parseInt(event.target.value))])
                         break
                     }
                 }
@@ -399,7 +395,7 @@ function Component(props) {
 
     const createVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createProduct, {
-            sku: state.variable.id.toString(),
+            sku: state.variable.id.hashCode(),
             name: state.variable.values.name,
             orderable: state.variable.values.orderable,
             consumable: state.variable.values.consumable,
@@ -412,7 +408,7 @@ function Component(props) {
             }),
             companies: state.companies.variables.toArray().map(state => {
                 return {
-                    company: state.values.company.toString()
+                    company: state.values.company.hashCode()
                 }
             })
         })
@@ -423,17 +419,14 @@ function Component(props) {
     }
 
     const modifyVariable = async () => {
-        const [, diff] = await iff(state.variable.id.toString() !== state.updatedVariableName.toString(),
-            updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
-            updateVariable(state.variable, state.variable.toRow().values)
-        )
+        const [, diff] = await updateVariable(state.variable, state.variable.toRow().values)
         console.log(diff)
         db.diffs.put(diff.toRow())
     }
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteProduct, {
-            variableName: state.variable.id.toString(),
+            variableName: state.variable.id.hashCode(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)
@@ -484,8 +477,8 @@ function Component(props) {
                         <Label>{product.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Input type='text' onChange={onVariableInputChange} value={state.updatedVariableName.toString()} name='variableName' />,
-                                <div className='font-bold text-xl'>{state.variable.id.toString()}</div>
+                                <Input type='text' onChange={onVariableInputChange} value={state.updatedVariableName.hashCode()} name='variableName' />,
+                                <div className='font-bold text-xl'>{state.variable.id.hashCode()}</div>
                             )
                         }
                     </Item>
@@ -587,16 +580,16 @@ function Component(props) {
                                         <Label>{companyProduct.keys.company.name}</Label>
                                         {
                                             iff(state.mode === 'create' || state.mode === 'update',
-                                                <Select onChange={onCompanyProductInputChange} value={state.companies.variable.values.company.toString()} name='company'>
+                                                <Select onChange={onCompanyProductInputChange} value={state.companies.variable.values.company.hashCode()} name='company'>
                                                     <option value='' selected disabled hidden>Select Company</option>
-                                                    {companies.toArray().map(x => <option value={x.id.toString()}>{x.id.toString()}</option>)}
+                                                    {companies.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
                                                 </Select>,
                                                 <div className='font-bold text-xl'>{
-                                                    iff(companies.filter(x => x.id.toString() === state.companies.variable.values.company.toString()).length() !== 0,
+                                                    iff(companies.filter(x => x.id.hashCode() === state.companies.variable.values.company.hashCode()).length() !== 0,
                                                         () => {
-                                                            const referencedVariable = companies.filter(x => x.id.toString() === state.companies.variable.values.company.toString()).toArray()[0] as CompanyVariable
-                                                            return <Link to={`/region/${referencedVariable.id.toString()}`}>{referencedVariable.id.toString()}</Link>
-                                                        }, <Link to={`/region/${state.companies.variable.values.company.toString()}`}>{state.companies.variable.values.company.toString()}</Link>)
+                                                            const referencedVariable = companies.filter(x => x.id.hashCode() === state.companies.variable.values.company.hashCode()).toArray()[0] as CompanyVariable
+                                                            return <Link to={`/region/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
+                                                        }, <Link to={`/region/${state.companies.variable.values.company.hashCode()}`}>{state.companies.variable.values.company.hashCode()}</Link>)
                                                 }</div>
                                             )
                                         }

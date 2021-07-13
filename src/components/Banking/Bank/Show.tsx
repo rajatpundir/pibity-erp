@@ -24,7 +24,6 @@ import { useLiveQuery } from 'dexie-react-hooks'
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: BankVariable
-    updatedVariableName: Bank
     items: {
         typeName: 'BankBranch'
         query: Query
@@ -63,7 +62,6 @@ function Component(props) {
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
         variable: new BankVariable(-1, { country: new Country(-1), name: '', website: '' }),
-        updatedVariableName: new Bank(-1),
         items: {
             typeName: 'BankBranch',
             query: getQuery('BankBranch'),
@@ -155,7 +153,7 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.items.variables = state.items.variables.add(new BankBranchVariable(-1, { bank: new Bank(-1), name: state.items.variable.values.name, ifsc: state.items.variable.values.ifsc, address: new Address(state.items.variable.values.address.toString()) }))
+                        state.items.variables = state.items.variables.add(new BankBranchVariable(-1, { bank: new Bank(-1), name: state.items.variable.values.name, ifsc: state.items.variable.values.ifsc, address: new Address(state.items.variable.values.address.hashCode()) }))
                         state.items.variable = initialState.items.variable
                         break
                     }
@@ -170,7 +168,6 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
-                        state.updatedVariableName = action[2].id
                         break
                     }
                     case 'items': {
@@ -205,18 +202,18 @@ function Component(props) {
             var composedVariables = HashSet.of<Immutable<BankVariable>>().addAll(rows ? rows.map(x => BankRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.variable.typeName].replace)
             })
-            const variables = composedVariables.filter(variable => variable.id.toString() === props.match.params[0])
+            const variables = composedVariables.filter(variable => variable.id.hashCode() === props.match.params[0])
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as BankVariable])
                 const itemRows = await db.BankBranch.toArray()
                 var composedItemVariables = HashSet.of<Immutable<BankBranchVariable>>().addAll(itemRows ? itemRows.map(x => BankBranchRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.items.variable.typeName].replace)
                 })
-                const items = composedItemVariables.filter(variable => variable.values.bank.toString() === props.match.params[0])
+                const items = composedItemVariables.filter(variable => variable.values.bank.hashCode() === props.match.params[0])
                 dispatch(['replace', 'items', items as HashSet<BankBranchVariable>])
             }
         }
@@ -227,13 +224,13 @@ function Component(props) {
     const rows = useLiveQuery(() => db.Country.orderBy('name').toArray())?.map(x => CountryRow.toVariable(x))
     var countries = HashSet.of<Immutable<CountryVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        countries = countries.filter(x => !diff.variables.Country.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.Country.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.Country.replace)
+        countries = countries.filter(x => !diff.variables.Country.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Country.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Country.replace)
     })
 
     const addressRows = useLiveQuery(() => db.Address.toArray())?.map(x => AddressRow.toVariable(x))
     var addresses = HashSet.of<Immutable<AddressVariable>>().addAll(addressRows ? addressRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        addresses = addresses.filter(x => !diff.variables.Address.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.Address.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.Address.replace)
+        addresses = addresses.filter(x => !diff.variables.Address.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Address.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Address.replace)
     })
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -241,7 +238,7 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'country': {
-                        dispatch(['variable', 'values', event.target.name, new Country(event.target.value)])
+                        dispatch(['variable', 'values', event.target.name, new Country(parseInt(event.target.value))])
                         break
                     }
                     case 'name': {
@@ -262,7 +259,7 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'bank': {
-                        dispatch(['items', 'variable', 'values', event.target.name, new Bank(event.target.value)])
+                        dispatch(['items', 'variable', 'values', event.target.name, new Bank(parseInt(event.target.value))])
                         break
                     }
                     case 'name': {
@@ -274,7 +271,7 @@ function Component(props) {
                         break
                     }
                     case 'address': {
-                        dispatch(['items', 'variable', 'values', event.target.name, new Address(event.target.value)])
+                        dispatch(['items', 'variable', 'values', event.target.name, new Address(parseInt(event.target.value))])
                         break
                     }
                 }
@@ -298,15 +295,15 @@ function Component(props) {
 
     const createVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createBank, {
-            country: state.variable.values.country.toString(),
+            country: state.variable.values.country.hashCode(),
             name: state.variable.values.name,
             website: state.variable.values.website,
             items: state.items.variables.toArray().map(state => {
                 return {
-                    bank: state.values.bank.toString(),
+                    bank: state.values.bank.hashCode(),
                     name: state.values.name,
                     ifsc: state.values.ifsc,
-                    address: state.values.address.toString(),
+                    address: state.values.address.hashCode(),
                 }
             })
         })
@@ -317,17 +314,14 @@ function Component(props) {
     }
 
     const modifyVariable = async () => {
-        const [, diff] = await iff(state.variable.id.toString() !== state.updatedVariableName.toString(),
-            updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
-            updateVariable(state.variable, state.variable.toRow().values)
-        )
+        const [, diff] = await updateVariable(state.variable, state.variable.toRow().values)
         console.log(diff)
         db.diffs.put(diff.toRow())
     }
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteBank, {
-            variableName: state.variable.id.toString(),
+            variableName: state.variable.id.hashCode(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)
@@ -378,16 +372,16 @@ function Component(props) {
                         <Label>{bank.keys.country.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Select onChange={onVariableInputChange} value={state.variable.values.country.toString()} name='country'>
+                                <Select onChange={onVariableInputChange} value={state.variable.values.country.hashCode()} name='country'>
                                     <option value='' selected disabled hidden>Select Country</option>
-                                    {countries.toArray().map(x => <option value={x.id.toString()}>{x.values.name}</option>)}
+                                    {countries.toArray().map(x => <option value={x.id.hashCode()}>{x.values.name}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{
-                                    iff(countries.filter(x => x.id.toString() === state.variable.values.country.toString()).length() !== 0,
+                                    iff(countries.filter(x => x.id.hashCode() === state.variable.values.country.hashCode()).length() !== 0,
                                         () => {
-                                            const referencedVariable = countries.filter(x => x.id.toString() === state.variable.values.country.toString()).toArray()[0] as CountryVariable
-                                            return <Link to={`/country/${referencedVariable.id.toString()}`}>{referencedVariable.values.name}</Link>
-                                        }, <Link to={`/country/${state.variable.values.country.toString()}`}>{state.variable.values.country.toString()}</Link>)
+                                            const referencedVariable = countries.filter(x => x.id.hashCode() === state.variable.values.country.hashCode()).toArray()[0] as CountryVariable
+                                            return <Link to={`/country/${referencedVariable.id.hashCode()}`}>{referencedVariable.values.name}</Link>
+                                        }, <Link to={`/country/${state.variable.values.country.hashCode()}`}>{state.variable.values.country.hashCode()}</Link>)
                                 }</div>
                             )
                         }
@@ -440,9 +434,9 @@ function Component(props) {
                                     </Item>
                                     <Item>
                                         <Label>{item.keys.address.name}</Label>
-                                        <Select onChange={onItemInputChange} value={state.items.variable.values.address.toString()} name='address'>
+                                        <Select onChange={onItemInputChange} value={state.items.variable.values.address.hashCode()} name='address'>
                                             <option value='' selected disabled hidden>Select Address</option>
-                                            {addresses.toArray().map(x => <option value={x.id.toString()}>{x.id.toString()}</option>)}
+                                            {addresses.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item justify='center' align='center'>

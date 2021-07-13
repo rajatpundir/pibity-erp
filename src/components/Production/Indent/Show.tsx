@@ -23,7 +23,6 @@ import { updateVariable } from '../../../main/mutation'
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: IndentVariable
-    updatedVariableName: Indent
     items: {
         typeName: 'IndentItem'
         query: Query
@@ -57,7 +56,6 @@ function Component(props) {
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
         variable: new IndentVariable(-1, {}),
-        updatedVariableName: new Indent(-1),
         items: {
             typeName: 'IndentItem',
             query: getQuery('IndentItem'),
@@ -124,7 +122,7 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.items.variables = state.items.variables.add(new IndentItemVariable(-1, { indent: new Indent(state.items.variable.values.indent.toString()), product: new Product(state.items.variable.values.product.toString()), quantity: state.items.variable.values.quantity, uom: new UOM(state.items.variable.values.uom.toString()), ordered: state.items.variable.values.ordered, received: state.items.variable.values.received, approved: state.items.variable.values.approved, rejected: state.items.variable.values.rejected, returned: state.items.variable.values.returned, requisted: state.items.variable.values.requisted, consumed: state.items.variable.values.consumed }))
+                        state.items.variables = state.items.variables.add(new IndentItemVariable(-1, { indent: new Indent(state.items.variable.values.indent.hashCode()), product: new Product(state.items.variable.values.product.hashCode()), quantity: state.items.variable.values.quantity, uom: new UOM(state.items.variable.values.uom.hashCode()), ordered: state.items.variable.values.ordered, received: state.items.variable.values.received, approved: state.items.variable.values.approved, rejected: state.items.variable.values.rejected, returned: state.items.variable.values.returned, requisted: state.items.variable.values.requisted, consumed: state.items.variable.values.consumed }))
                         state.items.variable = initialState.items.variable
                         break
                     }
@@ -139,7 +137,6 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
-                        state.updatedVariableName = action[2].id
                         break
                     }
                     case 'items': {
@@ -168,18 +165,18 @@ function Component(props) {
             var composedVariables = HashSet.of<Immutable<IndentVariable>>().addAll(rows ? rows.map(x => IndentRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.variable.typeName].replace)
             })
-            const variables = composedVariables.filter(variable => variable.id.toString() === props.match.params[0])
+            const variables = composedVariables.filter(variable => variable.id.hashCode() === props.match.params[0])
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as IndentVariable])
                 const itemRows = await db.IndentItem.toArray()
                 var composedItemVariables = HashSet.of<Immutable<IndentItemVariable>>().addAll(itemRows ? itemRows.map(x => IndentItemRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.items.variable.typeName].replace)
                 })
-                const items = composedItemVariables.filter(variable => variable.values.indent.toString() === props.match.params[0])
+                const items = composedItemVariables.filter(variable => variable.values.indent.hashCode() === props.match.params[0])
                 dispatch(['replace', 'items', items as HashSet<IndentItemVariable>])
             }
         }
@@ -190,14 +187,14 @@ function Component(props) {
     const rows = useLiveQuery(() => db.Product.toArray())?.map(x => ProductRow.toVariable(x))
     var products = HashSet.of<Immutable<ProductVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        products = products.filter(x => !diff.variables.Product.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.Product.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.Product.replace)
+        products = products.filter(x => !diff.variables.Product.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Product.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Product.replace)
     })
 
-    const itemRows = useLiveQuery(() => db.UOM.where({ product: state.items.variable.values.product.toString() }).toArray())?.map(x => UOMRow.toVariable(x))
+    const itemRows = useLiveQuery(() => db.UOM.where({ product: state.items.variable.values.product.hashCode() }).toArray())?.map(x => UOMRow.toVariable(x))
     var uoms = HashSet.of<Immutable<UOMVariable>>().addAll(itemRows ? itemRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        uoms = uoms.filter(x => !diff.variables.UOM.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.UOM.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.UOM.replace)
-        uoms = uoms.filter(x => x.values.product.toString() === state.items.variable.values.product.toString())
+        uoms = uoms.filter(x => !diff.variables.UOM.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.UOM.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.UOM.replace)
+        uoms = uoms.filter(x => x.values.product.hashCode() === state.items.variable.values.product.hashCode())
     })
 
     const indent = types['Indent']
@@ -211,7 +208,7 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'product': {
-                        dispatch(['items', 'variable', 'values', event.target.name, new Product(event.target.value)])
+                        dispatch(['items', 'variable', 'values', event.target.name, new Product(parseInt(event.target.value))])
                         break
                     }
                     case 'quantity': {
@@ -219,7 +216,7 @@ function Component(props) {
                         break
                     }
                     case 'uom': {
-                        dispatch(['items', 'variable', 'values', event.target.name, new UOM(event.target.value)])
+                        dispatch(['items', 'variable', 'values', event.target.name, new UOM(parseInt(event.target.value))])
                         break
                     }
                 }
@@ -245,9 +242,9 @@ function Component(props) {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createIndent, {
             items: state.items.variables.toArray().map(item => {
                 return {
-                    product: item.values.product.toString(),
+                    product: item.values.product.hashCode(),
                     quantity: item.values.quantity,
-                    uom: item.values.uom.toString()
+                    uom: item.values.uom.hashCode()
                 }
             })
         })
@@ -258,17 +255,14 @@ function Component(props) {
     }
 
     const modifyVariable = async () => {
-        const [, diff] = await iff(state.variable.id.toString() !== state.updatedVariableName.toString(),
-            updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
-            updateVariable(state.variable, state.variable.toRow().values)
-        )
+        const [, diff] = await updateVariable(state.variable, state.variable.toRow().values)
         console.log(diff)
         db.diffs.put(diff.toRow())
     }
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteIndent, {
-            variableName: state.variable.id.toString(),
+            variableName: state.variable.id.hashCode(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)
@@ -335,9 +329,9 @@ function Component(props) {
                                 <Container area={none} layout={Grid.layouts.uom}>
                                     <Item>
                                         <Label>{item.keys.product.name}</Label>
-                                        <Select onChange={onItemInputChange} value={state.items.variable.values.product.toString()} name='product'>
+                                        <Select onChange={onItemInputChange} value={state.items.variable.values.product.hashCode()} name='product'>
                                             <option value='' selected disabled hidden>Select Product</option>
-                                            {products.toArray().map(x => <option value={x.id.toString()}>{x.id.toString()}</option>)}
+                                            {products.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
                                         </Select>
                                     </Item>
                                     <Item>
@@ -346,9 +340,9 @@ function Component(props) {
                                     </Item>
                                     <Item>
                                         <Label>{item.keys.uom.name}</Label>
-                                        <Select onChange={onItemInputChange} value={state.items.variable.values.uom.toString()} name='uom'>
+                                        <Select onChange={onItemInputChange} value={state.items.variable.values.uom.hashCode()} name='uom'>
                                             <option value='' selected disabled hidden>Select Item</option>
-                                            {uoms.toArray().map(x => <option value={x.id.toString()}>{x.values.name}</option>)}
+                                            {uoms.toArray().map(x => <option value={x.id.hashCode()}>{x.values.name}</option>)}
                                         </Select>
                                     </Item>
                                     <Item justify='center' align='center'>

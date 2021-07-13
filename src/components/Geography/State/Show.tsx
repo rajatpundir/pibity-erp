@@ -24,7 +24,6 @@ import { useLiveQuery } from 'dexie-react-hooks'
 type StateS = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: StateVariable
-    updatedVariableName: State
     items: {
         typeName: 'District'
         query: Query
@@ -59,7 +58,6 @@ function Component(props) {
     const initialState: StateS = {
         mode: props.match.params[0] ? 'show' : 'create',
         variable: new StateVariable(-1, { country: new Country(-1), name: '' }),
-        updatedVariableName: new State(-1),
         items: {
             typeName: 'District',
             query: getQuery('District'),
@@ -150,7 +148,6 @@ function Component(props) {
                 switch (action[1]) {
                     case 'variable': {
                         state.variable = action[2]
-                        state.updatedVariableName = action[2].id
                         break
                     }
                     case 'items': {
@@ -185,18 +182,18 @@ function Component(props) {
             var composedVariables = HashSet.of<Immutable<StateVariable>>().addAll(rows ? rows.map(x => StateRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
-                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.variable.typeName].replace)
+                composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.variable.typeName].replace)
             })
-            const variables = composedVariables.filter(variable => variable.id.toString() === props.match.params[0])
+            const variables = composedVariables.filter(variable => variable.id.hashCode() === props.match.params[0])
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as StateVariable])
                 const itemRows = await db.District.toArray()
                 var composedItemVariables = HashSet.of<Immutable<DistrictVariable>>().addAll(itemRows ? itemRows.map(x => DistrictRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.items.variable.typeName].replace)
                 })
-                const items = composedItemVariables.filter(variable => variable.values.state.toString() === props.match.params[0])
+                const items = composedItemVariables.filter(variable => variable.values.state.hashCode() === props.match.params[0])
                 dispatch(['replace', 'items', items as HashSet<DistrictVariable>])
             }
         }
@@ -207,7 +204,7 @@ function Component(props) {
     const rows = useLiveQuery(() => db.Country.orderBy('name').toArray())?.map(x => CountryRow.toVariable(x))
     var countries = HashSet.of<Immutable<CountryVariable>>().addAll(rows ? rows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        countries = countries.filter(x => !diff.variables.Country.remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables.Country.replace.anyMatch(y => y.id.toString() === x.id.toString())).addAll(diff.variables.Country.replace)
+        countries = countries.filter(x => !diff.variables.Country.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Country.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Country.replace)
     })
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -215,7 +212,7 @@ function Component(props) {
             default: {
                 switch (event.target.name) {
                     case 'country': {
-                        dispatch(['variable', 'values', event.target.name, new Country(event.target.value)])
+                        dispatch(['variable', 'values', event.target.name, new Country(parseInt(event.target.value))])
                         break
                     }
                     case 'name': {
@@ -256,7 +253,7 @@ function Component(props) {
 
     const createVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createState, {
-            country: state.variable.values.country.toString(),
+            country: state.variable.values.country.hashCode(),
             name: state.variable.values.name,
             items: state.items.variables.toArray().map(state => {
                 return { name: state.values.name }
@@ -269,17 +266,14 @@ function Component(props) {
     }
 
     const modifyVariable = async () => {
-        const [, diff] = await iff(state.variable.id.toString() !== state.updatedVariableName.toString(),
-            updateVariable(state.variable, state.variable.toRow().values, state.updatedVariableName.toString()),
-            updateVariable(state.variable, state.variable.toRow().values)
-        )
+        const [, diff] = await updateVariable(state.variable, state.variable.toRow().values)
         console.log(diff)
         db.diffs.put(diff.toRow())
     }
 
     const deleteVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteState, {
-            variableName: state.variable.id.toString(),
+            variableName: state.variable.id.hashCode(),
             items: [{}]
         })
         console.log(result, symbolFlag, diff)
@@ -330,16 +324,16 @@ function Component(props) {
                         <Label>{stateType.keys.country.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Select onChange={onVariableInputChange} value={state.variable.values.country.toString()} name='country'>
+                                <Select onChange={onVariableInputChange} value={state.variable.values.country.hashCode()} name='country'>
                                     <option value='' selected disabled hidden>Select Country</option>
-                                    {countries.toArray().map(x => <option value={x.id.toString()}>{x.values.name}</option>)}
+                                    {countries.toArray().map(x => <option value={x.id.hashCode()}>{x.values.name}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{
-                                    iff(countries.filter(x => x.id.toString() === state.variable.values.country.toString()).length() !== 0, 
+                                    iff(countries.filter(x => x.id.hashCode() === state.variable.values.country.hashCode()).length() !== 0, 
                                     () => {
-                                        const referencedVariable = countries.filter(x => x.id.toString() === state.variable.values.country.toString()).toArray()[0] as CountryVariable      
-                                        return <Link to={`/country/${referencedVariable.id.toString()}`}>{referencedVariable.values.name}</Link>
-                                    }, <Link to={`/country/${state.variable.values.country.toString()}`}>{state.variable.values.country.toString()}</Link>)
+                                        const referencedVariable = countries.filter(x => x.id.hashCode() === state.variable.values.country.hashCode()).toArray()[0] as CountryVariable      
+                                        return <Link to={`/country/${referencedVariable.id.hashCode()}`}>{referencedVariable.values.name}</Link>
+                                    }, <Link to={`/country/${state.variable.values.country.hashCode()}`}>{state.variable.values.country.hashCode()}</Link>)
                                 }</div>
                             )
                         }
