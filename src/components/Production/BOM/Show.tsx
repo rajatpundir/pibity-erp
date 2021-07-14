@@ -39,6 +39,8 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
+    | ['variable', 'name', string]
+
     | ['items', 'limit', number]
     | ['items', 'offset', number]
     | ['items', 'page', number]
@@ -55,7 +57,7 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new BOMVariable(-1, {}),
+        variable: new BOMVariable(-1, { name: '' }),
         items: {
             typeName: 'BOMItem',
             query: getQuery('BOMItem'),
@@ -83,6 +85,10 @@ function Component(props) {
             }
             case 'variable': {
                 switch (action[1]) {
+                    case 'name': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
                     default: {
                         const _exhaustiveCheck: never = action;
                         return _exhaustiveCheck;
@@ -208,6 +214,19 @@ function Component(props) {
     const [addItemDrawer, toggleAddItemDrawer] = useState(false)
     const [itemFilter, toggleItemFilter] = useState(false)
 
+    const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        switch (event.target.name) {
+            default: {
+                switch (event.target.name) {
+                    case 'name': {
+                        dispatch(['variable', event.target.name, event.target.value])
+                        break
+                    }
+                }
+            }
+        }
+    }
+
     const onItemInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
             default: {
@@ -316,11 +335,11 @@ function Component(props) {
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>
                     <Item>
-                        <Label>{bom.name}</Label>
+                        <Label>{bom.keys.name.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Input type='text' onChange={onVariableInputChange} value={state.updatedVariableName.hashCode()} name='variableName' />,
-                                <div className='font-bold text-xl'>{state.variable.id.hashCode()}</div>
+                                <Input type='text' onChange={onVariableInputChange} value={state.variable.values.name} name='name' />,
+                                <div className='font-bold text-xl'>{state.variable.values.name}</div>
                             )
                         }
                     </Item>

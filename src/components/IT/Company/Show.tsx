@@ -60,6 +60,7 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
+    | ['variable', 'name', string]
     | ['variable', 'email', string]
     | ['variable', 'telephone', string]
     | ['variable', 'mobile', string]
@@ -432,6 +433,10 @@ function Component(props) {
         switch (event.target.name) {
             default: {
                 switch (event.target.name) {
+                    case 'name': {
+                        dispatch(['variable', event.target.name, event.target.value])
+                        break
+                    }
                     case 'email': {
                         dispatch(['variable', event.target.name, event.target.value])
                         break
@@ -632,8 +637,8 @@ function Component(props) {
                         <Label>{company.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Input type='text' onChange={onVariableInputChange} value={''} name='variableName' />,
-                                <div className='font-bold text-xl'>{state.variable.id.hashCode()}</div>
+                                <Input type='text' onChange={onVariableInputChange} value={state.variable.values.name} name='name' />,
+                                <div className='font-bold text-xl'>{state.variable.values.name}</div>
                             )
                         }
                     </Item>

@@ -1,6 +1,7 @@
 import { Vector } from "prelude-ts"
 import { getReplaceVariableDiff, getRemoveVariableDiff, mergeDiffs, getVariable, DiffVariable } from "./layers"
 import { evaluateExpression, LispExpression, Symbols, SymbolValue } from "./lisp"
+import { counter } from "./mutation"
 import { PrimitiveType, NonPrimitiveType, types, Key } from './types'
 import { replaceVariable } from "./variables"
 
@@ -19,12 +20,12 @@ type FunctionInput =
     }
     | {
         type: NonPrimitiveType
-        default?: string
+        default?: number
         values?: { [index: string]: LispExpression }
     }
 
 type FunctionOutput =
-    {
+    | {
         type: PrimitiveType
         value: LispExpression
     }
@@ -112,16 +113,21 @@ function getSymbolPathsForFunctionOutput(fo: FunctionOutput): Array<ReadonlyArra
             break
         }
         default: {
-            getSymbolPaths(fo.variableName).forEach(x => symbolPaths.push(x))
-            const type = types[fo.type]
-            Object.keys(type.keys).forEach(keyName => {
-                if (fo.values !== undefined) {
-                    if (keyName in fo.values) {
-                        const valueExpression = fo.values[keyName]
-                        getSymbolPaths(valueExpression).forEach(x => symbolPaths.push(x))
+            if (fo.op !== 'create') {
+                getSymbolPaths(fo.id).forEach(x => symbolPaths.push(x))
+            }
+            if (fo.op !== 'delete') {
+                const type = types[fo.type]
+                Object.keys(type.keys).forEach(keyName => {
+                    if (fo.values !== undefined) {
+                        if (keyName in fo.values) {
+                            const valueExpression = fo.values[keyName]
+                            getSymbolPaths(valueExpression).forEach(x => symbolPaths.push(x))
+                        }
                     }
-                }
-            })
+                })
+
+            }
             break
         }
     }
@@ -141,24 +147,23 @@ function getSymbolPathsForFunction(fx: Function): Array<ReadonlyArray<string>> {
     return symbolPaths
 }
 
-async function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveType, variableName: string, overlay: Vector<DiffVariable>): Promise<[SymbolValue, boolean]> {
+async function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimitiveType, id: number, overlay: Vector<DiffVariable>): Promise<[SymbolValue, boolean]> {
     const type = types[typeName]
     const symbolValue: SymbolValue = {
-        type: 'Text',
-        value: variableName
+        type: 'Number',
+        value: id
     }
     var symbolFlag = true
     if (symbolPaths.length !== 0 && symbolPaths.filter(x => x.length !== 0).length !== 0) {
         symbolValue.values = {}
-        // Note: Use overlay here
-        const variable = await getVariable(typeName, variableName, overlay)
+        const variable = await getVariable(typeName, id, overlay)
         if (variable === undefined) {
             symbolFlag = false
         } else {
             for (const keyName in type) {
                 if (symbolFlag && symbolPaths.filter(x => x[0] === keyName)) {
                     const key: Key = type[keyName]
-                    if (symbolValue['values'] !== undefined) {
+                    if (symbolValue['values'] !== undefined && key.type !== 'Formula') {
                         switch (key.type) {
                             case 'Text': {
                                 symbolValue.values[keyName] = {
@@ -191,11 +196,11 @@ async function getSymbols(symbolPaths: Array<Array<string>>, typeName: NonPrimit
                                 }
                                 break
                             }
-                            default: {
-                                const subSymbols = await getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)), key.type, variable.values[keyName].toString(), overlay)
-                                symbolValue.values[keyName] = subSymbols[0]
-                                symbolFlag = symbolFlag && subSymbols[1]
-                            }
+                            // default: {
+                            //     const subSymbols = await getSymbols(symbolPaths.filter(x => x[0] === keyName).map(x => x.slice(1)), key.type, variable.values[keyName].toString(), overlay)
+                            //     symbolValue.values[keyName] = subSymbols[0]
+                            //     symbolFlag = symbolFlag && subSymbols[1]
+                            // }
                         }
                     }
                 }
@@ -246,7 +251,7 @@ async function getSymbolsForFunction(fx: Function, args: object, overlay: Vector
                 }
                 default: {
                     if (inputName in args || fi.default !== undefined) {
-                        const subSymbols = await getSymbols(symbolPaths.filter(x => x[0] === inputName).map(x => x.slice(1)), fi.type, inputName in args ? String(args[inputName]) : (fi.default ? fi.default : ''), overlay)
+                        const subSymbols = await getSymbols(symbolPaths.filter(x => x[0] === inputName).map(x => x.slice(1)), fi.type, inputName in args ? parseInt(args[inputName]) : (fi.default ? fi.default : -1), overlay)
                         symbols[inputName] = subSymbols[0]
                         symbolFlag = symbolFlag && subSymbols[1]
                     }
@@ -287,12 +292,10 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                     break
                 }
                 default: {
-                    const variableName = String(evaluateExpression(fo.variableName, symbols))
                     switch (fo.op) {
                         case 'create': {
                             const createdVariable = {
                                 typeName: fo.type,
-                                variableName: variableName,
                                 values: {}
                             }
                             for (const keyName in types[fo.type].keys) {
@@ -317,31 +320,36 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                                         createdVariable.values[keyName] = Boolean(evaluateExpression(fo.values[keyName], symbols)).valueOf()
                                         break
                                     }
-                                    default: {
-                                        const referencedVariable = await getVariable(key.type, String(evaluateExpression(fo.values[keyName], symbols)), overlay)
-                                        if (referencedVariable !== undefined) {
-                                            createdVariable.values[keyName] = referencedVariable.id.toString()
-                                        } else {
-                                            // Information is not present, return with symbolFlag as false
-                                            result[outputName] = createdVariable
-                                            return ([result, false, mergeDiffs(diffs.toArray())])
-                                        }
+                                    case 'Formula': {
+                                        // evaluate Formula here?
+                                        break
                                     }
+                                    // default: {
+                                    //     const referencedVariable = await getVariable(key.type, parseInt(String(evaluateExpression(fo.values[keyName], symbols))), overlay)
+                                    //     if (referencedVariable !== undefined) {
+                                    //         createdVariable.values[keyName] = referencedVariable.id.toString()
+                                    //     } else {
+                                    //         // Information is not present, return with symbolFlag as false
+                                    //         result[outputName] = createdVariable
+                                    //         return ([result, false, mergeDiffs(diffs.toArray())])
+                                    //     }
+                                    // }
                                 }
                             }
                             result[outputName] = createdVariable
-                            const replacedVariable = replaceVariable(createdVariable.typeName, createdVariable.variableName, createdVariable.values)
+                            const replacedVariable = replaceVariable(createdVariable.typeName, counter.getId(), createdVariable.values)
                             diffs = diffs.append(getReplaceVariableDiff(replacedVariable))
                             console.log(replacedVariable)
                             break
                         }
                         case 'update': {
+                            const id: number = parseInt(String(evaluateExpression(fo.id, symbols)))
                             const updatedVariable = {
                                 typeName: fo.type,
-                                variableName: variableName,
+                                id: id,
                                 values: {}
                             }
-                            const variable = await getVariable(fo.type, variableName, overlay)
+                            const variable = await getVariable(fo.type, id, overlay)
                             if (variable !== undefined) {
                                 Object.keys(variable.values).forEach(keyName => {
                                     updatedVariable.values[keyName] = variable.values[keyName]
@@ -368,28 +376,32 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                                             updatedVariable.values[keyName] = Boolean(evaluateExpression(fo.values[keyName], symbols)).valueOf()
                                             break
                                         }
-                                        default: {
-                                            const referencedVariable = await getVariable(key.type, String(evaluateExpression(fo.values[keyName], symbols)), overlay)
-                                            if (referencedVariable !== undefined) {
-                                                updatedVariable.values[keyName] = referencedVariable.id.toString()
-                                            } else {
-                                                // Information is not present, return with symbolFlag as false
-                                                result[outputName] = {
-                                                    typeName: updatedVariable.typeName,
-                                                    variableName: updatedVariable.variableName.toString(),
-                                                    values: updatedVariable.values
-                                                }
-                                                return [result, false, mergeDiffs(diffs.toArray())]
-                                            }
+                                        case 'Formula': {
+                                            // TODO.
+                                            break
                                         }
+                                        // default: {
+                                        //     const referencedVariable = await getVariable(key.type, parseInt(String(evaluateExpression(fo.values[keyName], symbols))), overlay)
+                                        //     if (referencedVariable !== undefined) {
+                                        //         updatedVariable.values[keyName] = referencedVariable.id.toString()
+                                        //     } else {
+                                        //         // Information is not present, return with symbolFlag as false
+                                        //         result[outputName] = {
+                                        //             typeName: updatedVariable.typeName,
+                                        //             variableName: updatedVariable.id.toString(),
+                                        //             values: updatedVariable.values
+                                        //         }
+                                        //         return [result, false, mergeDiffs(diffs.toArray())]
+                                        //     }
+                                        // }
                                     }
                                 }
                                 result[outputName] = {
                                     typeName: updatedVariable.typeName,
-                                    variableName: updatedVariable.variableName.toString(),
+                                    variableName: updatedVariable.id.toString(),
                                     values: updatedVariable.values
                                 }
-                                const replacedVariable = replaceVariable(updatedVariable.typeName, updatedVariable.variableName.toString(), updatedVariable.values)
+                                const replacedVariable = replaceVariable(updatedVariable.typeName, updatedVariable.id, updatedVariable.values)
                                 diffs = diffs.append(getReplaceVariableDiff(replacedVariable))
                             } else {
                                 // 1. Information is not present in Dexie, then no issue since user did not had the variable in first place.
@@ -398,9 +410,10 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                             break
                         }
                         case 'delete': {
+                            const id: number = parseInt(String(evaluateExpression(fo.id, symbols)))
                             // Note: Care must be taken to not refer the the FunctionOutput in Circuit which is deleted.
                             // Note. Generate Diff in Zustand Store to update variable
-                            diffs = diffs.append(getRemoveVariableDiff(fo.type, variableName))
+                            diffs = diffs.append(getRemoveVariableDiff(fo.type, id))
                             break
                         }
                     }
@@ -421,7 +434,7 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                     if (fi.values !== undefined) {
                         const updatedVariable = {
                             typeName: fi.type,
-                            variableName: parseInt(String(symbols[inputName].value)),
+                            id: parseInt(String(symbols[inputName].value)),
                             values: {}
                         }
                         const variable = await getVariable(fi.type, parseInt(String(symbols[inputName].value)), overlay)
@@ -453,20 +466,24 @@ export async function executeFunction(fx: Function, args: object, overlay: Vecto
                                                 updatedVariable.values[keyName] = Boolean(evaluateExpression(fi.values[keyName], symbols)).valueOf()
                                                 break
                                             }
-                                            default: {
-                                                const referencedVariable = await getVariable(key.type, String(evaluateExpression(fi.values[keyName], symbols)), overlay)
-                                                if (referencedVariable !== undefined) {
-                                                    updatedVariable.values[keyName] = referencedVariable.id.toString()
-                                                } else {
-                                                    // Information is not present, return with symbolFlag as false
-                                                    return [result, false, mergeDiffs(diffs.toArray())]
-                                                }
+                                            case 'Formula': {
+                                                // Re-evaluate formula expression here, maybe.
+                                                break
                                             }
+                                            // default: {
+                                            //     const referencedVariable = await getVariable(key.type, parseInt(String(evaluateExpression(fi.values[keyName], symbols))), overlay)
+                                            //     if (referencedVariable !== undefined) {
+                                            //         updatedVariable.values[keyName] = referencedVariable.id.toString()
+                                            //     } else {
+                                            //         // Information is not present, return with symbolFlag as false
+                                            //         return [result, false, mergeDiffs(diffs.toArray())]
+                                            //     }
+                                            // }
                                         }
                                     }
                                 }
                             }
-                            const replacedVariable = replaceVariable(updatedVariable.typeName, updatedVariable.variableName.toString(), updatedVariable.values)
+                            const replacedVariable = replaceVariable(updatedVariable.typeName, updatedVariable.id, updatedVariable.values)
                             diffs = diffs.append(getReplaceVariableDiff(replacedVariable))
                         }
                     }

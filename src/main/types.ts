@@ -84,13 +84,15 @@ export type Key = {
 export type Type = {
     name: string
     url?: string,
+    recursive: boolean
     keys: Record<string, Key>
 }
 
 export const types = {
     Region: {
-        name: 'Region',
+        name: 'Region ID',
         url: 'region',
+        recursive: false,
         keys: {
             name: {
                 order: 0,
@@ -100,8 +102,9 @@ export const types = {
         }
     },
     Country: {
-        name: 'Country',
+        name: 'Country ID',
         url: 'country',
+        recursive: false,
         keys: {
             region: {
                 order: 0,
@@ -110,14 +113,15 @@ export const types = {
             },
             name: {
                 order: 1,
-                name: 'Name',
+                name: 'Country',
                 type: 'Text'
             }
         }
     },
     State: {
-        name: 'State',
+        name: 'State ID',
         url: 'state',
+        recursive: false,
         keys: {
             country: {
                 order: 0,
@@ -126,14 +130,15 @@ export const types = {
             },
             name: {
                 order: 1,
-                name: 'Name',
+                name: 'State',
                 type: 'Text'
             }
         }
     },
     District: {
-        name: 'District',
+        name: 'District ID',
         url: 'district',
+        recursive: false,
         keys: {
             state: {
                 order: 0,
@@ -142,14 +147,15 @@ export const types = {
             },
             name: {
                 order: 1,
-                name: 'Name',
+                name: 'District',
                 type: 'Text'
             }
         }
     },
     Subdistrict: {
-        name: 'Subdistrict',
+        name: 'Subdistrict ID',
         url: 'subdistrict',
+        recursive: false,
         keys: {
             district: {
                 order: 0,
@@ -158,14 +164,15 @@ export const types = {
             },
             name: {
                 order: 1,
-                name: 'Name',
+                name: 'Subdistrict',
                 type: 'Text'
             }
         }
     },
     PostalCode: {
-        name: 'Postal Code',
+        name: 'Postal Code ID',
         url: 'postal-code',
+        recursive: false,
         keys: {
             subdistrict: {
                 order: 0,
@@ -174,14 +181,15 @@ export const types = {
             },
             name: {
                 order: 1,
-                name: 'Name',
+                name: 'Postal Code',
                 type: 'Text'
             }
         }
     },
     Address: {
-        name: 'Address',
+        name: 'Address ID',
         url: 'address',
+        recursive: false,
         keys: {
             postalCode: {
                 order: 0,
@@ -211,8 +219,9 @@ export const types = {
         }
     },
     Company: {
-        name: 'Company',
+        name: 'Company ID',
         url: 'company',
+        recursive: false,
         keys: {
             email: {
                 order: 0,
@@ -263,6 +272,7 @@ export const types = {
     },
     CompanyAddress: {
         name: 'Company Address',
+        recursive: false,
         keys: {
             company: {
                 order: 0,
@@ -282,8 +292,9 @@ export const types = {
         }
     },
     CompanyTagGroup: {
-        name: 'Company Tag Group',
+        name: 'Company Tag Group ID',
         url: 'company-tag-group',
+        recursive: false,
         keys: {
             name: {
                 order: 0,
@@ -293,8 +304,9 @@ export const types = {
         }
     },
     CompanyTag: {
-        name: 'Company Tag',
+        name: 'Company Tag ID',
         url: 'company-tag',
+        recursive: false,
         keys: {
             group: {
                 order: 0,
@@ -310,6 +322,7 @@ export const types = {
     },
     MappingCompanyTag: {
         name: 'Mapping(Company-Tag)',
+        recursive: false,
         keys: {
             company: {
                 order: 0,
@@ -324,8 +337,9 @@ export const types = {
         }
     },
     Contact: {
-        name: 'Contact',
+        name: 'Contact ID',
         url: 'contact',
+        recursive: false,
         keys: {
             name: {
                 order: 1,
@@ -356,6 +370,7 @@ export const types = {
     },
     ContactAddress: {
         name: 'Contact Address',
+        recursive: false,
         keys: {
             contact: {
                 order: 0,
@@ -371,6 +386,7 @@ export const types = {
     },
     CompanyContact: {
         name: 'Company Contact',
+        recursive: false,
         keys: {
             company: {
                 order: 0,
@@ -405,8 +421,9 @@ export const types = {
         }
     },
     Currency: {
-        name: 'Currency',
+        name: 'Currency ID',
         url: 'currency',
+        recursive: false,
         keys: {
             name: {
                 order: 0,
@@ -417,6 +434,7 @@ export const types = {
     },
     CurrencyRate: {
         name: 'Currency Rate',
+        recursive: false,
         keys: {
             currency: {
                 order: 0,
@@ -442,6 +460,7 @@ export const types = {
     },
     Memo: {
         name: 'Memo',
+        recursive: false,
         keys: {
             company: {
                 order: 0,
@@ -466,8 +485,9 @@ export const types = {
         }
     },
     Bank: {
-        name: 'Bank',
+        name: 'Bank ID',
         url: 'bank',
+        recursive: false,
         keys: {
             country: {
                 order: 0,
@@ -487,8 +507,9 @@ export const types = {
         }
     },
     BankBranch: {
-        name: 'Bank Branch',
+        name: 'Bank Branch ID',
         url: 'bank-branch',
+        recursive: false,
         keys: {
             bank: {
                 order: 0,
@@ -513,8 +534,9 @@ export const types = {
         }
     },
     BankAccount: {
-        name: 'Bank Account',
+        name: 'Bank Account ID',
         url: 'bank-account',
+        recursive: false,
         keys: {
             bank: {
                 order: 0,
@@ -545,6 +567,7 @@ export const types = {
     },
     BankTransaction: {
         name: 'Bank Transaction',
+        recursive: false,
         keys: {
             timestamp: {
                 order: 0,
@@ -585,6 +608,7 @@ export const types = {
     },
     CompanyBankAccount: {
         name: 'Company Bank Account',
+        recursive: false,
         keys: {
             company: {
                 order: 0,
@@ -599,8 +623,9 @@ export const types = {
         }
     },
     ProductCategoryGroup: {
-        name: 'Product Category Group',
+        name: 'Product Category Group ID',
         url: 'product-catgory-group',
+        recursive: true,
         keys: {
             parent: {
                 order: 0,
@@ -620,8 +645,9 @@ export const types = {
         }
     },
     ProductCategory: {
-        name: 'ProductCategory',
+        name: 'ProductCategory ID',
         url: 'product-catgory',
+        recursive: true,
         keys: {
             parent: {
                 order: 0,
@@ -670,9 +696,15 @@ export const types = {
         }
     },
     Product: {
-        name: 'Product',
+        name: 'Product ID',
         url: 'product',
+        recursive: false,
         keys: {
+            name: {
+                order: 1,
+                name: 'Name',
+                type: 'Text'
+            },
             category: {
                 order: 0,
                 name: 'Category',
@@ -706,6 +738,7 @@ export const types = {
     },
     CompanyProduct: {
         name: 'Company Product',
+        recursive: false,
         keys: {
             company: {
                 order: 0,
@@ -720,8 +753,9 @@ export const types = {
         }
     },
     ProductTagGroup: {
-        name: 'Product Tag Group',
+        name: 'Product Tag Group ID',
         url: 'product-tag-group',
+        recursive: false,
         keys: {
             name: {
                 order: 0,
@@ -731,8 +765,9 @@ export const types = {
         }
     },
     ProductTag: {
-        name: 'Product Tag',
+        name: 'Product Tag ID',
         url: 'product-tag',
+        recursive: false,
         keys: {
             group: {
                 order: 0,
@@ -748,6 +783,7 @@ export const types = {
     },
     MappingProductTag: {
         name: 'Mapping(Product-Tag)',
+        recursive: false,
         keys: {
             product: {
                 order: 0,
@@ -763,6 +799,7 @@ export const types = {
     },
     UOM: {
         name: 'Unit of Measure',
+        recursive: false,
         keys: {
             product: {
                 order: 0,
@@ -782,12 +819,14 @@ export const types = {
         }
     },
     Indent: {
-        name: 'Indent',
+        name: 'Indent ID',
         url: 'indent',
+        recursive: false,
         keys: {}
     },
     IndentItem: {
         name: 'Indent Item',
+        recursive: false,
         keys: {
             indent: {
                 order: 0,
@@ -847,8 +886,9 @@ export const types = {
         }
     },
     Quotation: {
-        name: 'Quotation',
+        name: 'Quotation ID',
         url: 'quotation',
+        recursive: false,
         keys: {
             indent: {
                 order: 0,
@@ -864,6 +904,7 @@ export const types = {
     },
     QuotationItem: {
         name: 'Quotation Item',
+        recursive: false,
         keys: {
             quotation: {
                 order: 0,
@@ -883,8 +924,9 @@ export const types = {
         }
     },
     PurchaseOrder: {
-        name: 'Purchase Order',
+        name: 'Purchase Order ID',
         url: 'purchase-order',
+        recursive: false,
         keys: {
             quotation: {
                 order: 0,
@@ -895,6 +937,7 @@ export const types = {
     },
     PurchaseOrderItem: {
         name: 'Purchase Order Item',
+        recursive: false,
         keys: {
             purchaseOrder: {
                 order: 0,
@@ -924,8 +967,9 @@ export const types = {
         }
     },
     PurchaseInvoice: {
-        name: 'Purchase Invoice',
+        name: 'Purchase Invoice ID',
         url: 'purchase-invoice',
+        recursive: false,
         keys: {
             purchaseOrder: {
                 order: 0,
@@ -936,6 +980,7 @@ export const types = {
     },
     PurchaseInvoiceItem: {
         name: 'Purchase Invoice Item',
+        recursive: false,
         keys: {
             purchaseInvoice: {
                 order: 0,
@@ -965,8 +1010,9 @@ export const types = {
         }
     },
     MaterialApprovalSlip: {
-        name: 'Material Approval Slip',
+        name: 'Material Approval Slip ID',
         url: 'material-approved',
+        recursive: false,
         keys: {
             purchaseInvoice: {
                 order: 0,
@@ -977,6 +1023,7 @@ export const types = {
     },
     MaterialApprovalSlipItem: {
         name: 'Material Approval Slip Item',
+        recursive: false,
         keys: {
             materialApprovalSlip: {
                 order: 0,
@@ -1001,8 +1048,9 @@ export const types = {
         }
     },
     MaterialRejectionSlip: {
-        name: 'Material Rejection Slip',
+        name: 'Material Rejection Slip ID',
         url: 'material-rejected',
+        recursive: false,
         keys: {
             purchaseInvoice: {
                 order: 0,
@@ -1013,6 +1061,7 @@ export const types = {
     },
     MaterialRejectionSlipItem: {
         name: 'Material Rejection Slip Item',
+        recursive: false,
         keys: {
             materialRejectionSlip: {
                 order: 0,
@@ -1037,8 +1086,9 @@ export const types = {
         }
     },
     MaterialReturnSlip: {
-        name: 'Material Return Note',
+        name: 'Material Return Note ID',
         url: 'return',
+        recursive: false,
         keys: {
             materialRejectionSlip: {
                 order: 0,
@@ -1049,6 +1099,7 @@ export const types = {
     },
     MaterialReturnSlipItem: {
         name: 'Material Return Slip Item',
+        recursive: false,
         keys: {
             materialReturnSlip: {
                 order: 0,
@@ -1068,8 +1119,9 @@ export const types = {
         }
     },
     MaterialRequistionSlip: {
-        name: 'Material Requistion Slip',
+        name: 'Material Requistion Slip ID',
         url: 'requistion',
+        recursive: false,
         keys: {
             materialApprovalSlip: {
                 order: 0,
@@ -1080,6 +1132,7 @@ export const types = {
     },
     MaterialRequistionSlipItem: {
         name: 'Material Requistion Slip Item',
+        recursive: false,
         keys: {
             materialRequistionSlip: {
                 order: 0,
@@ -1104,8 +1157,9 @@ export const types = {
         }
     },
     BOM: {
-        name: 'Bill of Material',
+        name: 'Bill of Material ID',
         url: 'bom',
+        recursive: false,
         keys: {
             name: {
                 order: 0,
@@ -1116,6 +1170,7 @@ export const types = {
     },
     BOMItem: {
         name: 'BOM Item',
+        recursive: false,
         keys: {
             bom: {
                 order: 0,
@@ -1141,6 +1196,7 @@ export const types = {
     },
     ProductionPreparationSlip: {
         name: 'Production Preparation Slip',
+        recursive: false,
         keys: {
             bom: {
                 order: 0,
@@ -1161,6 +1217,7 @@ export const types = {
     },
     ProductionPreparationSlipItem: {
         name: 'Production Preparation SlipItem',
+        recursive: false,
         keys: {
             productionPreparationSlip: {
                 order: 0,
@@ -1180,8 +1237,9 @@ export const types = {
         }
     },
     ScrapMaterialSlip: {
-        name: 'Scrap Material Slip',
+        name: 'Scrap Material Slip ID',
         url: 'material-scrapped',
+        recursive: false,
         keys: {
             productionPreparationSlip: {
                 order: 0,
@@ -1196,8 +1254,9 @@ export const types = {
         }
     },
     TransferMaterialSlip: {
-        name: 'Transfer Material Slip',
+        name: 'Transfer Material Slip ID',
         url: 'material-transferred',
+        recursive: false,
         keys: {
             productionPreparationSlip: {
                 order: 0,
@@ -1217,8 +1276,9 @@ export const types = {
         }
     },
     WarehouseAcceptanceSlip: {
-        name: 'Warehouse Receipt',
+        name: 'Warehouse Receipt ID',
         url: 'warehouse-receipt',
+        recursive: false,
         keys: {
             transferMaterialSlip: {
                 order: 0,

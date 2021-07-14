@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
-import Switch from '@material-ui/core/Switch'
 import { HashSet, Vector } from 'prelude-ts'
 import { Drawer } from '@material-ui/core'
 import { executeCircuit } from '../../../main/circuit'
@@ -10,7 +9,7 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { Company, CompanyProductVariable, CompanyVariable, Product, ProductVariable, UOMVariable } from '../../../main/variables'
+import { Company, CompanyProductVariable, CompanyVariable, Product, ProductCategory, ProductVariable, UOMVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter, Link } from 'react-router-dom'
@@ -52,9 +51,9 @@ export type Action =
     | ['resetVariable', State]
 
     | ['variable', 'name', string]
-    | ['variable', 'orderable', boolean]
-    | ['variable', 'consumable', boolean]
-    | ['variable', 'producable', boolean]
+    | ['variable', 'category', ProductCategory]
+    | ['variable', 'code', string]
+    | ['variable', 'sku', string]
 
     | ['uoms', 'limit', number]
     | ['uoms', 'offset', number]
@@ -79,7 +78,7 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new ProductVariable(-1, { name: -1, orderable: true, consumable: true, producable: false }),
+        variable: new ProductVariable(-1, { name: '', category: new ProductCategory(-1), code: '', sku: '' }),
         uoms: {
             typeName: 'UOM',
             query: getQuery('UOM'),
@@ -87,7 +86,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['values', 'name'], ['values', 'conversionRate']),
-            variable: new UOMVariable(-1, { product: new Product(-1), name: -1, conversionRate: 1 }),
+            variable: new UOMVariable(-1, { product: new Product(-1), name: '', conversionRate: 1 }),
             variables: HashSet.of<UOMVariable>()
         },
         companies: {
@@ -121,9 +120,15 @@ function Component(props) {
                         state[action[0]][action[1]] = action[2]
                         break
                     }
-                    case 'orderable':
-                    case 'consumable':
-                    case 'producable': {
+                    case 'category': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'code': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
+                    case 'sku': {
                         state[action[0]][action[1]] = action[2]
                         break
                     }
@@ -310,17 +315,6 @@ function Component(props) {
         }
     }
 
-    const onVariableSwitchChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        switch (event.target.name) {
-            case 'orderable':
-            case 'consumable':
-            case 'producable': {
-                dispatch(['variable', event.target.name, event.target.checked])
-                break
-            }
-        }
-    }
-
     const onUOMInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         switch (event.target.name) {
             default: {
@@ -382,9 +376,6 @@ function Component(props) {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createProduct, {
             sku: state.variable.id.hashCode(),
             name: state.variable.values.name,
-            orderable: state.variable.values.orderable,
-            consumable: state.variable.values.consumable,
-            producable: state.variable.values.producable,
             uoms: state.uoms.variables.toArray().map(state => {
                 return {
                     name: state.values.name,
@@ -459,15 +450,6 @@ function Component(props) {
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>
                     <Item>
-                        <Label>{product.name}</Label>
-                        {
-                            iff(state.mode === 'create' || state.mode === 'update',
-                                <Input type='text' onChange={onVariableInputChange} value={state.updatedVariableName.hashCode()} name='variableName' />,
-                                <div className='font-bold text-xl'>{state.variable.id.hashCode()}</div>
-                            )
-                        }
-                    </Item>
-                    <Item>
                         <Label>{product.keys.name.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
@@ -477,34 +459,33 @@ function Component(props) {
                         }
                     </Item>
                     <Item>
-                        <InlineLabel>{product.keys.orderable.name}</InlineLabel>
+                        <Label>{product.keys.category.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Switch color='primary' onChange={onVariableSwitchChange} checked={state.variable.values.orderable} name='orderable' />,
-                                <div className='font-bold text-xl'>{state.variable.values.orderable ? 'Yes' : 'No'}</div>
+                                <Input type='number' onChange={onVariableInputChange} value={state.variable.values.category.hashCode()} name='category' />,
+                                <div className='font-bold text-xl'>{state.variable.values.category.hashCode()}</div>
                             )
                         }
                     </Item>
                     <Item>
-                        <InlineLabel>{product.keys.consumable.name}</InlineLabel>
+                        <Label>{product.keys.code.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Switch color='primary' onChange={onVariableSwitchChange} checked={state.variable.values.consumable} name='consumable' />,
-                                <div className='font-bold text-xl'>{state.variable.values.consumable ? 'Yes' : 'No'}</div>
+                                <Input type='text' onChange={onVariableInputChange} value={state.variable.values.code} name='code' />,
+                                <div className='font-bold text-xl'>{state.variable.values.code}</div>
                             )
                         }
                     </Item>
                     <Item>
-                        <InlineLabel>{product.keys.producable.name}</InlineLabel>
+                        <Label>{product.keys.sku.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Switch color='primary' onChange={onVariableSwitchChange} checked={state.variable.values.producable} name='producable' />,
-                                <div className='font-bold text-xl'>{state.variable.values.producable ? 'Yes' : 'No'}</div>
+                                <Input type='text' onChange={onVariableInputChange} value={state.variable.values.sku} name='sku' />,
+                                <div className='font-bold text-xl'>{state.variable.values.sku}</div>
                             )
                         }
                     </Item>
                 </Container>
-
                 <Container area={Grid.uoms} layout={Grid2.layouts.main}>
                     <Item area={Grid2.header} className='flex items-center'>
                         <Title>{uom.name}s</Title>
@@ -599,7 +580,7 @@ const Title = tw.div`py-8 text-4xl text-gray-800 font-bold mx-1 whitespace-nowra
 
 const Label = tw.label`w-1/2 whitespace-nowrap`
 
-const InlineLabel = tw.label`inline-block w-1/2`
+// const InlineLabel = tw.label`inline-block w-1/2`
 
 const Select = tw.select`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full rounded-sm`
 

@@ -12,7 +12,7 @@ class Counter {
         return this.id
     }
 }
-const counter = new Counter()
+export const counter = new Counter()
 
 export function createVariable(typeName: NonPrimitiveType, values: object): [Variable, DiffVariable] {
     const id: number = counter.getId()

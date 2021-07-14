@@ -1330,12 +1330,15 @@ export function getQuery(typeName: string): Query {
                 }
                 return acc
             }
+            case 'Formula': {
+                return acc
+            }
             default: {
-                acc.values[keyName] = {
-                    checked: false,
-                    type: key.type,
-                    value: getQuery(key.type)
-                }
+                // acc.values[keyName] = {
+                //     checked: false,
+                //     type: key.type,
+                //     value: getQuery(key.type)
+                // }
                 return acc
             }
         }

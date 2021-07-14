@@ -6,7 +6,7 @@ import { HashSet, Vector } from 'prelude-ts'
 import { executeCircuit } from '../../../main/circuit'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
-import { Bank, BankAccount, BankAccountVariable, BankBranch, BankBranchVariable, BankVariable, Company, CompanyBankAccountVariable, CompanyVariable } from '../../../main/variables'
+import { Bank, BankAccount, BankAccountVariable, BankBranch, BankBranchVariable, BankVariable, Company, CompanyBankAccountVariable, CompanyVariable, Currency } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter, Link } from 'react-router-dom'
@@ -58,7 +58,7 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new BankAccountVariable(-1, { bank: new Bank(-1), bankBranch: new BankBranch(-1), accountNumber: '' }),
+        variable: new BankAccountVariable(-1, { bank: new Bank(-1), bankBranch: new BankBranch(-1), accountNumber: '', accountName: '', currency: new Currency(-1) }),
         companies: {
             typeName: 'CompanyBankAccount',
             query: getQuery('CompanyBankAccount'),

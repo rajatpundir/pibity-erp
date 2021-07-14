@@ -133,7 +133,7 @@ function App() {
               <Route exact path='/warehouse-receipts'><ListWarehouseReceipt /></Route>
               <Route exact path='/warehouse-receipt/*'><ShowWarehouseReceipt /></Route>
               <Route exact path='/warehouse-receipt'><ShowWarehouseReceipt /></Route>
-              <Route path='/'><Redirect to='/products' /></Route>
+              <Route path='/'><Redirect to='/regions' /></Route>
             </Switch>
           </Item>
         </Container>

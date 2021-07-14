@@ -39,11 +39,13 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
 
+    | ['variable', 'values', 'name', string]
+
     | ['items', 'limit', number]
     | ['items', 'offset', number]
     | ['items', 'page', number]
     | ['items', 'query', Args]
-    | ['items', 'variable', 'name', string]
+    | ['items', 'variable', 'values', 'name', string]
     | ['items', 'addVariable']
 
     | ['replace', 'variable', RegionVariable]
@@ -81,7 +83,19 @@ function Component(props) {
             }
             case 'variable': {
                 switch (action[1]) {
-
+                    case 'values': {
+                        switch (action[2]) {
+                            case 'name': {
+                                state[action[0]][action[1]][action[2]] = action[3]
+                                break
+                            }
+                            default: {
+                                const _exhaustiveCheck: never = action;
+                                return _exhaustiveCheck;
+                            }
+                        }
+                        break
+                    }
                 }
                 break
             }
@@ -106,8 +120,17 @@ function Component(props) {
                     }
                     case 'variable': {
                         switch (action[2]) {
-                            case 'name': {
-                                state[action[0]][action[1]][action[2]] = action[3]
+                            case 'values': {
+                                switch (action[3]) {
+                                    case 'name': {
+                                        state[action[0]][action[1]][action[2]][action[3]] = action[4]
+                                        break
+                                    }
+                                    default: {
+                                        const _exhaustiveCheck: never = action;
+                                        return _exhaustiveCheck;
+                                    }
+                                }
                                 break
                             }
                         }
@@ -182,12 +205,25 @@ function Component(props) {
 
     useEffect(() => { setVariable() }, [setVariable])
 
+    const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        switch (event.target.name) {
+            default: {
+                switch (event.target.name) {
+                    case 'name': {
+                        dispatch(['variable', 'values', event.target.name, event.target.value])
+                        break
+                    }
+                }
+            }
+        }
+    }
+
     const onItemInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         switch (event.target.name) {
             default: {
                 switch (event.target.name) {
                     case 'name': {
-                        dispatch(['items', 'variable', event.target.name, event.target.value])
+                        dispatch(['items', 'variable', 'values', event.target.name, event.target.value])
                         break
                     }
                 }
@@ -211,7 +247,7 @@ function Component(props) {
 
     const createVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createRegion, {
-            id: state.variable.id.hashCode(),
+            name: state.variable.values.name,
             items: state.items.variables.toArray().map(country => {
                 return {
                     name: country.values.name
@@ -280,11 +316,11 @@ function Component(props) {
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>
                     <Item>
-                        <Label>{region.name}</Label>
+                        <Label>{region.keys.name.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Input type='text' onChange={onVariableInputChange} value={state.updatedVariableName.hashCode()} name='variableName' />,
-                                <div className='font-bold text-xl'>{state.variable.id.hashCode()}</div>
+                                <Input type='text' onChange={onVariableInputChange} value={state.variable.values.name} name='name' />,
+                                <div className='font-bold text-xl'>{state.variable.values.name}</div>
                             )
                         }
                     </Item>

@@ -9,7 +9,7 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { Address, AddressVariable, Bank, BankAccountVariable, BankBranch, BankBranchVariable, BankVariable } from '../../../main/variables'
+import { Address, AddressVariable, Bank, BankAccountVariable, BankBranch, BankBranchVariable, BankVariable, Currency } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter, Link } from 'react-router-dom'
@@ -67,7 +67,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['values', 'accountNumber']),
-            variable: new BankAccountVariable(-1, { bank: new Bank(-1), bankBranch: new BankBranch(-1), accountNumber: '' }),
+            variable: new BankAccountVariable(-1, { bank: new Bank(-1), bankBranch: new BankBranch(-1), accountNumber: '', accountName: '', currency: new Currency(-1) }),
             variables: HashSet.of<BankAccountVariable>()
         }
     }
@@ -139,7 +139,7 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.items.variables = state.items.variables.add(new BankAccountVariable(-1, { bank: new Bank(state.items.variable.values.bank.hashCode()), bankBranch: new BankBranch(state.items.variable.values.bankBranch.hashCode()), accountNumber: state.items.variable.values.accountNumber }))
+                        state.items.variables = state.items.variables.add(new BankAccountVariable(-1, { bank: new Bank(state.items.variable.values.bank.hashCode()), bankBranch: new BankBranch(state.items.variable.values.bankBranch.hashCode()), accountNumber: state.items.variable.values.accountNumber, accountName: state.items.variable.values.accountName, currency: new Currency(state.items.variable.values.currency.hashCode()) }))
                         state.items.variable = initialState.items.variable
                         break
                     }
