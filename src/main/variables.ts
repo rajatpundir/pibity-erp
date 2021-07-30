@@ -1,7 +1,6 @@
 import { immerable } from 'immer'
-import { AddressRow, BankAccountRow, BankBranchRow, BankRow, BOMItemRow, BOMRow, CountryRow, DistrictRow, IndentItemRow, IndentRow, MaterialApprovalSlipItemRow, MaterialApprovalSlipRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow, MaterialRequistionSlipItemRow, MaterialRequistionSlipRow, MaterialReturnSlipItemRow, MaterialReturnSlipRow, PostalCodeRow, ProductionPreparationSlipItemRow, ProductionPreparationSlipRow, ProductRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow, PurchaseOrderItemRow, PurchaseOrderRow, QuotationItemRow, QuotationRow, RegionRow, ScrapMaterialSlipRow, StateRow, SubdistrictRow, CompanyAddressRow, CompanyBankAccountRow, CompanyContactRow, CompanyProductRow, CompanyRow, TransferMaterialSlipRow, UOMRow, WarehouseAcceptanceSlipRow, BankTransactionRow, CompanyTagGroupRow, CompanyTagRow, ContactAddressRow, ContactRow, CurrencyRateRow, CurrencyRow, MappingCompanyTagRow, MappingProductTagRow, MemoRow, ProductCategoryGroupRow, ProductCategoryRow, ProductTagGroupRow, ProductTagRow } from './rows'
 import { NonPrimitiveType } from './types'
-
+import { RegionRow, CountryRow, StateTypeRow, DistrictRow, SubdistrictRow, PostalCodeRow, AddressRow, CompanyRow, CompanyAddressRow, CompanyTagGroupRow, CompanyTagRow, MappingCompanyTagRow, ContactRow, ContactAddressRow, CompanyContactRow, CurrencyRow, CurrencyRateRow, MemoRow, BankRow, BankBranchRow, BankAccountRow, BankTransactionRow, CompanyBankAccountRow, ProductCategoryGroupRow, ProductCategoryRow, ProductRow, CompanyProductRow, ProductTagGroupRow, ProductTagRow, MappingProductTagRow, UOMRow, IndentRow, IndentItemRow, QuotationRow, QuotationItemRow, PurchaseOrderRow, PurchaseOrderItemRow, PurchaseInvoiceRow, PurchaseInvoiceItemRow, MaterialApprovalSlipRow, MaterialApprovalSlipItemRow, MaterialRejectionSlipRow, MaterialRejectionSlipItemRow, MaterialReturnSlipRow, MaterialReturnSlipItemRow, MaterialRequistionSlipRow, MaterialRequistionSlipItemRow, BOMRow, BOMItemRow, ProductionPreparationSlipRow, ProductionPreparationSlipItemRow, ScrapMaterialSlipRow, TransferMaterialSlipRow, WarehouseAcceptanceSlipRow } from './rows'
 export type Text = string
 export type Number = number
 export type Decimal = number
@@ -13,7 +12,7 @@ export type Time = number
 export type Variable =
     | RegionVariable
     | CountryVariable
-    | StateVariable
+    | StateTypeVariable
     | DistrictVariable
     | SubdistrictVariable
     | PostalCodeVariable
@@ -69,7 +68,7 @@ export type Variable =
 export type VariableId =
     | Region
     | Country
-    | State
+    | StateType
     | District
     | Subdistrict
     | PostalCode
@@ -93,13 +92,13 @@ export type VariableId =
     | ProductCategoryGroup
     | ProductCategory
     | Product
+    | CompanyProduct
     | ProductTagGroup
     | ProductTag
     | MappingProductTag
     | UOM
     | Indent
     | IndentItem
-    | CompanyProduct
     | Quotation
     | QuotationItem
     | PurchaseOrder
@@ -146,7 +145,7 @@ export class RegionVariable {
     readonly typeName = 'Region'
     readonly id: Region
     values: {
-        name: Text
+        name: Text 
     }
 
     constructor(id: number, values: { name: Text }) {
@@ -158,7 +157,7 @@ export class RegionVariable {
         if (!other) {
             return false;
         }
-        return this.id.equals(other.id)
+        return (this.values.name === other.values.name)
     }
 
     hashCode(): number {
@@ -170,7 +169,9 @@ export class RegionVariable {
     }
 
     toRow(): RegionRow {
-        return new RegionRow(this.id.hashCode(), this.values)
+        return new RegionRow(this.id.hashCode(), {
+          name: this.values.name 
+        })
     }
 }
 
@@ -198,9 +199,8 @@ export class CountryVariable {
     readonly typeName = 'Country'
     readonly id: Country
     values: {
-        // UNQ(region, name)
         region: Region
-        name: Text
+        name: Text 
     }
 
     constructor(id: number, values: { region: Region, name: Text }) {
@@ -212,7 +212,7 @@ export class CountryVariable {
         if (!other) {
             return false;
         }
-        return this.values.region.equals(other.values.region) && this.values.name === other.values.name
+        return (this.values.region.equals(other.values.region) && this.values.name === other.values.name)
     }
 
     hashCode(): number {
@@ -225,16 +225,16 @@ export class CountryVariable {
 
     toRow(): CountryRow {
         return new CountryRow(this.id.hashCode(), {
-            region: this.values.region.hashCode(),
-            name: this.values.name
+          region: this.values.region.hashCode(),
+          name: this.values.name 
         })
     }
 }
 
-export class State {
+export class StateType {
     constructor(private id: number) { }
 
-    equals(other: State): boolean {
+    equals(other: StateType): boolean {
         if (!other) {
             return false;
         }
@@ -250,26 +250,25 @@ export class State {
     }
 }
 
-export class StateVariable {
+export class StateTypeVariable {
     [immerable] = true
-    readonly typeName = 'State'
-    readonly id: State
+    readonly typeName = 'StateType'
+    readonly id: StateType
     values: {
-        // UNQ(country, name)
         country: Country
-        name: Text
+        name: Text 
     }
 
     constructor(id: number, values: { country: Country, name: Text }) {
-        this.id = new State(id)
+        this.id = new StateType(id)
         this.values = values
     }
 
-    equals(other: StateVariable): boolean {
+    equals(other: StateTypeVariable): boolean {
         if (!other) {
             return false;
         }
-        return this.values.country.equals(other.values.country) && this.values.name === other.values.name
+        return (this.values.country.equals(other.values.country) && this.values.name === other.values.name)
     }
 
     hashCode(): number {
@@ -280,10 +279,10 @@ export class StateVariable {
         return JSON.stringify(this, null, 2)
     }
 
-    toRow(): StateRow {
-        return new StateRow(this.id.hashCode(), {
-            country: this.values.country.hashCode(),
-            name: this.values.name
+    toRow(): StateTypeRow {
+        return new StateTypeRow(this.id.hashCode(), {
+          country: this.values.country.hashCode(),
+          name: this.values.name 
         })
     }
 }
@@ -312,12 +311,11 @@ export class DistrictVariable {
     readonly typeName = 'District'
     readonly id: District
     values: {
-        // UNQ(state, name)
-        state: State
-        name: Text
+        state: StateType
+        name: Text 
     }
 
-    constructor(id: number, values: { state: State, name: Text }) {
+    constructor(id: number, values: { state: StateType, name: Text }) {
         this.id = new District(id)
         this.values = values
     }
@@ -326,7 +324,7 @@ export class DistrictVariable {
         if (!other) {
             return false;
         }
-        return this.values.state.equals(other.values.state) && this.values.name === other.values.name
+        return (this.values.state.equals(other.values.state) && this.values.name === other.values.name)
     }
 
     hashCode(): number {
@@ -339,8 +337,8 @@ export class DistrictVariable {
 
     toRow(): DistrictRow {
         return new DistrictRow(this.id.hashCode(), {
-            state: this.values.state.hashCode(),
-            name: this.values.name
+          state: this.values.state.hashCode(),
+          name: this.values.name 
         })
     }
 }
@@ -369,9 +367,8 @@ export class SubdistrictVariable {
     readonly typeName = 'Subdistrict'
     readonly id: Subdistrict
     values: {
-        // UNQ(district, name)
         district: District
-        name: Text
+        name: Text 
     }
 
     constructor(id: number, values: { district: District, name: Text }) {
@@ -383,7 +380,7 @@ export class SubdistrictVariable {
         if (!other) {
             return false;
         }
-        return this.values.district.equals(other.values.district) && this.values.name === other.values.name
+        return (this.values.district.equals(other.values.district) && this.values.name === other.values.name)
     }
 
     hashCode(): number {
@@ -396,8 +393,8 @@ export class SubdistrictVariable {
 
     toRow(): SubdistrictRow {
         return new SubdistrictRow(this.id.hashCode(), {
-            district: this.values.district.hashCode(),
-            name: this.values.name
+          district: this.values.district.hashCode(),
+          name: this.values.name 
         })
     }
 }
@@ -426,9 +423,8 @@ export class PostalCodeVariable {
     readonly typeName = 'PostalCode'
     readonly id: PostalCode
     values: {
-        // UNQ(subdistrict, name)
         subdistrict: Subdistrict
-        name: Text
+        name: Text 
     }
 
     constructor(id: number, values: { subdistrict: Subdistrict, name: Text }) {
@@ -440,7 +436,7 @@ export class PostalCodeVariable {
         if (!other) {
             return false;
         }
-        return this.values.subdistrict.equals(other.values.subdistrict) && this.values.name === other.values.name
+        return (this.values.subdistrict.equals(other.values.subdistrict) && this.values.name === other.values.name)
     }
 
     hashCode(): number {
@@ -453,8 +449,8 @@ export class PostalCodeVariable {
 
     toRow(): PostalCodeRow {
         return new PostalCodeRow(this.id.hashCode(), {
-            subdistrict: this.values.subdistrict.hashCode(),
-            name: this.values.name
+          subdistrict: this.values.subdistrict.hashCode(),
+          name: this.values.name 
         })
     }
 }
@@ -483,15 +479,14 @@ export class AddressVariable {
     readonly typeName = 'Address'
     readonly id: Address
     values: {
-        // UNQ(postalCode, line1, line2)
         postalCode: PostalCode
         line1: Text
         line2: Text
-        latitude: Decimal
-        longitude: Decimal
+        latitude: Number
+        longitude: Number 
     }
 
-    constructor(id: number, values: { postalCode: PostalCode, line1: Text, line2: Text, latitude: Decimal, longitude: Decimal }) {
+    constructor(id: number, values: { postalCode: PostalCode, line1: Text, line2: Text, latitude: Number, longitude: Number }) {
         this.id = new Address(id)
         this.values = values
     }
@@ -500,7 +495,7 @@ export class AddressVariable {
         if (!other) {
             return false;
         }
-        return this.values.postalCode.equals(other.values.postalCode) && this.values.line1 === other.values.line1 && this.values.line2 === other.values.line2
+        return (this.values.postalCode.equals(other.values.postalCode) && this.values.line1 === other.values.line1 && this.values.line2 === other.values.line2)
     }
 
     hashCode(): number {
@@ -513,11 +508,11 @@ export class AddressVariable {
 
     toRow(): AddressRow {
         return new AddressRow(this.id.hashCode(), {
-            postalCode: this.values.postalCode.hashCode(),
-            line1: this.values.line1,
-            line2: this.values.line2,
-            latitude: this.values.latitude,
-            longitude: this.values.longitude
+          postalCode: this.values.postalCode.hashCode(),
+          line1: this.values.line1,
+          line2: this.values.line2,
+          latitude: this.values.latitude,
+          longitude: this.values.longitude 
         })
     }
 }
@@ -553,7 +548,7 @@ export class CompanyVariable {
         website: Text
         gstin: Text
         pan: Text
-        iec: Text
+        iec: Text 
     }
 
     constructor(id: number, values: { name: Text, email: Text, telephone: Text, mobile: Text, website: Text, gstin: Text, pan: Text, iec: Text }) {
@@ -565,7 +560,7 @@ export class CompanyVariable {
         if (!other) {
             return false;
         }
-        return this.id.equals(other.id) || this.values.gstin === other.values.gstin || this.values.pan === other.values.pan || this.values.iec === other.values.iec
+        return (this.values.name === other.values.name)
     }
 
     hashCode(): number {
@@ -578,14 +573,14 @@ export class CompanyVariable {
 
     toRow(): CompanyRow {
         return new CompanyRow(this.id.hashCode(), {
-            name: this.values.name,
-            email: this.values.email,
-            telephone: this.values.telephone,
-            mobile: this.values.mobile,
-            website: this.values.website,
-            gstin: this.values.gstin,
-            pan: this.values.pan,
-            iec: this.values.iec
+          name: this.values.name,
+          email: this.values.email,
+          telephone: this.values.telephone,
+          mobile: this.values.mobile,
+          website: this.values.website,
+          gstin: this.values.gstin,
+          pan: this.values.pan,
+          iec: this.values.iec 
         })
     }
 }
@@ -614,11 +609,9 @@ export class CompanyAddressVariable {
     readonly typeName = 'CompanyAddress'
     readonly id: CompanyAddress
     values: {
-        // UNQ(company, name)
-        // UNQ(company, address)
         company: Company
         name: Text
-        address: Address
+        address: Address 
     }
 
     constructor(id: number, values: { company: Company, name: Text, address: Address }) {
@@ -630,7 +623,7 @@ export class CompanyAddressVariable {
         if (!other) {
             return false;
         }
-        return (this.values.company.equals(other.values.company) && this.values.name === other.values.name) && (this.values.company.equals(other.values.company) && this.values.address.equals(other.values.address))
+        return (this.values.company.equals(other.values.company) && this.values.name === other.values.name) || (this.values.company.equals(other.values.company) && this.values.address.equals(other.values.address))
     }
 
     hashCode(): number {
@@ -643,9 +636,9 @@ export class CompanyAddressVariable {
 
     toRow(): CompanyAddressRow {
         return new CompanyAddressRow(this.id.hashCode(), {
-            company: this.values.company.hashCode(),
-            name: this.values.name,
-            address: this.values.address.hashCode()
+          company: this.values.company.hashCode(),
+          name: this.values.name,
+          address: this.values.address.hashCode() 
         })
     }
 }
@@ -674,7 +667,7 @@ export class CompanyTagGroupVariable {
     readonly typeName = 'CompanyTagGroup'
     readonly id: CompanyTagGroup
     values: {
-        name: Text
+        name: Text 
     }
 
     constructor(id: number, values: { name: Text }) {
@@ -686,7 +679,7 @@ export class CompanyTagGroupVariable {
         if (!other) {
             return false;
         }
-        return this.id.equals(other.id)
+        return (this.values.name === other.values.name)
     }
 
     hashCode(): number {
@@ -699,7 +692,7 @@ export class CompanyTagGroupVariable {
 
     toRow(): CompanyTagGroupRow {
         return new CompanyTagGroupRow(this.id.hashCode(), {
-            name: this.values.name
+          name: this.values.name 
         })
     }
 }
@@ -728,9 +721,8 @@ export class CompanyTagVariable {
     readonly typeName = 'CompanyTag'
     readonly id: CompanyTag
     values: {
-        // UNQ(group, name)
         group: CompanyTagGroup
-        name: Text
+        name: Text 
     }
 
     constructor(id: number, values: { group: CompanyTagGroup, name: Text }) {
@@ -755,8 +747,8 @@ export class CompanyTagVariable {
 
     toRow(): CompanyTagRow {
         return new CompanyTagRow(this.id.hashCode(), {
-            group: this.values.group.hashCode(),
-            name: this.values.name
+          group: this.values.group.hashCode(),
+          name: this.values.name 
         })
     }
 }
@@ -786,10 +778,10 @@ export class MappingCompanyTagVariable {
     readonly id: MappingCompanyTag
     values: {
         company: Company
-        tag: CompanyTag
+        tag: CompanyTag 
     }
 
-    constructor(id: number, values: { tag: CompanyTag, company: Company }) {
+    constructor(id: number, values: { company: Company, tag: CompanyTag }) {
         this.id = new MappingCompanyTag(id)
         this.values = values
     }
@@ -811,8 +803,8 @@ export class MappingCompanyTagVariable {
 
     toRow(): MappingCompanyTagRow {
         return new MappingCompanyTagRow(this.id.hashCode(), {
-            company: this.values.company.hashCode(),
-            tag: this.values.tag.hashCode()
+          company: this.values.company.hashCode(),
+          tag: this.values.tag.hashCode() 
         })
     }
 }
@@ -845,10 +837,7 @@ export class ContactVariable {
         email: Text
         telephone: Text
         mobile: Text
-        website: Text
-        // Note. Below should be required in an entity which extends Contact (employee/customer)
-        // aadhaar: Text
-        // pan: Text
+        website: Text 
     }
 
     constructor(id: number, values: { name: Text, email: Text, telephone: Text, mobile: Text, website: Text }) {
@@ -860,7 +849,7 @@ export class ContactVariable {
         if (!other) {
             return false;
         }
-        return this.id.equals(other.id)
+        return (this.values.name === other.values.name)
     }
 
     hashCode(): number {
@@ -873,11 +862,11 @@ export class ContactVariable {
 
     toRow(): ContactRow {
         return new ContactRow(this.id.hashCode(), {
-            name: this.values.name,
-            email: this.values.email,
-            telephone: this.values.telephone,
-            mobile: this.values.mobile,
-            website: this.values.website
+          name: this.values.name,
+          email: this.values.email,
+          telephone: this.values.telephone,
+          mobile: this.values.mobile,
+          website: this.values.website 
         })
     }
 }
@@ -906,11 +895,9 @@ export class ContactAddressVariable {
     readonly typeName = 'ContactAddress'
     readonly id: ContactAddress
     values: {
-        // UNQ(contact, name)
-        // UNQ(contact, address)
         contact: Contact
         name: Text
-        address: Address
+        address: Address 
     }
 
     constructor(id: number, values: { contact: Contact, name: Text, address: Address }) {
@@ -922,7 +909,7 @@ export class ContactAddressVariable {
         if (!other) {
             return false;
         }
-        return (this.values.contact.equals(other.values.contact) && this.values.name === other.values.name) && (this.values.contact.equals(other.values.contact) && this.values.address.equals(other.values.address))
+        return (this.values.contact.equals(other.values.contact) && this.values.name === other.values.name) || (this.values.contact.equals(other.values.contact) && this.values.address.equals(other.values.address))
     }
 
     hashCode(): number {
@@ -935,9 +922,9 @@ export class ContactAddressVariable {
 
     toRow(): ContactAddressRow {
         return new ContactAddressRow(this.id.hashCode(), {
-            contact: this.values.contact.hashCode(),
-            name: this.values.name,
-            address: this.values.address.hashCode()
+          contact: this.values.contact.hashCode(),
+          name: this.values.name,
+          address: this.values.address.hashCode() 
         })
     }
 }
@@ -966,13 +953,12 @@ export class CompanyContactVariable {
     readonly typeName = 'CompanyContact'
     readonly id: CompanyContact
     values: {
-        // UNQ(company, contact)
         company: Company
         contact: Contact
         role: Text
         email: Text
         telephone: Text
-        mobile: Text
+        mobile: Text 
     }
 
     constructor(id: number, values: { company: Company, contact: Contact, role: Text, email: Text, telephone: Text, mobile: Text }) {
@@ -984,7 +970,7 @@ export class CompanyContactVariable {
         if (!other) {
             return false;
         }
-        return this.values.company.equals(other.values.company) && this.values.contact.equals(other.values.contact)
+        return (this.values.company.equals(other.values.company) && this.values.contact.equals(other.values.contact))
     }
 
     hashCode(): number {
@@ -997,12 +983,12 @@ export class CompanyContactVariable {
 
     toRow(): CompanyContactRow {
         return new CompanyContactRow(this.id.hashCode(), {
-            company: this.values.company.hashCode(),
-            contact: this.values.contact.hashCode(),
-            role: this.values.role,
-            email: this.values.email,
-            telephone: this.values.telephone,
-            mobile: this.values.mobile
+          company: this.values.company.hashCode(),
+          contact: this.values.contact.hashCode(),
+          role: this.values.role,
+          email: this.values.email,
+          telephone: this.values.telephone,
+          mobile: this.values.mobile 
         })
     }
 }
@@ -1031,10 +1017,10 @@ export class CurrencyVariable {
     readonly typeName = 'Currency'
     readonly id: Currency
     values: {
-        name: Text
+        name: Text 
     }
 
-    constructor(id: number, values: { name : Text }) {
+    constructor(id: number, values: { name: Text }) {
         this.id = new Currency(id)
         this.values = values
     }
@@ -1043,7 +1029,7 @@ export class CurrencyVariable {
         if (!other) {
             return false;
         }
-        return this.id.equals(other.id)
+        return (this.values.name === other.values.name)
     }
 
     hashCode(): number {
@@ -1055,7 +1041,9 @@ export class CurrencyVariable {
     }
 
     toRow(): CurrencyRow {
-        return new CurrencyRow(this.id.hashCode(), this.values)
+        return new CurrencyRow(this.id.hashCode(), {
+          name: this.values.name 
+        })
     }
 }
 
@@ -1086,7 +1074,7 @@ export class CurrencyRateVariable {
         currency: Currency
         conversionRate: Decimal
         startTime: Timestamp
-        endTime: Timestamp
+        endTime: Timestamp 
     }
 
     constructor(id: number, values: { currency: Currency, conversionRate: Decimal, startTime: Timestamp, endTime: Timestamp }) {
@@ -1111,10 +1099,10 @@ export class CurrencyRateVariable {
 
     toRow(): CurrencyRateRow {
         return new CurrencyRateRow(this.id.hashCode(), {
-            currency: this.values.currency.hashCode(),
-            conversionRate: this.values.conversionRate,
-            startTime: this.values.startTime,
-            endTime: this.values.endTime
+          currency: this.values.currency.hashCode(),
+          conversionRate: this.values.conversionRate,
+          startTime: this.values.startTime,
+          endTime: this.values.endTime 
         })
     }
 }
@@ -1146,10 +1134,10 @@ export class MemoVariable {
         company: Company
         currency: Currency
         amount: Decimal
-        unsettled: Decimal
+        unsettled: Decimal 
     }
 
-    constructor(id: number, values: { company: Company, currency: Currency, amount: Decimal, unsettled: Timestamp }) {
+    constructor(id: number, values: { company: Company, currency: Currency, amount: Decimal, unsettled: Decimal }) {
         this.id = new Memo(id)
         this.values = values
     }
@@ -1171,10 +1159,10 @@ export class MemoVariable {
 
     toRow(): MemoRow {
         return new MemoRow(this.id.hashCode(), {
-            company: this.values.company.hashCode(),
-            currency: this.values.currency.hashCode(),
-            amount: this.values.amount,
-            unsettled: this.values.unsettled
+          company: this.values.company.hashCode(),
+          currency: this.values.currency.hashCode(),
+          amount: this.values.amount,
+          unsettled: this.values.unsettled 
         })
     }
 }
@@ -1203,10 +1191,9 @@ export class BankVariable {
     readonly typeName = 'Bank'
     readonly id: Bank
     values: {
-        // UNQ(country, name)
         country: Country
         name: Text
-        website: Text
+        website: Text 
     }
 
     constructor(id: number, values: { country: Country, name: Text, website: Text }) {
@@ -1218,7 +1205,7 @@ export class BankVariable {
         if (!other) {
             return false;
         }
-        return this.values.country.equals(other.values.country) && this.values.name === other.values.name
+        return (this.values.country.equals(other.values.country) && this.values.name === other.values.name)
     }
 
     hashCode(): number {
@@ -1231,9 +1218,9 @@ export class BankVariable {
 
     toRow(): BankRow {
         return new BankRow(this.id.hashCode(), {
-            country: this.values.country.hashCode(),
-            name: this.values.name,
-            website: this.values.website
+          country: this.values.country.hashCode(),
+          name: this.values.name,
+          website: this.values.website 
         })
     }
 }
@@ -1262,12 +1249,10 @@ export class BankBranchVariable {
     readonly typeName = 'BankBranch'
     readonly id: BankBranch
     values: {
-        // UNQ(bank, name)
-        // UNQ(bank, ifsc)
         bank: Bank
         name: Text
         ifsc: Text
-        address: Address
+        address: Address 
     }
 
     constructor(id: number, values: { bank: Bank, name: Text, ifsc: Text, address: Address }) {
@@ -1279,7 +1264,7 @@ export class BankBranchVariable {
         if (!other) {
             return false;
         }
-        return this.values.bank.equals(other.values.bank) && this.values.name === other.values.name
+        return (this.values.bank.equals(other.values.bank) && this.values.name === other.values.name) || (this.values.bank.equals(other.values.bank) && this.values.ifsc === other.values.ifsc)
     }
 
     hashCode(): number {
@@ -1292,10 +1277,10 @@ export class BankBranchVariable {
 
     toRow(): BankBranchRow {
         return new BankBranchRow(this.id.hashCode(), {
-            bank: this.values.bank.hashCode(),
-            name: this.values.name,
-            ifsc: this.values.ifsc,
-            address: this.values.address.hashCode()
+          bank: this.values.bank.hashCode(),
+          name: this.values.name,
+          ifsc: this.values.ifsc,
+          address: this.values.address.hashCode() 
         })
     }
 }
@@ -1324,12 +1309,11 @@ export class BankAccountVariable {
     readonly typeName = 'BankAccount'
     readonly id: BankAccount
     values: {
-        // UNQ(bank, accountNumber)
         bank: Bank
         bankBranch: BankBranch
         accountNumber: Text
         accountName: Text
-        currency: Currency
+        currency: Currency 
     }
 
     constructor(id: number, values: { bank: Bank, bankBranch: BankBranch, accountNumber: Text, accountName: Text, currency: Currency }) {
@@ -1341,7 +1325,7 @@ export class BankAccountVariable {
         if (!other) {
             return false;
         }
-        return this.values.bank.equals(other.values.bank) && this.values.accountNumber === other.values.accountNumber
+        return (this.values.bank.equals(other.values.bank) && this.values.accountNumber === other.values.accountNumber)
     }
 
     hashCode(): number {
@@ -1354,11 +1338,11 @@ export class BankAccountVariable {
 
     toRow(): BankAccountRow {
         return new BankAccountRow(this.id.hashCode(), {
-            bank: this.values.bank.hashCode(),
-            bankBranch: this.values.bankBranch.hashCode(),
-            accountNumber: this.values.accountNumber,
-            accountName: this.values.accountName,
-            currency: this.values.currency.hashCode()
+          bank: this.values.bank.hashCode(),
+          bankBranch: this.values.bankBranch.hashCode(),
+          accountNumber: this.values.accountNumber,
+          accountName: this.values.accountName,
+          currency: this.values.currency.hashCode() 
         })
     }
 }
@@ -1393,7 +1377,7 @@ export class BankTransactionVariable {
         bankAccount: BankAccount
         fromToAccount: BankAccount
         credit: Decimal
-        debit: Decimal
+        debit: Decimal 
     }
 
     constructor(id: number, values: { timestamp: Timestamp, memo: Memo, currencyRate: CurrencyRate, bankAccount: BankAccount, fromToAccount: BankAccount, credit: Decimal, debit: Decimal }) {
@@ -1418,13 +1402,13 @@ export class BankTransactionVariable {
 
     toRow(): BankTransactionRow {
         return new BankTransactionRow(this.id.hashCode(), {
-            timestamp: this.values.timestamp,
-            memo: this.values.memo.hashCode(),
-            currencyRate: this.values.currencyRate.hashCode(),
-            bankAccount: this.values.bankAccount.hashCode(),
-            fromToAccount: this.values.fromToAccount.hashCode(),
-            credit: this.values.credit,
-            debit: this.values.debit
+          timestamp: this.values.timestamp,
+          memo: this.values.memo.hashCode(),
+          currencyRate: this.values.currencyRate.hashCode(),
+          bankAccount: this.values.bankAccount.hashCode(),
+          fromToAccount: this.values.fromToAccount.hashCode(),
+          credit: this.values.credit,
+          debit: this.values.debit 
         })
     }
 }
@@ -1453,9 +1437,8 @@ export class CompanyBankAccountVariable {
     readonly typeName = 'CompanyBankAccount'
     readonly id: CompanyBankAccount
     values: {
-        // UNQ(company, bankAccount)
         company: Company
-        bankAccount: BankAccount
+        bankAccount: BankAccount 
     }
 
     constructor(id: number, values: { company: Company, bankAccount: BankAccount }) {
@@ -1467,7 +1450,7 @@ export class CompanyBankAccountVariable {
         if (!other) {
             return false;
         }
-        return this.values.company.equals(other.values.company) && this.values.bankAccount.equals(other.values.bankAccount)
+        return (this.values.company.equals(other.values.company) && this.values.bankAccount.equals(other.values.bankAccount))
     }
 
     hashCode(): number {
@@ -1480,8 +1463,8 @@ export class CompanyBankAccountVariable {
 
     toRow(): CompanyBankAccountRow {
         return new CompanyBankAccountRow(this.id.hashCode(), {
-            company: this.values.company.hashCode(),
-            bankAccount: this.values.bankAccount.hashCode()
+          company: this.values.company.hashCode(),
+          bankAccount: this.values.bankAccount.hashCode() 
         })
     }
 }
@@ -1510,10 +1493,9 @@ export class ProductCategoryGroupVariable {
     readonly typeName = 'ProductCategoryGroup'
     readonly id: ProductCategoryGroup
     values: {
-        // UNQ(parent)
         parent: ProductCategoryGroup
         name: Text
-        length: Number
+        length: Number 
     }
 
     constructor(id: number, values: { parent: ProductCategoryGroup, name: Text, length: Number }) {
@@ -1525,7 +1507,7 @@ export class ProductCategoryGroupVariable {
         if (!other) {
             return false;
         }
-        return this.id.equals(other.id) && this.values.parent.equals(other.values.parent)
+        return (this.values.parent.equals(other.values.parent))
     }
 
     hashCode(): number {
@@ -1538,9 +1520,9 @@ export class ProductCategoryGroupVariable {
 
     toRow(): ProductCategoryGroupRow {
         return new ProductCategoryGroupRow(this.id.hashCode(), {
-            parent: this.values.parent.hashCode(),
-            name: this.values.name,
-            length: this.values.length
+          parent: this.values.parent.hashCode(),
+          name: this.values.name,
+          length: this.values.length 
         })
     }
 }
@@ -1569,14 +1551,12 @@ export class ProductCategoryVariable {
     readonly typeName = 'ProductCategory'
     readonly id: ProductCategory
     values: {
-        // UNQ(parent, name)
-        // UNQ(parent, code)
         parent: ProductCategory
         group: ProductCategoryGroup
         name: Text
         code: Text
         derivedCode: Text
-        childCount: Number
+        childCount: Number 
     }
 
     constructor(id: number, values: { parent: ProductCategory, group: ProductCategoryGroup, name: Text, code: Text, derivedCode: Text, childCount: Number }) {
@@ -1601,12 +1581,12 @@ export class ProductCategoryVariable {
 
     toRow(): ProductCategoryRow {
         return new ProductCategoryRow(this.id.hashCode(), {
-            parent: this.values.parent.hashCode(),
-            group: this.values.group.hashCode(),
-            name: this.values.name,
-            code: this.values.code,
-            derivedCode: this.values.derivedCode,
-            childCount: this.values.childCount
+          parent: this.values.parent.hashCode(),
+          group: this.values.group.hashCode(),
+          name: this.values.name,
+          code: this.values.code,
+          derivedCode: this.values.derivedCode,
+          childCount: this.values.childCount 
         })
     }
 }
@@ -1638,7 +1618,7 @@ export class ProductVariable {
         name: Text
         category: ProductCategory
         code: Text
-        sku: Text
+        sku: Text 
     }
 
     constructor(id: number, values: { name: Text, category: ProductCategory, code: Text, sku: Text }) {
@@ -1650,7 +1630,7 @@ export class ProductVariable {
         if (!other) {
             return false;
         }
-        return this.id.equals(other.id)
+        return (this.values.name === other.values.name)
     }
 
     hashCode(): number {
@@ -1663,10 +1643,10 @@ export class ProductVariable {
 
     toRow(): ProductRow {
         return new ProductRow(this.id.hashCode(), {
-            name: this.values.name,
-            category: this.values.category.hashCode(),
-            code: this.values.code,
-            sku: this.values.sku
+          name: this.values.name,
+          category: this.values.category.hashCode(),
+          code: this.values.code,
+          sku: this.values.sku 
         })
     }
 }
@@ -1695,9 +1675,8 @@ export class CompanyProductVariable {
     readonly typeName = 'CompanyProduct'
     readonly id: CompanyProduct
     values: {
-        // UNQ(company, product)
         company: Company
-        product: Product
+        product: Product 
     }
 
     constructor(id: number, values: { company: Company, product: Product }) {
@@ -1709,7 +1688,7 @@ export class CompanyProductVariable {
         if (!other) {
             return false;
         }
-        return this.values.company.equals(other.values.company) && this.values.product.equals(other.values.product)
+        return (this.values.company.equals(other.values.company) && this.values.product.equals(other.values.product))
     }
 
     hashCode(): number {
@@ -1722,8 +1701,8 @@ export class CompanyProductVariable {
 
     toRow(): CompanyProductRow {
         return new CompanyProductRow(this.id.hashCode(), {
-            company: this.values.company.hashCode(),
-            product: this.values.product.hashCode()
+          company: this.values.company.hashCode(),
+          product: this.values.product.hashCode() 
         })
     }
 }
@@ -1752,7 +1731,7 @@ export class ProductTagGroupVariable {
     readonly typeName = 'ProductTagGroup'
     readonly id: ProductTagGroup
     values: {
-        name: Text
+        name: Text 
     }
 
     constructor(id: number, values: { name: Text }) {
@@ -1764,7 +1743,7 @@ export class ProductTagGroupVariable {
         if (!other) {
             return false;
         }
-        return this.id.equals(other.id)
+        return (this.values.name === other.values.name)
     }
 
     hashCode(): number {
@@ -1777,7 +1756,7 @@ export class ProductTagGroupVariable {
 
     toRow(): ProductTagGroupRow {
         return new ProductTagGroupRow(this.id.hashCode(), {
-            name: this.values.name
+          name: this.values.name 
         })
     }
 }
@@ -1806,9 +1785,8 @@ export class ProductTagVariable {
     readonly typeName = 'ProductTag'
     readonly id: ProductTag
     values: {
-        // UNQ(group, name)
         group: ProductTagGroup
-        name: Text
+        name: Text 
     }
 
     constructor(id: number, values: { group: ProductTagGroup, name: Text }) {
@@ -1833,8 +1811,8 @@ export class ProductTagVariable {
 
     toRow(): ProductTagRow {
         return new ProductTagRow(this.id.hashCode(), {
-            group: this.values.group.hashCode(),
-            name: this.values.name
+          group: this.values.group.hashCode(),
+          name: this.values.name 
         })
     }
 }
@@ -1864,10 +1842,10 @@ export class MappingProductTagVariable {
     readonly id: MappingProductTag
     values: {
         product: Product
-        tag: ProductTag
+        tag: ProductTag 
     }
 
-    constructor(id: number, values: { tag: ProductTag, product: Product }) {
+    constructor(id: number, values: { product: Product, tag: ProductTag }) {
         this.id = new MappingProductTag(id)
         this.values = values
     }
@@ -1889,8 +1867,8 @@ export class MappingProductTagVariable {
 
     toRow(): MappingProductTagRow {
         return new MappingProductTagRow(this.id.hashCode(), {
-            product: this.values.product.hashCode(),
-            tag: this.values.tag.hashCode()
+          product: this.values.product.hashCode(),
+          tag: this.values.tag.hashCode() 
         })
     }
 }
@@ -1919,10 +1897,9 @@ export class UOMVariable {
     readonly typeName = 'UOM'
     readonly id: UOM
     values: {
-        // UNQ(product, name)
         product: Product
         name: Text
-        conversionRate: Decimal
+        conversionRate: Decimal 
     }
 
     constructor(id: number, values: { product: Product, name: Text, conversionRate: Decimal }) {
@@ -1934,7 +1911,7 @@ export class UOMVariable {
         if (!other) {
             return false;
         }
-        return this.values.product.equals(other.values.product) && this.values.name === other.values.name
+        return (this.values.product.equals(other.values.product) && this.values.name === other.values.name)
     }
 
     hashCode(): number {
@@ -1947,9 +1924,9 @@ export class UOMVariable {
 
     toRow(): UOMRow {
         return new UOMRow(this.id.hashCode(), {
-            product: this.values.product.hashCode(),
-            name: this.values.name,
-            conversionRate: this.values.conversionRate
+          product: this.values.product.hashCode(),
+          name: this.values.name,
+          conversionRate: this.values.conversionRate 
         })
     }
 }
@@ -1977,14 +1954,9 @@ export class IndentVariable {
     [immerable] = true
     readonly typeName = 'Indent'
     readonly id: Indent
-    values: {
-        // timestamp: Timestamp // redundant field
-        // subspace: Subspace
-        // approver: Subspace
-        // approved: Boolean
-    }
+    values: {                        }
 
-    constructor(id: number, values: {}) {
+    constructor(id: number, values: {  }) {
         this.id = new Indent(id)
         this.values = values
     }
@@ -2005,7 +1977,7 @@ export class IndentVariable {
     }
 
     toRow(): IndentRow {
-        return new IndentRow(this.id.hashCode(), this.values)
+        return new IndentRow(this.id.hashCode(), {                            })
     }
 }
 
@@ -2033,26 +2005,17 @@ export class IndentItemVariable {
     readonly typeName = 'IndentItem'
     readonly id: IndentItem
     values: {
-        // UNQ(indent, product)
         indent: Indent
         product: Product
         quantity: Number
-        // assertion(uom.product == product && product.orderable == true && quantity > 0)
         uom: UOM
-        // assertion((ordered - rejected) <= quantity && (ordered - rejected) >= 0)
-        // assertion(ordered >= 0 && received >=0 && approved >= 0 && rejected >= 0 && returned >= 0 && requisted >= 0 && consumed >= 0)
         ordered: Number
-        // assertion(received <= ordered)
         received: Number
-        // assertion((approved + rejected) <= received)
         approved: Number
         rejected: Number
-        // assertion(returned <= rejected)
         returned: Number
-        // assertion(requisted <= approved)
         requisted: Number
-        // assertion(consumed <= requisted)
-        consumed: Number
+        consumed: Number 
     }
 
     constructor(id: number, values: { indent: Indent, product: Product, quantity: Number, uom: UOM, ordered: Number, received: Number, approved: Number, rejected: Number, returned: Number, requisted: Number, consumed: Number }) {
@@ -2064,7 +2027,7 @@ export class IndentItemVariable {
         if (!other) {
             return false;
         }
-        return this.values.indent.equals(other.values.indent) && this.values.product.equals(other.values.product)
+        return (this.values.indent.equals(other.values.indent) && this.values.product.equals(other.values.product))
     }
 
     hashCode(): number {
@@ -2077,17 +2040,17 @@ export class IndentItemVariable {
 
     toRow(): IndentItemRow {
         return new IndentItemRow(this.id.hashCode(), {
-            indent: this.values.indent.hashCode(),
-            product: this.values.product.hashCode(),
-            quantity: this.values.quantity,
-            uom: this.values.uom.hashCode(),
-            ordered: this.values.ordered,
-            received: this.values.received,
-            approved: this.values.approved,
-            rejected: this.values.rejected,
-            returned: this.values.returned,
-            requisted: this.values.requisted,
-            consumed: this.values.consumed,
+          indent: this.values.indent.hashCode(),
+          product: this.values.product.hashCode(),
+          quantity: this.values.quantity,
+          uom: this.values.uom.hashCode(),
+          ordered: this.values.ordered,
+          received: this.values.received,
+          approved: this.values.approved,
+          rejected: this.values.rejected,
+          returned: this.values.returned,
+          requisted: this.values.requisted,
+          consumed: this.values.consumed 
         })
     }
 }
@@ -2117,7 +2080,7 @@ export class QuotationVariable {
     readonly id: Quotation
     values: {
         indent: Indent
-        company: Company
+        company: Company 
     }
 
     constructor(id: number, values: { indent: Indent, company: Company }) {
@@ -2142,8 +2105,8 @@ export class QuotationVariable {
 
     toRow(): QuotationRow {
         return new QuotationRow(this.id.hashCode(), {
-            indent: this.values.indent.hashCode(),
-            company: this.values.company.hashCode()
+          indent: this.values.indent.hashCode(),
+          company: this.values.company.hashCode() 
         })
     }
 }
@@ -2172,12 +2135,9 @@ export class QuotationItemVariable {
     readonly typeName = 'QuotationItem'
     readonly id: QuotationItem
     values: {
-        // UNQ(quotation, indentItem)
         quotation: Quotation
-        // assertion(quotation.indent == indentItem.indent)
         indentItem: IndentItem
-        // assertion(quantity <= (indentItem.quantity - (ordered - rejected)) && quantity > 0)
-        quantity: Number
+        quantity: Number 
     }
 
     constructor(id: number, values: { quotation: Quotation, indentItem: IndentItem, quantity: Number }) {
@@ -2189,7 +2149,7 @@ export class QuotationItemVariable {
         if (!other) {
             return false;
         }
-        return this.values.quotation.equals(other.values.quotation) && this.values.indentItem.equals(other.values.indentItem)
+        return (this.values.quotation.equals(other.values.quotation) && this.values.indentItem.equals(other.values.indentItem))
     }
 
     hashCode(): number {
@@ -2202,9 +2162,9 @@ export class QuotationItemVariable {
 
     toRow(): QuotationItemRow {
         return new QuotationItemRow(this.id.hashCode(), {
-            quotation: this.values.quotation.hashCode(),
-            indentItem: this.values.indentItem.hashCode(),
-            quantity: this.values.quantity
+          quotation: this.values.quotation.hashCode(),
+          indentItem: this.values.indentItem.hashCode(),
+          quantity: this.values.quantity 
         })
     }
 }
@@ -2233,7 +2193,7 @@ export class PurchaseOrderVariable {
     readonly typeName = 'PurchaseOrder'
     readonly id: PurchaseOrder
     values: {
-        quotation: Quotation
+        quotation: Quotation 
     }
 
     constructor(id: number, values: { quotation: Quotation }) {
@@ -2258,7 +2218,7 @@ export class PurchaseOrderVariable {
 
     toRow(): PurchaseOrderRow {
         return new PurchaseOrderRow(this.id.hashCode(), {
-            quotation: this.values.quotation.hashCode()
+          quotation: this.values.quotation.hashCode() 
         })
     }
 }
@@ -2287,15 +2247,11 @@ export class PurchaseOrderItemVariable {
     readonly typeName = 'PurchaseOrderItem'
     readonly id: PurchaseOrderItem
     values: {
-        // UNQ(purchaseOrder, quotationItem)
         purchaseOrder: PurchaseOrder
-        // assertion(purchaseOrder.quotation == quotationItem.quotation)
         quotationItem: QuotationItem
-        // assertion(quantity <= quotationItem.quantity && quantity > 0)
-        quantity: Number // { quotationItem.indentItem.ordered += quantity }
+        quantity: Number
         price: Decimal
-        // assertion(received >= 0 && received <= quantity)
-        received: Number
+        received: Number 
     }
 
     constructor(id: number, values: { purchaseOrder: PurchaseOrder, quotationItem: QuotationItem, quantity: Number, price: Decimal, received: Number }) {
@@ -2307,7 +2263,7 @@ export class PurchaseOrderItemVariable {
         if (!other) {
             return false;
         }
-        return this.values.purchaseOrder.equals(other.values.purchaseOrder) && this.values.quotationItem.equals(other.values.quotationItem)
+        return (this.values.purchaseOrder.equals(other.values.purchaseOrder) && this.values.quotationItem.equals(other.values.quotationItem))
     }
 
     hashCode(): number {
@@ -2320,11 +2276,11 @@ export class PurchaseOrderItemVariable {
 
     toRow(): PurchaseOrderItemRow {
         return new PurchaseOrderItemRow(this.id.hashCode(), {
-            purchaseOrder: this.values.purchaseOrder.hashCode(),
-            quotationItem: this.values.quotationItem.hashCode(),
-            quantity: this.values.quantity,
-            price: this.values.price,
-            received: this.values.received
+          purchaseOrder: this.values.purchaseOrder.hashCode(),
+          quotationItem: this.values.quotationItem.hashCode(),
+          quantity: this.values.quantity,
+          price: this.values.price,
+          received: this.values.received 
         })
     }
 }
@@ -2353,7 +2309,7 @@ export class PurchaseInvoiceVariable {
     readonly typeName = 'PurchaseInvoice'
     readonly id: PurchaseInvoice
     values: {
-        purchaseOrder: PurchaseOrder
+        purchaseOrder: PurchaseOrder 
     }
 
     constructor(id: number, values: { purchaseOrder: PurchaseOrder }) {
@@ -2378,7 +2334,7 @@ export class PurchaseInvoiceVariable {
 
     toRow(): PurchaseInvoiceRow {
         return new PurchaseInvoiceRow(this.id.hashCode(), {
-            purchaseOrder: this.values.purchaseOrder.hashCode()
+          purchaseOrder: this.values.purchaseOrder.hashCode() 
         })
     }
 }
@@ -2407,15 +2363,11 @@ export class PurchaseInvoiceItemVariable {
     readonly typeName = 'PurchaseInvoiceItem'
     readonly id: PurchaseInvoiceItem
     values: {
-        // UNQ(purchaseInvoice, purchaseOrderItem)
         purchaseInvoice: PurchaseInvoice
-        // assertion(purchaseInvoice.purchaseOrder == purchaseOrderItem.purchaseOrder)
         purchaseOrderItem: PurchaseOrderItem
-        // assertion(quantity <= purchaseOrderItem.quantity && quantity > 0)
-        quantity: Number // { purchaseOrderItem.received += quantity && purchaseOrderItem.quotationOrderItem.indentOrderItem.received += quantity }
-        // assertion((approved + rejected) <= quantity && approved >= 0 && rejeted >= 0)
+        quantity: Number
         approved: Number
-        rejected: Number
+        rejected: Number 
     }
 
     constructor(id: number, values: { purchaseInvoice: PurchaseInvoice, purchaseOrderItem: PurchaseOrderItem, quantity: Number, approved: Number, rejected: Number }) {
@@ -2427,7 +2379,7 @@ export class PurchaseInvoiceItemVariable {
         if (!other) {
             return false;
         }
-        return this.values.purchaseInvoice.equals(other.values.purchaseInvoice) && this.values.purchaseOrderItem.equals(other.values.purchaseOrderItem)
+        return (this.values.purchaseInvoice.equals(other.values.purchaseInvoice) && this.values.purchaseOrderItem.equals(other.values.purchaseOrderItem))
     }
 
     hashCode(): number {
@@ -2440,11 +2392,11 @@ export class PurchaseInvoiceItemVariable {
 
     toRow(): PurchaseInvoiceItemRow {
         return new PurchaseInvoiceItemRow(this.id.hashCode(), {
-            purchaseInvoice: this.values.purchaseInvoice.hashCode(),
-            purchaseOrderItem: this.values.purchaseOrderItem.hashCode(),
-            quantity: this.values.quantity,
-            approved: this.values.approved,
-            rejected: this.values.approved
+          purchaseInvoice: this.values.purchaseInvoice.hashCode(),
+          purchaseOrderItem: this.values.purchaseOrderItem.hashCode(),
+          quantity: this.values.quantity,
+          approved: this.values.approved,
+          rejected: this.values.rejected 
         })
     }
 }
@@ -2473,7 +2425,7 @@ export class MaterialApprovalSlipVariable {
     readonly typeName = 'MaterialApprovalSlip'
     readonly id: MaterialApprovalSlip
     values: {
-        purchaseInvoice: PurchaseInvoice
+        purchaseInvoice: PurchaseInvoice 
     }
 
     constructor(id: number, values: { purchaseInvoice: PurchaseInvoice }) {
@@ -2498,7 +2450,7 @@ export class MaterialApprovalSlipVariable {
 
     toRow(): MaterialApprovalSlipRow {
         return new MaterialApprovalSlipRow(this.id.hashCode(), {
-            purchaseInvoice: this.values.purchaseInvoice.hashCode()
+          purchaseInvoice: this.values.purchaseInvoice.hashCode() 
         })
     }
 }
@@ -2527,14 +2479,10 @@ export class MaterialApprovalSlipItemVariable {
     readonly typeName = 'MaterialApprovalSlipItem'
     readonly id: MaterialApprovalSlipItem
     values: {
-        // UNQ(materialApprovalSlip, purchaseInvoiceItem)
         materialApprovalSlip: MaterialApprovalSlip
-        // assertion(materialApprovalSlip.purchaseInvoice == purchaseInvoiceItem.purchaseInvoice)
         purchaseInvoiceItem: PurchaseInvoiceItem
-        // assertion(quantity <= purchaseInvoiceItem.quantity && quantity > 0)
-        quantity: Number // { purchaseInvoiceItem.approved += quantity && purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.approved += quantity }
-        // assertion(requisted <= quantity && requisted >= 0)
-        requisted: Number
+        quantity: Number
+        requisted: Number 
     }
 
     constructor(id: number, values: { materialApprovalSlip: MaterialApprovalSlip, purchaseInvoiceItem: PurchaseInvoiceItem, quantity: Number, requisted: Number }) {
@@ -2546,7 +2494,7 @@ export class MaterialApprovalSlipItemVariable {
         if (!other) {
             return false;
         }
-        return this.values.materialApprovalSlip.equals(other.values.materialApprovalSlip) && this.values.purchaseInvoiceItem.equals(other.values.purchaseInvoiceItem)
+        return (this.values.materialApprovalSlip.equals(other.values.materialApprovalSlip) && this.values.purchaseInvoiceItem.equals(other.values.purchaseInvoiceItem))
     }
 
     hashCode(): number {
@@ -2559,10 +2507,10 @@ export class MaterialApprovalSlipItemVariable {
 
     toRow(): MaterialApprovalSlipItemRow {
         return new MaterialApprovalSlipItemRow(this.id.hashCode(), {
-            materialApprovalSlip: this.values.materialApprovalSlip.hashCode(),
-            purchaseInvoiceItem: this.values.purchaseInvoiceItem.hashCode(),
-            quantity: this.values.quantity,
-            requisted: this.values.requisted
+          materialApprovalSlip: this.values.materialApprovalSlip.hashCode(),
+          purchaseInvoiceItem: this.values.purchaseInvoiceItem.hashCode(),
+          quantity: this.values.quantity,
+          requisted: this.values.requisted 
         })
     }
 }
@@ -2591,7 +2539,7 @@ export class MaterialRejectionSlipVariable {
     readonly typeName = 'MaterialRejectionSlip'
     readonly id: MaterialRejectionSlip
     values: {
-        purchaseInvoice: PurchaseInvoice
+        purchaseInvoice: PurchaseInvoice 
     }
 
     constructor(id: number, values: { purchaseInvoice: PurchaseInvoice }) {
@@ -2616,7 +2564,7 @@ export class MaterialRejectionSlipVariable {
 
     toRow(): MaterialRejectionSlipRow {
         return new MaterialRejectionSlipRow(this.id.hashCode(), {
-            purchaseInvoice: this.values.purchaseInvoice.hashCode()
+          purchaseInvoice: this.values.purchaseInvoice.hashCode() 
         })
     }
 }
@@ -2645,14 +2593,10 @@ export class MaterialRejectionSlipItemVariable {
     readonly typeName = 'MaterialRejectionSlipItem'
     readonly id: MaterialRejectionSlipItem
     values: {
-        // UNQ(materialRejectionSlip, purchaseInvoiceItem)
         materialRejectionSlip: MaterialRejectionSlip
-        // assertion(materialRejectionSlip.purchaseInvoice == purchaseInvoiceItem.purchaseInvoice)
         purchaseInvoiceItem: PurchaseInvoiceItem
-        // assertion(quantity <= purchaseInvoiceItem.quantity && quantity > 0)
-        quantity: Number // { purchaseInvoiceItem.rejected += quantity && purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.rejected += quantity  }
-        // assertion(returned <= quantity && returned >= 0)
-        returned: Number
+        quantity: Number
+        returned: Number 
     }
 
     constructor(id: number, values: { materialRejectionSlip: MaterialRejectionSlip, purchaseInvoiceItem: PurchaseInvoiceItem, quantity: Number, returned: Number }) {
@@ -2664,7 +2608,7 @@ export class MaterialRejectionSlipItemVariable {
         if (!other) {
             return false;
         }
-        return this.values.materialRejectionSlip.equals(other.values.materialRejectionSlip) && this.values.purchaseInvoiceItem.equals(other.values.purchaseInvoiceItem)
+        return (this.values.materialRejectionSlip.equals(other.values.materialRejectionSlip) && this.values.purchaseInvoiceItem.equals(other.values.purchaseInvoiceItem))
     }
 
     hashCode(): number {
@@ -2677,10 +2621,10 @@ export class MaterialRejectionSlipItemVariable {
 
     toRow(): MaterialRejectionSlipItemRow {
         return new MaterialRejectionSlipItemRow(this.id.hashCode(), {
-            materialRejectionSlip: this.values.materialRejectionSlip.hashCode(),
-            purchaseInvoiceItem: this.values.purchaseInvoiceItem.hashCode(),
-            quantity: this.values.quantity,
-            returned: this.values.returned
+          materialRejectionSlip: this.values.materialRejectionSlip.hashCode(),
+          purchaseInvoiceItem: this.values.purchaseInvoiceItem.hashCode(),
+          quantity: this.values.quantity,
+          returned: this.values.returned 
         })
     }
 }
@@ -2709,7 +2653,7 @@ export class MaterialReturnSlipVariable {
     readonly typeName = 'MaterialReturnSlip'
     readonly id: MaterialReturnSlip
     values: {
-        materialRejectionSlip: MaterialRejectionSlip
+        materialRejectionSlip: MaterialRejectionSlip 
     }
 
     constructor(id: number, values: { materialRejectionSlip: MaterialRejectionSlip }) {
@@ -2734,7 +2678,7 @@ export class MaterialReturnSlipVariable {
 
     toRow(): MaterialReturnSlipRow {
         return new MaterialReturnSlipRow(this.id.hashCode(), {
-            materialRejectionSlip: this.values.materialRejectionSlip.hashCode()
+          materialRejectionSlip: this.values.materialRejectionSlip.hashCode() 
         })
     }
 }
@@ -2763,12 +2707,9 @@ export class MaterialReturnSlipItemVariable {
     readonly typeName = 'MaterialReturnSlipItem'
     readonly id: MaterialReturnSlipItem
     values: {
-        // UNQ(materialReturnSlip, materialRejectionSlipItem)
         materialReturnSlip: MaterialReturnSlip
-        // assertion(materialReturnSlip.materialRejectionSlip == materialRejectionSlipItem.materialRejectionSlip)
         materialRejectionSlipItem: MaterialRejectionSlipItem
-        // assertion(quantity <= materialRejectionSlipItem.quantity && quantity > 0)
-        quantity: Number // { materialRejectionSlipItem.returned += quantity && materialRejectionSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.returned += quantity }
+        quantity: Number 
     }
 
     constructor(id: number, values: { materialReturnSlip: MaterialReturnSlip, materialRejectionSlipItem: MaterialRejectionSlipItem, quantity: Number }) {
@@ -2780,7 +2721,7 @@ export class MaterialReturnSlipItemVariable {
         if (!other) {
             return false;
         }
-        return this.values.materialReturnSlip.equals(other.values.materialReturnSlip) && this.values.materialRejectionSlipItem.equals(other.values.materialRejectionSlipItem)
+        return (this.values.materialReturnSlip.equals(other.values.materialReturnSlip) && this.values.materialRejectionSlipItem.equals(other.values.materialRejectionSlipItem))
     }
 
     hashCode(): number {
@@ -2793,9 +2734,9 @@ export class MaterialReturnSlipItemVariable {
 
     toRow(): MaterialReturnSlipItemRow {
         return new MaterialReturnSlipItemRow(this.id.hashCode(), {
-            materialReturnSlip: this.values.materialReturnSlip.hashCode(),
-            materialRejectionSlipItem: this.values.materialRejectionSlipItem.hashCode(),
-            quantity: this.values.quantity
+          materialReturnSlip: this.values.materialReturnSlip.hashCode(),
+          materialRejectionSlipItem: this.values.materialRejectionSlipItem.hashCode(),
+          quantity: this.values.quantity 
         })
     }
 }
@@ -2824,7 +2765,7 @@ export class MaterialRequistionSlipVariable {
     readonly typeName = 'MaterialRequistionSlip'
     readonly id: MaterialRequistionSlip
     values: {
-        materialApprovalSlip: MaterialApprovalSlip
+        materialApprovalSlip: MaterialApprovalSlip 
     }
 
     constructor(id: number, values: { materialApprovalSlip: MaterialApprovalSlip }) {
@@ -2849,7 +2790,7 @@ export class MaterialRequistionSlipVariable {
 
     toRow(): MaterialRequistionSlipRow {
         return new MaterialRequistionSlipRow(this.id.hashCode(), {
-            materialApprovalSlip: this.values.materialApprovalSlip.hashCode()
+          materialApprovalSlip: this.values.materialApprovalSlip.hashCode() 
         })
     }
 }
@@ -2878,14 +2819,10 @@ export class MaterialRequistionSlipItemVariable {
     readonly typeName = 'MaterialRequistionSlipItem'
     readonly id: MaterialRequistionSlipItem
     values: {
-        // UNQ(materialRequistionSlip, materialApprovalSlipItem)
         materialRequistionSlip: MaterialRequistionSlip
-        // assertion(materialRequistionSlip.materialApprovalSlip == materialApprovalSlipItem.materialApprovalSlip)
         materialApprovalSlipItem: MaterialApprovalSlipItem
-        // assertion(quantity <= materialApprovalSlipItem.quantity && quantity > 0)
-        quantity: Number // { materialApprovalSlipItem.requisted += quantity && materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.requisted += quantity }
-        // assertion(consumed <= quantity && consumed >= 0)
-        consumed: Number
+        quantity: Number
+        consumed: Number 
     }
 
     constructor(id: number, values: { materialRequistionSlip: MaterialRequistionSlip, materialApprovalSlipItem: MaterialApprovalSlipItem, quantity: Number, consumed: Number }) {
@@ -2897,7 +2834,7 @@ export class MaterialRequistionSlipItemVariable {
         if (!other) {
             return false;
         }
-        return this.values.materialRequistionSlip.equals(other.values.materialRequistionSlip) && this.values.materialApprovalSlipItem.equals(other.values.materialApprovalSlipItem)
+        return (this.values.materialRequistionSlip.equals(other.values.materialRequistionSlip) && this.values.materialApprovalSlipItem.equals(other.values.materialApprovalSlipItem))
     }
 
     hashCode(): number {
@@ -2910,10 +2847,10 @@ export class MaterialRequistionSlipItemVariable {
 
     toRow(): MaterialRequistionSlipItemRow {
         return new MaterialRequistionSlipItemRow(this.id.hashCode(), {
-            materialRequistionSlip: this.values.materialRequistionSlip.hashCode(),
-            materialApprovalSlipItem: this.values.materialApprovalSlipItem.hashCode(),
-            quantity: this.values.quantity,
-            consumed: this.values.consumed
+          materialRequistionSlip: this.values.materialRequistionSlip.hashCode(),
+          materialApprovalSlipItem: this.values.materialApprovalSlipItem.hashCode(),
+          quantity: this.values.quantity,
+          consumed: this.values.consumed 
         })
     }
 }
@@ -2942,7 +2879,7 @@ export class BOMVariable {
     readonly typeName = 'BOM'
     readonly id: BOM
     values: {
-        name: Text
+        name: Text 
     }
 
     constructor(id: number, values: { name: Text }) {
@@ -2954,7 +2891,7 @@ export class BOMVariable {
         if (!other) {
             return false;
         }
-        return this.id.equals(other.id)
+        return (this.values.name === other.values.name)
     }
 
     hashCode(): number {
@@ -2966,7 +2903,9 @@ export class BOMVariable {
     }
 
     toRow(): BOMRow {
-        return new BOMRow(this.id.hashCode(), this.values)
+        return new BOMRow(this.id.hashCode(), {
+          name: this.values.name 
+        })
     }
 }
 
@@ -2994,13 +2933,10 @@ export class BOMItemVariable {
     readonly typeName = 'BOMItem'
     readonly id: BOMItem
     values: {
-        // UNQ(bom, product)
         bom: BOM
-        // assertion(product.consumable == true)
         product: Product
-        // assertion(quantity > 0 && uom.product == product)
         quantity: Number
-        uom: UOM
+        uom: UOM 
     }
 
     constructor(id: number, values: { bom: BOM, product: Product, quantity: Number, uom: UOM }) {
@@ -3012,7 +2948,7 @@ export class BOMItemVariable {
         if (!other) {
             return false;
         }
-        return this.values.bom.equals(other.values.bom) && this.values.product.equals(other.values.product)
+        return (this.values.bom.equals(other.values.bom) && this.values.product.equals(other.values.product))
     }
 
     hashCode(): number {
@@ -3025,10 +2961,10 @@ export class BOMItemVariable {
 
     toRow(): BOMItemRow {
         return new BOMItemRow(this.id.hashCode(), {
-            bom: this.values.bom.hashCode(),
-            product: this.values.product.hashCode(),
-            quantity: this.values.quantity,
-            uom: this.values.uom.hashCode()
+          bom: this.values.bom.hashCode(),
+          product: this.values.product.hashCode(),
+          quantity: this.values.quantity,
+          uom: this.values.uom.hashCode() 
         })
     }
 }
@@ -3058,9 +2994,8 @@ export class ProductionPreparationSlipVariable {
     readonly id: ProductionPreparationSlip
     values: {
         bom: BOM
-        // assertion((approved + scrapped) <= quantity && approved >= 0 && scrapped >= 0)
         approved: Number
-        scrapped: Number
+        scrapped: Number 
     }
 
     constructor(id: number, values: { bom: BOM, approved: Number, scrapped: Number }) {
@@ -3085,9 +3020,9 @@ export class ProductionPreparationSlipVariable {
 
     toRow(): ProductionPreparationSlipRow {
         return new ProductionPreparationSlipRow(this.id.hashCode(), {
-            bom: this.values.bom.hashCode(),
-            approved: this.values.approved,
-            scrapped: this.values.scrapped
+          bom: this.values.bom.hashCode(),
+          approved: this.values.approved,
+          scrapped: this.values.scrapped 
         })
     }
 }
@@ -3116,16 +3051,12 @@ export class ProductionPreparationSlipItemVariable {
     readonly typeName = 'ProductionPreparationSlipItem'
     readonly id: ProductionPreparationSlipItem
     values: {
-        // UNQ(productionPreparationSlip, bomItem)
         productionPreparationSlip: ProductionPreparationSlip
-        bomItem: string
-        // assertion(bomItem.product == materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.product)
-        materialRequistionSlipItem: MaterialRequistionSlipItem
-        // { materialRequistionSlipItem.consumed += bomItem.quantity * materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.uom.conversionRate / bomItem.product.uom.conversionRate }
-        // { materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.consumed += bomItem.quantity * materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.uom.conversionRate / bomItem.product.uom.conversionRate }
+        bomItem: Text
+        materialRequistionSlipItem: MaterialRequistionSlipItem 
     }
 
-    constructor(id: number, values: { productionPreparationSlip: ProductionPreparationSlip, bomItem: string, materialRequistionSlipItem: MaterialRequistionSlipItem }) {
+    constructor(id: number, values: { productionPreparationSlip: ProductionPreparationSlip, bomItem: Text, materialRequistionSlipItem: MaterialRequistionSlipItem }) {
         this.id = new ProductionPreparationSlipItem(id)
         this.values = values
     }
@@ -3134,7 +3065,7 @@ export class ProductionPreparationSlipItemVariable {
         if (!other) {
             return false;
         }
-        return this.values.productionPreparationSlip.equals(other.values.productionPreparationSlip) && this.values.bomItem === other.values.bomItem
+        return (this.values.productionPreparationSlip.equals(other.values.productionPreparationSlip) && this.values.bomItem === other.values.bomItem)
     }
 
     hashCode(): number {
@@ -3147,9 +3078,9 @@ export class ProductionPreparationSlipItemVariable {
 
     toRow(): ProductionPreparationSlipItemRow {
         return new ProductionPreparationSlipItemRow(this.id.hashCode(), {
-            productionPreparationSlip: this.values.productionPreparationSlip.hashCode(),
-            bomItem: this.values.bomItem,
-            materialRequistionSlipItem: this.values.materialRequistionSlipItem.hashCode()
+          productionPreparationSlip: this.values.productionPreparationSlip.hashCode(),
+          bomItem: this.values.bomItem,
+          materialRequistionSlipItem: this.values.materialRequistionSlipItem.hashCode() 
         })
     }
 }
@@ -3179,8 +3110,7 @@ export class ScrapMaterialSlipVariable {
     readonly id: ScrapMaterialSlip
     values: {
         productionPreparationSlip: ProductionPreparationSlip
-        // assertion(quantity <= productionPreparationSlip.bom.quantity && quantity > 0)
-        quantity: Number // { productionPreparationSlip.scrapped += quantity }
+        quantity: Number 
     }
 
     constructor(id: number, values: { productionPreparationSlip: ProductionPreparationSlip, quantity: Number }) {
@@ -3205,8 +3135,8 @@ export class ScrapMaterialSlipVariable {
 
     toRow(): ScrapMaterialSlipRow {
         return new ScrapMaterialSlipRow(this.id.hashCode(), {
-            productionPreparationSlip: this.values.productionPreparationSlip.hashCode(),
-            quantity: this.values.quantity
+          productionPreparationSlip: this.values.productionPreparationSlip.hashCode(),
+          quantity: this.values.quantity 
         })
     }
 }
@@ -3236,10 +3166,8 @@ export class TransferMaterialSlipVariable {
     readonly id: TransferMaterialSlip
     values: {
         productionPreparationSlip: ProductionPreparationSlip
-        // assertion(quantity <= productionPreparationSlip.bom.quantity && quantity > 0)
-        quantity: Number // { productionPreparationSlip.approved += quantity }
-        // assertion(transfered <= quantity && transfered >= 0)
-        transferred: Number
+        quantity: Number
+        transferred: Number 
     }
 
     constructor(id: number, values: { productionPreparationSlip: ProductionPreparationSlip, quantity: Number, transferred: Number }) {
@@ -3264,9 +3192,9 @@ export class TransferMaterialSlipVariable {
 
     toRow(): TransferMaterialSlipRow {
         return new TransferMaterialSlipRow(this.id.hashCode(), {
-            productionPreparationSlip: this.values.productionPreparationSlip.hashCode(),
-            quantity: this.values.quantity,
-            transferred: this.values.transferred
+          productionPreparationSlip: this.values.productionPreparationSlip.hashCode(),
+          quantity: this.values.quantity,
+          transferred: this.values.transferred 
         })
     }
 }
@@ -3296,8 +3224,7 @@ export class WarehouseAcceptanceSlipVariable {
     readonly id: WarehouseAcceptanceSlip
     values: {
         transferMaterialSlip: TransferMaterialSlip
-        // assertion(quantity <= transferMaterialSlip.quantity && quantity > 0)
-        quantity: Number // { transferMaterialSlip.transfered += quantity }
+        quantity: Number 
     }
 
     constructor(id: number, values: { transferMaterialSlip: TransferMaterialSlip, quantity: Number }) {
@@ -3322,396 +3249,391 @@ export class WarehouseAcceptanceSlipVariable {
 
     toRow(): WarehouseAcceptanceSlipRow {
         return new WarehouseAcceptanceSlipRow(this.id.hashCode(), {
-            transferMaterialSlip: this.values.transferMaterialSlip.hashCode(),
-            quantity: this.values.quantity
+          transferMaterialSlip: this.values.transferMaterialSlip.hashCode(),
+          quantity: this.values.quantity 
         })
     }
 }
-
-export function replaceVariable(typeName: NonPrimitiveType, id: number, values: object) {
-    switch (typeName) {
-        case 'Region': {
-            return new RegionVariable(id, {
-                name: String(values['name'])
-            })
-        }
-        case 'Country': {
-            return new CountryVariable(id, {
-                region: new Region(values['region']),
-                name: String(values['name'])
-            })
-        }
-        case 'State': {
-            return new StateVariable(id, {
-                country: new Country(values['country']),
-                name: String(values['name'])
-            })
-        }
-        case 'District': {
-            return new DistrictVariable(id, {
-                state: new State(values['state']),
-                name: String(values['name'])
-            })
-        }
-        case 'Subdistrict': {
-            return new SubdistrictVariable(id, {
-                district: new District(values['district']),
-                name: String(values['name'])
-            })
-        }
-        case 'PostalCode': {
-            return new PostalCodeVariable(id, {
-                subdistrict: new Subdistrict(values['subdistrict']),
-                name: String(values['name'])
-            })
-        }
-        case 'Address': {
-            return new AddressVariable(id, {
-                postalCode: new PostalCode(values['postalCode']),
-                line1: String(values['line1']),
-                line2: String(values['line2']),
-                latitude: parseFloat(String(values['latitude'])),
-                longitude: parseFloat(String(values['longitude']))
-            })
-        }
-        case 'Company': {
-            return new CompanyVariable(id, {
-                name: String(values['name']),
-                email: String(values['email']),
-                telephone: String(values['telephone']),
-                mobile: String(values['mobile']),
-                website: String(values['website']),
-                gstin: String(values['gstin']),
-                pan: String(values['pan']),
-                iec: String(values['iec'])
-            })
-        }
-        case 'CompanyAddress': {
-            return new CompanyAddressVariable(id, {
-                company: new Company(values['company']),
-                name: String(values['name']),
-                address: new Address(values['address'])
-            })
-        }
-        case 'CompanyTagGroup': {
-            return new CompanyTagGroupVariable(id, {
-                name: String(values['name'])
-            })
-        }
-        case 'CompanyTag': {
-            return new CompanyTagVariable(id, {
-                group: new CompanyTagGroup(values['group']),
-                name: String(values['name'])
-            })
-        }
-        case 'MappingCompanyTag': {
-            return new MappingCompanyTagVariable(id, {
-                company: new Company(values['company']),
-                tag: new CompanyTag(values['tag'])
-            })
-        }
-        case 'Contact': {
-            return new ContactVariable(id, {
-                name: String(values['name']),
-                email: String(values['email']),
-                telephone: String(values['telephone']),
-                mobile: String(values['mobile']),
-                website: String(values['website'])
-            })
-        }
-        case 'ContactAddress': {
-            return new ContactAddressVariable(id, {
-                contact: new Contact(values['contact']),
-                name: String(values['name']),
-                address: new Address(values['address'])
-            })
-        }
-        case 'CompanyContact': {
-            return new CompanyContactVariable(id, {
-                company: new Company(values['company']),
-                contact: new Contact(values['contact']),
-                role: String(values['role']),
-                email: String(values['email']),
-                telephone: String(values['telephone']),
-                mobile: String(values['mobile'])
-            })
-        }
-        case 'Currency': {
-            return new CurrencyVariable(id, {
-                name: String(values['name'])
-            })
-        }
-        case 'CurrencyRate': {
-            return new CurrencyRateVariable(id, {
-                currency: new Currency(values['currency']),
-                conversionRate: parseFloat(String(values['conversionRate'])),
-                startTime: parseInt(String(values['startTime'])),
-                endTime: parseInt(String(values['endTime']))
-            })
-        }
-        case 'Memo': {
-            return new MemoVariable(id, {
-                company: new Company(values['company']),
-                currency: new Currency(values['currency']),
-                amount: parseFloat(String(values['amount'])),
-                unsettled: parseFloat(String(values['unsettled']))
-            })
-        }
-        case 'Bank': {
-            return new BankVariable(id, {
-                country: new Country(values['country']),
-                name: String(values['name']),
-                website: String(values['website'])
-            })
-        }
-        case 'BankBranch': {
-            return new BankBranchVariable(id, {
-                bank: new Bank(values['bank']),
-                name: String(values['name']),
-                ifsc: String(values['ifsc']),
-                address: new Address(values['address'])
-            })
-        }
-        case 'BankAccount': {
-            return new BankAccountVariable(id, {
-                bank: new Bank(values['bank']),
-                bankBranch: new BankBranch(values['bankBranch']),
-                accountNumber: String(values['accountNumber']),
-                accountName: String(values['accountName']),
-                currency: new Currency(values['currency'])
-            })
-        }
-        case 'BankTransaction': {
-            return new BankTransactionVariable(id, {
-                timestamp: parseInt(String(values['timestamp'])),
-                memo: new Memo(values['memo']),
-                currencyRate: new CurrencyRate(values['currencyRate']),
-                bankAccount: new BankAccount(values['bankAccount']),
-                fromToAccount: new BankAccount(values['fromToAccount']),
-                credit: parseFloat(String(values['credit'])),
-                debit: parseFloat(String(values['debit']))
-            })
-        }
-        case 'CompanyBankAccount': {
-            return new CompanyBankAccountVariable(id, {
-                company: new Company(values['company']),
-                bankAccount: new BankAccount(values['bankAccount'])
-            })
-        }
-        case 'ProductCategoryGroup': {
-            return new ProductCategoryGroupVariable(id, {
-                parent: new ProductCategoryGroup(values['parent']),
-                name: String(values['name']),
-                length: parseInt(String(values['length']))
-            })
-        }
-        case 'ProductCategory': {
-            return new ProductCategoryVariable(id, {
-                parent: new ProductCategory(values['parent']),
-                group: new ProductCategoryGroup(values['group']),
-                name: String(values['name']),
-                code: String(values['code']),
-                derivedCode: String(values['derivedCode']),
-                childCount: parseInt(String(values['childCount']))
-            })
-        }
-        case 'Product': {
-            return new ProductVariable(id, {
-                name: String(values['name']),
-                category: new ProductCategory(values['category']),
-                code: String(values['code']),
-                sku: String(values['sku'])
-            })
-        }
-        case 'ProductTagGroup': {
-            return new ProductTagGroupVariable(id, {
-                name: String(values['name'])
-            })
-        }
-        case 'ProductTag': {
-            return new ProductTagVariable(id, {
-                group: new ProductTagGroup(values['group']),
-                name: String(values['name'])
-            })
-        }
-        case 'MappingProductTag': {
-            return new MappingProductTagVariable(id, {
-                product: new Product(values['product']),
-                tag: new ProductTag(values['tag'])
-            })
-        }
-        case 'UOM': {
-            return new UOMVariable(id, {
-                product: new Product(values['product']),
-                name: String(values['name']),
-                conversionRate: parseFloat(String(values['conversionRate']))
-            })
-        }
-        case 'Indent': {
-            return new IndentVariable(id, {})
-        }
-        case 'IndentItem': {
-            return new IndentItemVariable(id, {
-                indent: new Indent(values['indent']),
-                product: new Product(values['product']),
-                quantity: parseInt(String(values['quantity'])),
-                uom: new UOM(values['uom']),
-                ordered: parseInt(String(values['ordered'])),
-                received: parseInt(String(values['received'])),
-                approved: parseInt(String(values['approved'])),
-                rejected: parseInt(String(values['rejected'])),
-                returned: parseInt(String(values['returned'])),
-                requisted: parseInt(String(values['requisted'])),
-                consumed: parseInt(String(values['consumed']))
-            })
-        }
-        case 'CompanyProduct': {
-            return new CompanyProductVariable(id, {
-                company: new Company(values['company']),
-                product: new Product(values['product'])
-            })
-        }
-        case 'Quotation': {
-            return new QuotationVariable(id, {
-                indent: new Indent(values['indent']),
-                company: new Company(values['company'])
-            })
-        }
-        case 'QuotationItem': {
-            return new QuotationItemVariable(id, {
-                quotation: new Quotation(values['quotation']),
-                indentItem: new IndentItem(values['indentItem']),
-                quantity: parseInt(String(values['quantity']))
-            })
-        }
-        case 'PurchaseOrder': {
-            return new PurchaseOrderVariable(id, {
-                quotation: new Quotation(values['quotation'])
-            })
-        }
-        case 'PurchaseOrderItem': {
-            return new PurchaseOrderItemVariable(id, {
-                purchaseOrder: new PurchaseOrder(values['purchaseOrder']),
-                quotationItem: new QuotationItem(values['quotationItem']),
-                quantity: parseInt(String(values['quantity'])),
-                price: parseFloat(String(values['price'])),
-                received: parseInt(String(values['received']))
-            })
-        }
-        case 'PurchaseInvoice': {
-            return new PurchaseInvoiceVariable(id, {
-                purchaseOrder: new PurchaseOrder(values['purchaseOrder'])
-            })
-        }
-        case 'PurchaseInvoiceItem': {
-            return new PurchaseInvoiceItemVariable(id, {
-                purchaseInvoice: new PurchaseInvoice(values['purchaseInvoice']),
-                purchaseOrderItem: new PurchaseOrderItem(values['purchaseOrderItem']),
-                quantity: parseInt(String(values['quantity'])),
-                approved: parseInt(String(values['approved'])),
-                rejected: parseInt(String(values['rejected']))
-            })
-        }
-        case 'MaterialApprovalSlip': {
-            return new MaterialApprovalSlipVariable(id, {
-                purchaseInvoice: new PurchaseInvoice(values['purchaseInvoice'])
-            })
-        }
-        case 'MaterialApprovalSlipItem': {
-            return new MaterialApprovalSlipItemVariable(id, {
-                materialApprovalSlip: new MaterialApprovalSlip(values['materialApprovalSlip']),
-                purchaseInvoiceItem: new PurchaseInvoiceItem(values['purchaseInvoiceItem']),
-                quantity: parseInt(String(values['quantity'])),
-                requisted: parseInt(String(values['requisted']))
-            })
-        }
-        case 'MaterialRejectionSlip': {
-            return new MaterialRejectionSlipVariable(id, {
-                purchaseInvoice: new PurchaseInvoice(values['purchaseInvoice'])
-            })
-        }
-        case 'MaterialRejectionSlipItem': {
-            return new MaterialRejectionSlipItemVariable(id, {
-                materialRejectionSlip: new MaterialRejectionSlip(values['materialRejectionSlip']),
-                purchaseInvoiceItem: new PurchaseInvoiceItem(values['purchaseInvoiceItem']),
-                quantity: parseInt(String(values['quantity'])),
-                returned: parseInt(String(values['returned']))
-            })
-        }
-        case 'MaterialReturnSlip': {
-            return new MaterialReturnSlipVariable(id, {
-                materialRejectionSlip: new MaterialRejectionSlip(values['materialRejectionSlip'])
-            })
-        }
-        case 'MaterialReturnSlipItem': {
-            return new MaterialReturnSlipItemVariable(id, {
-                materialReturnSlip: new MaterialReturnSlip(values['materialReturnSlip']),
-                materialRejectionSlipItem: new MaterialRejectionSlipItem(values['materialRejectionSlipItem']),
-                quantity: parseInt(String(values['quantity']))
-            })
-        }
-        case 'MaterialRequistionSlip': {
-            return new MaterialRequistionSlipVariable(id, {
-                materialApprovalSlip: new MaterialApprovalSlip(values['materialApprovalSlip'])
-            })
-        }
-        case 'MaterialRequistionSlipItem': {
-            return new MaterialRequistionSlipItemVariable(id, {
-                materialRequistionSlip: new MaterialRequistionSlip(values['materialRequistionSlip']),
-                materialApprovalSlipItem: new MaterialApprovalSlipItem(values['materialApprovalSlipItem']),
-                quantity: parseInt(String(values['quantity'])),
-                consumed: parseInt(String(values['consumed']))
-            })
-        }
-        case 'BOM': {
-            return new BOMVariable(id, {
-                name: String(values['name'])
-            })
-        }
-        case 'BOMItem': {
-            return new BOMItemVariable(id, {
-                bom: new BOM(values['bom']),
-                product: new Product(values['product']),
-                quantity: parseInt(String(values['quantity'])),
-                uom: new UOM(values['uom'])
-            })
-        }
-        case 'ProductionPreparationSlip': {
-            return new ProductionPreparationSlipVariable(id, {
-                bom: new BOM(values['bom']),
-                approved: parseInt(String(values['approved'])),
-                scrapped: parseInt(String(values['scrapped']))
-            })
-        }
-        case 'ProductionPreparationSlipItem': {
-            return new ProductionPreparationSlipItemVariable(id, {
-                productionPreparationSlip: new ProductionPreparationSlip(values['productionPreparationSlip']),
-                bomItem: String(values['bomItem']),
-                materialRequistionSlipItem: new MaterialRequistionSlipItem(values['materialRequistionSlipItem'])
-            })
-        }
-        case 'ScrapMaterialSlip': {
-            return new ScrapMaterialSlipVariable(id, {
-                productionPreparationSlip: new ProductionPreparationSlip(values['productionPreparationSlip']),
-                quantity: parseInt(String(values['quantity']))
-            })
-        }
-        case 'TransferMaterialSlip': {
-            return new TransferMaterialSlipVariable(id, {
-                productionPreparationSlip: new ProductionPreparationSlip(values['productionPreparationSlip']),
-                quantity: parseInt(String(values['quantity'])),
-                transferred: parseInt(String(values['quatransferedntity']))
-            })
-        }
-        case 'WarehouseAcceptanceSlip': {
-            return new WarehouseAcceptanceSlipVariable(id, {
-                transferMaterialSlip: new TransferMaterialSlip(values['transferMaterialSlip']),
-                quantity: parseInt(String(values['quantity']))
-            })
-        }
-        default: {
-            const _exhaustiveCheck: never = typeName
-            return _exhaustiveCheck
-        }
-    }
+        export function replaceVariable(typeName: NonPrimitiveType, id: number, values: object) {
+            switch (typeName) {
+                case 'Region': {
+    return new RegionVariable(id, {
+          name:  String(values['name'])
+    })
 }
+case 'Country': {
+    return new CountryVariable(id, {
+          region: new Region(parseInt(String(values['region']))),
+          name:  String(values['name'])
+    })
+}
+case 'StateType': {
+    return new StateTypeVariable(id, {
+          country: new Country(parseInt(String(values['country']))),
+          name:  String(values['name'])
+    })
+}
+case 'District': {
+    return new DistrictVariable(id, {
+          state: new StateType(parseInt(String(values['state']))),
+          name:  String(values['name'])
+    })
+}
+case 'Subdistrict': {
+    return new SubdistrictVariable(id, {
+          district: new District(parseInt(String(values['district']))),
+          name:  String(values['name'])
+    })
+}
+case 'PostalCode': {
+    return new PostalCodeVariable(id, {
+          subdistrict: new Subdistrict(parseInt(String(values['subdistrict']))),
+          name:  String(values['name'])
+    })
+}
+case 'Address': {
+    return new AddressVariable(id, {
+          postalCode: new PostalCode(parseInt(String(values['postalCode']))),
+          line1:  String(values['line1']),
+          line2:  String(values['line2']),
+          latitude:  parseInt(String(values['latitude'])),
+          longitude:  parseInt(String(values['longitude']))
+    })
+}
+case 'Company': {
+    return new CompanyVariable(id, {
+          name:  String(values['name']),
+          email:  String(values['email']),
+          telephone:  String(values['telephone']),
+          mobile:  String(values['mobile']),
+          website:  String(values['website']),
+          gstin:  String(values['gstin']),
+          pan:  String(values['pan']),
+          iec:  String(values['iec'])
+    })
+}
+case 'CompanyAddress': {
+    return new CompanyAddressVariable(id, {
+          company: new Company(parseInt(String(values['company']))),
+          name:  String(values['name']),
+          address: new Address(parseInt(String(values['address'])))
+    })
+}
+case 'CompanyTagGroup': {
+    return new CompanyTagGroupVariable(id, {
+          name:  String(values['name'])
+    })
+}
+case 'CompanyTag': {
+    return new CompanyTagVariable(id, {
+          group: new CompanyTagGroup(parseInt(String(values['group']))),
+          name:  String(values['name'])
+    })
+}
+case 'MappingCompanyTag': {
+    return new MappingCompanyTagVariable(id, {
+          company: new Company(parseInt(String(values['company']))),
+          tag: new CompanyTag(parseInt(String(values['tag'])))
+    })
+}
+case 'Contact': {
+    return new ContactVariable(id, {
+          name:  String(values['name']),
+          email:  String(values['email']),
+          telephone:  String(values['telephone']),
+          mobile:  String(values['mobile']),
+          website:  String(values['website'])
+    })
+}
+case 'ContactAddress': {
+    return new ContactAddressVariable(id, {
+          contact: new Contact(parseInt(String(values['contact']))),
+          name:  String(values['name']),
+          address: new Address(parseInt(String(values['address'])))
+    })
+}
+case 'CompanyContact': {
+    return new CompanyContactVariable(id, {
+          company: new Company(parseInt(String(values['company']))),
+          contact: new Contact(parseInt(String(values['contact']))),
+          role:  String(values['role']),
+          email:  String(values['email']),
+          telephone:  String(values['telephone']),
+          mobile:  String(values['mobile'])
+    })
+}
+case 'Currency': {
+    return new CurrencyVariable(id, {
+          name:  String(values['name'])
+    })
+}
+case 'CurrencyRate': {
+    return new CurrencyRateVariable(id, {
+          currency: new Currency(parseInt(String(values['currency']))),
+          conversionRate:  parseFloat(String(values['conversionRate'])),
+          startTime:  parseInt(String(values['startTime'])),
+          endTime:  parseInt(String(values['endTime']))
+    })
+}
+case 'Memo': {
+    return new MemoVariable(id, {
+          company: new Company(parseInt(String(values['company']))),
+          currency: new Currency(parseInt(String(values['currency']))),
+          amount:  parseFloat(String(values['amount'])),
+          unsettled:  parseFloat(String(values['unsettled']))
+    })
+}
+case 'Bank': {
+    return new BankVariable(id, {
+          country: new Country(parseInt(String(values['country']))),
+          name:  String(values['name']),
+          website:  String(values['website'])
+    })
+}
+case 'BankBranch': {
+    return new BankBranchVariable(id, {
+          bank: new Bank(parseInt(String(values['bank']))),
+          name:  String(values['name']),
+          ifsc:  String(values['ifsc']),
+          address: new Address(parseInt(String(values['address'])))
+    })
+}
+case 'BankAccount': {
+    return new BankAccountVariable(id, {
+          bank: new Bank(parseInt(String(values['bank']))),
+          bankBranch: new BankBranch(parseInt(String(values['bankBranch']))),
+          accountNumber:  String(values['accountNumber']),
+          accountName:  String(values['accountName']),
+          currency: new Currency(parseInt(String(values['currency'])))
+    })
+}
+case 'BankTransaction': {
+    return new BankTransactionVariable(id, {
+          timestamp:  parseInt(String(values['timestamp'])),
+          memo: new Memo(parseInt(String(values['memo']))),
+          currencyRate: new CurrencyRate(parseInt(String(values['currencyRate']))),
+          bankAccount: new BankAccount(parseInt(String(values['bankAccount']))),
+          fromToAccount: new BankAccount(parseInt(String(values['fromToAccount']))),
+          credit:  parseFloat(String(values['credit'])),
+          debit:  parseFloat(String(values['debit']))
+    })
+}
+case 'CompanyBankAccount': {
+    return new CompanyBankAccountVariable(id, {
+          company: new Company(parseInt(String(values['company']))),
+          bankAccount: new BankAccount(parseInt(String(values['bankAccount'])))
+    })
+}
+case 'ProductCategoryGroup': {
+    return new ProductCategoryGroupVariable(id, {
+          parent: new ProductCategoryGroup(parseInt(String(values['parent']))),
+          name:  String(values['name']),
+          length:  parseInt(String(values['length']))
+    })
+}
+case 'ProductCategory': {
+    return new ProductCategoryVariable(id, {
+          parent: new ProductCategory(parseInt(String(values['parent']))),
+          group: new ProductCategoryGroup(parseInt(String(values['group']))),
+          name:  String(values['name']),
+          code:  String(values['code']),
+          derivedCode:  String(values['derivedCode']),
+          childCount:  parseInt(String(values['childCount']))
+    })
+}
+case 'Product': {
+    return new ProductVariable(id, {
+          name:  String(values['name']),
+          category: new ProductCategory(parseInt(String(values['category']))),
+          code:  String(values['code']),
+          sku:  String(values['sku'])
+    })
+}
+case 'CompanyProduct': {
+    return new CompanyProductVariable(id, {
+          company: new Company(parseInt(String(values['company']))),
+          product: new Product(parseInt(String(values['product'])))
+    })
+}
+case 'ProductTagGroup': {
+    return new ProductTagGroupVariable(id, {
+          name:  String(values['name'])
+    })
+}
+case 'ProductTag': {
+    return new ProductTagVariable(id, {
+          group: new ProductTagGroup(parseInt(String(values['group']))),
+          name:  String(values['name'])
+    })
+}
+case 'MappingProductTag': {
+    return new MappingProductTagVariable(id, {
+          product: new Product(parseInt(String(values['product']))),
+          tag: new ProductTag(parseInt(String(values['tag'])))
+    })
+}
+case 'UOM': {
+    return new UOMVariable(id, {
+          product: new Product(parseInt(String(values['product']))),
+          name:  String(values['name']),
+          conversionRate:  parseFloat(String(values['conversionRate']))
+    })
+}
+case 'Indent': {
+    return new IndentVariable(id, {})
+}
+case 'IndentItem': {
+    return new IndentItemVariable(id, {
+          indent: new Indent(parseInt(String(values['indent']))),
+          product: new Product(parseInt(String(values['product']))),
+          quantity:  parseInt(String(values['quantity'])),
+          uom: new UOM(parseInt(String(values['uom']))),
+          ordered:  parseInt(String(values['ordered'])),
+          received:  parseInt(String(values['received'])),
+          approved:  parseInt(String(values['approved'])),
+          rejected:  parseInt(String(values['rejected'])),
+          returned:  parseInt(String(values['returned'])),
+          requisted:  parseInt(String(values['requisted'])),
+          consumed:  parseInt(String(values['consumed']))
+    })
+}
+case 'Quotation': {
+    return new QuotationVariable(id, {
+          indent: new Indent(parseInt(String(values['indent']))),
+          company: new Company(parseInt(String(values['company'])))
+    })
+}
+case 'QuotationItem': {
+    return new QuotationItemVariable(id, {
+          quotation: new Quotation(parseInt(String(values['quotation']))),
+          indentItem: new IndentItem(parseInt(String(values['indentItem']))),
+          quantity:  parseInt(String(values['quantity']))
+    })
+}
+case 'PurchaseOrder': {
+    return new PurchaseOrderVariable(id, {
+          quotation: new Quotation(parseInt(String(values['quotation'])))
+    })
+}
+case 'PurchaseOrderItem': {
+    return new PurchaseOrderItemVariable(id, {
+          purchaseOrder: new PurchaseOrder(parseInt(String(values['purchaseOrder']))),
+          quotationItem: new QuotationItem(parseInt(String(values['quotationItem']))),
+          quantity:  parseInt(String(values['quantity'])),
+          price:  parseFloat(String(values['price'])),
+          received:  parseInt(String(values['received']))
+    })
+}
+case 'PurchaseInvoice': {
+    return new PurchaseInvoiceVariable(id, {
+          purchaseOrder: new PurchaseOrder(parseInt(String(values['purchaseOrder'])))
+    })
+}
+case 'PurchaseInvoiceItem': {
+    return new PurchaseInvoiceItemVariable(id, {
+          purchaseInvoice: new PurchaseInvoice(parseInt(String(values['purchaseInvoice']))),
+          purchaseOrderItem: new PurchaseOrderItem(parseInt(String(values['purchaseOrderItem']))),
+          quantity:  parseInt(String(values['quantity'])),
+          approved:  parseInt(String(values['approved'])),
+          rejected:  parseInt(String(values['rejected']))
+    })
+}
+case 'MaterialApprovalSlip': {
+    return new MaterialApprovalSlipVariable(id, {
+          purchaseInvoice: new PurchaseInvoice(parseInt(String(values['purchaseInvoice'])))
+    })
+}
+case 'MaterialApprovalSlipItem': {
+    return new MaterialApprovalSlipItemVariable(id, {
+          materialApprovalSlip: new MaterialApprovalSlip(parseInt(String(values['materialApprovalSlip']))),
+          purchaseInvoiceItem: new PurchaseInvoiceItem(parseInt(String(values['purchaseInvoiceItem']))),
+          quantity:  parseInt(String(values['quantity'])),
+          requisted:  parseInt(String(values['requisted']))
+    })
+}
+case 'MaterialRejectionSlip': {
+    return new MaterialRejectionSlipVariable(id, {
+          purchaseInvoice: new PurchaseInvoice(parseInt(String(values['purchaseInvoice'])))
+    })
+}
+case 'MaterialRejectionSlipItem': {
+    return new MaterialRejectionSlipItemVariable(id, {
+          materialRejectionSlip: new MaterialRejectionSlip(parseInt(String(values['materialRejectionSlip']))),
+          purchaseInvoiceItem: new PurchaseInvoiceItem(parseInt(String(values['purchaseInvoiceItem']))),
+          quantity:  parseInt(String(values['quantity'])),
+          returned:  parseInt(String(values['returned']))
+    })
+}
+case 'MaterialReturnSlip': {
+    return new MaterialReturnSlipVariable(id, {
+          materialRejectionSlip: new MaterialRejectionSlip(parseInt(String(values['materialRejectionSlip'])))
+    })
+}
+case 'MaterialReturnSlipItem': {
+    return new MaterialReturnSlipItemVariable(id, {
+          materialReturnSlip: new MaterialReturnSlip(parseInt(String(values['materialReturnSlip']))),
+          materialRejectionSlipItem: new MaterialRejectionSlipItem(parseInt(String(values['materialRejectionSlipItem']))),
+          quantity:  parseInt(String(values['quantity']))
+    })
+}
+case 'MaterialRequistionSlip': {
+    return new MaterialRequistionSlipVariable(id, {
+          materialApprovalSlip: new MaterialApprovalSlip(parseInt(String(values['materialApprovalSlip'])))
+    })
+}
+case 'MaterialRequistionSlipItem': {
+    return new MaterialRequistionSlipItemVariable(id, {
+          materialRequistionSlip: new MaterialRequistionSlip(parseInt(String(values['materialRequistionSlip']))),
+          materialApprovalSlipItem: new MaterialApprovalSlipItem(parseInt(String(values['materialApprovalSlipItem']))),
+          quantity:  parseInt(String(values['quantity'])),
+          consumed:  parseInt(String(values['consumed']))
+    })
+}
+case 'BOM': {
+    return new BOMVariable(id, {
+          name:  String(values['name'])
+    })
+}
+case 'BOMItem': {
+    return new BOMItemVariable(id, {
+          bom: new BOM(parseInt(String(values['bom']))),
+          product: new Product(parseInt(String(values['product']))),
+          quantity:  parseInt(String(values['quantity'])),
+          uom: new UOM(parseInt(String(values['uom'])))
+    })
+}
+case 'ProductionPreparationSlip': {
+    return new ProductionPreparationSlipVariable(id, {
+          bom: new BOM(parseInt(String(values['bom']))),
+          approved:  parseInt(String(values['approved'])),
+          scrapped:  parseInt(String(values['scrapped']))
+    })
+}
+case 'ProductionPreparationSlipItem': {
+    return new ProductionPreparationSlipItemVariable(id, {
+          productionPreparationSlip: new ProductionPreparationSlip(parseInt(String(values['productionPreparationSlip']))),
+          bomItem:  String(values['bomItem']),
+          materialRequistionSlipItem: new MaterialRequistionSlipItem(parseInt(String(values['materialRequistionSlipItem'])))
+    })
+}
+case 'ScrapMaterialSlip': {
+    return new ScrapMaterialSlipVariable(id, {
+          productionPreparationSlip: new ProductionPreparationSlip(parseInt(String(values['productionPreparationSlip']))),
+          quantity:  parseInt(String(values['quantity']))
+    })
+}
+case 'TransferMaterialSlip': {
+    return new TransferMaterialSlipVariable(id, {
+          productionPreparationSlip: new ProductionPreparationSlip(parseInt(String(values['productionPreparationSlip']))),
+          quantity:  parseInt(String(values['quantity'])),
+          transferred:  parseInt(String(values['transferred']))
+    })
+}
+case 'WarehouseAcceptanceSlip': {
+    return new WarehouseAcceptanceSlipVariable(id, {
+          transferMaterialSlip: new TransferMaterialSlip(parseInt(String(values['transferMaterialSlip']))),
+          quantity:  parseInt(String(values['quantity']))
+    })
+}
+            }
+        }

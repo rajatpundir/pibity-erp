@@ -37,7 +37,6 @@ const initialState: State = {
     offset: 0,
     page: 1,
     columns: Vector.of(['values', 'purchaseOrder'])
-
 }
 
 function reducer(state: Draft<State>, action: Action) {

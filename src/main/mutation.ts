@@ -1,9 +1,9 @@
 import { Immutable } from 'immer';
-import { DiffVariable, getRemoveVariableDiff, getReplaceVariableDiff, getVariable, mergeDiffs } from './layers'
 import { NonPrimitiveType } from './types';
 import { when } from './utils';
-import { Variable, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, CompanyVariable, CompanyProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Company, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip, RegionVariable, CountryVariable, Region, StateVariable, DistrictVariable, SubdistrictVariable, PostalCodeVariable, AddressVariable, BankVariable, BankBranchVariable, BankAccountVariable, CompanyAddressVariable, CompanyContactVariable, CompanyBankAccountVariable, Country, State, District, Subdistrict, PostalCode, Bank, Address, BankBranch, BankAccount, CompanyTagGroupVariable, CompanyTagVariable, CompanyTagGroup, MappingCompanyTagVariable, CompanyTag, Contact, CurrencyVariable, ContactAddressVariable, ContactVariable, Currency, CurrencyRateVariable, MemoVariable, BankTransactionVariable, Memo, CurrencyRate, ProductTagGroupVariable, ProductTagVariable, ProductTagGroup, MappingProductTagVariable, ProductTag, ProductCategoryGroupVariable, ProductCategoryGroup, ProductCategoryVariable, ProductCategory } from './variables'
-
+import { DiffVariable, getRemoveVariableDiff, getReplaceVariableDiff, getVariable, mergeDiffs } from './layers'
+import { Variable, Region, RegionVariable, Country, CountryVariable, StateType, StateTypeVariable, District, DistrictVariable, Subdistrict, SubdistrictVariable, PostalCode, PostalCodeVariable, Address, AddressVariable, Company, CompanyVariable, CompanyAddress, CompanyAddressVariable, CompanyTagGroup, CompanyTagGroupVariable, CompanyTag, CompanyTagVariable, MappingCompanyTag, MappingCompanyTagVariable, Contact, ContactVariable, ContactAddress, ContactAddressVariable, CompanyContact, CompanyContactVariable, Currency, CurrencyVariable, CurrencyRate, CurrencyRateVariable, Memo, MemoVariable, Bank, BankVariable, BankBranch, BankBranchVariable, BankAccount, BankAccountVariable, BankTransaction, BankTransactionVariable, CompanyBankAccount, CompanyBankAccountVariable, ProductCategoryGroup, ProductCategoryGroupVariable, ProductCategory, ProductCategoryVariable, Product, ProductVariable, CompanyProduct, CompanyProductVariable, ProductTagGroup, ProductTagGroupVariable, ProductTag, ProductTagVariable, MappingProductTag, MappingProductTagVariable, UOM, UOMVariable, Indent, IndentVariable, IndentItem, IndentItemVariable, Quotation, QuotationVariable, QuotationItem, QuotationItemVariable, PurchaseOrder, PurchaseOrderVariable, PurchaseOrderItem, PurchaseOrderItemVariable, PurchaseInvoice, PurchaseInvoiceVariable, PurchaseInvoiceItem, PurchaseInvoiceItemVariable, MaterialApprovalSlip, MaterialApprovalSlipVariable, MaterialApprovalSlipItem, MaterialApprovalSlipItemVariable, MaterialRejectionSlip, MaterialRejectionSlipVariable, MaterialRejectionSlipItem, MaterialRejectionSlipItemVariable, MaterialReturnSlip, MaterialReturnSlipVariable, MaterialReturnSlipItem, MaterialReturnSlipItemVariable, MaterialRequistionSlip, MaterialRequistionSlipVariable, MaterialRequistionSlipItem, MaterialRequistionSlipItemVariable, BOM, BOMVariable, BOMItem, BOMItemVariable, ProductionPreparationSlip, ProductionPreparationSlipVariable, ProductionPreparationSlipItem, ProductionPreparationSlipItemVariable, ScrapMaterialSlip, ScrapMaterialSlipVariable, TransferMaterialSlip, TransferMaterialSlipVariable, WarehouseAcceptanceSlip, WarehouseAcceptanceSlipVariable } from './variables'
+        
 class Counter {
     private id: number = -1
 
@@ -19,34 +19,34 @@ export function createVariable(typeName: NonPrimitiveType, values: object): [Var
     const variable: Variable = when(typeName, {
         'Region': () => new RegionVariable(id, {
             name: String(values['name'])
-        }),
+        }) as Variable,
         'Country': () => new CountryVariable(id, {
-            region: new Region(values['region']),
+            region: new Region(parseInt(String(values['region']))),
             name: String(values['name'])
-        }),
-        'State': () => new StateVariable(id, {
-            country: new Country(values['country']),
+        }) as Variable,
+        'StateType': () => new StateTypeVariable(id, {
+            country: new Country(parseInt(String(values['country']))),
             name: String(values['name'])
-        }),
+        }) as Variable,
         'District': () => new DistrictVariable(id, {
-            state: new State(values['state']),
+            state: new StateType(parseInt(String(values['state']))),
             name: String(values['name'])
-        }),
+        }) as Variable,
         'Subdistrict': () => new SubdistrictVariable(id, {
-            district: new District(values['district']),
+            district: new District(parseInt(String(values['district']))),
             name: String(values['name'])
-        }),
+        }) as Variable,
         'PostalCode': () => new PostalCodeVariable(id, {
-            subdistrict: new Subdistrict(values['subdistrict']),
+            subdistrict: new Subdistrict(parseInt(String(values['subdistrict']))),
             name: String(values['name'])
-        }),
+        }) as Variable,
         'Address': () => new AddressVariable(id, {
-            postalCode: new PostalCode(values['postalCode']),
+            postalCode: new PostalCode(parseInt(String(values['postalCode']))),
             line1: String(values['line1']),
             line2: String(values['line2']),
-            latitude: parseFloat(String(values['latitude'])),
-            longitude: parseFloat(String(values['longitude']))
-        }),
+            latitude: parseInt(String(values['latitude'])),
+            longitude: parseInt(String(values['longitude']))
+        }) as Variable,
         'Company': () => new CompanyVariable(id, {
             name: String(values['name']),
             email: String(values['email']),
@@ -56,134 +56,136 @@ export function createVariable(typeName: NonPrimitiveType, values: object): [Var
             gstin: String(values['gstin']),
             pan: String(values['pan']),
             iec: String(values['iec'])
-        }),
+        }) as Variable,
         'CompanyAddress': () => new CompanyAddressVariable(id, {
-            company: new Company(values['company']),
+            company: new Company(parseInt(String(values['company']))),
             name: String(values['name']),
-            address: new Address(values['address'])
-        }),
+            address: new Address(parseInt(String(values['address'])))
+        }) as Variable,
         'CompanyTagGroup': () => new CompanyTagGroupVariable(id, {
             name: String(values['name'])
-        }),
+        }) as Variable,
         'CompanyTag': () => new CompanyTagVariable(id, {
-            group: new CompanyTagGroup(values['group']),
+            group: new CompanyTagGroup(parseInt(String(values['group']))),
             name: String(values['name'])
-        }),
+        }) as Variable,
         'MappingCompanyTag': () => new MappingCompanyTagVariable(id, {
-            company: new Company(values['company']),
-            tag: new CompanyTag(values['tag'])
-        }),
+            company: new Company(parseInt(String(values['company']))),
+            tag: new CompanyTag(parseInt(String(values['tag'])))
+        }) as Variable,
         'Contact': () => new ContactVariable(id, {
             name: String(values['name']),
             email: String(values['email']),
             telephone: String(values['telephone']),
             mobile: String(values['mobile']),
             website: String(values['website'])
-        }),
+        }) as Variable,
         'ContactAddress': () => new ContactAddressVariable(id, {
-            contact: new Contact(values['contact']),
+            contact: new Contact(parseInt(String(values['contact']))),
             name: String(values['name']),
-            address: new Address(values['address'])
-        }),
+            address: new Address(parseInt(String(values['address'])))
+        }) as Variable,
         'CompanyContact': () => new CompanyContactVariable(id, {
-            company: new Company(values['company']),
-            contact: new Contact(values['contact']),
+            company: new Company(parseInt(String(values['company']))),
+            contact: new Contact(parseInt(String(values['contact']))),
             role: String(values['role']),
             email: String(values['email']),
             telephone: String(values['telephone']),
             mobile: String(values['mobile'])
-        }),
+        }) as Variable,
         'Currency': () => new CurrencyVariable(id, {
             name: String(values['name'])
-        }),
+        }) as Variable,
         'CurrencyRate': () => new CurrencyRateVariable(id, {
-            currency: new Currency(values['currency']),
+            currency: new Currency(parseInt(String(values['currency']))),
             conversionRate: parseFloat(String(values['conversionRate'])),
             startTime: parseInt(String(values['startTime'])),
             endTime: parseInt(String(values['endTime']))
-        }),
+        }) as Variable,
         'Memo': () => new MemoVariable(id, {
-            company: new Company(values['company']),
-            currency: new Currency(values['currency']),
+            company: new Company(parseInt(String(values['company']))),
+            currency: new Currency(parseInt(String(values['currency']))),
             amount: parseFloat(String(values['amount'])),
             unsettled: parseFloat(String(values['unsettled']))
-        }),
+        }) as Variable,
         'Bank': () => new BankVariable(id, {
-            country: new Country(values['country']),
+            country: new Country(parseInt(String(values['country']))),
             name: String(values['name']),
             website: String(values['website'])
-        }),
+        }) as Variable,
         'BankBranch': () => new BankBranchVariable(id, {
-            bank: new Bank(values['bank']),
+            bank: new Bank(parseInt(String(values['bank']))),
             name: String(values['name']),
             ifsc: String(values['ifsc']),
-            address: new Address(values['address'])
-        }),
+            address: new Address(parseInt(String(values['address'])))
+        }) as Variable,
         'BankAccount': () => new BankAccountVariable(id, {
-            bank: new Bank(values['bank']),
-            bankBranch: new BankBranch(values['bankBranch']),
+            bank: new Bank(parseInt(String(values['bank']))),
+            bankBranch: new BankBranch(parseInt(String(values['bankBranch']))),
             accountNumber: String(values['accountNumber']),
             accountName: String(values['accountName']),
-            currency: new Currency(values['currency'])
-        }),
+            currency: new Currency(parseInt(String(values['currency'])))
+        }) as Variable,
         'BankTransaction': () => new BankTransactionVariable(id, {
             timestamp: parseInt(String(values['timestamp'])),
-            memo: new Memo(values['memo']),
-            currencyRate: new CurrencyRate(values['currencyRate']),
-            bankAccount: new BankAccount(values['bankAccount']),
-            fromToAccount: new BankAccount(values['fromToAccount']),
+            memo: new Memo(parseInt(String(values['memo']))),
+            currencyRate: new CurrencyRate(parseInt(String(values['currencyRate']))),
+            bankAccount: new BankAccount(parseInt(String(values['bankAccount']))),
+            fromToAccount: new BankAccount(parseInt(String(values['fromToAccount']))),
             credit: parseFloat(String(values['credit'])),
             debit: parseFloat(String(values['debit']))
-        }),
+        }) as Variable,
         'CompanyBankAccount': () => new CompanyBankAccountVariable(id, {
-            company: new Company(values['company']),
-            bankAccount: new BankAccount(values['bankAccount'])
-        }),
+            company: new Company(parseInt(String(values['company']))),
+            bankAccount: new BankAccount(parseInt(String(values['bankAccount'])))
+        }) as Variable,
         'ProductCategoryGroup': () => new ProductCategoryGroupVariable(id, {
-            parent: new ProductCategoryGroup(values['parent']),
+            parent: new ProductCategoryGroup(parseInt(String(values['parent']))),
             name: String(values['name']),
             length: parseInt(String(values['length']))
-        }),
+        }) as Variable,
         'ProductCategory': () => new ProductCategoryVariable(id, {
-            parent: new ProductCategory(values['parent']),
-            group: new ProductCategoryGroup(values['group']),
+            parent: new ProductCategory(parseInt(String(values['parent']))),
+            group: new ProductCategoryGroup(parseInt(String(values['group']))),
             name: String(values['name']),
             code: String(values['code']),
             derivedCode: String(values['derivedCode']),
             childCount: parseInt(String(values['childCount']))
-        }),
+        }) as Variable,
         'Product': () => new ProductVariable(id, {
             name: String(values['name']),
-            category: new ProductCategory(values['category']),
+            category: new ProductCategory(parseInt(String(values['category']))),
             code: String(values['code']),
             sku: String(values['sku'])
         }) as Variable,
         'CompanyProduct': () => new CompanyProductVariable(id, {
-            company: new Company(values['company']),
-            product: new Product(values['product'])
-        }),
+            company: new Company(parseInt(String(values['company']))),
+            product: new Product(parseInt(String(values['product'])))
+        }) as Variable,
         'ProductTagGroup': () => new ProductTagGroupVariable(id, {
             name: String(values['name'])
-        }),
+        }) as Variable,
         'ProductTag': () => new ProductTagVariable(id, {
-            group: new ProductTagGroup(values['group']),
+            group: new ProductTagGroup(parseInt(String(values['group']))),
             name: String(values['name'])
-        }),
+        }) as Variable,
         'MappingProductTag': () => new MappingProductTagVariable(id, {
-            product: new Product(values['product']),
-            tag: new ProductTag(values['tag'])
-        }),
+            product: new Product(parseInt(String(values['product']))),
+            tag: new ProductTag(parseInt(String(values['tag'])))
+        }) as Variable,
         'UOM': () => new UOMVariable(id, {
-            product: new Product(values['product']),
+            product: new Product(parseInt(String(values['product']))),
             name: String(values['name']),
             conversionRate: parseFloat(String(values['conversionRate']))
-        }),
-        'Indent': () => new IndentVariable(id, {}),
+        }) as Variable,
+        'Indent': () => new IndentVariable(id, {
+
+        }) as Variable,
         'IndentItem': () => new IndentItemVariable(id, {
-            indent: new Indent(values['indent']),
-            product: new Product(values['product']),
+            indent: new Indent(parseInt(String(values['indent']))),
+            product: new Product(parseInt(String(values['product']))),
             quantity: parseInt(String(values['quantity'])),
-            uom: new UOM(values['uom']),
+            uom: new UOM(parseInt(String(values['uom']))),
             ordered: parseInt(String(values['ordered'])),
             received: parseInt(String(values['received'])),
             approved: parseInt(String(values['approved'])),
@@ -191,103 +193,103 @@ export function createVariable(typeName: NonPrimitiveType, values: object): [Var
             returned: parseInt(String(values['returned'])),
             requisted: parseInt(String(values['requisted'])),
             consumed: parseInt(String(values['consumed']))
-        }),
+        }) as Variable,
         'Quotation': () => new QuotationVariable(id, {
-            indent: new Indent(values['indent']),
-            company: new Company(values['company'])
-        }),
+            indent: new Indent(parseInt(String(values['indent']))),
+            company: new Company(parseInt(String(values['company'])))
+        }) as Variable,
         'QuotationItem': () => new QuotationItemVariable(id, {
-            quotation: new Quotation(values['quotation']),
-            indentItem: new IndentItem(values['indentItem']),
+            quotation: new Quotation(parseInt(String(values['quotation']))),
+            indentItem: new IndentItem(parseInt(String(values['indentItem']))),
             quantity: parseInt(String(values['quantity']))
-        }),
+        }) as Variable,
         'PurchaseOrder': () => new PurchaseOrderVariable(id, {
-            quotation: new Quotation(values['quotation'])
-        }),
+            quotation: new Quotation(parseInt(String(values['quotation'])))
+        }) as Variable,
         'PurchaseOrderItem': () => new PurchaseOrderItemVariable(id, {
-            purchaseOrder: new PurchaseOrder(values['purchaseOrder']),
-            quotationItem: new QuotationItem(values['quotationItem']),
+            purchaseOrder: new PurchaseOrder(parseInt(String(values['purchaseOrder']))),
+            quotationItem: new QuotationItem(parseInt(String(values['quotationItem']))),
             quantity: parseInt(String(values['quantity'])),
             price: parseFloat(String(values['price'])),
             received: parseInt(String(values['received']))
-        }),
+        }) as Variable,
         'PurchaseInvoice': () => new PurchaseInvoiceVariable(id, {
-            purchaseOrder: new PurchaseOrder(values['purchaseOrder'])
-        }),
+            purchaseOrder: new PurchaseOrder(parseInt(String(values['purchaseOrder'])))
+        }) as Variable,
         'PurchaseInvoiceItem': () => new PurchaseInvoiceItemVariable(id, {
-            purchaseInvoice: new PurchaseInvoice(values['purchaseInvoice']),
-            purchaseOrderItem: new PurchaseOrderItem(values['purchaseOrderItem']),
+            purchaseInvoice: new PurchaseInvoice(parseInt(String(values['purchaseInvoice']))),
+            purchaseOrderItem: new PurchaseOrderItem(parseInt(String(values['purchaseOrderItem']))),
             quantity: parseInt(String(values['quantity'])),
             approved: parseInt(String(values['approved'])),
             rejected: parseInt(String(values['rejected']))
-        }),
+        }) as Variable,
         'MaterialApprovalSlip': () => new MaterialApprovalSlipVariable(id, {
-            purchaseInvoice: new PurchaseInvoice(values['purchaseInvoice'])
-        }),
+            purchaseInvoice: new PurchaseInvoice(parseInt(String(values['purchaseInvoice'])))
+        }) as Variable,
         'MaterialApprovalSlipItem': () => new MaterialApprovalSlipItemVariable(id, {
-            materialApprovalSlip: new MaterialApprovalSlip(values['materialApprovalSlip']),
-            purchaseInvoiceItem: new PurchaseInvoiceItem(values['purchaseInvoiceItem']),
+            materialApprovalSlip: new MaterialApprovalSlip(parseInt(String(values['materialApprovalSlip']))),
+            purchaseInvoiceItem: new PurchaseInvoiceItem(parseInt(String(values['purchaseInvoiceItem']))),
             quantity: parseInt(String(values['quantity'])),
             requisted: parseInt(String(values['requisted']))
-        }),
+        }) as Variable,
         'MaterialRejectionSlip': () => new MaterialRejectionSlipVariable(id, {
-            purchaseInvoice: new PurchaseInvoice(values['purchaseInvoice'])
-        }),
+            purchaseInvoice: new PurchaseInvoice(parseInt(String(values['purchaseInvoice'])))
+        }) as Variable,
         'MaterialRejectionSlipItem': () => new MaterialRejectionSlipItemVariable(id, {
-            materialRejectionSlip: new MaterialRejectionSlip(values['materialRejectionSlip']),
-            purchaseInvoiceItem: new PurchaseInvoiceItem(values['purchaseInvoiceItem']),
+            materialRejectionSlip: new MaterialRejectionSlip(parseInt(String(values['materialRejectionSlip']))),
+            purchaseInvoiceItem: new PurchaseInvoiceItem(parseInt(String(values['purchaseInvoiceItem']))),
             quantity: parseInt(String(values['quantity'])),
             returned: parseInt(String(values['returned']))
-        }),
+        }) as Variable,
         'MaterialReturnSlip': () => new MaterialReturnSlipVariable(id, {
-            materialRejectionSlip: new MaterialRejectionSlip(values['materialRejectionSlip'])
-        }),
+            materialRejectionSlip: new MaterialRejectionSlip(parseInt(String(values['materialRejectionSlip'])))
+        }) as Variable,
         'MaterialReturnSlipItem': () => new MaterialReturnSlipItemVariable(id, {
-            materialReturnSlip: new MaterialReturnSlip(values['materialReturnSlip']),
-            materialRejectionSlipItem: new MaterialRejectionSlipItem(values['materialRejectionSlipItem']),
+            materialReturnSlip: new MaterialReturnSlip(parseInt(String(values['materialReturnSlip']))),
+            materialRejectionSlipItem: new MaterialRejectionSlipItem(parseInt(String(values['materialRejectionSlipItem']))),
             quantity: parseInt(String(values['quantity']))
-        }),
+        }) as Variable,
         'MaterialRequistionSlip': () => new MaterialRequistionSlipVariable(id, {
-            materialApprovalSlip: new MaterialApprovalSlip(values['materialApprovalSlip'])
-        }),
+            materialApprovalSlip: new MaterialApprovalSlip(parseInt(String(values['materialApprovalSlip'])))
+        }) as Variable,
         'MaterialRequistionSlipItem': () => new MaterialRequistionSlipItemVariable(id, {
-            materialRequistionSlip: new MaterialRequistionSlip(values['materialRequistionSlip']),
-            materialApprovalSlipItem: new MaterialApprovalSlipItem(values['materialApprovalSlipItem']),
+            materialRequistionSlip: new MaterialRequistionSlip(parseInt(String(values['materialRequistionSlip']))),
+            materialApprovalSlipItem: new MaterialApprovalSlipItem(parseInt(String(values['materialApprovalSlipItem']))),
             quantity: parseInt(String(values['quantity'])),
             consumed: parseInt(String(values['consumed']))
-        }),
+        }) as Variable,
         'BOM': () => new BOMVariable(id, {
             name: String(values['name'])
-        }),
+        }) as Variable,
         'BOMItem': () => new BOMItemVariable(id, {
-            bom: new BOM(values['bom']),
-            product: new Product(values['product']),
+            bom: new BOM(parseInt(String(values['bom']))),
+            product: new Product(parseInt(String(values['product']))),
             quantity: parseInt(String(values['quantity'])),
-            uom: new UOM(values['uom'])
-        }),
+            uom: new UOM(parseInt(String(values['uom'])))
+        }) as Variable,
         'ProductionPreparationSlip': () => new ProductionPreparationSlipVariable(id, {
-            bom: new BOM(values['bom']),
+            bom: new BOM(parseInt(String(values['bom']))),
             approved: parseInt(String(values['approved'])),
             scrapped: parseInt(String(values['scrapped']))
-        }),
+        }) as Variable,
         'ProductionPreparationSlipItem': () => new ProductionPreparationSlipItemVariable(id, {
-            productionPreparationSlip: new ProductionPreparationSlip(values['productionPreparationSlip']),
+            productionPreparationSlip: new ProductionPreparationSlip(parseInt(String(values['productionPreparationSlip']))),
             bomItem: String(values['bomItem']),
-            materialRequistionSlipItem: new MaterialRequistionSlipItem(values['materialRequistionSlipItem'])
-        }),
+            materialRequistionSlipItem: new MaterialRequistionSlipItem(parseInt(String(values['materialRequistionSlipItem'])))
+        }) as Variable,
         'ScrapMaterialSlip': () => new ScrapMaterialSlipVariable(id, {
-            productionPreparationSlip: new ProductionPreparationSlip(values['productionPreparationSlip']),
+            productionPreparationSlip: new ProductionPreparationSlip(parseInt(String(values['productionPreparationSlip']))),
             quantity: parseInt(String(values['quantity']))
-        }),
+        }) as Variable,
         'TransferMaterialSlip': () => new TransferMaterialSlipVariable(id, {
-            productionPreparationSlip: new ProductionPreparationSlip(values['productionPreparationSlip']),
+            productionPreparationSlip: new ProductionPreparationSlip(parseInt(String(values['productionPreparationSlip']))),
             quantity: parseInt(String(values['quantity'])),
-            transferred: parseInt(String(values['quatransferedntity']))
-        }),
+            transferred: parseInt(String(values['transferred']))
+        }) as Variable,
         'WarehouseAcceptanceSlip': () => new WarehouseAcceptanceSlipVariable(id, {
-            transferMaterialSlip: new TransferMaterialSlip(values['transferMaterialSlip']),
+            transferMaterialSlip: new TransferMaterialSlip(parseInt(String(values['transferMaterialSlip']))),
             quantity: parseInt(String(values['quantity']))
-        })
+        }) as Variable
     })
     return [variable, getReplaceVariableDiff(variable)]
 }
@@ -303,46 +305,46 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
         }
         case 'Country': {
             updatedVariable = new CountryVariable(variable.id.hashCode(), {
-                region: values['region'] !== undefined ? new Region(values['region']) : new Region(variable.values.region.hashCode()),
+                region: values['region'] !== undefined ? new Region(parseInt(String(values['region']))) : new Region(variable.values.region.hashCode()),
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name
             })
             break
         }
-        case 'State': {
-            updatedVariable = new StateVariable(variable.id.hashCode(), {
-                country: values['country'] !== undefined ? new Country(values['country']) : new Country(variable.values.country.hashCode()),
+        case 'StateType': {
+            updatedVariable = new StateTypeVariable(variable.id.hashCode(), {
+                country: values['country'] !== undefined ? new Country(parseInt(String(values['country']))) : new Country(variable.values.country.hashCode()),
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name
             })
             break
         }
         case 'District': {
             updatedVariable = new DistrictVariable(variable.id.hashCode(), {
-                state: values['state'] !== undefined ? new State(values['state']) : new State(variable.values.state.hashCode()),
+                state: values['state'] !== undefined ? new StateType(parseInt(String(values['state']))) : new StateType(variable.values.state.hashCode()),
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name
             })
             break
         }
         case 'Subdistrict': {
             updatedVariable = new SubdistrictVariable(variable.id.hashCode(), {
-                district: values['district'] !== undefined ? new District(values['district']) : new District(variable.values.district.hashCode()),
+                district: values['district'] !== undefined ? new District(parseInt(String(values['district']))) : new District(variable.values.district.hashCode()),
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name
             })
             break
         }
         case 'PostalCode': {
             updatedVariable = new PostalCodeVariable(variable.id.hashCode(), {
-                subdistrict: values['subdistrict'] !== undefined ? new Subdistrict(values['subdistrict']) : new Subdistrict(variable.values.subdistrict.hashCode()),
+                subdistrict: values['subdistrict'] !== undefined ? new Subdistrict(parseInt(String(values['subdistrict']))) : new Subdistrict(variable.values.subdistrict.hashCode()),
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name
             })
             break
         }
         case 'Address': {
             updatedVariable = new AddressVariable(variable.id.hashCode(), {
-                postalCode: values['postalCode'] !== undefined ? new PostalCode(values['postalCode']) : new PostalCode(variable.values.postalCode.hashCode()),
+                postalCode: values['postalCode'] !== undefined ? new PostalCode(parseInt(String(values['postalCode']))) : new PostalCode(variable.values.postalCode.hashCode()),
                 line1: values['line1'] !== undefined ? String(values['line1']) : variable.values.line1,
-                line2: values['line1'] !== undefined ? String(values['line2']) : variable.values.line2,
-                latitude: values['latitude'] !== undefined ? parseFloat(values['latitude']) : variable.values.latitude,
-                longitude: values['longitude'] !== undefined ? parseFloat(values['longitude']) : variable.values.longitude
+                line2: values['line2'] !== undefined ? String(values['line2']) : variable.values.line2,
+                latitude: values['latitude'] !== undefined ? parseInt(String(values['latitude'])) : variable.values.latitude,
+                longitude: values['longitude'] !== undefined ? parseInt(String(values['longitude'])) : variable.values.longitude
             })
             break
         }
@@ -355,15 +357,15 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
                 website: values['website'] !== undefined ? String(values['website']) : variable.values.website,
                 gstin: values['gstin'] !== undefined ? String(values['gstin']) : variable.values.gstin,
                 pan: values['pan'] !== undefined ? String(values['pan']) : variable.values.pan,
-                iec: values['iec'] !== undefined ? String(values['iec']) : variable.values.iec,
+                iec: values['iec'] !== undefined ? String(values['iec']) : variable.values.iec
             })
             break
         }
         case 'CompanyAddress': {
             updatedVariable = new CompanyAddressVariable(variable.id.hashCode(), {
-                company: values['company'] !== undefined ? new Company(values['company']) : new Company(variable.values.company.hashCode()),
+                company: values['company'] !== undefined ? new Company(parseInt(String(values['company']))) : new Company(variable.values.company.hashCode()),
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name,
-                address: values['address'] !== undefined ? new Address(values['address']) : new Address(variable.values.address.hashCode())
+                address: values['address'] !== undefined ? new Address(parseInt(String(values['address']))) : new Address(variable.values.address.hashCode())
             })
             break
         }
@@ -375,15 +377,15 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
         }
         case 'CompanyTag': {
             updatedVariable = new CompanyTagVariable(variable.id.hashCode(), {
-                group: values['group'] !== undefined ? new CompanyTagGroup(values['group']) : new CompanyTagGroup(variable.values.group.hashCode()),
+                group: values['group'] !== undefined ? new CompanyTagGroup(parseInt(String(values['group']))) : new CompanyTagGroup(variable.values.group.hashCode()),
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name
             })
             break
         }
         case 'MappingCompanyTag': {
             updatedVariable = new MappingCompanyTagVariable(variable.id.hashCode(), {
-                company: values['company'] !== undefined ? new Company(values['company']) : new Company(variable.values.company.hashCode()),
-                tag: values['tag'] !== undefined ? new CompanyTag(values['tag']) : new CompanyTag(variable.values.tag.hashCode())
+                company: values['company'] !== undefined ? new Company(parseInt(String(values['company']))) : new Company(variable.values.company.hashCode()),
+                tag: values['tag'] !== undefined ? new CompanyTag(parseInt(String(values['tag']))) : new CompanyTag(variable.values.tag.hashCode())
             })
             break
         }
@@ -399,16 +401,16 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
         }
         case 'ContactAddress': {
             updatedVariable = new ContactAddressVariable(variable.id.hashCode(), {
-                contact: values['contact'] !== undefined ? new Contact(values['contact']) : new Contact(variable.values.contact.hashCode()),
+                contact: values['contact'] !== undefined ? new Contact(parseInt(String(values['contact']))) : new Contact(variable.values.contact.hashCode()),
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name,
-                address: values['address'] !== undefined ? new Address(values['address']) : new Address(variable.values.address.hashCode())
+                address: values['address'] !== undefined ? new Address(parseInt(String(values['address']))) : new Address(variable.values.address.hashCode())
             })
             break
         }
         case 'CompanyContact': {
             updatedVariable = new CompanyContactVariable(variable.id.hashCode(), {
-                company: values['company'] !== undefined ? new Company(values['company']) : new Company(variable.values.company.hashCode()),
-                contact: values['contact'] !== undefined ? new Contact(values['contact']) : new Contact(variable.values.contact.hashCode()),
+                company: values['company'] !== undefined ? new Company(parseInt(String(values['company']))) : new Company(variable.values.company.hashCode()),
+                contact: values['contact'] !== undefined ? new Contact(parseInt(String(values['contact']))) : new Contact(variable.values.contact.hashCode()),
                 role: values['role'] !== undefined ? String(values['role']) : variable.values.role,
                 email: values['email'] !== undefined ? String(values['email']) : variable.values.email,
                 telephone: values['telephone'] !== undefined ? String(values['telephone']) : variable.values.telephone,
@@ -424,25 +426,25 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
         }
         case 'CurrencyRate': {
             updatedVariable = new CurrencyRateVariable(variable.id.hashCode(), {
-                currency: values['currency'] !== undefined ? new Currency(values['currency']) : new Currency(variable.values.currency.hashCode()),
-                conversionRate: values['conversionRate'] !== undefined ? parseFloat(values['conversionRate']) : variable.values.conversionRate,
-                startTime: values['startTime'] !== undefined ? parseInt(values['startTime']) : variable.values.startTime,
-                endTime: values['endTime'] !== undefined ? parseInt(values['endTime']) : variable.values.endTime
+                currency: values['currency'] !== undefined ? new Currency(parseInt(String(values['currency']))) : new Currency(variable.values.currency.hashCode()),
+                conversionRate: values['conversionRate'] !== undefined ? parseFloat(String(values['conversionRate'])) : variable.values.conversionRate,
+                startTime: values['startTime'] !== undefined ? parseInt(String(values['startTime'])) : variable.values.startTime,
+                endTime: values['endTime'] !== undefined ? parseInt(String(values['endTime'])) : variable.values.endTime
             })
             break
         }
         case 'Memo': {
             updatedVariable = new MemoVariable(variable.id.hashCode(), {
-                company: values['company'] !== undefined ? new Company(values['company']) : new Company(variable.values.company.hashCode()),
-                currency: values['currency'] !== undefined ? new Currency(values['currency']) : new Currency(variable.values.currency.hashCode()),
-                amount: values['amount'] !== undefined ? parseFloat(values['amount']) : variable.values.amount,
-                unsettled: values['unsettled'] !== undefined ? parseFloat(values['unsettled']) : variable.values.unsettled
+                company: values['company'] !== undefined ? new Company(parseInt(String(values['company']))) : new Company(variable.values.company.hashCode()),
+                currency: values['currency'] !== undefined ? new Currency(parseInt(String(values['currency']))) : new Currency(variable.values.currency.hashCode()),
+                amount: values['amount'] !== undefined ? parseFloat(String(values['amount'])) : variable.values.amount,
+                unsettled: values['unsettled'] !== undefined ? parseFloat(String(values['unsettled'])) : variable.values.unsettled
             })
             break
         }
         case 'Bank': {
             updatedVariable = new BankVariable(variable.id.hashCode(), {
-                country: values['country'] !== undefined ? new Country(values['country']) : new Country(variable.values.country.hashCode()),
+                country: values['country'] !== undefined ? new Country(parseInt(String(values['country']))) : new Country(variable.values.country.hashCode()),
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name,
                 website: values['website'] !== undefined ? String(values['website']) : variable.values.website
             })
@@ -450,65 +452,65 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
         }
         case 'BankBranch': {
             updatedVariable = new BankBranchVariable(variable.id.hashCode(), {
-                bank: values['bank'] !== undefined ? new Bank(values['bank']) : new Bank(variable.values.bank.hashCode()),
+                bank: values['bank'] !== undefined ? new Bank(parseInt(String(values['bank']))) : new Bank(variable.values.bank.hashCode()),
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name,
                 ifsc: values['ifsc'] !== undefined ? String(values['ifsc']) : variable.values.ifsc,
-                address: values['address'] !== undefined ? new Address(values['address']) : new Address(variable.values.address.hashCode())
+                address: values['address'] !== undefined ? new Address(parseInt(String(values['address']))) : new Address(variable.values.address.hashCode())
             })
             break
         }
         case 'BankAccount': {
             updatedVariable = new BankAccountVariable(variable.id.hashCode(), {
-                bank: values['bank'] !== undefined ? new Bank(values['bank']) : new Bank(variable.values.bank.hashCode()),
-                bankBranch: values['bankBranch'] !== undefined ? new BankBranch(values['bankBranch']) : new BankBranch(variable.values.bankBranch.hashCode()),
+                bank: values['bank'] !== undefined ? new Bank(parseInt(String(values['bank']))) : new Bank(variable.values.bank.hashCode()),
+                bankBranch: values['bankBranch'] !== undefined ? new BankBranch(parseInt(String(values['bankBranch']))) : new BankBranch(variable.values.bankBranch.hashCode()),
                 accountNumber: values['accountNumber'] !== undefined ? String(values['accountNumber']) : variable.values.accountNumber,
                 accountName: values['accountName'] !== undefined ? String(values['accountName']) : variable.values.accountName,
-                currency: values['currency'] !== undefined ? new Currency(values['currency']) : new Currency(variable.values.currency.hashCode())
+                currency: values['currency'] !== undefined ? new Currency(parseInt(String(values['currency']))) : new Currency(variable.values.currency.hashCode())
             })
             break
         }
         case 'BankTransaction': {
             updatedVariable = new BankTransactionVariable(variable.id.hashCode(), {
-                timestamp: values['timestamp'] !== undefined ? parseInt(values['timestamp']) : variable.values.timestamp,
-                memo: values['memo'] !== undefined ? new Memo(values['memo']) : new Memo(variable.values.memo.hashCode()),
-                currencyRate: values['currencyRate'] !== undefined ? new CurrencyRate(values['currencyRate']) : new CurrencyRate(variable.values.currencyRate.hashCode()),
-                bankAccount: values['bankAccount'] !== undefined ? new BankAccount(values['bankAccount']) : new BankAccount(variable.values.bankAccount.hashCode()),
-                fromToAccount: values['fromToAccount'] !== undefined ? new BankAccount(values['fromToAccount']) : new BankAccount(variable.values.fromToAccount.hashCode()),
-                credit: values['credit'] !== undefined ? parseFloat(values['credit']) : variable.values.credit,
-                debit: values['debit'] !== undefined ? parseFloat(values['debit']) : variable.values.debit
+                timestamp: values['timestamp'] !== undefined ? parseInt(String(values['timestamp'])) : variable.values.timestamp,
+                memo: values['memo'] !== undefined ? new Memo(parseInt(String(values['memo']))) : new Memo(variable.values.memo.hashCode()),
+                currencyRate: values['currencyRate'] !== undefined ? new CurrencyRate(parseInt(String(values['currencyRate']))) : new CurrencyRate(variable.values.currencyRate.hashCode()),
+                bankAccount: values['bankAccount'] !== undefined ? new BankAccount(parseInt(String(values['bankAccount']))) : new BankAccount(variable.values.bankAccount.hashCode()),
+                fromToAccount: values['fromToAccount'] !== undefined ? new BankAccount(parseInt(String(values['fromToAccount']))) : new BankAccount(variable.values.fromToAccount.hashCode()),
+                credit: values['credit'] !== undefined ? parseFloat(String(values['credit'])) : variable.values.credit,
+                debit: values['debit'] !== undefined ? parseFloat(String(values['debit'])) : variable.values.debit
             })
             break
         }
         case 'CompanyBankAccount': {
             updatedVariable = new CompanyBankAccountVariable(variable.id.hashCode(), {
-                company: values['company'] !== undefined ? new Company(values['company']) : new Company(variable.values.company.hashCode()),
-                bankAccount: values['bankAccount'] !== undefined ? new BankAccount(values['bankAccount']) : new BankAccount(variable.values.bankAccount.hashCode())
+                company: values['company'] !== undefined ? new Company(parseInt(String(values['company']))) : new Company(variable.values.company.hashCode()),
+                bankAccount: values['bankAccount'] !== undefined ? new BankAccount(parseInt(String(values['bankAccount']))) : new BankAccount(variable.values.bankAccount.hashCode())
             })
             break
         }
         case 'ProductCategoryGroup': {
             updatedVariable = new ProductCategoryGroupVariable(variable.id.hashCode(), {
-                parent: values['parent'] !== undefined ? new ProductCategoryGroup(values['parent']) : new ProductCategoryGroup(variable.values.parent.hashCode()),
+                parent: values['parent'] !== undefined ? new ProductCategoryGroup(parseInt(String(values['parent']))) : new ProductCategoryGroup(variable.values.parent.hashCode()),
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name,
-                length: values['length'] !== undefined ? parseInt(values['length']) : variable.values.length
+                length: values['length'] !== undefined ? parseInt(String(values['length'])) : variable.values.length
             })
             break
         }
         case 'ProductCategory': {
             updatedVariable = new ProductCategoryVariable(variable.id.hashCode(), {
-                parent: values['parent'] !== undefined ? new ProductCategory(values['parent']) : new ProductCategory(variable.values.parent.hashCode()),
-                group: values['group'] !== undefined ? new ProductCategoryGroup(values['group']) : new ProductCategoryGroup(variable.values.group.hashCode()),
+                parent: values['parent'] !== undefined ? new ProductCategory(parseInt(String(values['parent']))) : new ProductCategory(variable.values.parent.hashCode()),
+                group: values['group'] !== undefined ? new ProductCategoryGroup(parseInt(String(values['group']))) : new ProductCategoryGroup(variable.values.group.hashCode()),
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name,
                 code: values['code'] !== undefined ? String(values['code']) : variable.values.code,
                 derivedCode: values['derivedCode'] !== undefined ? String(values['derivedCode']) : variable.values.derivedCode,
-                childCount: values['childCount'] !== undefined ? parseInt(values['childCount']) : variable.values.childCount
+                childCount: values['childCount'] !== undefined ? parseInt(String(values['childCount'])) : variable.values.childCount
             })
             break
         }
         case 'Product': {
             updatedVariable = new ProductVariable(variable.id.hashCode(), {
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name,
-                category: values['category'] !== undefined ? new ProductCategory(values['category']) : new ProductCategory(variable.values.category.hashCode()),
+                category: values['category'] !== undefined ? new ProductCategory(parseInt(String(values['category']))) : new ProductCategory(variable.values.category.hashCode()),
                 code: values['code'] !== undefined ? String(values['code']) : variable.values.code,
                 sku: values['sku'] !== undefined ? String(values['sku']) : variable.values.sku
             })
@@ -516,8 +518,8 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
         }
         case 'CompanyProduct': {
             updatedVariable = new CompanyProductVariable(variable.id.hashCode(), {
-                company: values['company'] !== undefined ? new Company(values['company']) : new Company(variable.values.company.hashCode()),
-                product: values['product'] !== undefined ? new Product(values['product']) : new Product(variable.values.product.hashCode())
+                company: values['company'] !== undefined ? new Company(parseInt(String(values['company']))) : new Company(variable.values.company.hashCode()),
+                product: values['product'] !== undefined ? new Product(parseInt(String(values['product']))) : new Product(variable.values.product.hashCode())
             })
             break
         }
@@ -529,149 +531,151 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
         }
         case 'ProductTag': {
             updatedVariable = new ProductTagVariable(variable.id.hashCode(), {
-                group: values['group'] !== undefined ? new ProductTagGroup(values['group']) : new ProductTagGroup(variable.values.group.hashCode()),
+                group: values['group'] !== undefined ? new ProductTagGroup(parseInt(String(values['group']))) : new ProductTagGroup(variable.values.group.hashCode()),
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name
             })
             break
         }
         case 'MappingProductTag': {
             updatedVariable = new MappingProductTagVariable(variable.id.hashCode(), {
-                product: values['product'] !== undefined ? new Product(values['product']) : new Product(variable.values.product.hashCode()),
-                tag: values['tag'] !== undefined ? new ProductTag(values['tag']) : new ProductTag(variable.values.tag.hashCode())
+                product: values['product'] !== undefined ? new Product(parseInt(String(values['product']))) : new Product(variable.values.product.hashCode()),
+                tag: values['tag'] !== undefined ? new ProductTag(parseInt(String(values['tag']))) : new ProductTag(variable.values.tag.hashCode())
             })
             break
         }
         case 'UOM': {
             updatedVariable = new UOMVariable(variable.id.hashCode(), {
-                product: values['product'] !== undefined ? new Product(values['product']) : new Product(variable.values.product.hashCode()),
+                product: values['product'] !== undefined ? new Product(parseInt(String(values['product']))) : new Product(variable.values.product.hashCode()),
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name,
-                conversionRate: values['conversionRate'] !== undefined ? parseInt(values['conversionRate']) : variable.values.conversionRate
+                conversionRate: values['conversionRate'] !== undefined ? parseFloat(String(values['conversionRate'])) : variable.values.conversionRate
             })
             break
         }
         case 'Indent': {
-            updatedVariable = new IndentVariable(variable.id.hashCode(), {})
+            updatedVariable = new IndentVariable(variable.id.hashCode(), {
+
+            })
             break
         }
         case 'IndentItem': {
             updatedVariable = new IndentItemVariable(variable.id.hashCode(), {
-                indent: values['indent'] !== undefined ? new Indent(values['indent']) : new Indent(variable.values.indent.hashCode()),
-                product: values['product'] !== undefined ? new Product(values['product']) : new Product(variable.values.product.hashCode()),
-                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity,
-                uom: values['uom'] !== undefined ? new UOM(values['uom']) : new UOM(variable.values.uom.hashCode()),
-                ordered: values['ordered'] !== undefined ? parseInt(values['ordered']) : variable.values.ordered,
-                received: values['received'] !== undefined ? parseInt(values['received']) : variable.values.received,
-                approved: values['approved'] !== undefined ? parseInt(values['approved']) : variable.values.approved,
-                rejected: values['rejected'] !== undefined ? parseInt(values['rejected']) : variable.values.rejected,
-                returned: values['returned'] !== undefined ? parseInt(values['returned']) : variable.values.returned,
-                requisted: values['requisted'] !== undefined ? parseInt(values['requisted']) : variable.values.requisted,
-                consumed: values['consumed'] !== undefined ? parseInt(values['consumed']) : variable.values.consumed
+                indent: values['indent'] !== undefined ? new Indent(parseInt(String(values['indent']))) : new Indent(variable.values.indent.hashCode()),
+                product: values['product'] !== undefined ? new Product(parseInt(String(values['product']))) : new Product(variable.values.product.hashCode()),
+                quantity: values['quantity'] !== undefined ? parseInt(String(values['quantity'])) : variable.values.quantity,
+                uom: values['uom'] !== undefined ? new UOM(parseInt(String(values['uom']))) : new UOM(variable.values.uom.hashCode()),
+                ordered: values['ordered'] !== undefined ? parseInt(String(values['ordered'])) : variable.values.ordered,
+                received: values['received'] !== undefined ? parseInt(String(values['received'])) : variable.values.received,
+                approved: values['approved'] !== undefined ? parseInt(String(values['approved'])) : variable.values.approved,
+                rejected: values['rejected'] !== undefined ? parseInt(String(values['rejected'])) : variable.values.rejected,
+                returned: values['returned'] !== undefined ? parseInt(String(values['returned'])) : variable.values.returned,
+                requisted: values['requisted'] !== undefined ? parseInt(String(values['requisted'])) : variable.values.requisted,
+                consumed: values['consumed'] !== undefined ? parseInt(String(values['consumed'])) : variable.values.consumed
             })
             break
         }
         case 'Quotation': {
             updatedVariable = new QuotationVariable(variable.id.hashCode(), {
-                indent: values['indent'] !== undefined ? new Indent(values['indent']) : new Indent(variable.values.indent.hashCode()),
-                company: values['company'] !== undefined ? new Company(values['company']) : new Company(variable.values.company.hashCode())
+                indent: values['indent'] !== undefined ? new Indent(parseInt(String(values['indent']))) : new Indent(variable.values.indent.hashCode()),
+                company: values['company'] !== undefined ? new Company(parseInt(String(values['company']))) : new Company(variable.values.company.hashCode())
             })
             break
         }
         case 'QuotationItem': {
             updatedVariable = new QuotationItemVariable(variable.id.hashCode(), {
-                quotation: values['quotation'] !== undefined ? new Quotation(values['quotation']) : new Quotation(variable.values.quotation.hashCode()),
-                indentItem: values['indentItem'] !== undefined ? new IndentItem(values['indentItem']) : new IndentItem(variable.values.indentItem.hashCode()),
-                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity
+                quotation: values['quotation'] !== undefined ? new Quotation(parseInt(String(values['quotation']))) : new Quotation(variable.values.quotation.hashCode()),
+                indentItem: values['indentItem'] !== undefined ? new IndentItem(parseInt(String(values['indentItem']))) : new IndentItem(variable.values.indentItem.hashCode()),
+                quantity: values['quantity'] !== undefined ? parseInt(String(values['quantity'])) : variable.values.quantity
             })
             break
         }
         case 'PurchaseOrder': {
             updatedVariable = new PurchaseOrderVariable(variable.id.hashCode(), {
-                quotation: values['quotation'] !== undefined ? new Quotation(values['quotation']) : new Quotation(variable.values.quotation.hashCode())
+                quotation: values['quotation'] !== undefined ? new Quotation(parseInt(String(values['quotation']))) : new Quotation(variable.values.quotation.hashCode())
             })
             break
         }
         case 'PurchaseOrderItem': {
             updatedVariable = new PurchaseOrderItemVariable(variable.id.hashCode(), {
-                purchaseOrder: values['purchaseOrder'] !== undefined ? new PurchaseOrder(values['purchaseOrder']) : new PurchaseOrder(variable.values.purchaseOrder.hashCode()),
-                quotationItem: values['quotationItem'] !== undefined ? new QuotationItem(values['quotationItem']) : new QuotationItem(variable.values.quotationItem.hashCode()),
-                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity,
-                price: values['price'] !== undefined ? parseFloat(values['price']) : variable.values.price,
-                received: values['received'] !== undefined ? parseInt(values['received']) : variable.values.received
+                purchaseOrder: values['purchaseOrder'] !== undefined ? new PurchaseOrder(parseInt(String(values['purchaseOrder']))) : new PurchaseOrder(variable.values.purchaseOrder.hashCode()),
+                quotationItem: values['quotationItem'] !== undefined ? new QuotationItem(parseInt(String(values['quotationItem']))) : new QuotationItem(variable.values.quotationItem.hashCode()),
+                quantity: values['quantity'] !== undefined ? parseInt(String(values['quantity'])) : variable.values.quantity,
+                price: values['price'] !== undefined ? parseFloat(String(values['price'])) : variable.values.price,
+                received: values['received'] !== undefined ? parseInt(String(values['received'])) : variable.values.received
             })
             break
         }
         case 'PurchaseInvoice': {
             updatedVariable = new PurchaseInvoiceVariable(variable.id.hashCode(), {
-                purchaseOrder: values['purchaseOrder'] !== undefined ? new PurchaseOrder(values['purchaseOrder']) : new PurchaseOrder(variable.values.purchaseOrder.hashCode())
+                purchaseOrder: values['purchaseOrder'] !== undefined ? new PurchaseOrder(parseInt(String(values['purchaseOrder']))) : new PurchaseOrder(variable.values.purchaseOrder.hashCode())
             })
             break
         }
         case 'PurchaseInvoiceItem': {
             updatedVariable = new PurchaseInvoiceItemVariable(variable.id.hashCode(), {
-                purchaseInvoice: values['purchaseInvoice'] !== undefined ? new PurchaseInvoice(values['purchaseInvoice']) : new PurchaseInvoice(variable.values.purchaseInvoice.hashCode()),
-                purchaseOrderItem: values['purchaseOrderItem'] !== undefined ? new PurchaseOrderItem(values['purchaseOrderItem']) : new PurchaseOrderItem(variable.values.purchaseOrderItem.hashCode()),
-                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity,
-                approved: values['approved'] !== undefined ? parseInt(values['approved']) : variable.values.approved,
-                rejected: values['rejected'] !== undefined ? parseInt(values['rejected']) : variable.values.rejected
+                purchaseInvoice: values['purchaseInvoice'] !== undefined ? new PurchaseInvoice(parseInt(String(values['purchaseInvoice']))) : new PurchaseInvoice(variable.values.purchaseInvoice.hashCode()),
+                purchaseOrderItem: values['purchaseOrderItem'] !== undefined ? new PurchaseOrderItem(parseInt(String(values['purchaseOrderItem']))) : new PurchaseOrderItem(variable.values.purchaseOrderItem.hashCode()),
+                quantity: values['quantity'] !== undefined ? parseInt(String(values['quantity'])) : variable.values.quantity,
+                approved: values['approved'] !== undefined ? parseInt(String(values['approved'])) : variable.values.approved,
+                rejected: values['rejected'] !== undefined ? parseInt(String(values['rejected'])) : variable.values.rejected
             })
             break
         }
         case 'MaterialApprovalSlip': {
             updatedVariable = new MaterialApprovalSlipVariable(variable.id.hashCode(), {
-                purchaseInvoice: values['purchaseInvoice'] !== undefined ? new PurchaseInvoice(values['purchaseInvoice']) : new PurchaseInvoice(variable.values.purchaseInvoice.hashCode())
+                purchaseInvoice: values['purchaseInvoice'] !== undefined ? new PurchaseInvoice(parseInt(String(values['purchaseInvoice']))) : new PurchaseInvoice(variable.values.purchaseInvoice.hashCode())
             })
             break
         }
         case 'MaterialApprovalSlipItem': {
             updatedVariable = new MaterialApprovalSlipItemVariable(variable.id.hashCode(), {
-                materialApprovalSlip: values['materialApprovalSlip'] !== undefined ? new MaterialApprovalSlip(values['materialApprovalSlip']) : new MaterialApprovalSlip(variable.values.materialApprovalSlip.hashCode()),
-                purchaseInvoiceItem: values['purchaseInvoiceItem'] !== undefined ? new PurchaseInvoiceItem(values['purchaseInvoiceItem']) : new PurchaseInvoiceItem(variable.values.purchaseInvoiceItem.hashCode()),
-                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity,
-                requisted: values['requisted'] !== undefined ? parseInt(values['requisted']) : variable.values.requisted
+                materialApprovalSlip: values['materialApprovalSlip'] !== undefined ? new MaterialApprovalSlip(parseInt(String(values['materialApprovalSlip']))) : new MaterialApprovalSlip(variable.values.materialApprovalSlip.hashCode()),
+                purchaseInvoiceItem: values['purchaseInvoiceItem'] !== undefined ? new PurchaseInvoiceItem(parseInt(String(values['purchaseInvoiceItem']))) : new PurchaseInvoiceItem(variable.values.purchaseInvoiceItem.hashCode()),
+                quantity: values['quantity'] !== undefined ? parseInt(String(values['quantity'])) : variable.values.quantity,
+                requisted: values['requisted'] !== undefined ? parseInt(String(values['requisted'])) : variable.values.requisted
             })
             break
         }
         case 'MaterialRejectionSlip': {
             updatedVariable = new MaterialRejectionSlipVariable(variable.id.hashCode(), {
-                purchaseInvoice: values['purchaseInvoice'] !== undefined ? new PurchaseInvoice(values['purchaseInvoice']) : new PurchaseInvoice(variable.values.purchaseInvoice.hashCode())
+                purchaseInvoice: values['purchaseInvoice'] !== undefined ? new PurchaseInvoice(parseInt(String(values['purchaseInvoice']))) : new PurchaseInvoice(variable.values.purchaseInvoice.hashCode())
             })
             break
         }
         case 'MaterialRejectionSlipItem': {
             updatedVariable = new MaterialRejectionSlipItemVariable(variable.id.hashCode(), {
-                materialRejectionSlip: values['materialRejectionSlip'] !== undefined ? new MaterialRejectionSlip(values['materialRejectionSlip']) : new MaterialRejectionSlip(variable.values.materialRejectionSlip.hashCode()),
-                purchaseInvoiceItem: values['purchaseInvoiceItem'] !== undefined ? new PurchaseInvoiceItem(values['purchaseInvoiceItem']) : new PurchaseInvoiceItem(variable.values.purchaseInvoiceItem.hashCode()),
-                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity,
-                returned: values['returned'] !== undefined ? parseInt(values['returned']) : variable.values.returned
+                materialRejectionSlip: values['materialRejectionSlip'] !== undefined ? new MaterialRejectionSlip(parseInt(String(values['materialRejectionSlip']))) : new MaterialRejectionSlip(variable.values.materialRejectionSlip.hashCode()),
+                purchaseInvoiceItem: values['purchaseInvoiceItem'] !== undefined ? new PurchaseInvoiceItem(parseInt(String(values['purchaseInvoiceItem']))) : new PurchaseInvoiceItem(variable.values.purchaseInvoiceItem.hashCode()),
+                quantity: values['quantity'] !== undefined ? parseInt(String(values['quantity'])) : variable.values.quantity,
+                returned: values['returned'] !== undefined ? parseInt(String(values['returned'])) : variable.values.returned
             })
             break
         }
         case 'MaterialReturnSlip': {
             updatedVariable = new MaterialReturnSlipVariable(variable.id.hashCode(), {
-                materialRejectionSlip: values['materialRejectionSlip'] !== undefined ? new MaterialRejectionSlip(values['materialRejectionSlip']) : new MaterialRejectionSlip(variable.values.materialRejectionSlip.hashCode())
+                materialRejectionSlip: values['materialRejectionSlip'] !== undefined ? new MaterialRejectionSlip(parseInt(String(values['materialRejectionSlip']))) : new MaterialRejectionSlip(variable.values.materialRejectionSlip.hashCode())
             })
             break
         }
         case 'MaterialReturnSlipItem': {
             updatedVariable = new MaterialReturnSlipItemVariable(variable.id.hashCode(), {
-                materialReturnSlip: values['materialReturnSlip'] !== undefined ? new MaterialReturnSlip(values['materialReturnSlip']) : new MaterialReturnSlip(variable.values.materialReturnSlip.hashCode()),
-                materialRejectionSlipItem: values['materialRejectionSlipItem'] !== undefined ? new MaterialRejectionSlipItem(values['materialRejectionSlipItem']) : new MaterialRejectionSlipItem(variable.values.materialRejectionSlipItem.hashCode()),
-                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity
+                materialReturnSlip: values['materialReturnSlip'] !== undefined ? new MaterialReturnSlip(parseInt(String(values['materialReturnSlip']))) : new MaterialReturnSlip(variable.values.materialReturnSlip.hashCode()),
+                materialRejectionSlipItem: values['materialRejectionSlipItem'] !== undefined ? new MaterialRejectionSlipItem(parseInt(String(values['materialRejectionSlipItem']))) : new MaterialRejectionSlipItem(variable.values.materialRejectionSlipItem.hashCode()),
+                quantity: values['quantity'] !== undefined ? parseInt(String(values['quantity'])) : variable.values.quantity
             })
             break
         }
         case 'MaterialRequistionSlip': {
             updatedVariable = new MaterialRequistionSlipVariable(variable.id.hashCode(), {
-                materialApprovalSlip: values['materialApprovalSlip'] !== undefined ? new MaterialApprovalSlip(values['materialApprovalSlip']) : new MaterialApprovalSlip(variable.values.materialApprovalSlip.hashCode())
+                materialApprovalSlip: values['materialApprovalSlip'] !== undefined ? new MaterialApprovalSlip(parseInt(String(values['materialApprovalSlip']))) : new MaterialApprovalSlip(variable.values.materialApprovalSlip.hashCode())
             })
             break
         }
         case 'MaterialRequistionSlipItem': {
             updatedVariable = new MaterialRequistionSlipItemVariable(variable.id.hashCode(), {
-                materialRequistionSlip: values['materialRequistionSlip'] !== undefined ? new MaterialRequistionSlip(values['materialRequistionSlip']) : new MaterialRequistionSlip(variable.values.materialRequistionSlip.hashCode()),
-                materialApprovalSlipItem: values['materialApprovalSlipItem'] !== undefined ? new MaterialApprovalSlipItem(values['materialApprovalSlipItem']) : new MaterialApprovalSlipItem(variable.values.materialApprovalSlipItem.hashCode()),
-                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity,
-                consumed: values['consumed'] !== undefined ? parseInt(values['consumed']) : variable.values.consumed
+                materialRequistionSlip: values['materialRequistionSlip'] !== undefined ? new MaterialRequistionSlip(parseInt(String(values['materialRequistionSlip']))) : new MaterialRequistionSlip(variable.values.materialRequistionSlip.hashCode()),
+                materialApprovalSlipItem: values['materialApprovalSlipItem'] !== undefined ? new MaterialApprovalSlipItem(parseInt(String(values['materialApprovalSlipItem']))) : new MaterialApprovalSlipItem(variable.values.materialApprovalSlipItem.hashCode()),
+                quantity: values['quantity'] !== undefined ? parseInt(String(values['quantity'])) : variable.values.quantity,
+                consumed: values['consumed'] !== undefined ? parseInt(String(values['consumed'])) : variable.values.consumed
             })
             break
         }
@@ -683,48 +687,48 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
         }
         case 'BOMItem': {
             updatedVariable = new BOMItemVariable(variable.id.hashCode(), {
-                bom: values['bom'] !== undefined ? new BOM(values['bom']) : new BOM(variable.values.bom.hashCode()),
-                product: values['product'] !== undefined ? new Product(values['product']) : new Product(variable.values.product.hashCode()),
-                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity,
-                uom: values['uom'] !== undefined ? new UOM(values['uom']) : new UOM(variable.values.uom.hashCode())
+                bom: values['bom'] !== undefined ? new BOM(parseInt(String(values['bom']))) : new BOM(variable.values.bom.hashCode()),
+                product: values['product'] !== undefined ? new Product(parseInt(String(values['product']))) : new Product(variable.values.product.hashCode()),
+                quantity: values['quantity'] !== undefined ? parseInt(String(values['quantity'])) : variable.values.quantity,
+                uom: values['uom'] !== undefined ? new UOM(parseInt(String(values['uom']))) : new UOM(variable.values.uom.hashCode())
             })
             break
         }
         case 'ProductionPreparationSlip': {
             updatedVariable = new ProductionPreparationSlipVariable(variable.id.hashCode(), {
-                bom: values['bom'] !== undefined ? new BOM(values['bom']) : new BOM(variable.values.bom.hashCode()),
-                approved: values['approved'] !== undefined ? parseInt(values['approved']) : variable.values.approved,
-                scrapped: values['scrapped'] !== undefined ? parseInt(values['scrapped']) : variable.values.scrapped
+                bom: values['bom'] !== undefined ? new BOM(parseInt(String(values['bom']))) : new BOM(variable.values.bom.hashCode()),
+                approved: values['approved'] !== undefined ? parseInt(String(values['approved'])) : variable.values.approved,
+                scrapped: values['scrapped'] !== undefined ? parseInt(String(values['scrapped'])) : variable.values.scrapped
             })
             break
         }
         case 'ProductionPreparationSlipItem': {
             updatedVariable = new ProductionPreparationSlipItemVariable(variable.id.hashCode(), {
-                productionPreparationSlip: values['productionPreparationSlip'] !== undefined ? new ProductionPreparationSlip(values['productionPreparationSlip']) : new ProductionPreparationSlip(variable.values.productionPreparationSlip.hashCode()),
+                productionPreparationSlip: values['productionPreparationSlip'] !== undefined ? new ProductionPreparationSlip(parseInt(String(values['productionPreparationSlip']))) : new ProductionPreparationSlip(variable.values.productionPreparationSlip.hashCode()),
                 bomItem: values['bomItem'] !== undefined ? String(values['bomItem']) : variable.values.bomItem,
-                materialRequistionSlipItem: values['materialRequistionSlipItem'] !== undefined ? new MaterialRequistionSlipItem(values['materialRequistionSlipItem']) : new MaterialRequistionSlipItem(variable.values.materialRequistionSlipItem.hashCode())
+                materialRequistionSlipItem: values['materialRequistionSlipItem'] !== undefined ? new MaterialRequistionSlipItem(parseInt(String(values['materialRequistionSlipItem']))) : new MaterialRequistionSlipItem(variable.values.materialRequistionSlipItem.hashCode())
             })
             break
         }
         case 'ScrapMaterialSlip': {
             updatedVariable = new ScrapMaterialSlipVariable(variable.id.hashCode(), {
-                productionPreparationSlip: values['productionPreparationSlip'] !== undefined ? new ProductionPreparationSlip(values['productionPreparationSlip']) : new ProductionPreparationSlip(variable.values.productionPreparationSlip.hashCode()),
-                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity
+                productionPreparationSlip: values['productionPreparationSlip'] !== undefined ? new ProductionPreparationSlip(parseInt(String(values['productionPreparationSlip']))) : new ProductionPreparationSlip(variable.values.productionPreparationSlip.hashCode()),
+                quantity: values['quantity'] !== undefined ? parseInt(String(values['quantity'])) : variable.values.quantity
             })
             break
         }
         case 'TransferMaterialSlip': {
             updatedVariable = new TransferMaterialSlipVariable(variable.id.hashCode(), {
-                productionPreparationSlip: values['productionPreparationSlip'] !== undefined ? new ProductionPreparationSlip(values['productionPreparationSlip']) : new ProductionPreparationSlip(variable.values.productionPreparationSlip.hashCode()),
-                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity,
-                transferred: values['transferred'] !== undefined ? parseInt(values['transferred']) : variable.values.transferred
+                productionPreparationSlip: values['productionPreparationSlip'] !== undefined ? new ProductionPreparationSlip(parseInt(String(values['productionPreparationSlip']))) : new ProductionPreparationSlip(variable.values.productionPreparationSlip.hashCode()),
+                quantity: values['quantity'] !== undefined ? parseInt(String(values['quantity'])) : variable.values.quantity,
+                transferred: values['transferred'] !== undefined ? parseInt(String(values['transferred'])) : variable.values.transferred
             })
             break
         }
         case 'WarehouseAcceptanceSlip': {
             updatedVariable = new WarehouseAcceptanceSlipVariable(variable.id.hashCode(), {
-                transferMaterialSlip: values['transferMaterialSlip'] !== undefined ? new TransferMaterialSlip(values['transferMaterialSlip']) : new TransferMaterialSlip(variable.values.transferMaterialSlip.hashCode()),
-                quantity: values['quantity'] !== undefined ? parseInt(values['quantity']) : variable.values.quantity
+                transferMaterialSlip: values['transferMaterialSlip'] !== undefined ? new TransferMaterialSlip(parseInt(String(values['transferMaterialSlip']))) : new TransferMaterialSlip(variable.values.transferMaterialSlip.hashCode()),
+                quantity: values['quantity'] !== undefined ? parseInt(String(values['quantity'])) : variable.values.quantity
             })
             break
         }

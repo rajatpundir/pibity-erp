@@ -1,9 +1,9 @@
 import { HashSet, Vector } from 'prelude-ts'
 import { immerable, Immutable } from 'immer'
-import { Variable, VariableId, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, CompanyVariable, CompanyProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Company, CompanyProduct, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialReturnSlipItem, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, BOMItem, ProductionPreparationSlip, ProductionPreparationSlipItem, ScrapMaterialSlip, TransferMaterialSlip, WarehouseAcceptanceSlip, RegionVariable, Region, CountryVariable, Country, StateVariable, State, DistrictVariable, District, SubdistrictVariable, Subdistrict, PostalCodeVariable, PostalCode, AddressVariable, Address, BankVariable, Bank, BankBranchVariable, BankBranch, BankAccountVariable, BankAccount, CompanyAddressVariable, CompanyAddress, CompanyContactVariable, CompanyContact, CompanyBankAccountVariable, CompanyBankAccount, BankTransaction, BankTransactionVariable, CompanyTag, CompanyTagGroup, CompanyTagGroupVariable, CompanyTagVariable, Contact, ContactAddress, ContactAddressVariable, ContactVariable, Currency, CurrencyRate, CurrencyRateVariable, CurrencyVariable, MappingCompanyTag, MappingCompanyTagVariable, MappingProductTag, MappingProductTagVariable, Memo, MemoVariable, ProductCategory, ProductCategoryGroup, ProductCategoryGroupVariable, ProductCategoryVariable, ProductTag, ProductTagGroup, ProductTagGroupVariable, ProductTagVariable } from './variables'
 import { NonPrimitiveType } from './types'
-import { AddressRow, BankAccountRow, BankBranchRow, BankRow, BOMItemRow, BOMRow, CountryRow, DiffRow, DistrictRow, IndentItemRow, IndentRow, MaterialApprovalSlipItemRow, MaterialApprovalSlipRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow, MaterialRequistionSlipItemRow, MaterialRequistionSlipRow, MaterialReturnSlipItemRow, MaterialReturnSlipRow, PostalCodeRow, ProductionPreparationSlipItemRow, ProductionPreparationSlipRow, ProductRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow, PurchaseOrderItemRow, PurchaseOrderRow, QuotationItemRow, QuotationRow, RegionRow, ScrapMaterialSlipRow, StateRow, SubdistrictRow, CompanyAddressRow, CompanyBankAccountRow, CompanyContactRow, CompanyProductRow, CompanyRow, TransferMaterialSlipRow, UOMRow, WarehouseAcceptanceSlipRow, BankTransactionRow, CompanyTagGroupRow, CompanyTagRow, ContactAddressRow, ContactRow, CurrencyRateRow, CurrencyRow, MappingCompanyTagRow, MappingProductTagRow, MemoRow, ProductCategoryGroupRow, ProductCategoryRow, ProductTagGroupRow, ProductTagRow } from './rows'
 import { db } from './dexie'
+import { Variable, VariableId, Region, RegionVariable, Country, CountryVariable, StateType, StateTypeVariable, District, DistrictVariable, Subdistrict, SubdistrictVariable, PostalCode, PostalCodeVariable, Address, AddressVariable, Company, CompanyVariable, CompanyAddress, CompanyAddressVariable, CompanyTagGroup, CompanyTagGroupVariable, CompanyTag, CompanyTagVariable, MappingCompanyTag, MappingCompanyTagVariable, Contact, ContactVariable, ContactAddress, ContactAddressVariable, CompanyContact, CompanyContactVariable, Currency, CurrencyVariable, CurrencyRate, CurrencyRateVariable, Memo, MemoVariable, Bank, BankVariable, BankBranch, BankBranchVariable, BankAccount, BankAccountVariable, BankTransaction, BankTransactionVariable, CompanyBankAccount, CompanyBankAccountVariable, ProductCategoryGroup, ProductCategoryGroupVariable, ProductCategory, ProductCategoryVariable, Product, ProductVariable, CompanyProduct, CompanyProductVariable, ProductTagGroup, ProductTagGroupVariable, ProductTag, ProductTagVariable, MappingProductTag, MappingProductTagVariable, UOM, UOMVariable, Indent, IndentVariable, IndentItem, IndentItemVariable, Quotation, QuotationVariable, QuotationItem, QuotationItemVariable, PurchaseOrder, PurchaseOrderVariable, PurchaseOrderItem, PurchaseOrderItemVariable, PurchaseInvoice, PurchaseInvoiceVariable, PurchaseInvoiceItem, PurchaseInvoiceItemVariable, MaterialApprovalSlip, MaterialApprovalSlipVariable, MaterialApprovalSlipItem, MaterialApprovalSlipItemVariable, MaterialRejectionSlip, MaterialRejectionSlipVariable, MaterialRejectionSlipItem, MaterialRejectionSlipItemVariable, MaterialReturnSlip, MaterialReturnSlipVariable, MaterialReturnSlipItem, MaterialReturnSlipItemVariable, MaterialRequistionSlip, MaterialRequistionSlipVariable, MaterialRequistionSlipItem, MaterialRequistionSlipItemVariable, BOM, BOMVariable, BOMItem, BOMItemVariable, ProductionPreparationSlip, ProductionPreparationSlipVariable, ProductionPreparationSlipItem, ProductionPreparationSlipItemVariable, ScrapMaterialSlip, ScrapMaterialSlipVariable, TransferMaterialSlip, TransferMaterialSlipVariable, WarehouseAcceptanceSlip, WarehouseAcceptanceSlipVariable } from './variables'
+import { DiffRow, RegionRow, CountryRow, StateTypeRow, DistrictRow, SubdistrictRow, PostalCodeRow, AddressRow, CompanyRow, CompanyAddressRow, CompanyTagGroupRow, CompanyTagRow, MappingCompanyTagRow, ContactRow, ContactAddressRow, CompanyContactRow, CurrencyRow, CurrencyRateRow, MemoRow, BankRow, BankBranchRow, BankAccountRow, BankTransactionRow, CompanyBankAccountRow, ProductCategoryGroupRow, ProductCategoryRow, ProductRow, CompanyProductRow, ProductTagGroupRow, ProductTagRow, MappingProductTagRow, UOMRow, IndentRow, IndentItemRow, QuotationRow, QuotationItemRow, PurchaseOrderRow, PurchaseOrderItemRow, PurchaseInvoiceRow, PurchaseInvoiceItemRow, MaterialApprovalSlipRow, MaterialApprovalSlipItemRow, MaterialRejectionSlipRow, MaterialRejectionSlipItemRow, MaterialReturnSlipRow, MaterialReturnSlipItemRow, MaterialRequistionSlipRow, MaterialRequistionSlipItemRow, BOMRow, BOMItemRow, ProductionPreparationSlipRow, ProductionPreparationSlipItemRow, ScrapMaterialSlipRow, TransferMaterialSlipRow, WarehouseAcceptanceSlipRow } from './rows'
 
 export function mergeDiffs(diffs: ReadonlyArray<DiffVariable>): DiffVariable {
     const result = diffs.reduce((acc, diff) => {
@@ -25,9 +25,9 @@ type DiffVariables = {
         replace: HashSet<Immutable<CountryVariable>>,
         remove: HashSet<Immutable<Country>>
     },
-    State: {
-        replace: HashSet<Immutable<StateVariable>>,
-        remove: HashSet<Immutable<State>>
+    StateType: {
+        replace: HashSet<Immutable<StateTypeVariable>>,
+        remove: HashSet<Immutable<StateType>>
     },
     District: {
         replace: HashSet<Immutable<DistrictVariable>>,
@@ -250,7 +250,7 @@ export class DiffVariable {
             replace: HashSet.of(),
             remove: HashSet.of()
         },
-        State: {
+        StateType: {
             replace: HashSet.of(),
             remove: HashSet.of()
         },
@@ -490,9 +490,9 @@ export class DiffVariable {
                 replace: this.variables.Country.replace.toArray().map(x => x.toRow()),
                 remove: this.variables.Country.remove.toArray().map(x => x.hashCode())
             },
-            State: {
-                replace: this.variables.State.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.State.remove.toArray().map(x => x.hashCode())
+            StateType: {
+                replace: this.variables.StateType.replace.toArray().map(x => x.toRow()),
+                remove: this.variables.StateType.remove.toArray().map(x => x.hashCode())
             },
             District: {
                 replace: this.variables.District.replace.toArray().map(x => x.toRow()),
@@ -713,7 +713,7 @@ export function getReplaceVariableDiff(variable: Immutable<Variable>): DiffVaria
             diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
-        case 'State': {
+        case 'StateType': {
             diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
@@ -940,8 +940,8 @@ export function getRemoveVariableDiff(typeName: NonPrimitiveType, id: number): D
             diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Country(id))
             break
         }
-        case 'State': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new State(id))
+        case 'StateType': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new StateType(id))
             break
         }
         case 'District': {
@@ -1180,7 +1180,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return RegionRow.toVariable(row) as Variable
             }
@@ -1207,13 +1207,13 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return CountryRow.toVariable(row) as Variable
             }
             return undefined
         }
-        case 'State': {
+        case 'StateType': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
                     if (variable.id.hashCode() === id) {
@@ -1234,9 +1234,9 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
-                return StateRow.toVariable(row) as Variable
+                return StateTypeRow.toVariable(row) as Variable
             }
             return undefined
         }
@@ -1261,7 +1261,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return DistrictRow.toVariable(row) as Variable
             }
@@ -1288,7 +1288,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return SubdistrictRow.toVariable(row) as Variable
             }
@@ -1315,7 +1315,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return PostalCodeRow.toVariable(row) as Variable
             }
@@ -1342,7 +1342,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return AddressRow.toVariable(row) as Variable
             }
@@ -1369,7 +1369,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return CompanyRow.toVariable(row) as Variable
             }
@@ -1396,7 +1396,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return CompanyAddressRow.toVariable(row) as Variable
             }
@@ -1423,7 +1423,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return CompanyTagGroupRow.toVariable(row) as Variable
             }
@@ -1450,7 +1450,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return CompanyTagRow.toVariable(row) as Variable
             }
@@ -1477,7 +1477,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return MappingCompanyTagRow.toVariable(row) as Variable
             }
@@ -1504,7 +1504,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return ContactRow.toVariable(row) as Variable
             }
@@ -1531,7 +1531,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return ContactAddressRow.toVariable(row) as Variable
             }
@@ -1558,7 +1558,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return CompanyContactRow.toVariable(row) as Variable
             }
@@ -1585,7 +1585,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return CurrencyRow.toVariable(row) as Variable
             }
@@ -1612,7 +1612,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return CurrencyRateRow.toVariable(row) as Variable
             }
@@ -1639,7 +1639,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return MemoRow.toVariable(row) as Variable
             }
@@ -1666,7 +1666,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return BankRow.toVariable(row) as Variable
             }
@@ -1693,7 +1693,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return BankBranchRow.toVariable(row) as Variable
             }
@@ -1720,7 +1720,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return BankAccountRow.toVariable(row) as Variable
             }
@@ -1747,7 +1747,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return BankTransactionRow.toVariable(row) as Variable
             }
@@ -1774,7 +1774,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return CompanyBankAccountRow.toVariable(row) as Variable
             }
@@ -1801,7 +1801,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return ProductCategoryGroupRow.toVariable(row) as Variable
             }
@@ -1828,7 +1828,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return ProductCategoryRow.toVariable(row) as Variable
             }
@@ -1855,7 +1855,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return ProductRow.toVariable(row) as Variable
             }
@@ -1882,7 +1882,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return CompanyProductRow.toVariable(row) as Variable
             }
@@ -1909,7 +1909,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return ProductTagGroupRow.toVariable(row) as Variable
             }
@@ -1936,7 +1936,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return ProductTagRow.toVariable(row) as Variable
             }
@@ -1963,7 +1963,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return MappingProductTagRow.toVariable(row) as Variable
             }
@@ -1990,7 +1990,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return UOMRow.toVariable(row) as Variable
             }
@@ -2017,7 +2017,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return IndentRow.toVariable(row) as Variable
             }
@@ -2044,7 +2044,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return IndentItemRow.toVariable(row) as Variable
             }
@@ -2071,7 +2071,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return QuotationRow.toVariable(row) as Variable
             }
@@ -2098,7 +2098,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return QuotationItemRow.toVariable(row) as Variable
             }
@@ -2125,7 +2125,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return PurchaseOrderRow.toVariable(row) as Variable
             }
@@ -2152,7 +2152,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return PurchaseOrderItemRow.toVariable(row) as Variable
             }
@@ -2179,7 +2179,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return PurchaseInvoiceRow.toVariable(row) as Variable
             }
@@ -2206,7 +2206,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return PurchaseInvoiceItemRow.toVariable(row) as Variable
             }
@@ -2233,7 +2233,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return MaterialApprovalSlipRow.toVariable(row) as Variable
             }
@@ -2260,7 +2260,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return MaterialApprovalSlipItemRow.toVariable(row) as Variable
             }
@@ -2287,7 +2287,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return MaterialRejectionSlipRow.toVariable(row) as Variable
             }
@@ -2314,7 +2314,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return MaterialRejectionSlipItemRow.toVariable(row) as Variable
             }
@@ -2341,7 +2341,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return MaterialReturnSlipRow.toVariable(row) as Variable
             }
@@ -2368,7 +2368,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return MaterialReturnSlipItemRow.toVariable(row) as Variable
             }
@@ -2395,7 +2395,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return MaterialRequistionSlipRow.toVariable(row) as Variable
             }
@@ -2422,7 +2422,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return MaterialRequistionSlipItemRow.toVariable(row) as Variable
             }
@@ -2449,7 +2449,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return BOMRow.toVariable(row) as Variable
             }
@@ -2476,7 +2476,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return BOMItemRow.toVariable(row) as Variable
             }
@@ -2503,7 +2503,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return ProductionPreparationSlipRow.toVariable(row) as Variable
             }
@@ -2530,7 +2530,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return ProductionPreparationSlipItemRow.toVariable(row) as Variable
             }
@@ -2557,7 +2557,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return ScrapMaterialSlipRow.toVariable(row) as Variable
             }
@@ -2584,7 +2584,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return TransferMaterialSlipRow.toVariable(row) as Variable
             }
@@ -2611,7 +2611,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
                     return undefined
                 }
             }
-            const row = await db[typeName].get(String(id))
+            const row = await db[typeName].get(id)
             if (row !== undefined) {
                 return WarehouseAcceptanceSlipRow.toVariable(row) as Variable
             }
@@ -2642,8 +2642,8 @@ export async function getVariables(typeName: NonPrimitiveType, overlay: Vector<D
             })
             return composedVariables
         }
-        case 'State': {
-            let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => StateRow.toVariable(x)) : [])
+        case 'StateType': {
+            let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => StateTypeRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
                 composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })

@@ -4,9 +4,11 @@ import { GridLayout, GridArea, none, validateLayout } from '../../../../main/com
 export const header: GridArea = new GridArea('header')
 export const button: GridArea = new GridArea('button')
 export const details: GridArea = new GridArea('details')
-export const addresses: GridArea = new GridArea('addresses')
-export const bankAccounts: GridArea = new GridArea('bankAccounts')
-export const products: GridArea = new GridArea('products')
+export const companyAddressArea: GridArea = new GridArea('companyAddressArea')
+export const mappingCompanyTagArea: GridArea = new GridArea('mappingCompanyTagArea')
+export const companyContactArea: GridArea = new GridArea('companyContactArea')
+export const memoArea: GridArea = new GridArea('memoArea')
+export const companyBankAccountArea: GridArea = new GridArea('companyBankAccountArea')
 
 export const layouts: { [index: string]: GridLayout } = {
     main: validateLayout({
@@ -20,9 +22,12 @@ export const layouts: { [index: string]: GridLayout } = {
                 Vector.of(header),
                 Vector.of(details),
                 Vector.of(button),
-                Vector.of(addresses),
-                Vector.of(bankAccounts),
-                Vector.of(products)
+Vector.of(companyAddressArea),
+Vector.of(mappingCompanyTagArea),
+Vector.of(companyContactArea),
+Vector.of(memoArea),
+Vector.of(companyBankAccountArea)
+
             )
         },
         layout_sm: {
@@ -31,9 +36,12 @@ export const layouts: { [index: string]: GridLayout } = {
             areas: Vector.of(
                 Vector.of(header, button),
                 Vector.of(details, details),
-                Vector.of(addresses, addresses),
-                Vector.of(bankAccounts, bankAccounts),
-                Vector.of(products, products)
+Vector.of(companyAddressArea, companyAddressArea),
+Vector.of(mappingCompanyTagArea, mappingCompanyTagArea),
+Vector.of(companyContactArea, companyContactArea),
+Vector.of(memoArea, memoArea),
+Vector.of(companyBankAccountArea, companyBankAccountArea)
+
             )
         },
         layout_md: {
@@ -42,9 +50,12 @@ export const layouts: { [index: string]: GridLayout } = {
             areas: Vector.of(
                 Vector.of(header, header, button),
                 Vector.of(details, details, details),
-                Vector.of(addresses, addresses, addresses),
-                Vector.of(bankAccounts, bankAccounts, bankAccounts),
-                Vector.of(products, products, products)
+Vector.of(companyAddressArea, companyAddressArea, companyAddressArea),
+Vector.of(mappingCompanyTagArea, mappingCompanyTagArea, mappingCompanyTagArea),
+Vector.of(companyContactArea, companyContactArea, companyContactArea),
+Vector.of(memoArea, memoArea, memoArea),
+Vector.of(companyBankAccountArea, companyBankAccountArea, companyBankAccountArea)
+
             )
         },
         layout_lg: {
@@ -53,9 +64,12 @@ export const layouts: { [index: string]: GridLayout } = {
             areas: Vector.of(
                 Vector.of(none, header, header, none, button, none),
                 Vector.of(none, details, details, details, details, none),
-                Vector.of(none, addresses, addresses, addresses, addresses, none),
-                Vector.of(none, bankAccounts, bankAccounts, bankAccounts, bankAccounts, none),
-                Vector.of(none, products, products, products, products, none)
+Vector.of(none, companyAddressArea, companyAddressArea, companyAddressArea, companyAddressArea, none),
+Vector.of(none, mappingCompanyTagArea, mappingCompanyTagArea, mappingCompanyTagArea, mappingCompanyTagArea, none),
+Vector.of(none, companyContactArea, companyContactArea, companyContactArea, companyContactArea, none),
+Vector.of(none, memoArea, memoArea, memoArea, memoArea, none),
+Vector.of(none, companyBankAccountArea, companyBankAccountArea, companyBankAccountArea, companyBankAccountArea, none)
+
             )
         },
         layout_xl: {
@@ -64,9 +78,12 @@ export const layouts: { [index: string]: GridLayout } = {
             areas: Vector.of(
                 Vector.of(none, header, header, none, button, none),
                 Vector.of(none, details, details, details, details, none),
-                Vector.of(none, addresses, addresses, addresses, addresses, none),
-                Vector.of(none, bankAccounts, bankAccounts, bankAccounts, bankAccounts, none),
-                Vector.of(none, products, products, products, products, none)
+Vector.of(none, companyAddressArea, companyAddressArea, companyAddressArea, companyAddressArea, none),
+Vector.of(none, mappingCompanyTagArea, mappingCompanyTagArea, mappingCompanyTagArea, mappingCompanyTagArea, none),
+Vector.of(none, companyContactArea, companyContactArea, companyContactArea, companyContactArea, none),
+Vector.of(none, memoArea, memoArea, memoArea, memoArea, none),
+Vector.of(none, companyBankAccountArea, companyBankAccountArea, companyBankAccountArea, companyBankAccountArea, none)
+
             )
         }
     }),

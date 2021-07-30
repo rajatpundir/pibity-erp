@@ -1,129 +1,128 @@
 import Dexie from 'dexie'
 import { Immutable } from 'immer'
-import { AddressRow, BankAccountRow, BankBranchRow, BankRow, BOMItemRow, BOMRow, CountryRow, DiffRow, DistrictRow, IndentItemRow, IndentRow, MaterialApprovalSlipItemRow, MaterialApprovalSlipRow, MaterialRejectionSlipItemRow, MaterialRejectionSlipRow, MaterialRequistionSlipItemRow, MaterialRequistionSlipRow, MaterialReturnSlipItemRow, MaterialReturnSlipRow, PostalCodeRow, ProductionPreparationSlipItemRow, ProductionPreparationSlipRow, ProductRow, PurchaseInvoiceItemRow, PurchaseInvoiceRow, PurchaseOrderItemRow, PurchaseOrderRow, QuotationItemRow, QuotationRow, RegionRow, ScrapMaterialSlipRow, StateRow, SubdistrictRow, CompanyAddressRow, CompanyBankAccountRow, CompanyContactRow, CompanyProductRow, CompanyRow, TransferMaterialSlipRow, UOMRow, WarehouseAcceptanceSlipRow, CompanyTagGroupRow, CompanyTagRow, MappingCompanyTagRow, ContactRow, ContactAddressRow, CurrencyRow, CurrencyRateRow, MemoRow, BankTransactionRow, MappingProductTagRow, ProductCategoryGroupRow, ProductCategoryRow, ProductTagGroupRow, ProductTagRow } from './rows'
+import { DiffRow, RegionRow, CountryRow, StateTypeRow, DistrictRow, SubdistrictRow, PostalCodeRow, AddressRow, CompanyRow, CompanyAddressRow, CompanyTagGroupRow, CompanyTagRow, MappingCompanyTagRow, ContactRow, ContactAddressRow, CompanyContactRow, CurrencyRow, CurrencyRateRow, MemoRow, BankRow, BankBranchRow, BankAccountRow, BankTransactionRow, CompanyBankAccountRow, ProductCategoryGroupRow, ProductCategoryRow, ProductRow, CompanyProductRow, ProductTagGroupRow, ProductTagRow, MappingProductTagRow, UOMRow, IndentRow, IndentItemRow, QuotationRow, QuotationItemRow, PurchaseOrderRow, PurchaseOrderItemRow, PurchaseInvoiceRow, PurchaseInvoiceItemRow, MaterialApprovalSlipRow, MaterialApprovalSlipItemRow, MaterialRejectionSlipRow, MaterialRejectionSlipItemRow, MaterialReturnSlipRow, MaterialReturnSlipItemRow, MaterialRequistionSlipRow, MaterialRequistionSlipItemRow, BOMRow, BOMItemRow, ProductionPreparationSlipRow, ProductionPreparationSlipItemRow, ScrapMaterialSlipRow, TransferMaterialSlipRow, WarehouseAcceptanceSlipRow } from './rows'
 
 class Database extends Dexie {
     diffs: Dexie.Table<Immutable<DiffRow>, number>
-    Region: Dexie.Table<Immutable<RegionRow>, string>
-    Country: Dexie.Table<Immutable<CountryRow>, string>
-    State: Dexie.Table<Immutable<StateRow>, string>
-    District: Dexie.Table<Immutable<DistrictRow>, string>
-    Subdistrict: Dexie.Table<Immutable<SubdistrictRow>, string>
-    PostalCode: Dexie.Table<Immutable<PostalCodeRow>, string>
-    Address: Dexie.Table<Immutable<AddressRow>, string>
-    Company: Dexie.Table<Immutable<CompanyRow>, string>
-    CompanyAddress: Dexie.Table<Immutable<CompanyAddressRow>, string>
-    CompanyTagGroup: Dexie.Table<Immutable<CompanyTagGroupRow>, string>
-    CompanyTag: Dexie.Table<Immutable<CompanyTagRow>, string>
-    MappingCompanyTag: Dexie.Table<Immutable<MappingCompanyTagRow>, string>
-    Contact: Dexie.Table<Immutable<ContactRow>, string>
-    ContactAddress: Dexie.Table<Immutable<ContactAddressRow>, string>
-    CompanyContact: Dexie.Table<Immutable<CompanyContactRow>, string>
-    Currency: Dexie.Table<Immutable<CurrencyRow>, string>
-    CurrencyRate: Dexie.Table<Immutable<CurrencyRateRow>, string>
-    Memo: Dexie.Table<Immutable<MemoRow>, string>
-    Bank: Dexie.Table<Immutable<BankRow>, string>
-    BankBranch: Dexie.Table<Immutable<BankBranchRow>, string>
-    BankAccount: Dexie.Table<Immutable<BankAccountRow>, string>
-    BankTransaction: Dexie.Table<Immutable<BankTransactionRow>, string>
-    CompanyBankAccount: Dexie.Table<Immutable<CompanyBankAccountRow>, string>
-    ProductCategoryGroup: Dexie.Table<Immutable<ProductCategoryGroupRow>, string>
-    ProductCategory: Dexie.Table<Immutable<ProductCategoryRow>, string>
-    Product: Dexie.Table<Immutable<ProductRow>, string>
-    CompanyProduct: Dexie.Table<Immutable<CompanyProductRow>, string>
-    ProductTagGroup: Dexie.Table<Immutable<ProductTagGroupRow>, string>
-    ProductTag: Dexie.Table<Immutable<ProductTagRow>, string>
-    MappingProductTag: Dexie.Table<Immutable<MappingProductTagRow>, string>
-    UOM: Dexie.Table<Immutable<UOMRow>, string>
-    Indent: Dexie.Table<Immutable<IndentRow>, string>
-    IndentItem: Dexie.Table<Immutable<IndentItemRow>, string>
-    Quotation: Dexie.Table<Immutable<QuotationRow>, string>
-    QuotationItem: Dexie.Table<Immutable<QuotationItemRow>, string>
-    PurchaseOrder: Dexie.Table<Immutable<PurchaseOrderRow>, string>
-    PurchaseOrderItem: Dexie.Table<Immutable<PurchaseOrderItemRow>, string>
-    PurchaseInvoice: Dexie.Table<Immutable<PurchaseInvoiceRow>, string>
-    PurchaseInvoiceItem: Dexie.Table<Immutable<PurchaseInvoiceItemRow>, string>
-    MaterialApprovalSlip: Dexie.Table<Immutable<MaterialApprovalSlipRow>, string>
-    MaterialApprovalSlipItem: Dexie.Table<Immutable<MaterialApprovalSlipItemRow>, string>
-    MaterialRejectionSlip: Dexie.Table<Immutable<MaterialRejectionSlipRow>, string>
-    MaterialRejectionSlipItem: Dexie.Table<Immutable<MaterialRejectionSlipItemRow>, string>
-    MaterialReturnSlip: Dexie.Table<Immutable<MaterialReturnSlipRow>, string>
-    MaterialReturnSlipItem: Dexie.Table<Immutable<MaterialReturnSlipItemRow>, string>
-    MaterialRequistionSlip: Dexie.Table<Immutable<MaterialRequistionSlipRow>, string>
-    MaterialRequistionSlipItem: Dexie.Table<Immutable<MaterialRequistionSlipItemRow>, string>
-    BOM: Dexie.Table<Immutable<BOMRow>, string>
-    BOMItem: Dexie.Table<Immutable<BOMItemRow>, string>
-    ProductionPreparationSlip: Dexie.Table<Immutable<ProductionPreparationSlipRow>, string>
-    ProductionPreparationSlipItem: Dexie.Table<Immutable<ProductionPreparationSlipItemRow>, string>
-    ScrapMaterialSlip: Dexie.Table<Immutable<ScrapMaterialSlipRow>, string>
-    TransferMaterialSlip: Dexie.Table<Immutable<TransferMaterialSlipRow>, string>
-    WarehouseAcceptanceSlip: Dexie.Table<Immutable<WarehouseAcceptanceSlipRow>, string>
+    Region: Dexie.Table<Immutable<RegionRow>, number>
+    Country: Dexie.Table<Immutable<CountryRow>, number>
+    StateType: Dexie.Table<Immutable<StateTypeRow>, number>
+    District: Dexie.Table<Immutable<DistrictRow>, number>
+    Subdistrict: Dexie.Table<Immutable<SubdistrictRow>, number>
+    PostalCode: Dexie.Table<Immutable<PostalCodeRow>, number>
+    Address: Dexie.Table<Immutable<AddressRow>, number>
+    Company: Dexie.Table<Immutable<CompanyRow>, number>
+    CompanyAddress: Dexie.Table<Immutable<CompanyAddressRow>, number>
+    CompanyTagGroup: Dexie.Table<Immutable<CompanyTagGroupRow>, number>
+    CompanyTag: Dexie.Table<Immutable<CompanyTagRow>, number>
+    MappingCompanyTag: Dexie.Table<Immutable<MappingCompanyTagRow>, number>
+    Contact: Dexie.Table<Immutable<ContactRow>, number>
+    ContactAddress: Dexie.Table<Immutable<ContactAddressRow>, number>
+    CompanyContact: Dexie.Table<Immutable<CompanyContactRow>, number>
+    Currency: Dexie.Table<Immutable<CurrencyRow>, number>
+    CurrencyRate: Dexie.Table<Immutable<CurrencyRateRow>, number>
+    Memo: Dexie.Table<Immutable<MemoRow>, number>
+    Bank: Dexie.Table<Immutable<BankRow>, number>
+    BankBranch: Dexie.Table<Immutable<BankBranchRow>, number>
+    BankAccount: Dexie.Table<Immutable<BankAccountRow>, number>
+    BankTransaction: Dexie.Table<Immutable<BankTransactionRow>, number>
+    CompanyBankAccount: Dexie.Table<Immutable<CompanyBankAccountRow>, number>
+    ProductCategoryGroup: Dexie.Table<Immutable<ProductCategoryGroupRow>, number>
+    ProductCategory: Dexie.Table<Immutable<ProductCategoryRow>, number>
+    Product: Dexie.Table<Immutable<ProductRow>, number>
+    CompanyProduct: Dexie.Table<Immutable<CompanyProductRow>, number>
+    ProductTagGroup: Dexie.Table<Immutable<ProductTagGroupRow>, number>
+    ProductTag: Dexie.Table<Immutable<ProductTagRow>, number>
+    MappingProductTag: Dexie.Table<Immutable<MappingProductTagRow>, number>
+    UOM: Dexie.Table<Immutable<UOMRow>, number>
+    Indent: Dexie.Table<Immutable<IndentRow>, number>
+    IndentItem: Dexie.Table<Immutable<IndentItemRow>, number>
+    Quotation: Dexie.Table<Immutable<QuotationRow>, number>
+    QuotationItem: Dexie.Table<Immutable<QuotationItemRow>, number>
+    PurchaseOrder: Dexie.Table<Immutable<PurchaseOrderRow>, number>
+    PurchaseOrderItem: Dexie.Table<Immutable<PurchaseOrderItemRow>, number>
+    PurchaseInvoice: Dexie.Table<Immutable<PurchaseInvoiceRow>, number>
+    PurchaseInvoiceItem: Dexie.Table<Immutable<PurchaseInvoiceItemRow>, number>
+    MaterialApprovalSlip: Dexie.Table<Immutable<MaterialApprovalSlipRow>, number>
+    MaterialApprovalSlipItem: Dexie.Table<Immutable<MaterialApprovalSlipItemRow>, number>
+    MaterialRejectionSlip: Dexie.Table<Immutable<MaterialRejectionSlipRow>, number>
+    MaterialRejectionSlipItem: Dexie.Table<Immutable<MaterialRejectionSlipItemRow>, number>
+    MaterialReturnSlip: Dexie.Table<Immutable<MaterialReturnSlipRow>, number>
+    MaterialReturnSlipItem: Dexie.Table<Immutable<MaterialReturnSlipItemRow>, number>
+    MaterialRequistionSlip: Dexie.Table<Immutable<MaterialRequistionSlipRow>, number>
+    MaterialRequistionSlipItem: Dexie.Table<Immutable<MaterialRequistionSlipItemRow>, number>
+    BOM: Dexie.Table<Immutable<BOMRow>, number>
+    BOMItem: Dexie.Table<Immutable<BOMItemRow>, number>
+    ProductionPreparationSlip: Dexie.Table<Immutable<ProductionPreparationSlipRow>, number>
+    ProductionPreparationSlipItem: Dexie.Table<Immutable<ProductionPreparationSlipItemRow>, number>
+    ScrapMaterialSlip: Dexie.Table<Immutable<ScrapMaterialSlipRow>, number>
+    TransferMaterialSlip: Dexie.Table<Immutable<TransferMaterialSlipRow>, number>
+    WarehouseAcceptanceSlip: Dexie.Table<Immutable<WarehouseAcceptanceSlipRow>, number>
 
     constructor() {
         super('Database')
-        // Note. Remove unused indexes from below.
         this.version(1).stores({
             diffs: '++id',
-            Region: '&id, name',
-            Country: '&id, [region+name], region, name',
-            State: '&id, [country+name], country, name',
-            District: '&id, [state+name], state, name',
-            Subdistrict: '&id, [district+name], district, name',
-            PostalCode: '&id, [subdistrict+name], subdistrict, name',
-            Address: '&id, [postalCode+line1+line2], postalCode',
-            Company: '&id, name',
-            CompanyAddress: '&id, [company+name], [company+address]',
-            CompanyTagGroup: '&id, name',
-            CompanyTag: '&id, [group+name], group, name',
-            MappingCompanyTag: '&id, [company+tag], company, tag',
-            Contact: '&id, name',
-            ContactAddress: '&id, [contact+name], [contact+address]',
-            CompanyContact: '&id, [company+contact], company, contact',
-            Currency: '&id, name',
-            CurrencyRate: '&id, startTime, endTime',
-            Memo: '&id, company',
-            Bank: '&id, [country+name], country, name',
-            BankBranch: '&id, [bank+name], bank, name',
-            BankAccount: '&id, [bank+accountNumber], bank',
-            BankTransaction: '&id, memo, bankAccount',
-            CompanyBankAccount: '&id, [company+bankAccount]',
-            ProductCategoryGroup: '&id, &parent',
-            ProductCategory: '&id, [parent+name], [parent+code]',
-            Product: '&id, name',
-            CompanyProduct: '&id, [company+product], company',
-            ProductTagGroup: '&id, name',
-            ProductTag: '&id, [group+name], group, name',
-            MappingProductTag: '&id, [product+tag], product, tag',
-            UOM: '&id, [product+name], product',
-            Indent: '&id',
-            IndentItem: '&id, [indent+product], indent',
-            Quotation: '&id',
-            QuotationItem: '&id, [quotation+indentItem], quotation',
-            PurchaseOrder: '&id',
-            PurchaseOrderItem: '&id, [purchaseOrder+quotationItem], purchaseOrder',
-            PurchaseInvoice: '&id',
-            PurchaseInvoiceItem: '&id, [purchaseInvoice+purchaseOrderItem], purchaseInvoice',
-            MaterialApprovalSlip: '&id',
-            MaterialApprovalSlipItem: '&id, [materialApprovalSlip+PurchaseInvoiceItem], materialApprovalSlip',
-            MaterialRejectionSlip: '&id',
-            MaterialRejectionSlipItem: '&id, [materialRejectionSlip+purchaseInvoiceItem], materialRejectionSlip',
-            MaterialReturnSlip: '&id',
-            MaterialReturnSlipItem: '&id, [materialReturnSlip+materialRejectionSlipItem], materialReturnSlip',
-            MaterialRequistionSlip: '&id',
-            MaterialRequistionSlipItem: '&id, [materialRequistionSlip+materialApprovalSlipItem], materialRequistionSlip',
-            BOM: '&id, name',
-            BOMItem: '&id, [bom+product], bom',
-            ProductionPreparationSlip: '&id',
-            ProductionPreparationSlipItem: '&id, [productionPreparationSlip+bomItem], productionPreparationSlip',
-            ScrapMaterialSlip: '&id',
-            TransferMaterialSlip: '&id',
-            WarehouseAcceptanceSlip: '&id'
+            Region:'++id, [name]',
+            Country:'++id, [region+name]',
+            StateType:'++id, [country+name]',
+            District:'++id, [state+name]',
+            Subdistrict:'++id, [district+name]',
+            PostalCode:'++id, [subdistrict+name]',
+            Address:'++id, [postalCode+line1+line2]',
+            Company:'++id, [name]',
+            CompanyAddress:'++id, [company+name], [company+address]',
+            CompanyTagGroup:'++id, [name]',
+            CompanyTag:'++id, [group+name]',
+            MappingCompanyTag:'++id, [company+tag]',
+            Contact:'++id, [name]',
+            ContactAddress:'++id, [contact+name], [contact+address]',
+            CompanyContact:'++id, [company+contact]',
+            Currency:'++id, [name]',
+            CurrencyRate:'++id',
+            Memo:'++id',
+            Bank:'++id, [country+name]',
+            BankBranch:'++id, [bank+name], [bank+ifsc]',
+            BankAccount:'++id, [bank+accountNumber]',
+            BankTransaction:'++id',
+            CompanyBankAccount:'++id, [company+bankAccount]',
+            ProductCategoryGroup:'++id, [parent]',
+            ProductCategory:'++id, [parent+name], [parent+code]',
+            Product:'++id, [name]',
+            CompanyProduct:'++id, [company+product]',
+            ProductTagGroup:'++id, [name]',
+            ProductTag:'++id, [group+name]',
+            MappingProductTag:'++id, [product+tag]',
+            UOM:'++id, [product+name]',
+            Indent:'++id',
+            IndentItem:'++id, [indent+product]',
+            Quotation:'++id',
+            QuotationItem:'++id, [quotation+indentItem]',
+            PurchaseOrder:'++id',
+            PurchaseOrderItem:'++id, [purchaseOrder+quotationItem]',
+            PurchaseInvoice:'++id',
+            PurchaseInvoiceItem:'++id, [purchaseInvoice+purchaseOrderItem]',
+            MaterialApprovalSlip:'++id',
+            MaterialApprovalSlipItem:'++id, [materialApprovalSlip+purchaseInvoiceItem]',
+            MaterialRejectionSlip:'++id',
+            MaterialRejectionSlipItem:'++id, [materialRejectionSlip+purchaseInvoiceItem]',
+            MaterialReturnSlip:'++id',
+            MaterialReturnSlipItem:'++id, [materialReturnSlip+materialRejectionSlipItem]',
+            MaterialRequistionSlip:'++id',
+            MaterialRequistionSlipItem:'++id, [materialRequistionSlip+materialApprovalSlipItem]',
+            BOM:'++id, [name]',
+            BOMItem:'++id, [bom+product]',
+            ProductionPreparationSlip:'++id',
+            ProductionPreparationSlipItem:'++id, [productionPreparationSlip+bomItem]',
+            ScrapMaterialSlip:'++id',
+            TransferMaterialSlip:'++id',
+            WarehouseAcceptanceSlip:'++id'
         })
-
+        
         this.diffs = this.table('diffs')
         this.Region = this.table('Region')
         this.Country = this.table('Country')
-        this.State = this.table('State')
+        this.StateType = this.table('StateType')
         this.District = this.table('District')
         this.Subdistrict = this.table('Subdistrict')
         this.PostalCode = this.table('PostalCode')
@@ -179,7 +178,7 @@ class Database extends Dexie {
         this.diffs.mapToClass(DiffRow)
         this.Region.mapToClass(RegionRow)
         this.Country.mapToClass(CountryRow)
-        this.State.mapToClass(StateRow)
+        this.StateType.mapToClass(StateTypeRow)
         this.District.mapToClass(DistrictRow)
         this.Subdistrict.mapToClass(SubdistrictRow)
         this.PostalCode.mapToClass(PostalCodeRow)

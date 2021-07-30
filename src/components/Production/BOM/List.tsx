@@ -12,7 +12,7 @@ import { types } from '../../../main/types'
 import { withRouter } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { BOMRow, DiffRow } from '../../../main/rows'
+import { DiffRow, BOMRow } from '../../../main/rows'
 import { BOMVariable } from '../../../main/variables'
 
 type State = Immutable<{
@@ -36,7 +36,7 @@ const initialState: State = {
     limit: 5,
     offset: 0,
     page: 1,
-    columns: Vector.of()
+    columns: Vector.of(['values', 'name'])
 }
 
 function reducer(state: Draft<State>, action: Action) {
@@ -89,7 +89,7 @@ function Component(props) {
         <Container area={none} layout={Grid.layouts.main} className='p-10'>
             <Item area={Grid.header} align='center' className='flex'>
                 <Title>{type.name}s</Title>
-                <button onClick={() => { props.history.push('/bom') }} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2'>+</button>
+                <button onClick={() => { props.history.push('/b-o-m') }} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2'>+</button>
             </Item>
             <Item area={Grid.filter} justify='end' align='center'>
                 <Button onClick={() => setOpen(true)}>Filter</Button>

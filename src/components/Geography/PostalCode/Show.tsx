@@ -9,22 +9,22 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { AddressVariable, PostalCode, PostalCodeVariable, Subdistrict, SubdistrictVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter, Link } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
 import { iff, when } from '../../../main/utils'
 import { db } from '../../../main/dexie'
-import { DiffRow, SubdistrictRow, PostalCodeRow, AddressRow } from '../../../main/rows'
 import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { DiffRow, AddressRow, PostalCodeRow, SubdistrictRow } from '../../../main/rows'
+import { Address, AddressVariable, PostalCode, PostalCodeVariable, Subdistrict, SubdistrictVariable } from '../../../main/variables'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: PostalCodeVariable
-    items: {
+    addressList: {
         typeName: 'Address'
         query: Query
         limit: number
@@ -39,40 +39,40 @@ type State = Immutable<{
 export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
-
+ 
     | ['variable', 'subdistrict', Subdistrict]
     | ['variable', 'name', string]
 
-    | ['items', 'limit', number]
-    | ['items', 'offset', number]
-    | ['items', 'page', number]
-    | ['items', 'query', Args]
-    | ['items', 'variable', 'line1', string]
-    | ['items', 'variable', 'line2', string]
-    | ['items', 'variable', 'latitude', number]
-    | ['items', 'variable', 'longitude', number]
-    | ['items', 'addVariable']
-
+    | ['addressList', 'limit', number]
+    | ['addressList', 'offset', number]
+    | ['addressList', 'page', number]
+    | ['addressList', 'query', Args]
+    | ['addressList', 'variable', 'postalCode', PostalCode]
+    | ['addressList', 'variable', 'line1', string]
+    | ['addressList', 'variable', 'line2', string]
+    | ['addressList', 'variable', 'latitude', number]
+    | ['addressList', 'variable', 'longitude', number]
+    | ['addressList', 'addVariable']
     | ['replace', 'variable', PostalCodeVariable]
-    | ['replace', 'items', HashSet<AddressVariable>]
+    | ['replace', 'addressList', HashSet<AddressVariable>]
 
 function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
         variable: new PostalCodeVariable(-1, { subdistrict: new Subdistrict(-1), name: '' }),
-        items: {
+        addressList: {
             typeName: 'Address',
             query: getQuery('Address'),
             limit: 5,
             offset: 0,
             page: 1,
-            columns: Vector.of(['values', 'line1'], ['values', 'line2'], ['values', 'latitude'], ['values', 'longitude']),
+            columns: Vector.of(['values', 'postalCode'], ['values', 'line1'], ['values', 'line2'], ['values', 'latitude'], ['values', 'longitude']),
             variable: new AddressVariable(-1, { postalCode: new PostalCode(-1), line1: '', line2: '', latitude: 0, longitude: 0 }),
             variables: HashSet.of<AddressVariable>()
         }
     }
-
+    
     function reducer(state: Draft<State>, action: Action) {
         switch (action[0]) {
             case 'toggleMode': {
@@ -103,10 +103,11 @@ function Component(props) {
                 }
                 break
             }
-            case 'items': {
+            
+            case 'addressList': {
                 switch (action[1]) {
                     case 'limit': {
-                        state[action[0]].limit = Math.max(initialState.items.limit, action[2])
+                        state[action[0]].limit = Math.max(initialState.addressList.limit, action[2])
                         break
                     }
                     case 'offset': {
@@ -124,34 +125,36 @@ function Component(props) {
                     }
                     case 'variable': {
                         switch (action[2]) {
+                            case 'postalCode': {
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
+                                break
+                            }
                             case 'line1': {
-                                state[action[0]][action[1]][action[2]] = action[3]
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
                                 break
                             }
                             case 'line2': {
-                                state[action[0]][action[1]][action[2]] = action[3]
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
                                 break
                             }
                             case 'latitude': {
-                                state[action[0]][action[1]][action[2]] = action[3]
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
                                 break
                             }
                             case 'longitude': {
-                                state[action[0]][action[1]][action[2]] = action[3]
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
                                 break
+                            }
+                            default: {
+                                const _exhaustiveCheck: never = action;
+                                return _exhaustiveCheck;
                             }
                         }
                         break
                     }
                     case 'addVariable': {
-                        state.items.variables = state.items.variables.add(new AddressVariable(-1, {
-                            postalCode: new PostalCode(-1),
-                            line1: state.items.variable.values.line1,
-                            line2: state.items.variable.values.line2,
-                            latitude: state.items.variable.values.latitude,
-                            longitude: state.items.variable.values.longitude
-                        }))
-                        state.items.variable = initialState.items.variable
+                        state.addressList.variables = state.addressList.variables.add(new AddressVariable(-1, {postalCode: new PostalCode(state.addressList.variable.values.postalCode.hashCode()), line1: state.addressList.variable.values.line1, line2: state.addressList.variable.values.line2, latitude: state.addressList.variable.values.latitude, longitude: state.addressList.variable.values.longitude}))
+                        state.addressList.variable = initialState.addressList.variable
                         break
                     }
                     default: {
@@ -167,8 +170,8 @@ function Component(props) {
                         state.variable = action[2]
                         break
                     }
-                    case 'items': {
-                        state.items.variables = action[2]
+                    case 'addressList': {
+                        state.addressList.variables = action[2]
                         break
                     }
                     default: {
@@ -187,12 +190,12 @@ function Component(props) {
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const postalCode = types['PostalCode']
-    const address = types['Address']
-
-    const [addItemDrawer, toggleAddItemDrawer] = useState(false)
-    const [itemFilter, toggleItemFilter] = useState(false)
-
+    const postalCodeType = types['PostalCode']
+    const addressType = types['Address']
+    
+    const [addAddressDrawer, toggleAddAddressDrawer] = useState(false)
+    const [addressFilter, toggleAddressFilter] = useState(false)
+    
     const setVariable = useCallback(async () => {
         if (props.match.params[0]) {
             const rows = await db.PostalCode.toArray()
@@ -205,75 +208,91 @@ function Component(props) {
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as PostalCodeVariable])
-                const itemRows = await db.Address.toArray()
-                var composedItemVariables = HashSet.of<Immutable<AddressVariable>>().addAll(itemRows ? itemRows.map(x => AddressRow.toVariable(x)) : [])
+
+                const addressRows = await db.Address.toArray()
+                var composedAddressVariables = HashSet.of<Immutable<AddressVariable>>().addAll(addressRows ? addressRows.map(x => AddressRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    composedAddressVariables = composedAddressVariables.filter(x => !diff.variables[state.addressList.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.addressList.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.addressList.variable.typeName].replace)
                 })
-                const items = composedItemVariables.filter(variable => variable.values.postalCode.hashCode() === props.match.params[0])
-                dispatch(['replace', 'items', items as HashSet<AddressVariable>])
+                dispatch(['replace', 'addressList', composedAddressVariables.filter(variable => variable.values.postalCode.hashCode() === props.match.params[0]) as HashSet<AddressVariable>])
             }
         }
-    }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
+    }, [state.variable.typeName, state.addressList.variable.typeName, props.match.params, dispatch])
 
     useEffect(() => { setVariable() }, [setVariable])
 
-    const rows = useLiveQuery(() => db.Subdistrict.orderBy('name').toArray())?.map(x => SubdistrictRow.toVariable(x))
-    var subdistricts = HashSet.of<Immutable<SubdistrictVariable>>().addAll(rows ? rows : [])
+    const addressRows = useLiveQuery(() => db.Address.toArray())?.map(x => AddressRow.toVariable(x))
+    var addressList = HashSet.of<Immutable<AddressVariable>>().addAll(addressRows ? addressRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        subdistricts = subdistricts.filter(x => !diff.variables.Subdistrict.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Subdistrict.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Subdistrict.replace)
+        addressList = addressList.filter(x => !diff.variables.Address.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Address.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Address.replace)
+    })
+
+    const postalCodeRows = useLiveQuery(() => db.PostalCode.toArray())?.map(x => PostalCodeRow.toVariable(x))
+    var postalCodeList = HashSet.of<Immutable<PostalCodeVariable>>().addAll(postalCodeRows ? postalCodeRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        postalCodeList = postalCodeList.filter(x => !diff.variables.PostalCode.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.PostalCode.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.PostalCode.replace)
+    })
+
+    const subdistrictRows = useLiveQuery(() => db.Subdistrict.toArray())?.map(x => SubdistrictRow.toVariable(x))
+    var subdistrictList = HashSet.of<Immutable<SubdistrictVariable>>().addAll(subdistrictRows ? subdistrictRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        subdistrictList = subdistrictList.filter(x => !diff.variables.Subdistrict.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Subdistrict.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Subdistrict.replace)
     })
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
-            default: {
-                switch (event.target.name) {
-                    case 'subdistrict': {
-                        dispatch(['variable', event.target.name, new Subdistrict(parseInt(event.target.value))])
-                        break
-                    }
-                    case 'name': {
-                        dispatch(['variable', event.target.name, event.target.value])
-                        break
-                    }
-                }
+            case 'subdistrict': {
+                dispatch(['variable', event.target.name, new Subdistrict(parseInt(String(event.target.value)))])
+                break
+            }
+            case 'name': {
+                dispatch(['variable', event.target.name, String(event.target.value)])
+                break
             }
         }
     }
-
-    const onItemInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onAddressInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
-            default: {
-                switch (event.target.name) {
-                    case 'line1': {
-                        dispatch(['items', 'variable', event.target.name, event.target.value])
-                        break
-                    }
-                    case 'line2': {
-                        dispatch(['items', 'variable', event.target.name, event.target.value])
-                        break
-                    }
-                    case 'latitude': {
-                        dispatch(['items', 'variable', event.target.name, parseFloat(event.target.value)])
-                        break
-                    }
-                    case 'longitude': {
-                        dispatch(['items', 'variable', event.target.name, parseFloat(event.target.value)])
-                        break
-                    }
-                }
+            case 'postalCode': {
+                dispatch(['addressList', 'variable', event.target.name, new PostalCode(parseInt(String(event.target.value)))])
+                break
+            }
+            case 'line1': {
+                dispatch(['addressList', 'variable', event.target.name, String(event.target.value)])
+                break
+            }
+            case 'line2': {
+                dispatch(['addressList', 'variable', event.target.name, String(event.target.value)])
+                break
+            }
+            case 'latitude': {
+                dispatch(['addressList', 'variable', event.target.name, parseInt(String(event.target.value))])
+                break
+            }
+            case 'longitude': {
+                dispatch(['addressList', 'variable', event.target.name, parseInt(String(event.target.value))])
+                break
             }
         }
     }
 
-    const updateItemsQuery = (list: 'items') => {
+    const updateItemsQuery = (list: 'addressList') => {
         const fx = (args: Args) => {
-            dispatch([list, 'query', args])
+            switch (list) {
+                case 'addressList': {
+                    dispatch([list, 'query', args])
+                    break
+                }
+                default: {
+                    const _exhaustiveCheck: never = list
+                    return _exhaustiveCheck
+                }
+            }
         }
         return fx
     }
 
-    const updatePage = (list: 'items') => {
+    const updatePage = (list: 'addressList') => {
         const fx = (args: ['limit', number] | ['offset', number] | ['page', number]) => {
             dispatch([list, args[0], args[1]])
         }
@@ -284,12 +303,13 @@ function Component(props) {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createPostalCode, {
             subdistrict: state.variable.values.subdistrict.hashCode(),
             name: state.variable.values.name,
-            items: state.items.variables.toArray().map(state => {
+            addressList: state.addressList.variables.toArray().map(variable => {
                 return {
-                    line1: state.values.line1,
-                    line2: state.values.line2,
-                    latitude: state.values.latitude,
-                    longitude: state.values.longitude
+                    postalCode: variable.values.postalCode.hashCode(),
+                    line1: variable.values.line1,
+                    line2: variable.values.line2,
+                    latitude: variable.values.latitude,
+                    longitude: variable.values.longitude
                 }
             })
         })
@@ -321,9 +341,9 @@ function Component(props) {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
                     <Title>{when(state.mode, {
-                        'create': `Create PostalCode`,
-                        'update': `Update PostalCode`,
-                        'show': `PostalCode`
+                        'create': `Create Postal Code`,
+                        'update': `Update Postal Code`,
+                        'show': `Postal Code`
                     })}</Title>
                 </Item>
                 <Item area={Grid.button} justify='end' align='center' className='flex'>
@@ -331,7 +351,7 @@ function Component(props) {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
                                 await createVariable()
-                                props.history.push('/postal-codes')
+                                props.history.push('/postal-code-list')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
                                 <>
@@ -341,13 +361,13 @@ function Component(props) {
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
                                         await modifyVariable()
-                                        props.history.push('/postal-codes')
+                                        props.history.push('/postal-code-list')
                                     }}>Update</Button>
                                 </>,
                                 <>
                                     <Button onClick={async () => {
                                         await deleteVariable()
-                                        props.history.push('/postal-codes')
+                                        props.history.push('/postal-code-list')
                                     }}>Delete</Button>
                                     <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>
                                 </>))
@@ -355,25 +375,25 @@ function Component(props) {
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>
                     <Item>
-                        <Label>{postalCode.keys.subdistrict.name}</Label>
+                        <Label>{postalCodeType.keys.subdistrict}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.subdistrict.hashCode()} name='subdistrict'>
-                                    <option value='' selected disabled hidden>Select Subsistrict</option>
-                                    {subdistricts.toArray().map(x => <option value={x.id.hashCode()}>{x.values.name}</option>)}
+                                    <option value='' selected disabled hidden>Select Subdistrict</option>
+                                    {subdistrictList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{
-                                    iff(subdistricts.filter(x => x.id.hashCode() === state.variable.values.subdistrict.hashCode()).length() !== 0,
+                                    iff(subdistrictList.filter(x => x.id.hashCode() === state.variable.values.subdistrict.hashCode()).length() !== 0,
                                         () => {
-                                            const referencedVariable = subdistricts.filter(x => x.id.hashCode() === state.variable.values.subdistrict.hashCode()).toArray()[0] as SubdistrictVariable
-                                            return <Link to={`/subdistrict/${referencedVariable.id.hashCode()}`}>{referencedVariable.values.name}</Link>
+                                            const referencedVariable = subdistrictList.filter(x => x.id.hashCode() === state.variable.values.subdistrict.hashCode()).toArray()[0] as SubdistrictVariable
+                                            return <Link to={`/subdistrict/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
                                         }, <Link to={`/subdistrict/${state.variable.values.subdistrict.hashCode()}`}>{state.variable.values.subdistrict.hashCode()}</Link>)
                                 }</div>
                             )
                         }
                     </Item>
                     <Item>
-                        <Label>{postalCode.name}</Label>
+                        <Label>{postalCodeType.keys.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Input type='text' onChange={onVariableInputChange} value={state.variable.values.name} name='name' />,
@@ -382,50 +402,88 @@ function Component(props) {
                         }
                     </Item>
                 </Container>
-                <Container area={Grid.uom} layout={Grid2.layouts.main}>
+                <Container area={Grid.addressArea} layout={Grid2.layouts.main}>
                     <Item area={Grid2.header} className='flex items-center'>
-                        <Title>{address.name}s</Title>
+                        <Title> Address List</Title>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>,
+                                <button onClick={() => toggleAddAddressDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>,
                                 undefined
                             )
                         }
                     </Item>
                     <Item area={Grid2.filter} justify='end' align='center' className='flex'>
-                        <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
-                        <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
-                            <Filter typeName='Address' query={state['items'].query} updateQuery={updateItemsQuery('items')} />
+                        <Button onClick={() => toggleAddressFilter(true)}>Filter</Button>
+                        <Drawer open={addressFilter} onClose={() => toggleAddressFilter(false)} anchor={'right'}>
+                            <Filter typeName='Address' query={state['addressList'].query} updateQuery={updateItemsQuery('addressList')} />
                         </Drawer>
-                        <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
+                        <Drawer open={addAddressDrawer} onClose={() => toggleAddAddressDrawer(false)} anchor={'right'}>
                             <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
-                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add {address.name}</div>
+                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add {addressType.name}</div>
                                 <Container area={none} layout={Grid.layouts.uom} className=''>
                                     <Item>
-                                        <Label>{address.keys.line1.name}</Label>
-                                        <Input type='text' onChange={onItemInputChange} name='line1' />
+                                        <Label>{addressType.keys.postalCode}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Select onChange={onAddressInputChange} value={state.addressList.variable.values.postalCode.hashCode()} name='postalCode'>
+                                                    <option value='' selected disabled hidden>Select Postal Code</option>
+                                                    {postalCodeList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
+                                                </Select>,
+                                                <div className='font-bold text-xl'>{
+                                                    iff(postalCodeList.filter(x => x.id.hashCode() === state.addressList.variable.values.postalCode.hashCode()).length() !== 0,
+                                                        () => {
+                                                            const referencedVariable = postalCodeList.filter(x => x.id.hashCode() === state.addressList.variable.values.postalCode.hashCode()).toArray()[0] as PostalCodeVariable
+                                                            return <Link to={`/postal-code/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
+                                                        }, <Link to={`/postal-code/${state.addressList.variable.values.postalCode.hashCode()}`}>{state.addressList.variable.values.postalCode.hashCode()}</Link>)
+                                                }</div>
+                                            )
+                                        }
                                     </Item>
                                     <Item>
-                                        <Label>{address.keys.line2.name}</Label>
-                                        <Input type='text' onChange={onItemInputChange} name='line2' />
+                                        <Label>{addressType.keys.line1}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Input type='text' onChange={onAddressInputChange} value={state.addressList.variable.values.line1} name='line1' />,
+                                                <div className='font-bold text-xl'>{state.addressList.variable.values.line1}</div>
+                                            )
+                                        }
                                     </Item>
                                     <Item>
-                                        <Label>{address.keys.latitude.name}</Label>
-                                        <Input type='text' onChange={onItemInputChange} name='latitude' />
+                                        <Label>{addressType.keys.line2}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Input type='text' onChange={onAddressInputChange} value={state.addressList.variable.values.line2} name='line2' />,
+                                                <div className='font-bold text-xl'>{state.addressList.variable.values.line2}</div>
+                                            )
+                                        }
                                     </Item>
                                     <Item>
-                                        <Label>{address.keys.longitude.name}</Label>
-                                        <Input type='text' onChange={onItemInputChange} name='longitude' />
+                                        <Label>{addressType.keys.latitude}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Input type='number' onChange={onAddressInputChange} value={state.addressList.variable.values.latitude} name='latitude' />,
+                                                <div className='font-bold text-xl'>{state.addressList.variable.values.latitude}</div>
+                                            )
+                                        }
+                                    </Item>
+                                    <Item>
+                                        <Label>{addressType.keys.longitude}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Input type='number' onChange={onAddressInputChange} value={state.addressList.variable.values.longitude} name='longitude' />,
+                                                <div className='font-bold text-xl'>{state.addressList.variable.values.longitude}</div>
+                                            )
+                                        }
                                     </Item>
                                     <Item justify='center' align='center'>
-                                        <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>
+                                        <Button onClick={() => dispatch(['addressList', 'addVariable'])}>Add</Button>
                                     </Item>
                                 </Container>
                             </div>
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable)).toArray()} columns={state['items'].columns.toArray()} />
-                </Container >
+                    <Table area={Grid2.table} state={state['addressList']} updatePage={updatePage('addressList')} variables={state.addressList.variables.filter(variable => applyFilter(state['addressList'].query, variable)).toArray()} columns={state['addressList'].columns.toArray()} />
+                </Container > 
             </Container>
         }, <div>Variable not found</div>)
 }

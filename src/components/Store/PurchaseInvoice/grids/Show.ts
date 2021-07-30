@@ -4,7 +4,7 @@ import { GridLayout, GridArea, none, validateLayout } from '../../../../main/com
 export const header: GridArea = new GridArea('header')
 export const button: GridArea = new GridArea('button')
 export const details: GridArea = new GridArea('details')
-export const uom: GridArea = new GridArea('uom')
+export const purchaseInvoiceItemArea: GridArea = new GridArea('purchaseInvoiceItemArea')
 
 export const layouts: { [index: string]: GridLayout } = {
     main: validateLayout({
@@ -18,7 +18,8 @@ export const layouts: { [index: string]: GridLayout } = {
                 Vector.of(header),
                 Vector.of(details),
                 Vector.of(button),
-                Vector.of(uom)
+Vector.of(purchaseInvoiceItemArea)
+
             )
         },
         layout_sm: {
@@ -27,7 +28,8 @@ export const layouts: { [index: string]: GridLayout } = {
             areas: Vector.of(
                 Vector.of(header, button),
                 Vector.of(details, details),
-                Vector.of(uom, uom)
+Vector.of(purchaseInvoiceItemArea, purchaseInvoiceItemArea)
+
             )
         },
         layout_md: {
@@ -36,7 +38,8 @@ export const layouts: { [index: string]: GridLayout } = {
             areas: Vector.of(
                 Vector.of(header, header, button),
                 Vector.of(details, details, details),
-                Vector.of(uom, uom, uom)
+Vector.of(purchaseInvoiceItemArea, purchaseInvoiceItemArea, purchaseInvoiceItemArea)
+
             )
         },
         layout_lg: {
@@ -45,7 +48,8 @@ export const layouts: { [index: string]: GridLayout } = {
             areas: Vector.of(
                 Vector.of(none, header, header, none, button, none),
                 Vector.of(none, details, details, details, details, none),
-                Vector.of(none, uom, uom, uom, uom, none)
+Vector.of(none, purchaseInvoiceItemArea, purchaseInvoiceItemArea, purchaseInvoiceItemArea, purchaseInvoiceItemArea, none)
+
             )
         },
         layout_xl: {
@@ -54,7 +58,8 @@ export const layouts: { [index: string]: GridLayout } = {
             areas: Vector.of(
                 Vector.of(none, header, header, none, button, none),
                 Vector.of(none, details, details, details, details, none),
-                Vector.of(none, uom, uom, uom, uom, none)
+Vector.of(none, purchaseInvoiceItemArea, purchaseInvoiceItemArea, purchaseInvoiceItemArea, purchaseInvoiceItemArea, none)
+
             )
         }
     }),

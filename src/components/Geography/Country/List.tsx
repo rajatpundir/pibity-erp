@@ -8,11 +8,12 @@ import * as Grid from './grids/List'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
 import Drawer from '@material-ui/core/Drawer'
 import { useState } from 'react'
+import { types } from '../../../main/types'
 import { withRouter } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { CountryVariable } from '../../../main/variables'
 import { DiffRow, CountryRow } from '../../../main/rows'
+import { CountryVariable } from '../../../main/variables'
 
 type State = Immutable<{
     typeName: 'Country'
@@ -74,6 +75,7 @@ function Component(props) {
     })
     const variables = composedVariables.filter(variable => applyFilter(state.query, variable)).reverse().toArray()
     const [open, setOpen] = useState(false)
+    const type = types[state.typeName]
 
     const updateQuery = (args: Args) => {
         dispatch(['query', args])
@@ -86,7 +88,7 @@ function Component(props) {
     return (
         <Container area={none} layout={Grid.layouts.main} className='p-10'>
             <Item area={Grid.header} align='center' className='flex'>
-                <Title>Countries</Title>
+                <Title>{type.name}s</Title>
                 <button onClick={() => { props.history.push('/country') }} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2'>+</button>
             </Item>
             <Item area={Grid.filter} justify='end' align='center'>
@@ -102,6 +104,6 @@ function Component(props) {
 
 export default withRouter(Component)
 
-const Title = tw.div`text-4xl text-gray-800 font-bold mx-1 inline-block`
+const Title = tw.div`text-4xl text-gray-800 font-bold mx-1 inline-block whitespace-nowrap`
 
 const Button = tw.button`bg-gray-900 text-white text-center font-bold p-2 mx-1 uppercase w-40 h-full max-w-sm rounded-lg focus:outline-none`

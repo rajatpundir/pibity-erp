@@ -1,29 +1,30 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
 import { HashSet, Vector } from 'prelude-ts'
 import { Drawer } from '@material-ui/core'
+import { executeCircuit } from '../../../main/circuit'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { Indent, IndentItemVariable, IndentVariable, Product, ProductVariable, UOM, UOMVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
-import { withRouter } from 'react-router-dom'
-import { executeCircuit } from '../../../main/circuit'
+import { withRouter, Link } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
 import { iff, when } from '../../../main/utils'
-import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { DiffRow, IndentItemRow, IndentRow, ProductRow, UOMRow } from '../../../main/rows'
+import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
+import { useLiveQuery } from 'dexie-react-hooks'
+import { DiffRow, IndentRow, IndentItemRow, ProductRow, UOMRow } from '../../../main/rows'
+import { Indent, IndentVariable, IndentItem, IndentItemVariable, Product, ProductVariable, UOM, UOMVariable } from '../../../main/variables'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: IndentVariable
-    items: {
+    indentItemList: {
         typeName: 'IndentItem'
         query: Query
         limit: number
@@ -38,36 +39,44 @@ type State = Immutable<{
 export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
+ 
 
-    | ['items', 'limit', number]
-    | ['items', 'offset', number]
-    | ['items', 'page', number]
-    | ['items', 'query', Args]
-    | ['items', 'variable', 'product', Product]
-    | ['items', 'variable', 'quantity', number]
-    | ['items', 'variable', 'uom', UOM]
-    | ['items', 'addVariable']
-
+    | ['indentItemList', 'limit', number]
+    | ['indentItemList', 'offset', number]
+    | ['indentItemList', 'page', number]
+    | ['indentItemList', 'query', Args]
+    | ['indentItemList', 'variable', 'indent', Indent]
+    | ['indentItemList', 'variable', 'product', Product]
+    | ['indentItemList', 'variable', 'quantity', number]
+    | ['indentItemList', 'variable', 'uom', UOM]
+    | ['indentItemList', 'variable', 'ordered', number]
+    | ['indentItemList', 'variable', 'received', number]
+    | ['indentItemList', 'variable', 'approved', number]
+    | ['indentItemList', 'variable', 'rejected', number]
+    | ['indentItemList', 'variable', 'returned', number]
+    | ['indentItemList', 'variable', 'requisted', number]
+    | ['indentItemList', 'variable', 'consumed', number]
+    | ['indentItemList', 'addVariable']
     | ['replace', 'variable', IndentVariable]
-    | ['replace', 'items', HashSet<IndentItemVariable>]
+    | ['replace', 'indentItemList', HashSet<IndentItemVariable>]
 
 function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new IndentVariable(-1, {}),
-        items: {
+        variable: new IndentVariable(-1, {  }),
+        indentItemList: {
             typeName: 'IndentItem',
             query: getQuery('IndentItem'),
             limit: 5,
             offset: 0,
             page: 1,
-            columns: Vector.of(['values', 'product'], ['values', 'quantity'], ['values', 'uom', 'values', 'name'], ['values', 'ordered'], ['values', 'received'], ['values', 'approved'], ['values', 'rejected'], ['values', 'returned'], ['values', 'requisted'], ['values', 'consumed']),
+            columns: Vector.of(['values', 'indent'], ['values', 'product'], ['values', 'quantity'], ['values', 'uom'], ['values', 'ordered'], ['values', 'received'], ['values', 'approved'], ['values', 'rejected'], ['values', 'returned'], ['values', 'requisted'], ['values', 'consumed']),
             variable: new IndentItemVariable(-1, { indent: new Indent(-1), product: new Product(-1), quantity: 0, uom: new UOM(-1), ordered: 0, received: 0, approved: 0, rejected: 0, returned: 0, requisted: 0, consumed: 0 }),
             variables: HashSet.of<IndentItemVariable>()
         }
     }
-
+    
     function reducer(state: Draft<State>, action: Action) {
         switch (action[0]) {
             case 'toggleMode': {
@@ -81,10 +90,12 @@ function Component(props) {
             case 'resetVariable': {
                 return action[1]
             }
-            case 'items': {
+            
+            
+            case 'indentItemList': {
                 switch (action[1]) {
                     case 'limit': {
-                        state[action[0]].limit = Math.max(initialState.items.limit, action[2])
+                        state[action[0]].limit = Math.max(initialState.indentItemList.limit, action[2])
                         break
                     }
                     case 'offset': {
@@ -102,16 +113,48 @@ function Component(props) {
                     }
                     case 'variable': {
                         switch (action[2]) {
+                            case 'indent': {
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
+                                break
+                            }
                             case 'product': {
-                                state[action[0]][action[1]][action[2]] = action[3]
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
                                 break
                             }
                             case 'quantity': {
-                                state[action[0]][action[1]][action[2]] = action[3]
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
                                 break
                             }
                             case 'uom': {
-                                state[action[0]][action[1]][action[2]] = action[3]
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
+                                break
+                            }
+                            case 'ordered': {
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
+                                break
+                            }
+                            case 'received': {
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
+                                break
+                            }
+                            case 'approved': {
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
+                                break
+                            }
+                            case 'rejected': {
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
+                                break
+                            }
+                            case 'returned': {
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
+                                break
+                            }
+                            case 'requisted': {
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
+                                break
+                            }
+                            case 'consumed': {
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
                                 break
                             }
                             default: {
@@ -122,13 +165,13 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.items.variables = state.items.variables.add(new IndentItemVariable(-1, { indent: new Indent(state.items.variable.values.indent.hashCode()), product: new Product(state.items.variable.values.product.hashCode()), quantity: state.items.variable.values.quantity, uom: new UOM(state.items.variable.values.uom.hashCode()), ordered: state.items.variable.values.ordered, received: state.items.variable.values.received, approved: state.items.variable.values.approved, rejected: state.items.variable.values.rejected, returned: state.items.variable.values.returned, requisted: state.items.variable.values.requisted, consumed: state.items.variable.values.consumed }))
-                        state.items.variable = initialState.items.variable
+                        state.indentItemList.variables = state.indentItemList.variables.add(new IndentItemVariable(-1, {indent: new Indent(state.indentItemList.variable.values.indent.hashCode()), product: new Product(state.indentItemList.variable.values.product.hashCode()), quantity: state.indentItemList.variable.values.quantity, uom: new UOM(state.indentItemList.variable.values.uom.hashCode()), ordered: state.indentItemList.variable.values.ordered, received: state.indentItemList.variable.values.received, approved: state.indentItemList.variable.values.approved, rejected: state.indentItemList.variable.values.rejected, returned: state.indentItemList.variable.values.returned, requisted: state.indentItemList.variable.values.requisted, consumed: state.indentItemList.variable.values.consumed}))
+                        state.indentItemList.variable = initialState.indentItemList.variable
                         break
                     }
                     default: {
-                        const _exhaustiveCheck: never = action;
-                        return _exhaustiveCheck;
+                        const _exhaustiveCheck: never = action
+                        return _exhaustiveCheck
                     }
                 }
                 break
@@ -139,26 +182,32 @@ function Component(props) {
                         state.variable = action[2]
                         break
                     }
-                    case 'items': {
-                        state.items.variables = action[2]
+                    case 'indentItemList': {
+                        state.indentItemList.variables = action[2]
                         break
                     }
                     default: {
-                        const _exhaustiveCheck: never = action;
-                        return _exhaustiveCheck;
+                        const _exhaustiveCheck: never = action
+                        return _exhaustiveCheck
                     }
                 }
                 break
             }
             default: {
-                const _exhaustiveCheck: never = action;
-                return _exhaustiveCheck;
+                const _exhaustiveCheck: never = action
+                return _exhaustiveCheck
             }
         }
     }
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
+    const indentType = types['Indent']
+    const indentItemType = types['IndentItem']
+    
+    const [addIndentItemDrawer, toggleAddIndentItemDrawer] = useState(false)
+    const [indentItemFilter, toggleIndentItemFilter] = useState(false)
+    
     const setVariable = useCallback(async () => {
         if (props.match.params[0]) {
             const rows = await db.Indent.toArray()
@@ -171,67 +220,110 @@ function Component(props) {
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as IndentVariable])
-                const itemRows = await db.IndentItem.toArray()
-                var composedItemVariables = HashSet.of<Immutable<IndentItemVariable>>().addAll(itemRows ? itemRows.map(x => IndentItemRow.toVariable(x)) : [])
+
+                const indentItemRows = await db.IndentItem.toArray()
+                var composedIndentItemVariables = HashSet.of<Immutable<IndentItemVariable>>().addAll(indentItemRows ? indentItemRows.map(x => IndentItemRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    composedIndentItemVariables = composedIndentItemVariables.filter(x => !diff.variables[state.indentItemList.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.indentItemList.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.indentItemList.variable.typeName].replace)
                 })
-                const items = composedItemVariables.filter(variable => variable.values.indent.hashCode() === props.match.params[0])
-                dispatch(['replace', 'items', items as HashSet<IndentItemVariable>])
+                dispatch(['replace', 'indentItemList', composedIndentItemVariables.filter(variable => variable.values.indent.hashCode() === props.match.params[0]) as HashSet<IndentItemVariable>])
             }
         }
-    }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
+    }, [state.variable.typeName, state.indentItemList.variable.typeName, props.match.params, dispatch])
 
     useEffect(() => { setVariable() }, [setVariable])
 
-    const rows = useLiveQuery(() => db.Product.toArray())?.map(x => ProductRow.toVariable(x))
-    var products = HashSet.of<Immutable<ProductVariable>>().addAll(rows ? rows : [])
+    const indentRows = useLiveQuery(() => db.Indent.toArray())?.map(x => IndentRow.toVariable(x))
+    var indentList = HashSet.of<Immutable<IndentVariable>>().addAll(indentRows ? indentRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        products = products.filter(x => !diff.variables.Product.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Product.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Product.replace)
+        indentList = indentList.filter(x => !diff.variables.Indent.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Indent.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Indent.replace)
     })
 
-    const itemRows = useLiveQuery(() => db.UOM.where({ product: state.items.variable.values.product.hashCode() }).toArray())?.map(x => UOMRow.toVariable(x))
-    var uoms = HashSet.of<Immutable<UOMVariable>>().addAll(itemRows ? itemRows : [])
+    const indentItemRows = useLiveQuery(() => db.IndentItem.toArray())?.map(x => IndentItemRow.toVariable(x))
+    var indentItemList = HashSet.of<Immutable<IndentItemVariable>>().addAll(indentItemRows ? indentItemRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        uoms = uoms.filter(x => !diff.variables.UOM.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.UOM.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.UOM.replace)
-        uoms = uoms.filter(x => x.values.product.hashCode() === state.items.variable.values.product.hashCode())
+        indentItemList = indentItemList.filter(x => !diff.variables.IndentItem.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.IndentItem.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.IndentItem.replace)
     })
 
-    const indent = types['Indent']
-    const item = types['IndentItem']
+    const productRows = useLiveQuery(() => db.Product.toArray())?.map(x => ProductRow.toVariable(x))
+    var productList = HashSet.of<Immutable<ProductVariable>>().addAll(productRows ? productRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        productList = productList.filter(x => !diff.variables.Product.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Product.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Product.replace)
+    })
 
-    const [addItemDrawer, toggleAddItemDrawer] = useState(false)
-    const [itemFilter, toggleItemFilter] = useState(false)
+    const uOMRows = useLiveQuery(() => db.UOM.toArray())?.map(x => UOMRow.toVariable(x))
+    var uOMList = HashSet.of<Immutable<UOMVariable>>().addAll(uOMRows ? uOMRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        uOMList = uOMList.filter(x => !diff.variables.UOM.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.UOM.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.UOM.replace)
+    })
 
-    const onItemInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+
+    const onIndentItemInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
-            default: {
-                switch (event.target.name) {
-                    case 'product': {
-                        dispatch(['items', 'variable', event.target.name, new Product(parseInt(event.target.value))])
-                        break
-                    }
-                    case 'quantity': {
-                        dispatch(['items', 'variable', event.target.name, parseInt(event.target.value)])
-                        break
-                    }
-                    case 'uom': {
-                        dispatch(['items', 'variable', event.target.name, new UOM(parseInt(event.target.value))])
-                        break
-                    }
-                }
+            case 'indent': {
+                dispatch(['indentItemList', 'variable', event.target.name, new Indent(parseInt(String(event.target.value)))])
+                break
+            }
+            case 'product': {
+                dispatch(['indentItemList', 'variable', event.target.name, new Product(parseInt(String(event.target.value)))])
+                break
+            }
+            case 'quantity': {
+                dispatch(['indentItemList', 'variable', event.target.name, parseInt(String(event.target.value))])
+                break
+            }
+            case 'uom': {
+                dispatch(['indentItemList', 'variable', event.target.name, new UOM(parseInt(String(event.target.value)))])
+                break
+            }
+            case 'ordered': {
+                dispatch(['indentItemList', 'variable', event.target.name, parseInt(String(event.target.value))])
+                break
+            }
+            case 'received': {
+                dispatch(['indentItemList', 'variable', event.target.name, parseInt(String(event.target.value))])
+                break
+            }
+            case 'approved': {
+                dispatch(['indentItemList', 'variable', event.target.name, parseInt(String(event.target.value))])
+                break
+            }
+            case 'rejected': {
+                dispatch(['indentItemList', 'variable', event.target.name, parseInt(String(event.target.value))])
+                break
+            }
+            case 'returned': {
+                dispatch(['indentItemList', 'variable', event.target.name, parseInt(String(event.target.value))])
+                break
+            }
+            case 'requisted': {
+                dispatch(['indentItemList', 'variable', event.target.name, parseInt(String(event.target.value))])
+                break
+            }
+            case 'consumed': {
+                dispatch(['indentItemList', 'variable', event.target.name, parseInt(String(event.target.value))])
+                break
             }
         }
     }
 
-    const updateItemsQuery = (list: 'items') => {
+    const updateItemsQuery = (list: 'indentItemList') => {
         const fx = (args: Args) => {
-            dispatch([list, 'query', args])
+            switch (list) {
+                case 'indentItemList': {
+                    dispatch([list, 'query', args])
+                    break
+                }
+                default: {
+                    const _exhaustiveCheck: never = list
+                    return _exhaustiveCheck
+                }
+            }
         }
         return fx
     }
 
-    const updatePage = (list: 'items') => {
+    const updatePage = (list: 'indentItemList') => {
         const fx = (args: ['limit', number] | ['offset', number] | ['page', number]) => {
             dispatch([list, args[0], args[1]])
         }
@@ -239,16 +331,23 @@ function Component(props) {
     }
 
     const createVariable = async () => {
-        const [result, symbolFlag, diff] = await executeCircuit(circuits.createIndent, {
-            items: state.items.variables.toArray().map(item => {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.createIndent, {            indentItemList: state.indentItemList.variables.toArray().map(variable => {
                 return {
-                    product: item.values.product.hashCode(),
-                    quantity: item.values.quantity,
-                    uom: item.values.uom.hashCode()
+                    indent: variable.values.indent.hashCode(),
+                    product: variable.values.product.hashCode(),
+                    quantity: variable.values.quantity,
+                    uom: variable.values.uom.hashCode(),
+                    ordered: variable.values.ordered,
+                    received: variable.values.received,
+                    approved: variable.values.approved,
+                    rejected: variable.values.rejected,
+                    returned: variable.values.returned,
+                    requisted: variable.values.requisted,
+                    consumed: variable.values.consumed
                 }
             })
         })
-        console.log(result, symbolFlag)
+        console.log(result, symbolFlag, diff)
         if (symbolFlag) {
             db.diffs.put(diff.toRow())
         }
@@ -276,9 +375,9 @@ function Component(props) {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
                     <Title>{when(state.mode, {
-                        'create': `Create ${indent.name}`,
-                        'update': `Update ${indent.name}`,
-                        'show': `${indent.name}`
+                        'create': `Create Indent`,
+                        'update': `Update Indent`,
+                        'show': `Indent`
                     })}</Title>
                 </Item>
                 <Item area={Grid.button} justify='end' align='center' className='flex'>
@@ -286,7 +385,7 @@ function Component(props) {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
                                 await createVariable()
-                                props.history.push('/indents')
+                                props.history.push('/indent-list')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
                                 <>
@@ -296,64 +395,175 @@ function Component(props) {
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
                                         await modifyVariable()
-                                        props.history.push('/indents')
-                                    }}>Save</Button>
+                                        props.history.push('/indent-list')
+                                    }}>Update</Button>
                                 </>,
                                 <>
                                     <Button onClick={async () => {
                                         await deleteVariable()
-                                        props.history.push('/indents')
+                                        props.history.push('/indent-list')
                                     }}>Delete</Button>
                                     <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>
                                 </>))
                     }
                 </Item>
-                <Container area={Grid.uom} layout={Grid2.layouts.main}>
+                <Container area={Grid.details} layout={Grid.layouts.details}>
+
+                </Container>
+                <Container area={Grid.indentItemArea} layout={Grid2.layouts.main}>
                     <Item area={Grid2.header} className='flex items-center'>
-                        <Title>Items</Title>
+                        <Title> Indent Item List</Title>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>,
+                                <button onClick={() => toggleAddIndentItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>,
                                 undefined
                             )
                         }
                     </Item>
                     <Item area={Grid2.filter} justify='end' align='center' className='flex'>
-                        <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
-                        <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
-                            <Filter typeName='IndentItem' query={state['items'].query} updateQuery={updateItemsQuery('items')} />
+                        <Button onClick={() => toggleIndentItemFilter(true)}>Filter</Button>
+                        <Drawer open={indentItemFilter} onClose={() => toggleIndentItemFilter(false)} anchor={'right'}>
+                            <Filter typeName='IndentItem' query={state['indentItemList'].query} updateQuery={updateItemsQuery('indentItemList')} />
                         </Drawer>
-                        <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
+                        <Drawer open={addIndentItemDrawer} onClose={() => toggleAddIndentItemDrawer(false)} anchor={'right'}>
                             <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
-                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
-                                <Container area={none} layout={Grid.layouts.uom}>
+                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add {indentItemType.name}</div>
+                                <Container area={none} layout={Grid.layouts.uom} className=''>
                                     <Item>
-                                        <Label>{item.keys.product.name}</Label>
-                                        <Select onChange={onItemInputChange} value={state.items.variable.values.product.hashCode()} name='product'>
-                                            <option value='' selected disabled hidden>Select Product</option>
-                                            {products.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
-                                        </Select>
+                                        <Label>{indentItemType.keys.indent}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Select onChange={onIndentItemInputChange} value={state.indentItemList.variable.values.indent.hashCode()} name='indent'>
+                                                    <option value='' selected disabled hidden>Select Indent</option>
+                                                    {indentList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
+                                                </Select>,
+                                                <div className='font-bold text-xl'>{
+                                                    iff(indentList.filter(x => x.id.hashCode() === state.indentItemList.variable.values.indent.hashCode()).length() !== 0,
+                                                        () => {
+                                                            const referencedVariable = indentList.filter(x => x.id.hashCode() === state.indentItemList.variable.values.indent.hashCode()).toArray()[0] as IndentVariable
+                                                            return <Link to={`/indent/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
+                                                        }, <Link to={`/indent/${state.indentItemList.variable.values.indent.hashCode()}`}>{state.indentItemList.variable.values.indent.hashCode()}</Link>)
+                                                }</div>
+                                            )
+                                        }
                                     </Item>
                                     <Item>
-                                        <Label>{item.keys.quantity.name}</Label>
-                                        <Input type='number' onChange={onItemInputChange} value={state.items.variable.values.quantity} name='quantity' />
+                                        <Label>{indentItemType.keys.product}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Select onChange={onIndentItemInputChange} value={state.indentItemList.variable.values.product.hashCode()} name='product'>
+                                                    <option value='' selected disabled hidden>Select Product</option>
+                                                    {productList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
+                                                </Select>,
+                                                <div className='font-bold text-xl'>{
+                                                    iff(productList.filter(x => x.id.hashCode() === state.indentItemList.variable.values.product.hashCode()).length() !== 0,
+                                                        () => {
+                                                            const referencedVariable = productList.filter(x => x.id.hashCode() === state.indentItemList.variable.values.product.hashCode()).toArray()[0] as ProductVariable
+                                                            return <Link to={`/product/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
+                                                        }, <Link to={`/product/${state.indentItemList.variable.values.product.hashCode()}`}>{state.indentItemList.variable.values.product.hashCode()}</Link>)
+                                                }</div>
+                                            )
+                                        }
                                     </Item>
                                     <Item>
-                                        <Label>{item.keys.uom.name}</Label>
-                                        <Select onChange={onItemInputChange} value={state.items.variable.values.uom.hashCode()} name='uom'>
-                                            <option value='' selected disabled hidden>Select Item</option>
-                                            {uoms.toArray().map(x => <option value={x.id.hashCode()}>{x.values.name}</option>)}
-                                        </Select>
+                                        <Label>{indentItemType.keys.quantity}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Input type='number' onChange={onIndentItemInputChange} value={state.indentItemList.variable.values.quantity} name='quantity' />,
+                                                <div className='font-bold text-xl'>{state.indentItemList.variable.values.quantity}</div>
+                                            )
+                                        }
+                                    </Item>
+                                    <Item>
+                                        <Label>{indentItemType.keys.uom}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Select onChange={onIndentItemInputChange} value={state.indentItemList.variable.values.uom.hashCode()} name='uom'>
+                                                    <option value='' selected disabled hidden>Select UOM</option>
+                                                    {uOMList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
+                                                </Select>,
+                                                <div className='font-bold text-xl'>{
+                                                    iff(uOMList.filter(x => x.id.hashCode() === state.indentItemList.variable.values.uom.hashCode()).length() !== 0,
+                                                        () => {
+                                                            const referencedVariable = uOMList.filter(x => x.id.hashCode() === state.indentItemList.variable.values.uom.hashCode()).toArray()[0] as UOMVariable
+                                                            return <Link to={`/u-o-m/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
+                                                        }, <Link to={`/u-o-m/${state.indentItemList.variable.values.uom.hashCode()}`}>{state.indentItemList.variable.values.uom.hashCode()}</Link>)
+                                                }</div>
+                                            )
+                                        }
+                                    </Item>
+                                    <Item>
+                                        <Label>{indentItemType.keys.ordered}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Input type='number' onChange={onIndentItemInputChange} value={state.indentItemList.variable.values.ordered} name='ordered' />,
+                                                <div className='font-bold text-xl'>{state.indentItemList.variable.values.ordered}</div>
+                                            )
+                                        }
+                                    </Item>
+                                    <Item>
+                                        <Label>{indentItemType.keys.received}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Input type='number' onChange={onIndentItemInputChange} value={state.indentItemList.variable.values.received} name='received' />,
+                                                <div className='font-bold text-xl'>{state.indentItemList.variable.values.received}</div>
+                                            )
+                                        }
+                                    </Item>
+                                    <Item>
+                                        <Label>{indentItemType.keys.approved}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Input type='number' onChange={onIndentItemInputChange} value={state.indentItemList.variable.values.approved} name='approved' />,
+                                                <div className='font-bold text-xl'>{state.indentItemList.variable.values.approved}</div>
+                                            )
+                                        }
+                                    </Item>
+                                    <Item>
+                                        <Label>{indentItemType.keys.rejected}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Input type='number' onChange={onIndentItemInputChange} value={state.indentItemList.variable.values.rejected} name='rejected' />,
+                                                <div className='font-bold text-xl'>{state.indentItemList.variable.values.rejected}</div>
+                                            )
+                                        }
+                                    </Item>
+                                    <Item>
+                                        <Label>{indentItemType.keys.returned}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Input type='number' onChange={onIndentItemInputChange} value={state.indentItemList.variable.values.returned} name='returned' />,
+                                                <div className='font-bold text-xl'>{state.indentItemList.variable.values.returned}</div>
+                                            )
+                                        }
+                                    </Item>
+                                    <Item>
+                                        <Label>{indentItemType.keys.requisted}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Input type='number' onChange={onIndentItemInputChange} value={state.indentItemList.variable.values.requisted} name='requisted' />,
+                                                <div className='font-bold text-xl'>{state.indentItemList.variable.values.requisted}</div>
+                                            )
+                                        }
+                                    </Item>
+                                    <Item>
+                                        <Label>{indentItemType.keys.consumed}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Input type='number' onChange={onIndentItemInputChange} value={state.indentItemList.variable.values.consumed} name='consumed' />,
+                                                <div className='font-bold text-xl'>{state.indentItemList.variable.values.consumed}</div>
+                                            )
+                                        }
                                     </Item>
                                     <Item justify='center' align='center'>
-                                        <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>
+                                        <Button onClick={() => dispatch(['indentItemList', 'addVariable'])}>Add</Button>
                                     </Item>
                                 </Container>
                             </div>
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable)).toArray()} columns={state['items'].columns.toArray()} />
-                </Container >
+                    <Table area={Grid2.table} state={state['indentItemList']} updatePage={updatePage('indentItemList')} variables={state.indentItemList.variables.filter(variable => applyFilter(state['indentItemList'].query, variable)).toArray()} columns={state['indentItemList'].columns.toArray()} />
+                </Container > 
             </Container>
         }, <div>Variable not found</div>)
 }
@@ -364,8 +574,10 @@ const Title = tw.div`py-8 text-4xl text-gray-800 font-bold mx-1 whitespace-nowra
 
 const Label = tw.label`w-1/2 whitespace-nowrap`
 
-const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full rounded-sm`
+// const InlineLabel = tw.label`inline-block w-1/2`
 
 const Select = tw.select`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full rounded-sm`
+
+const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full rounded-sm`
 
 const Button = tw.button`bg-gray-900 text-white text-center font-bold p-2 mx-1 uppercase w-40 h-full max-w-sm rounded-lg focus:outline-none inline-block`

@@ -9,22 +9,22 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { District, DistrictVariable, PostalCodeVariable, Subdistrict, SubdistrictVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter, Link } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
 import { iff, when } from '../../../main/utils'
 import { db } from '../../../main/dexie'
-import { DiffRow, DistrictRow, SubdistrictRow, PostalCodeRow } from '../../../main/rows'
 import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { DiffRow, DistrictRow, PostalCodeRow, SubdistrictRow } from '../../../main/rows'
+import { District, DistrictVariable, PostalCode, PostalCodeVariable, Subdistrict, SubdistrictVariable } from '../../../main/variables'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: SubdistrictVariable
-    items: {
+    postalCodeList: {
         typeName: 'PostalCode'
         query: Query
         limit: number
@@ -39,37 +39,37 @@ type State = Immutable<{
 export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
-
+ 
     | ['variable', 'district', District]
     | ['variable', 'name', string]
 
-    | ['items', 'limit', number]
-    | ['items', 'offset', number]
-    | ['items', 'page', number]
-    | ['items', 'query', Args]
-    | ['items', 'variable', 'name', string]
-    | ['items', 'addVariable']
-
+    | ['postalCodeList', 'limit', number]
+    | ['postalCodeList', 'offset', number]
+    | ['postalCodeList', 'page', number]
+    | ['postalCodeList', 'query', Args]
+    | ['postalCodeList', 'variable', 'subdistrict', Subdistrict]
+    | ['postalCodeList', 'variable', 'name', string]
+    | ['postalCodeList', 'addVariable']
     | ['replace', 'variable', SubdistrictVariable]
-    | ['replace', 'items', HashSet<PostalCodeVariable>]
+    | ['replace', 'postalCodeList', HashSet<PostalCodeVariable>]
 
 function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
         variable: new SubdistrictVariable(-1, { district: new District(-1), name: '' }),
-        items: {
+        postalCodeList: {
             typeName: 'PostalCode',
             query: getQuery('PostalCode'),
             limit: 5,
             offset: 0,
             page: 1,
-            columns: Vector.of(['values', 'name']),
+            columns: Vector.of(['values', 'subdistrict'], ['values', 'name']),
             variable: new PostalCodeVariable(-1, { subdistrict: new Subdistrict(-1), name: '' }),
             variables: HashSet.of<PostalCodeVariable>()
         }
     }
-
+    
     function reducer(state: Draft<State>, action: Action) {
         switch (action[0]) {
             case 'toggleMode': {
@@ -100,10 +100,11 @@ function Component(props) {
                 }
                 break
             }
-            case 'items': {
+            
+            case 'postalCodeList': {
                 switch (action[1]) {
                     case 'limit': {
-                        state[action[0]].limit = Math.max(initialState.items.limit, action[2])
+                        state[action[0]].limit = Math.max(initialState.postalCodeList.limit, action[2])
                         break
                     }
                     case 'offset': {
@@ -121,16 +122,24 @@ function Component(props) {
                     }
                     case 'variable': {
                         switch (action[2]) {
-                            case 'name': {
-                                state[action[0]][action[1]][action[2]] = action[3]
+                            case 'subdistrict': {
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
                                 break
+                            }
+                            case 'name': {
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
+                                break
+                            }
+                            default: {
+                                const _exhaustiveCheck: never = action;
+                                return _exhaustiveCheck;
                             }
                         }
                         break
                     }
                     case 'addVariable': {
-                        state.items.variables = state.items.variables.add(new PostalCodeVariable(-1, { subdistrict: new Subdistrict(-1), name: state.items.variable.values.name }))
-                        state.items.variable = initialState.items.variable
+                        state.postalCodeList.variables = state.postalCodeList.variables.add(new PostalCodeVariable(-1, {subdistrict: new Subdistrict(state.postalCodeList.variable.values.subdistrict.hashCode()), name: state.postalCodeList.variable.values.name}))
+                        state.postalCodeList.variable = initialState.postalCodeList.variable
                         break
                     }
                     default: {
@@ -146,8 +155,8 @@ function Component(props) {
                         state.variable = action[2]
                         break
                     }
-                    case 'items': {
-                        state.items.variables = action[2]
+                    case 'postalCodeList': {
+                        state.postalCodeList.variables = action[2]
                         break
                     }
                     default: {
@@ -166,12 +175,12 @@ function Component(props) {
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const subdistrict = types['Subdistrict']
-    const postalCode = types['PostalCode']
-
-    const [addItemDrawer, toggleAddItemDrawer] = useState(false)
-    const [itemFilter, toggleItemFilter] = useState(false)
-
+    const subdistrictType = types['Subdistrict']
+    const postalCodeType = types['PostalCode']
+    
+    const [addPostalCodeDrawer, toggleAddPostalCodeDrawer] = useState(false)
+    const [postalCodeFilter, togglePostalCodeFilter] = useState(false)
+    
     const setVariable = useCallback(async () => {
         if (props.match.params[0]) {
             const rows = await db.Subdistrict.toArray()
@@ -184,63 +193,79 @@ function Component(props) {
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as SubdistrictVariable])
-                const itemRows = await db.PostalCode.toArray()
-                var composedItemVariables = HashSet.of<Immutable<PostalCodeVariable>>().addAll(itemRows ? itemRows.map(x => PostalCodeRow.toVariable(x)) : [])
+
+                const postalCodeRows = await db.PostalCode.toArray()
+                var composedPostalCodeVariables = HashSet.of<Immutable<PostalCodeVariable>>().addAll(postalCodeRows ? postalCodeRows.map(x => PostalCodeRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    composedPostalCodeVariables = composedPostalCodeVariables.filter(x => !diff.variables[state.postalCodeList.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.postalCodeList.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.postalCodeList.variable.typeName].replace)
                 })
-                const items = composedItemVariables.filter(variable => variable.values.subdistrict.hashCode() === props.match.params[0])
-                dispatch(['replace', 'items', items as HashSet<PostalCodeVariable>])
+                dispatch(['replace', 'postalCodeList', composedPostalCodeVariables.filter(variable => variable.values.subdistrict.hashCode() === props.match.params[0]) as HashSet<PostalCodeVariable>])
             }
         }
-    }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
+    }, [state.variable.typeName, state.postalCodeList.variable.typeName, props.match.params, dispatch])
 
     useEffect(() => { setVariable() }, [setVariable])
 
-    const rows = useLiveQuery(() => db.District.orderBy('name').toArray())?.map(x => DistrictRow.toVariable(x))
-    var districts = HashSet.of<Immutable<DistrictVariable>>().addAll(rows ? rows : [])
+    const districtRows = useLiveQuery(() => db.District.toArray())?.map(x => DistrictRow.toVariable(x))
+    var districtList = HashSet.of<Immutable<DistrictVariable>>().addAll(districtRows ? districtRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        districts = districts.filter(x => !diff.variables.District.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.District.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.District.replace)
+        districtList = districtList.filter(x => !diff.variables.District.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.District.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.District.replace)
+    })
+
+    const postalCodeRows = useLiveQuery(() => db.PostalCode.toArray())?.map(x => PostalCodeRow.toVariable(x))
+    var postalCodeList = HashSet.of<Immutable<PostalCodeVariable>>().addAll(postalCodeRows ? postalCodeRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        postalCodeList = postalCodeList.filter(x => !diff.variables.PostalCode.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.PostalCode.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.PostalCode.replace)
+    })
+
+    const subdistrictRows = useLiveQuery(() => db.Subdistrict.toArray())?.map(x => SubdistrictRow.toVariable(x))
+    var subdistrictList = HashSet.of<Immutable<SubdistrictVariable>>().addAll(subdistrictRows ? subdistrictRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        subdistrictList = subdistrictList.filter(x => !diff.variables.Subdistrict.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Subdistrict.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Subdistrict.replace)
     })
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
-            default: {
-                switch (event.target.name) {
-                    case 'district': {
-                        dispatch(['variable', event.target.name, new District(parseInt(event.target.value))])
-                        break
-                    }
-                    case 'name': {
-                        dispatch(['variable', event.target.name, event.target.value])
-                        break
-                    }
-                }
+            case 'district': {
+                dispatch(['variable', event.target.name, new District(parseInt(String(event.target.value)))])
+                break
+            }
+            case 'name': {
+                dispatch(['variable', event.target.name, String(event.target.value)])
+                break
             }
         }
     }
-
-    const onItemInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onPostalCodeInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
-            default: {
-                switch (event.target.name) {
-                    case 'name': {
-                        dispatch(['items', 'variable', event.target.name, event.target.value])
-                        break
-                    }
-                }
+            case 'subdistrict': {
+                dispatch(['postalCodeList', 'variable', event.target.name, new Subdistrict(parseInt(String(event.target.value)))])
+                break
+            }
+            case 'name': {
+                dispatch(['postalCodeList', 'variable', event.target.name, String(event.target.value)])
+                break
             }
         }
     }
 
-    const updateItemsQuery = (list: 'items') => {
+    const updateItemsQuery = (list: 'postalCodeList') => {
         const fx = (args: Args) => {
-            dispatch([list, 'query', args])
+            switch (list) {
+                case 'postalCodeList': {
+                    dispatch([list, 'query', args])
+                    break
+                }
+                default: {
+                    const _exhaustiveCheck: never = list
+                    return _exhaustiveCheck
+                }
+            }
         }
         return fx
     }
 
-    const updatePage = (list: 'items') => {
+    const updatePage = (list: 'postalCodeList') => {
         const fx = (args: ['limit', number] | ['offset', number] | ['page', number]) => {
             dispatch([list, args[0], args[1]])
         }
@@ -251,8 +276,11 @@ function Component(props) {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createSubdistrict, {
             district: state.variable.values.district.hashCode(),
             name: state.variable.values.name,
-            items: state.items.variables.toArray().map(state => {
-                return { name: state.values.name }
+            postalCodeList: state.postalCodeList.variables.toArray().map(variable => {
+                return {
+                    subdistrict: variable.values.subdistrict.hashCode(),
+                    name: variable.values.name
+                }
             })
         })
         console.log(result, symbolFlag, diff)
@@ -293,7 +321,7 @@ function Component(props) {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
                                 await createVariable()
-                                props.history.push('/subdistricts')
+                                props.history.push('/subdistrict-list')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
                                 <>
@@ -303,13 +331,13 @@ function Component(props) {
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
                                         await modifyVariable()
-                                        props.history.push('/subdistricts')
+                                        props.history.push('/subdistrict-list')
                                     }}>Update</Button>
                                 </>,
                                 <>
                                     <Button onClick={async () => {
                                         await deleteVariable()
-                                        props.history.push('/subdistricts')
+                                        props.history.push('/subdistrict-list')
                                     }}>Delete</Button>
                                     <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>
                                 </>))
@@ -317,25 +345,25 @@ function Component(props) {
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>
                     <Item>
-                        <Label>{subdistrict.keys.district.name}</Label>
+                        <Label>{subdistrictType.keys.district}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.district.hashCode()} name='district'>
                                     <option value='' selected disabled hidden>Select District</option>
-                                    {districts.toArray().map(x => <option value={x.id.hashCode()}>{x.values.name}</option>)}
+                                    {districtList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{
-                                    iff(districts.filter(x => x.id.hashCode() === state.variable.values.district.hashCode()).length() !== 0, 
-                                    () => {
-                                        const referencedVariable = districts.filter(x => x.id.hashCode() === state.variable.values.district.hashCode()).toArray()[0] as DistrictVariable  
-                                        return <Link to={`/district/${referencedVariable.id.hashCode()}`}>{referencedVariable.values.name}</Link>
-                                    }, <Link to={`/district/${state.variable.values.district.hashCode()}`}>{state.variable.values.district.hashCode()}</Link>)
+                                    iff(districtList.filter(x => x.id.hashCode() === state.variable.values.district.hashCode()).length() !== 0,
+                                        () => {
+                                            const referencedVariable = districtList.filter(x => x.id.hashCode() === state.variable.values.district.hashCode()).toArray()[0] as DistrictVariable
+                                            return <Link to={`/district/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
+                                        }, <Link to={`/district/${state.variable.values.district.hashCode()}`}>{state.variable.values.district.hashCode()}</Link>)
                                 }</div>
                             )
                         }
                     </Item>
                     <Item>
-                        <Label>{subdistrict.name}</Label>
+                        <Label>{subdistrictType.keys.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Input type='text' onChange={onVariableInputChange} value={state.variable.values.name} name='name' />,
@@ -344,38 +372,61 @@ function Component(props) {
                         }
                     </Item>
                 </Container>
-                <Container area={Grid.uom} layout={Grid2.layouts.main}>
+                <Container area={Grid.postalCodeArea} layout={Grid2.layouts.main}>
                     <Item area={Grid2.header} className='flex items-center'>
-                        <Title>{postalCode.name}s</Title>
+                        <Title> Postal Code List</Title>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>,
+                                <button onClick={() => toggleAddPostalCodeDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>,
                                 undefined
                             )
                         }
                     </Item>
                     <Item area={Grid2.filter} justify='end' align='center' className='flex'>
-                        <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
-                        <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
-                            <Filter typeName='PostalCode' query={state['items'].query} updateQuery={updateItemsQuery('items')} />
+                        <Button onClick={() => togglePostalCodeFilter(true)}>Filter</Button>
+                        <Drawer open={postalCodeFilter} onClose={() => togglePostalCodeFilter(false)} anchor={'right'}>
+                            <Filter typeName='PostalCode' query={state['postalCodeList'].query} updateQuery={updateItemsQuery('postalCodeList')} />
                         </Drawer>
-                        <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
+                        <Drawer open={addPostalCodeDrawer} onClose={() => toggleAddPostalCodeDrawer(false)} anchor={'right'}>
                             <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
-                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add {postalCode.name}</div>
+                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add {postalCodeType.name}</div>
                                 <Container area={none} layout={Grid.layouts.uom} className=''>
                                     <Item>
-                                        <Label>{postalCode.keys.name.name}</Label>
-                                        <Input type='text' onChange={onItemInputChange} name='name' />
+                                        <Label>{postalCodeType.keys.subdistrict}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Select onChange={onPostalCodeInputChange} value={state.postalCodeList.variable.values.subdistrict.hashCode()} name='subdistrict'>
+                                                    <option value='' selected disabled hidden>Select Subdistrict</option>
+                                                    {subdistrictList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
+                                                </Select>,
+                                                <div className='font-bold text-xl'>{
+                                                    iff(subdistrictList.filter(x => x.id.hashCode() === state.postalCodeList.variable.values.subdistrict.hashCode()).length() !== 0,
+                                                        () => {
+                                                            const referencedVariable = subdistrictList.filter(x => x.id.hashCode() === state.postalCodeList.variable.values.subdistrict.hashCode()).toArray()[0] as SubdistrictVariable
+                                                            return <Link to={`/subdistrict/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
+                                                        }, <Link to={`/subdistrict/${state.postalCodeList.variable.values.subdistrict.hashCode()}`}>{state.postalCodeList.variable.values.subdistrict.hashCode()}</Link>)
+                                                }</div>
+                                            )
+                                        }
+                                    </Item>
+                                    <Item>
+                                        <Label>{postalCodeType.keys.name}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Input type='text' onChange={onPostalCodeInputChange} value={state.postalCodeList.variable.values.name} name='name' />,
+                                                <div className='font-bold text-xl'>{state.postalCodeList.variable.values.name}</div>
+                                            )
+                                        }
                                     </Item>
                                     <Item justify='center' align='center'>
-                                        <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>
+                                        <Button onClick={() => dispatch(['postalCodeList', 'addVariable'])}>Add</Button>
                                     </Item>
                                 </Container>
                             </div>
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable)).toArray()} columns={state['items'].columns.toArray()} />
-                </Container >
+                    <Table area={Grid2.table} state={state['postalCodeList']} updatePage={updatePage('postalCodeList')} variables={state.postalCodeList.variables.filter(variable => applyFilter(state['postalCodeList'].query, variable)).toArray()} columns={state['postalCodeList'].columns.toArray()} />
+                </Container > 
             </Container>
         }, <div>Variable not found</div>)
 }

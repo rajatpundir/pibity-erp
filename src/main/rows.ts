@@ -1,12 +1,12 @@
 import { immerable, Immutable } from 'immer'
 import { HashSet } from 'prelude-ts'
 import { DiffVariable } from './layers'
-import { Number, Decimal, ProductVariable, UOMVariable, IndentVariable, IndentItemVariable, CompanyVariable, CompanyProductVariable, QuotationVariable, QuotationItemVariable, PurchaseOrderVariable, PurchaseOrderItemVariable, PurchaseInvoiceVariable, PurchaseInvoiceItemVariable, MaterialApprovalSlipVariable, MaterialApprovalSlipItemVariable, MaterialRejectionSlipVariable, MaterialRejectionSlipItemVariable, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlipVariable, MaterialRequistionSlipItemVariable, BOMVariable, BOMItemVariable, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable, Product, UOM, Indent, IndentItem, Company, Quotation, QuotationItem, PurchaseOrder, PurchaseOrderItem, PurchaseInvoice, PurchaseInvoiceItem, MaterialApprovalSlip, MaterialApprovalSlipItem, MaterialRejectionSlip, MaterialRejectionSlipItem, MaterialReturnSlip, MaterialRequistionSlip, MaterialRequistionSlipItem, BOM, ProductionPreparationSlip, TransferMaterialSlip, MaterialReturnSlipItem, BOMItem, ProductionPreparationSlipItem, ScrapMaterialSlip, WarehouseAcceptanceSlip, CompanyProduct, RegionVariable, CountryVariable, Region, StateVariable, Country, DistrictVariable, State, SubdistrictVariable, District, PostalCodeVariable, Subdistrict, AddressVariable, PostalCode, BankVariable, BankBranchVariable, Bank, Address, BankAccountVariable, BankBranch, CompanyAddressVariable, CompanyContactVariable, CompanyBankAccountVariable, BankAccount, CompanyAddress, CompanyContact, CompanyBankAccount, CompanyTagGroupVariable, CompanyTagVariable, CompanyTagGroup, MappingCompanyTagVariable, CompanyTag, ContactVariable, ContactAddressVariable, Contact, CurrencyVariable, CurrencyRateVariable, Currency, MemoVariable, BankTransactionVariable, Memo, CurrencyRate, ProductCategoryGroupVariable, ProductCategoryGroup, ProductCategoryVariable, ProductCategory, ProductTagGroupVariable, ProductTagVariable, ProductTagGroup, MappingProductTagVariable, ProductTag, BankTransaction, MappingProductTag, ContactAddress, MappingCompanyTag } from './variables'
+import { Region, RegionVariable, Country, CountryVariable, StateType, StateTypeVariable, District, DistrictVariable, Subdistrict, SubdistrictVariable, PostalCode, PostalCodeVariable, Address, AddressVariable, Company, CompanyVariable, CompanyAddress, CompanyAddressVariable, CompanyTagGroup, CompanyTagGroupVariable, CompanyTag, CompanyTagVariable, MappingCompanyTag, MappingCompanyTagVariable, Contact, ContactVariable, ContactAddress, ContactAddressVariable, CompanyContact, CompanyContactVariable, Currency, CurrencyVariable, CurrencyRate, CurrencyRateVariable, Memo, MemoVariable, Bank, BankVariable, BankBranch, BankBranchVariable, BankAccount, BankAccountVariable, BankTransaction, BankTransactionVariable, CompanyBankAccount, CompanyBankAccountVariable, ProductCategoryGroup, ProductCategoryGroupVariable, ProductCategory, ProductCategoryVariable, Product, ProductVariable, CompanyProduct, CompanyProductVariable, ProductTagGroup, ProductTagGroupVariable, ProductTag, ProductTagVariable, MappingProductTag, MappingProductTagVariable, UOM, UOMVariable, Indent, IndentVariable, IndentItem, IndentItemVariable, Quotation, QuotationVariable, QuotationItem, QuotationItemVariable, PurchaseOrder, PurchaseOrderVariable, PurchaseOrderItem, PurchaseOrderItemVariable, PurchaseInvoice, PurchaseInvoiceVariable, PurchaseInvoiceItem, PurchaseInvoiceItemVariable, MaterialApprovalSlip, MaterialApprovalSlipVariable, MaterialApprovalSlipItem, MaterialApprovalSlipItemVariable, MaterialRejectionSlip, MaterialRejectionSlipVariable, MaterialRejectionSlipItem, MaterialRejectionSlipItemVariable, MaterialReturnSlip, MaterialReturnSlipVariable, MaterialReturnSlipItem, MaterialReturnSlipItemVariable, MaterialRequistionSlip, MaterialRequistionSlipVariable, MaterialRequistionSlipItem, MaterialRequistionSlipItemVariable, BOM, BOMVariable, BOMItem, BOMItemVariable, ProductionPreparationSlip, ProductionPreparationSlipVariable, ProductionPreparationSlipItem, ProductionPreparationSlipItemVariable, ScrapMaterialSlip, ScrapMaterialSlipVariable, TransferMaterialSlip, TransferMaterialSlipVariable, WarehouseAcceptanceSlip, WarehouseAcceptanceSlipVariable} from './variables'
 
 export type Row =
     | RegionRow
     | CountryRow
-    | StateRow
+    | StateTypeRow
     | DistrictRow
     | SubdistrictRow
     | PostalCodeRow
@@ -58,13 +58,12 @@ export type Row =
     | ScrapMaterialSlipRow
     | TransferMaterialSlipRow
     | WarehouseAcceptanceSlipRow
-
 export class RegionRow {
     readonly typeName = 'Region'
     readonly id: number
     readonly name: string
     values: {
-        name: string
+        name: string 
     }
 
     constructor(id: number, values: { name: string }) {
@@ -86,9 +85,8 @@ export class CountryRow {
     readonly region: number
     readonly name: string
     values: {
-        // UNQ(region, name)
         region: number
-        name: string
+        name: string 
     }
 
     constructor(id: number, values: { region: number, name: string }) {
@@ -106,15 +104,14 @@ export class CountryRow {
     }
 }
 
-export class StateRow {
-    readonly typeName = 'State'
+export class StateTypeRow {
+    readonly typeName = 'StateType'
     readonly id: number
     readonly country: number
     readonly name: string
     values: {
-        // UNQ(country, name)
         country: number
-        name: string
+        name: string 
     }
 
     constructor(id: number, values: { country: number, name: string }) {
@@ -124,8 +121,8 @@ export class StateRow {
         this.name = values.name
     }
 
-    static toVariable(row: StateRow): StateVariable {
-        return new StateVariable(row.id, {
+    static toVariable(row: StateTypeRow): StateTypeVariable {
+        return new StateTypeVariable(row.id, {
             country: new Country(row.values.country),
             name: row.values.name
         })
@@ -138,9 +135,8 @@ export class DistrictRow {
     readonly state: number
     readonly name: string
     values: {
-        // UNQ(state, name)
         state: number
-        name: string
+        name: string 
     }
 
     constructor(id: number, values: { state: number, name: string }) {
@@ -152,7 +148,7 @@ export class DistrictRow {
 
     static toVariable(row: DistrictRow): DistrictVariable {
         return new DistrictVariable(row.id, {
-            state: new State(row.values.state),
+            state: new StateType(row.values.state),
             name: row.values.name
         })
     }
@@ -164,9 +160,8 @@ export class SubdistrictRow {
     readonly district: number
     readonly name: string
     values: {
-        // UNQ(district, name)
         district: number
-        name: string
+        name: string 
     }
 
     constructor(id: number, values: { district: number, name: string }) {
@@ -190,9 +185,8 @@ export class PostalCodeRow {
     readonly subdistrict: number
     readonly name: string
     values: {
-        // UNQ(subdistrict, name)
         subdistrict: number
-        name: string
+        name: string 
     }
 
     constructor(id: number, values: { subdistrict: number, name: string }) {
@@ -217,12 +211,11 @@ export class AddressRow {
     readonly line1: string
     readonly line2: string
     values: {
-        // UNQ(postalCode, line1, line2)
         postalCode: number
         line1: string
         line2: string
         latitude: number
-        longitude: number
+        longitude: number 
     }
 
     constructor(id: number, values: { postalCode: number, line1: string, line2: string, latitude: number, longitude: number }) {
@@ -256,7 +249,7 @@ export class CompanyRow {
         website: string
         gstin: string
         pan: string
-        iec: string
+        iec: string 
     }
 
     constructor(id: number, values: { name: string, email: string, telephone: string, mobile: string, website: string, gstin: string, pan: string, iec: string }) {
@@ -274,7 +267,7 @@ export class CompanyRow {
             website: row.values.website,
             gstin: row.values.gstin,
             pan: row.values.pan,
-            iec: row.values.iec,
+            iec: row.values.iec
         })
     }
 }
@@ -286,11 +279,9 @@ export class CompanyAddressRow {
     readonly name: string
     readonly address: number
     values: {
-        // UNQ(company, name)
-        // UNQ(company, address)
         company: number
         name: string
-        address: number
+        address: number 
     }
 
     constructor(id: number, values: { company: number, name: string, address: number }) {
@@ -315,7 +306,7 @@ export class CompanyTagGroupRow {
     readonly id: number
     readonly name: string
     values: {
-        name: string
+        name: string 
     }
 
     constructor(id: number, values: { name: string }) {
@@ -338,7 +329,7 @@ export class CompanyTagRow {
     readonly name: string
     values: {
         group: number
-        name: string
+        name: string 
     }
 
     constructor(id: number, values: { group: number, name: string }) {
@@ -363,7 +354,7 @@ export class MappingCompanyTagRow {
     readonly tag: number
     values: {
         company: number
-        tag: number
+        tag: number 
     }
 
     constructor(id: number, values: { company: number, tag: number }) {
@@ -390,7 +381,7 @@ export class ContactRow {
         email: string
         telephone: string
         mobile: string
-        website: string
+        website: string 
     }
 
     constructor(id: number, values: { name: string, email: string, telephone: string, mobile: string, website: string }) {
@@ -417,11 +408,9 @@ export class ContactAddressRow {
     readonly name: string
     readonly address: number
     values: {
-        // UNQ(contact, name)
-        // UNQ(contact, address)
         contact: number
         name: string
-        address: number
+        address: number 
     }
 
     constructor(id: number, values: { contact: number, name: string, address: number }) {
@@ -447,13 +436,12 @@ export class CompanyContactRow {
     readonly company: number
     readonly contact: number
     values: {
-        // UNQ(company, name)
         company: number
         contact: number
         role: string
         email: string
         telephone: string
-        mobile: string
+        mobile: string 
     }
 
     constructor(id: number, values: { company: number, contact: number, role: string, email: string, telephone: string, mobile: string }) {
@@ -480,7 +468,7 @@ export class CurrencyRow {
     readonly id: number
     readonly name: string
     values: {
-        name: string
+        name: string 
     }
 
     constructor(id: number, values: { name: string }) {
@@ -499,22 +487,16 @@ export class CurrencyRow {
 export class CurrencyRateRow {
     readonly typeName = 'CurrencyRate'
     readonly id: number
-    readonly currency: number
-    readonly startTime: number
-    readonly endTime: number
     values: {
         currency: number
         conversionRate: number
         startTime: number
-        endTime: number
+        endTime: number 
     }
 
     constructor(id: number, values: { currency: number, conversionRate: number, startTime: number, endTime: number }) {
         this.id = id
         this.values = values
-        this.currency = values.currency
-        this.startTime = values.startTime
-        this.endTime = values.endTime
     }
 
     static toVariable(row: CurrencyRateRow): CurrencyRateVariable {
@@ -530,18 +512,16 @@ export class CurrencyRateRow {
 export class MemoRow {
     readonly typeName = 'Memo'
     readonly id: number
-    readonly company: number
     values: {
         company: number
         currency: number
         amount: number
-        unsettled: number
+        unsettled: number 
     }
 
     constructor(id: number, values: { company: number, currency: number, amount: number, unsettled: number }) {
         this.id = id
         this.values = values
-        this.company = values.company
     }
 
     static toVariable(row: MemoRow): MemoVariable {
@@ -560,10 +540,9 @@ export class BankRow {
     readonly country: number
     readonly name: string
     values: {
-        // UNQ(country, name)
         country: number
         name: string
-        website: string
+        website: string 
     }
 
     constructor(id: number, values: { country: number, name: string, website: string }) {
@@ -587,12 +566,12 @@ export class BankBranchRow {
     readonly id: number
     readonly bank: number
     readonly name: string
+    readonly ifsc: string
     values: {
-        // UNQ(bank, name)
         bank: number
         name: string
         ifsc: string
-        address: number
+        address: number 
     }
 
     constructor(id: number, values: { bank: number, name: string, ifsc: string, address: number }) {
@@ -600,6 +579,7 @@ export class BankBranchRow {
         this.values = values
         this.bank = values.bank
         this.name = values.name
+        this.ifsc = values.ifsc
     }
 
     static toVariable(row: BankBranchRow): BankBranchVariable {
@@ -618,12 +598,11 @@ export class BankAccountRow {
     readonly bank: number
     readonly accountNumber: string
     values: {
-        // UNQ(bank, accountNumber)
         bank: number
         bankBranch: number
         accountNumber: string
         accountName: string
-        currency: number
+        currency: number 
     }
 
     constructor(id: number, values: { bank: number, bankBranch: number, accountNumber: string, accountName: string, currency: number }) {
@@ -647,8 +626,6 @@ export class BankAccountRow {
 export class BankTransactionRow {
     readonly typeName = 'BankTransaction'
     readonly id: number
-    readonly memo: number
-    readonly bankAccount: number
     values: {
         timestamp: number
         memo: number
@@ -656,14 +633,12 @@ export class BankTransactionRow {
         bankAccount: number
         fromToAccount: number
         credit: number
-        debit: number
+        debit: number 
     }
 
     constructor(id: number, values: { timestamp: number, memo: number, currencyRate: number, bankAccount: number, fromToAccount: number, credit: number, debit: number }) {
         this.id = id
         this.values = values
-        this.memo = values.memo
-        this.bankAccount = values.bankAccount
     }
 
     static toVariable(row: BankTransactionRow): BankTransactionVariable {
@@ -685,9 +660,8 @@ export class CompanyBankAccountRow {
     readonly company: number
     readonly bankAccount: number
     values: {
-        // UNQ(company, bankAccount)
         company: number
-        bankAccount: number
+        bankAccount: number 
     }
 
     constructor(id: number, values: { company: number, bankAccount: number }) {
@@ -710,10 +684,9 @@ export class ProductCategoryGroupRow {
     readonly id: number
     readonly parent: number
     values: {
-        // UNQ(parent)
         parent: number
         name: string
-        length: number
+        length: number 
     }
 
     constructor(id: number, values: { parent: number, name: string, length: number }) {
@@ -735,25 +708,23 @@ export class ProductCategoryRow {
     readonly typeName = 'ProductCategory'
     readonly id: number
     readonly parent: number
-    readonly code: string
     readonly name: string
+    readonly code: string
     values: {
-        // UNQ(parent, name)
-        // UNQ(parent, code)
         parent: number
         group: number
         name: string
         code: string
         derivedCode: string
-        childCount: number
+        childCount: number 
     }
 
     constructor(id: number, values: { parent: number, group: number, name: string, code: string, derivedCode: string, childCount: number }) {
         this.id = id
         this.values = values
         this.parent = values.parent
-        this.code = values.code
         this.name = values.name
+        this.code = values.code
     }
 
     static toVariable(row: ProductCategoryRow): ProductCategoryVariable {
@@ -776,7 +747,7 @@ export class ProductRow {
         name: string
         category: number
         code: string
-        sku: string
+        sku: string 
     }
 
     constructor(id: number, values: { name: string, category: number, code: string, sku: string }) {
@@ -801,9 +772,8 @@ export class CompanyProductRow {
     readonly company: number
     readonly product: number
     values: {
-        // UNQ(company, product)
         company: number
-        product: number
+        product: number 
     }
 
     constructor(id: number, values: { company: number, product: number }) {
@@ -826,7 +796,7 @@ export class ProductTagGroupRow {
     readonly id: number
     readonly name: string
     values: {
-        name: string
+        name: string 
     }
 
     constructor(id: number, values: { name: string }) {
@@ -849,7 +819,7 @@ export class ProductTagRow {
     readonly name: string
     values: {
         group: number
-        name: string
+        name: string 
     }
 
     constructor(id: number, values: { group: number, name: string }) {
@@ -874,7 +844,7 @@ export class MappingProductTagRow {
     readonly tag: number
     values: {
         product: number
-        tag: number
+        tag: number 
     }
 
     constructor(id: number, values: { product: number, tag: number }) {
@@ -898,13 +868,12 @@ export class UOMRow {
     readonly product: number
     readonly name: string
     values: {
-        // UNQ(product, name)
         product: number
         name: string
-        conversionRate: Decimal
+        conversionRate: number 
     }
 
-    constructor(id: number, values: { product: number, name: string, conversionRate: Decimal }) {
+    constructor(id: number, values: { product: number, name: string, conversionRate: number }) {
         this.id = id
         this.values = values
         this.product = values.product
@@ -923,20 +892,15 @@ export class UOMRow {
 export class IndentRow {
     readonly typeName = 'Indent'
     readonly id: number
-    values: {
-        // timestamp: Timestamp // redundant field
-        // subspace: Subspace
-        // approver: Subspace
-        // approved: boolean
-    }
+    values: {}
 
-    constructor(id: number, values: {}) {
+    constructor(id: number, values: {  }) {
         this.id = id
         this.values = values
     }
 
     static toVariable(row: IndentRow): IndentVariable {
-        return new IndentVariable(row.id, row.values)
+        return new IndentVariable(row.id, {})
     }
 }
 
@@ -946,29 +910,20 @@ export class IndentItemRow {
     readonly indent: number
     readonly product: number
     values: {
-        // UNQ(indent, product)
         indent: number
         product: number
-        quantity: Number
-        // assertion(uom.product == product && product.orderable == true && quantity > 0)
+        quantity: number
         uom: number
-        // assertion((ordered - rejected) <= quantity && (ordered - rejected) >= 0)
-        // assertion(ordered >= 0 && received >=0 && approved >= 0 && rejected >= 0 && returned >= 0 && requisted >= 0 && consumed >= 0)
-        ordered: Number
-        // assertion(received <= ordered)
-        received: Number
-        // assertion((approved + rejected) <= received)
-        approved: Number
-        rejected: Number
-        // assertion(returned <= rejected)
-        returned: Number
-        // assertion(requisted <= approved)
-        requisted: Number
-        // assertion(consumed <= requisted)
-        consumed: Number
+        ordered: number
+        received: number
+        approved: number
+        rejected: number
+        returned: number
+        requisted: number
+        consumed: number 
     }
 
-    constructor(id: number, values: { indent: number, product: number, quantity: Number, uom: number, ordered: Number, received: Number, approved: Number, rejected: Number, returned: Number, requisted: Number, consumed: Number }) {
+    constructor(id: number, values: { indent: number, product: number, quantity: number, uom: number, ordered: number, received: number, approved: number, rejected: number, returned: number, requisted: number, consumed: number }) {
         this.id = id
         this.values = values
         this.indent = values.indent
@@ -997,7 +952,7 @@ export class QuotationRow {
     readonly id: number
     values: {
         indent: number
-        company: number
+        company: number 
     }
 
     constructor(id: number, values: { indent: number, company: number }) {
@@ -1019,15 +974,12 @@ export class QuotationItemRow {
     readonly quotation: number
     readonly indentItem: number
     values: {
-        // UNQ(quotation, indentItem)
         quotation: number
-        // assertion(quotation.indent == indentItem.indent)
         indentItem: number
-        // assertion(quantity <= (indentItem.quantity - (ordered - rejected)) && quantity > 0)
-        quantity: Number
+        quantity: number 
     }
 
-    constructor(id: number, values: { quotation: number, indentItem: number, quantity: Number }) {
+    constructor(id: number, values: { quotation: number, indentItem: number, quantity: number }) {
         this.id = id
         this.values = values
         this.quotation = values.quotation
@@ -1047,7 +999,7 @@ export class PurchaseOrderRow {
     readonly typeName = 'PurchaseOrder'
     readonly id: number
     values: {
-        quotation: number
+        quotation: number 
     }
 
     constructor(id: number, values: { quotation: number }) {
@@ -1068,18 +1020,14 @@ export class PurchaseOrderItemRow {
     readonly purchaseOrder: number
     readonly quotationItem: number
     values: {
-        // UNQ(purchaseOrder, quotationItem)
         purchaseOrder: number
-        // assertion(purchaseOrder.quotation == quotationItem.quotation)
         quotationItem: number
-        // assertion(quantity <= quotationItem.quantity && quantity > 0)
-        quantity: Number // { quotationItem.indentItem.ordered += quantity }
-        price: Decimal
-        // assertion(received >= 0 && received <= quantity)
-        received: Number
+        quantity: number
+        price: number
+        received: number 
     }
 
-    constructor(id: number, values: { purchaseOrder: number, quotationItem: number, quantity: Number, price: Decimal, received: Number }) {
+    constructor(id: number, values: { purchaseOrder: number, quotationItem: number, quantity: number, price: number, received: number }) {
         this.id = id
         this.values = values
         this.purchaseOrder = values.purchaseOrder
@@ -1101,7 +1049,7 @@ export class PurchaseInvoiceRow {
     readonly typeName = 'PurchaseInvoice'
     readonly id: number
     values: {
-        purchaseOrder: number
+        purchaseOrder: number 
     }
 
     constructor(id: number, values: { purchaseOrder: number }) {
@@ -1117,24 +1065,19 @@ export class PurchaseInvoiceRow {
 }
 
 export class PurchaseInvoiceItemRow {
-    [immerable] = true
     readonly typeName = 'PurchaseInvoiceItem'
     readonly id: number
     readonly purchaseInvoice: number
     readonly purchaseOrderItem: number
     values: {
-        // UNQ(purchaseInvoice, purchaseOrderItem)
         purchaseInvoice: number
-        // assertion(purchaseInvoice.purchaseOrder == purchaseOrderItem.purchaseOrder)
         purchaseOrderItem: number
-        // assertion(quantity <= purchaseOrderItem.quantity && quantity > 0)
-        quantity: Number // { purchaseOrderItem.received += quantity && purchaseOrderItem.quotationOrderItem.indentOrderItem.received += quantity }
-        // assertion((approved + rejected) <= quantity && approved >= 0 && rejeted >= 0)
-        approved: Number
-        rejected: Number
+        quantity: number
+        approved: number
+        rejected: number 
     }
 
-    constructor(id: number, values: { purchaseInvoice: number, purchaseOrderItem: number, quantity: Number, approved: Number, rejected: Number }) {
+    constructor(id: number, values: { purchaseInvoice: number, purchaseOrderItem: number, quantity: number, approved: number, rejected: number }) {
         this.id = id
         this.values = values
         this.purchaseInvoice = values.purchaseInvoice
@@ -1153,11 +1096,10 @@ export class PurchaseInvoiceItemRow {
 }
 
 export class MaterialApprovalSlipRow {
-    [immerable] = true
     readonly typeName = 'MaterialApprovalSlip'
     readonly id: number
     values: {
-        purchaseInvoice: number
+        purchaseInvoice: number 
     }
 
     constructor(id: number, values: { purchaseInvoice: number }) {
@@ -1178,17 +1120,13 @@ export class MaterialApprovalSlipItemRow {
     readonly materialApprovalSlip: number
     readonly purchaseInvoiceItem: number
     values: {
-        // UNQ(materialApprovalSlip, purchaseInvoiceItem)
         materialApprovalSlip: number
-        // assertion(materialApprovalSlip.purchaseInvoice == purchaseInvoiceItem.purchaseInvoice)
         purchaseInvoiceItem: number
-        // assertion(quantity <= purchaseInvoiceItem.quantity && quantity > 0)
-        quantity: Number // { purchaseInvoiceItem.approved += quantity && purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.approved += quantity }
-        // assertion(requisted <= quantity && requisted >= 0)
-        requisted: Number
+        quantity: number
+        requisted: number 
     }
 
-    constructor(id: number, values: { materialApprovalSlip: number, purchaseInvoiceItem: number, quantity: Number, requisted: Number }) {
+    constructor(id: number, values: { materialApprovalSlip: number, purchaseInvoiceItem: number, quantity: number, requisted: number }) {
         this.id = id
         this.values = values
         this.materialApprovalSlip = values.materialApprovalSlip
@@ -1209,7 +1147,7 @@ export class MaterialRejectionSlipRow {
     readonly typeName = 'MaterialRejectionSlip'
     readonly id: number
     values: {
-        purchaseInvoice: number
+        purchaseInvoice: number 
     }
 
     constructor(id: number, values: { purchaseInvoice: number }) {
@@ -1230,17 +1168,13 @@ export class MaterialRejectionSlipItemRow {
     readonly materialRejectionSlip: number
     readonly purchaseInvoiceItem: number
     values: {
-        // UNQ(materialRejectionSlip, purchaseInvoiceItem)
         materialRejectionSlip: number
-        // assertion(materialRejectionSlip.purchaseInvoice == purchaseInvoiceItem.purchaseInvoice)
         purchaseInvoiceItem: number
-        // assertion(quantity <= purchaseInvoiceItem.quantity && quantity > 0)
-        quantity: Number // { purchaseInvoiceItem.rejected += quantity && purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.rejected += quantity  }
-        // assertion(returned <= quantity && returned >= 0)
-        returned: Number
+        quantity: number
+        returned: number 
     }
 
-    constructor(id: number, values: { materialRejectionSlip: number, purchaseInvoiceItem: number, quantity: Number, returned: Number }) {
+    constructor(id: number, values: { materialRejectionSlip: number, purchaseInvoiceItem: number, quantity: number, returned: number }) {
         this.id = id
         this.values = values
         this.materialRejectionSlip = values.materialRejectionSlip
@@ -1261,7 +1195,7 @@ export class MaterialReturnSlipRow {
     readonly typeName = 'MaterialReturnSlip'
     readonly id: number
     values: {
-        materialRejectionSlip: number
+        materialRejectionSlip: number 
     }
 
     constructor(id: number, values: { materialRejectionSlip: number }) {
@@ -1282,15 +1216,12 @@ export class MaterialReturnSlipItemRow {
     readonly materialReturnSlip: number
     readonly materialRejectionSlipItem: number
     values: {
-        // UNQ(materialReturnSlip, materialRejectionSlipItem)
         materialReturnSlip: number
-        // assertion(materialReturnSlip.materialRejectionSlip == materialRejectionSlipItem.materialRejectionSlip)
         materialRejectionSlipItem: number
-        // assertion(quantity <= materialRejectionSlipItem.quantity && quantity > 0)
-        quantity: Number // { materialRejectionSlipItem.returned += quantity && materialRejectionSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.returned += quantity }
+        quantity: number 
     }
 
-    constructor(id: number, values: { materialReturnSlip: number, materialRejectionSlipItem: number, quantity: Number }) {
+    constructor(id: number, values: { materialReturnSlip: number, materialRejectionSlipItem: number, quantity: number }) {
         this.id = id
         this.values = values
         this.materialReturnSlip = values.materialReturnSlip
@@ -1310,7 +1241,7 @@ export class MaterialRequistionSlipRow {
     readonly typeName = 'MaterialRequistionSlip'
     readonly id: number
     values: {
-        materialApprovalSlip: number
+        materialApprovalSlip: number 
     }
 
     constructor(id: number, values: { materialApprovalSlip: number }) {
@@ -1331,17 +1262,13 @@ export class MaterialRequistionSlipItemRow {
     readonly materialRequistionSlip: number
     readonly materialApprovalSlipItem: number
     values: {
-        // UNQ(materialRequistionSlip, materialApprovalSlipItem)
         materialRequistionSlip: number
-        // assertion(materialRequistionSlip.materialApprovalSlip == materialApprovalSlipItem.materialApprovalSlip)
         materialApprovalSlipItem: number
-        // assertion(quantity <= materialApprovalSlipItem.quantity && quantity > 0)
-        quantity: Number // { materialApprovalSlipItem.requisted += quantity && materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.requisted += quantity }
-        // assertion(consumed <= quantity && consumed >= 0)
-        consumed: Number
+        quantity: number
+        consumed: number 
     }
 
-    constructor(id: number, values: { materialRequistionSlip: number, materialApprovalSlipItem: number, quantity: Number, consumed: Number }) {
+    constructor(id: number, values: { materialRequistionSlip: number, materialApprovalSlipItem: number, quantity: number, consumed: number }) {
         this.id = id
         this.values = values
         this.materialRequistionSlip = values.materialRequistionSlip
@@ -1363,7 +1290,7 @@ export class BOMRow {
     readonly id: number
     readonly name: string
     values: {
-        name: string
+        name: string 
     }
 
     constructor(id: number, values: { name: string }) {
@@ -1385,16 +1312,13 @@ export class BOMItemRow {
     readonly bom: number
     readonly product: number
     values: {
-        // UNQ(bom, product)
         bom: number
-        // assertion(product.consumable == true)
         product: number
-        // assertion(quantity > 0 && uom.product == product)
-        quantity: Number
-        uom: number
+        quantity: number
+        uom: number 
     }
 
-    constructor(id: number, values: { bom: number, product: number, quantity: Number, uom: number }) {
+    constructor(id: number, values: { bom: number, product: number, quantity: number, uom: number }) {
         this.id = id
         this.values = values
         this.bom = values.bom
@@ -1416,12 +1340,11 @@ export class ProductionPreparationSlipRow {
     readonly id: number
     values: {
         bom: number
-        // assertion((approved + scrapped) <= quantity && approved >= 0 && scrapped >= 0)
-        approved: Number
-        scrapped: Number
+        approved: number
+        scrapped: number 
     }
 
-    constructor(id: number, values: { bom: number, approved: Number, scrapped: Number }) {
+    constructor(id: number, values: { bom: number, approved: number, scrapped: number }) {
         this.id = id
         this.values = values
     }
@@ -1441,13 +1364,9 @@ export class ProductionPreparationSlipItemRow {
     readonly productionPreparationSlip: number
     readonly bomItem: string
     values: {
-        // UNQ(productionPreparationSlip, bomItem)
         productionPreparationSlip: number
         bomItem: string
-        // assertion(bomItem.product == materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.product)
-        materialRequistionSlipItem: number
-        // { materialRequistionSlipItem.consumed += bomItem.quantity * materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.uom.conversionRate / bomItem.product.uom.conversionRate }
-        // { materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.consumed += bomItem.quantity * materialRequistionSlipItem.materialApprovalSlipItem.purchaseInvoiceItem.purchaseOrderItem.quotationItem.indentItem.uom.conversionRate / bomItem.product.uom.conversionRate }
+        materialRequistionSlipItem: number 
     }
 
     constructor(id: number, values: { productionPreparationSlip: number, bomItem: string, materialRequistionSlipItem: number }) {
@@ -1471,11 +1390,10 @@ export class ScrapMaterialSlipRow {
     readonly id: number
     values: {
         productionPreparationSlip: number
-        // assertion(quantity <= productionPreparationSlip.bom.quantity && quantity > 0)
-        quantity: Number // { productionPreparationSlip.scrapped += quantity }
+        quantity: number 
     }
 
-    constructor(id: number, values: { productionPreparationSlip: number, quantity: Number }) {
+    constructor(id: number, values: { productionPreparationSlip: number, quantity: number }) {
         this.id = id
         this.values = values
     }
@@ -1493,13 +1411,11 @@ export class TransferMaterialSlipRow {
     readonly id: number
     values: {
         productionPreparationSlip: number
-        // assertion(quantity <= productionPreparationSlip.bom.quantity && quantity > 0)
-        quantity: Number // { productionPreparationSlip.approved += quantity }
-        // assertion(transfered <= quantity && transfered >= 0)
-        transferred: Number
+        quantity: number
+        transferred: number 
     }
 
-    constructor(id: number, values: { productionPreparationSlip: number, quantity: Number, transferred: Number }) {
+    constructor(id: number, values: { productionPreparationSlip: number, quantity: number, transferred: number }) {
         this.id = id
         this.values = values
     }
@@ -1518,11 +1434,10 @@ export class WarehouseAcceptanceSlipRow {
     readonly id: number
     values: {
         transferMaterialSlip: number
-        // assertion(quantity <= transferMaterialSlip.quantity && quantity > 0)
-        quantity: Number // { transferMaterialSlip.transfered += quantity }
+        quantity: number 
     }
 
-    constructor(id: number, values: { transferMaterialSlip: number, quantity: Number }) {
+    constructor(id: number, values: { transferMaterialSlip: number, quantity: number }) {
         this.id = id
         this.values = values
     }
@@ -1533,670 +1448,668 @@ export class WarehouseAcceptanceSlipRow {
             quantity: row.values.quantity
         })
     }
-}
+}export class DiffRow {
+  readonly id?: number
+  active: boolean
+  variables: {
+      Region: {
+          replace: Array<RegionRow>
+          remove: Array<number>
+      },
+      Country: {
+          replace: Array<CountryRow>
+          remove: Array<number>
+      },
+      StateType: {
+          replace: Array<StateTypeRow>
+          remove: Array<number>
+      },
+      District: {
+          replace: Array<DistrictRow>
+          remove: Array<number>
+      },
+      Subdistrict: {
+          replace: Array<SubdistrictRow>
+          remove: Array<number>
+      },
+      PostalCode: {
+          replace: Array<PostalCodeRow>
+          remove: Array<number>
+      },
+      Address: {
+          replace: Array<AddressRow>
+          remove: Array<number>
+      },
+      Company: {
+          replace: Array<CompanyRow>
+          remove: Array<number>
+      },
+      CompanyAddress: {
+          replace: Array<CompanyAddressRow>
+          remove: Array<number>
+      },
+      CompanyTagGroup: {
+          replace: Array<CompanyTagGroupRow>
+          remove: Array<number>
+      },
+      CompanyTag: {
+          replace: Array<CompanyTagRow>
+          remove: Array<number>
+      },
+      MappingCompanyTag: {
+          replace: Array<MappingCompanyTagRow>
+          remove: Array<number>
+      },
+      Contact: {
+          replace: Array<ContactRow>
+          remove: Array<number>
+      },
+      ContactAddress: {
+          replace: Array<ContactAddressRow>
+          remove: Array<number>
+      },
+      CompanyContact: {
+          replace: Array<CompanyContactRow>
+          remove: Array<number>
+      },
+      Currency: {
+          replace: Array<CurrencyRow>
+          remove: Array<number>
+      },
+      CurrencyRate: {
+          replace: Array<CurrencyRateRow>
+          remove: Array<number>
+      },
+      Memo: {
+          replace: Array<MemoRow>
+          remove: Array<number>
+      },
+      Bank: {
+          replace: Array<BankRow>
+          remove: Array<number>
+      },
+      BankBranch: {
+          replace: Array<BankBranchRow>
+          remove: Array<number>
+      },
+      BankAccount: {
+          replace: Array<BankAccountRow>
+          remove: Array<number>
+      },
+      BankTransaction: {
+          replace: Array<BankTransactionRow>
+          remove: Array<number>
+      },
+      CompanyBankAccount: {
+          replace: Array<CompanyBankAccountRow>
+          remove: Array<number>
+      },
+      ProductCategoryGroup: {
+          replace: Array<ProductCategoryGroupRow>
+          remove: Array<number>
+      },
+      ProductCategory: {
+          replace: Array<ProductCategoryRow>
+          remove: Array<number>
+      },
+      Product: {
+          replace: Array<ProductRow>
+          remove: Array<number>
+      },
+      CompanyProduct: {
+          replace: Array<CompanyProductRow>
+          remove: Array<number>
+      },
+      ProductTagGroup: {
+          replace: Array<ProductTagGroupRow>
+          remove: Array<number>
+      },
+      ProductTag: {
+          replace: Array<ProductTagRow>
+          remove: Array<number>
+      },
+      MappingProductTag: {
+          replace: Array<MappingProductTagRow>
+          remove: Array<number>
+      },
+      UOM: {
+          replace: Array<UOMRow>
+          remove: Array<number>
+      },
+      Indent: {
+          replace: Array<IndentRow>
+          remove: Array<number>
+      },
+      IndentItem: {
+          replace: Array<IndentItemRow>
+          remove: Array<number>
+      },
+      Quotation: {
+          replace: Array<QuotationRow>
+          remove: Array<number>
+      },
+      QuotationItem: {
+          replace: Array<QuotationItemRow>
+          remove: Array<number>
+      },
+      PurchaseOrder: {
+          replace: Array<PurchaseOrderRow>
+          remove: Array<number>
+      },
+      PurchaseOrderItem: {
+          replace: Array<PurchaseOrderItemRow>
+          remove: Array<number>
+      },
+      PurchaseInvoice: {
+          replace: Array<PurchaseInvoiceRow>
+          remove: Array<number>
+      },
+      PurchaseInvoiceItem: {
+          replace: Array<PurchaseInvoiceItemRow>
+          remove: Array<number>
+      },
+      MaterialApprovalSlip: {
+          replace: Array<MaterialApprovalSlipRow>
+          remove: Array<number>
+      },
+      MaterialApprovalSlipItem: {
+          replace: Array<MaterialApprovalSlipItemRow>
+          remove: Array<number>
+      },
+      MaterialRejectionSlip: {
+          replace: Array<MaterialRejectionSlipRow>
+          remove: Array<number>
+      },
+      MaterialRejectionSlipItem: {
+          replace: Array<MaterialRejectionSlipItemRow>
+          remove: Array<number>
+      },
+      MaterialReturnSlip: {
+          replace: Array<MaterialReturnSlipRow>
+          remove: Array<number>
+      },
+      MaterialReturnSlipItem: {
+          replace: Array<MaterialReturnSlipItemRow>
+          remove: Array<number>
+      },
+      MaterialRequistionSlip: {
+          replace: Array<MaterialRequistionSlipRow>
+          remove: Array<number>
+      },
+      MaterialRequistionSlipItem: {
+          replace: Array<MaterialRequistionSlipItemRow>
+          remove: Array<number>
+      },
+      BOM: {
+          replace: Array<BOMRow>
+          remove: Array<number>
+      },
+      BOMItem: {
+          replace: Array<BOMItemRow>
+          remove: Array<number>
+      },
+      ProductionPreparationSlip: {
+          replace: Array<ProductionPreparationSlipRow>
+          remove: Array<number>
+      },
+      ProductionPreparationSlipItem: {
+          replace: Array<ProductionPreparationSlipItemRow>
+          remove: Array<number>
+      },
+      ScrapMaterialSlip: {
+          replace: Array<ScrapMaterialSlipRow>
+          remove: Array<number>
+      },
+      TransferMaterialSlip: {
+          replace: Array<TransferMaterialSlipRow>
+          remove: Array<number>
+      },
+      WarehouseAcceptanceSlip: {
+          replace: Array<WarehouseAcceptanceSlipRow>
+          remove: Array<number>
+      }
+  }
+  
+  constructor(variables: {
+      Region: {
+          replace: Array<RegionRow>
+          remove: Array<number>
+      },
+      Country: {
+          replace: Array<CountryRow>
+          remove: Array<number>
+      },
+      StateType: {
+          replace: Array<StateTypeRow>
+          remove: Array<number>
+      },
+      District: {
+          replace: Array<DistrictRow>
+          remove: Array<number>
+      },
+      Subdistrict: {
+          replace: Array<SubdistrictRow>
+          remove: Array<number>
+      },
+      PostalCode: {
+          replace: Array<PostalCodeRow>
+          remove: Array<number>
+      },
+      Address: {
+          replace: Array<AddressRow>
+          remove: Array<number>
+      },
+      Company: {
+          replace: Array<CompanyRow>
+          remove: Array<number>
+      },
+      CompanyAddress: {
+          replace: Array<CompanyAddressRow>
+          remove: Array<number>
+      },
+      CompanyTagGroup: {
+          replace: Array<CompanyTagGroupRow>
+          remove: Array<number>
+      },
+      CompanyTag: {
+          replace: Array<CompanyTagRow>
+          remove: Array<number>
+      },
+      MappingCompanyTag: {
+          replace: Array<MappingCompanyTagRow>
+          remove: Array<number>
+      },
+      Contact: {
+          replace: Array<ContactRow>
+          remove: Array<number>
+      },
+      ContactAddress: {
+          replace: Array<ContactAddressRow>
+          remove: Array<number>
+      },
+      CompanyContact: {
+          replace: Array<CompanyContactRow>
+          remove: Array<number>
+      },
+      Currency: {
+          replace: Array<CurrencyRow>
+          remove: Array<number>
+      },
+      CurrencyRate: {
+          replace: Array<CurrencyRateRow>
+          remove: Array<number>
+      },
+      Memo: {
+          replace: Array<MemoRow>
+          remove: Array<number>
+      },
+      Bank: {
+          replace: Array<BankRow>
+          remove: Array<number>
+      },
+      BankBranch: {
+          replace: Array<BankBranchRow>
+          remove: Array<number>
+      },
+      BankAccount: {
+          replace: Array<BankAccountRow>
+          remove: Array<number>
+      },
+      BankTransaction: {
+          replace: Array<BankTransactionRow>
+          remove: Array<number>
+      },
+      CompanyBankAccount: {
+          replace: Array<CompanyBankAccountRow>
+          remove: Array<number>
+      },
+      ProductCategoryGroup: {
+          replace: Array<ProductCategoryGroupRow>
+          remove: Array<number>
+      },
+      ProductCategory: {
+          replace: Array<ProductCategoryRow>
+          remove: Array<number>
+      },
+      Product: {
+          replace: Array<ProductRow>
+          remove: Array<number>
+      },
+      CompanyProduct: {
+          replace: Array<CompanyProductRow>
+          remove: Array<number>
+      },
+      ProductTagGroup: {
+          replace: Array<ProductTagGroupRow>
+          remove: Array<number>
+      },
+      ProductTag: {
+          replace: Array<ProductTagRow>
+          remove: Array<number>
+      },
+      MappingProductTag: {
+          replace: Array<MappingProductTagRow>
+          remove: Array<number>
+      },
+      UOM: {
+          replace: Array<UOMRow>
+          remove: Array<number>
+      },
+      Indent: {
+          replace: Array<IndentRow>
+          remove: Array<number>
+      },
+      IndentItem: {
+          replace: Array<IndentItemRow>
+          remove: Array<number>
+      },
+      Quotation: {
+          replace: Array<QuotationRow>
+          remove: Array<number>
+      },
+      QuotationItem: {
+          replace: Array<QuotationItemRow>
+          remove: Array<number>
+      },
+      PurchaseOrder: {
+          replace: Array<PurchaseOrderRow>
+          remove: Array<number>
+      },
+      PurchaseOrderItem: {
+          replace: Array<PurchaseOrderItemRow>
+          remove: Array<number>
+      },
+      PurchaseInvoice: {
+          replace: Array<PurchaseInvoiceRow>
+          remove: Array<number>
+      },
+      PurchaseInvoiceItem: {
+          replace: Array<PurchaseInvoiceItemRow>
+          remove: Array<number>
+      },
+      MaterialApprovalSlip: {
+          replace: Array<MaterialApprovalSlipRow>
+          remove: Array<number>
+      },
+      MaterialApprovalSlipItem: {
+          replace: Array<MaterialApprovalSlipItemRow>
+          remove: Array<number>
+      },
+      MaterialRejectionSlip: {
+          replace: Array<MaterialRejectionSlipRow>
+          remove: Array<number>
+      },
+      MaterialRejectionSlipItem: {
+          replace: Array<MaterialRejectionSlipItemRow>
+          remove: Array<number>
+      },
+      MaterialReturnSlip: {
+          replace: Array<MaterialReturnSlipRow>
+          remove: Array<number>
+      },
+      MaterialReturnSlipItem: {
+          replace: Array<MaterialReturnSlipItemRow>
+          remove: Array<number>
+      },
+      MaterialRequistionSlip: {
+          replace: Array<MaterialRequistionSlipRow>
+          remove: Array<number>
+      },
+      MaterialRequistionSlipItem: {
+          replace: Array<MaterialRequistionSlipItemRow>
+          remove: Array<number>
+      },
+      BOM: {
+          replace: Array<BOMRow>
+          remove: Array<number>
+      },
+      BOMItem: {
+          replace: Array<BOMItemRow>
+          remove: Array<number>
+      },
+      ProductionPreparationSlip: {
+          replace: Array<ProductionPreparationSlipRow>
+          remove: Array<number>
+      },
+      ProductionPreparationSlipItem: {
+          replace: Array<ProductionPreparationSlipItemRow>
+          remove: Array<number>
+      },
+      ScrapMaterialSlip: {
+          replace: Array<ScrapMaterialSlipRow>
+          remove: Array<number>
+      },
+      TransferMaterialSlip: {
+          replace: Array<TransferMaterialSlipRow>
+          remove: Array<number>
+      },
+      WarehouseAcceptanceSlip: {
+          replace: Array<WarehouseAcceptanceSlipRow>
+          remove: Array<number>
+      }
+  }) {
+      this.active = true
+      this.variables = variables
+  }
 
-export class DiffRow {
-    readonly id?: number
-    active: boolean
-    variables: {
-        Region: {
-            replace: Array<RegionRow>
-            remove: Array<number>
-        },
-        Country: {
-            replace: Array<CountryRow>
-            remove: Array<number>
-        },
-        State: {
-            replace: Array<StateRow>
-            remove: Array<number>
-        },
-        District: {
-            replace: Array<DistrictRow>
-            remove: Array<number>
-        },
-        Subdistrict: {
-            replace: Array<SubdistrictRow>
-            remove: Array<number>
-        },
-        PostalCode: {
-            replace: Array<PostalCodeRow>
-            remove: Array<number>
-        },
-        Address: {
-            replace: Array<AddressRow>
-            remove: Array<number>
-        },
-        Company: {
-            replace: Array<CompanyRow>
-            remove: Array<number>
-        },
-        CompanyAddress: {
-            replace: Array<CompanyAddressRow>
-            remove: Array<number>
-        },
-        CompanyTagGroup: {
-            replace: Array<CompanyTagGroupRow>
-            remove: Array<number>
-        },
-        CompanyTag: {
-            replace: Array<CompanyTagRow>
-            remove: Array<number>
-        },
-        MappingCompanyTag: {
-            replace: Array<MappingCompanyTagRow>
-            remove: Array<number>
-        },
-        Contact: {
-            replace: Array<ContactRow>
-            remove: Array<number>
-        },
-        ContactAddress: {
-            replace: Array<ContactAddressRow>
-            remove: Array<number>
-        },
-        CompanyContact: {
-            replace: Array<CompanyContactRow>
-            remove: Array<number>
-        },
-        Currency: {
-            replace: Array<CurrencyRow>
-            remove: Array<number>
-        },
-        CurrencyRate: {
-            replace: Array<CurrencyRateRow>
-            remove: Array<number>
-        },
-        Memo: {
-            replace: Array<MemoRow>
-            remove: Array<number>
-        },
-        Bank: {
-            replace: Array<BankRow>
-            remove: Array<number>
-        },
-        BankBranch: {
-            replace: Array<BankBranchRow>
-            remove: Array<number>
-        },
-        BankAccount: {
-            replace: Array<BankAccountRow>
-            remove: Array<number>
-        },
-        BankTransaction: {
-            replace: Array<BankTransactionRow>
-            remove: Array<number>
-        },
-        CompanyBankAccount: {
-            replace: Array<CompanyBankAccountRow>
-            remove: Array<number>
-        },
-        ProductCategoryGroup: {
-            replace: Array<ProductCategoryGroupRow>
-            remove: Array<number>
-        },
-        ProductCategory: {
-            replace: Array<ProductCategoryRow>
-            remove: Array<number>
-        },
-        Product: {
-            replace: Array<ProductRow>
-            remove: Array<number>
-        },
-        CompanyProduct: {
-            replace: Array<CompanyProductRow>
-            remove: Array<number>
-        },
-        ProductTagGroup: {
-            replace: Array<ProductTagGroupRow>
-            remove: Array<number>
-        },
-        ProductTag: {
-            replace: Array<ProductTagRow>
-            remove: Array<number>
-        },
-        MappingProductTag: {
-            replace: Array<MappingProductTagRow>
-            remove: Array<number>
-        },
-        UOM: {
-            replace: Array<UOMRow>
-            remove: Array<number>
-        },
-        Indent: {
-            replace: Array<IndentRow>
-            remove: Array<number>
-        },
-        IndentItem: {
-            replace: Array<IndentItemRow>
-            remove: Array<number>
-        },
-        Quotation: {
-            replace: Array<QuotationRow>
-            remove: Array<number>
-        },
-        QuotationItem: {
-            replace: Array<QuotationItemRow>
-            remove: Array<number>
-        },
-        PurchaseOrder: {
-            replace: Array<PurchaseOrderRow>
-            remove: Array<number>
-        },
-        PurchaseOrderItem: {
-            replace: Array<PurchaseOrderItemRow>
-            remove: Array<number>
-        },
-        PurchaseInvoice: {
-            replace: Array<PurchaseInvoiceRow>
-            remove: Array<number>
-        },
-        PurchaseInvoiceItem: {
-            replace: Array<PurchaseInvoiceItemRow>
-            remove: Array<number>
-        },
-        MaterialApprovalSlip: {
-            replace: Array<MaterialApprovalSlipRow>
-            remove: Array<number>
-        },
-        MaterialApprovalSlipItem: {
-            replace: Array<MaterialApprovalSlipItemRow>
-            remove: Array<number>
-        },
-        MaterialRejectionSlip: {
-            replace: Array<MaterialRejectionSlipRow>
-            remove: Array<number>
-        },
-        MaterialRejectionSlipItem: {
-            replace: Array<MaterialRejectionSlipItemRow>
-            remove: Array<number>
-        },
-        MaterialReturnSlip: {
-            replace: Array<MaterialReturnSlipRow>
-            remove: Array<number>
-        },
-        MaterialReturnSlipItem: {
-            replace: Array<MaterialReturnSlipItemRow>
-            remove: Array<number>
-        },
-        MaterialRequistionSlip: {
-            replace: Array<MaterialRequistionSlipRow>
-            remove: Array<number>
-        },
-        MaterialRequistionSlipItem: {
-            replace: Array<MaterialRequistionSlipItemRow>
-            remove: Array<number>
-        },
-        BOM: {
-            replace: Array<BOMRow>
-            remove: Array<number>
-        },
-        BOMItem: {
-            replace: Array<BOMItemRow>
-            remove: Array<number>
-        },
-        ProductionPreparationSlip: {
-            replace: Array<ProductionPreparationSlipRow>
-            remove: Array<number>
-        },
-        ProductionPreparationSlipItem: {
-            replace: Array<ProductionPreparationSlipItemRow>
-            remove: Array<number>
-        },
-        ScrapMaterialSlip: {
-            replace: Array<ScrapMaterialSlipRow>
-            remove: Array<number>
-        },
-        TransferMaterialSlip: {
-            replace: Array<TransferMaterialSlipRow>
-            remove: Array<number>
-        },
-        WarehouseAcceptanceSlip: {
-            replace: Array<WarehouseAcceptanceSlipRow>
-            remove: Array<number>
-        }
-    }
-
-    constructor(variables: {
-        Region: {
-            replace: Array<RegionRow>
-            remove: Array<number>
-        },
-        Country: {
-            replace: Array<CountryRow>
-            remove: Array<number>
-        },
-        State: {
-            replace: Array<StateRow>
-            remove: Array<number>
-        },
-        District: {
-            replace: Array<DistrictRow>
-            remove: Array<number>
-        },
-        Subdistrict: {
-            replace: Array<SubdistrictRow>
-            remove: Array<number>
-        },
-        PostalCode: {
-            replace: Array<PostalCodeRow>
-            remove: Array<number>
-        },
-        Address: {
-            replace: Array<AddressRow>
-            remove: Array<number>
-        },
-        Company: {
-            replace: Array<CompanyRow>
-            remove: Array<number>
-        },
-        CompanyAddress: {
-            replace: Array<CompanyAddressRow>
-            remove: Array<number>
-        },
-        CompanyTagGroup: {
-            replace: Array<CompanyTagGroupRow>
-            remove: Array<number>
-        },
-        CompanyTag: {
-            replace: Array<CompanyTagRow>
-            remove: Array<number>
-        },
-        MappingCompanyTag: {
-            replace: Array<MappingCompanyTagRow>
-            remove: Array<number>
-        },
-        Contact: {
-            replace: Array<ContactRow>
-            remove: Array<number>
-        },
-        ContactAddress: {
-            replace: Array<ContactAddressRow>
-            remove: Array<number>
-        },
-        CompanyContact: {
-            replace: Array<CompanyContactRow>
-            remove: Array<number>
-        },
-        Currency: {
-            replace: Array<CurrencyRow>
-            remove: Array<number>
-        },
-        CurrencyRate: {
-            replace: Array<CurrencyRateRow>
-            remove: Array<number>
-        },
-        Memo: {
-            replace: Array<MemoRow>
-            remove: Array<number>
-        },
-        Bank: {
-            replace: Array<BankRow>
-            remove: Array<number>
-        },
-        BankBranch: {
-            replace: Array<BankBranchRow>
-            remove: Array<number>
-        },
-        BankAccount: {
-            replace: Array<BankAccountRow>
-            remove: Array<number>
-        },
-        BankTransaction: {
-            replace: Array<BankTransactionRow>
-            remove: Array<number>
-        },
-        CompanyBankAccount: {
-            replace: Array<CompanyBankAccountRow>
-            remove: Array<number>
-        },
-        ProductCategoryGroup: {
-            replace: Array<ProductCategoryGroupRow>
-            remove: Array<number>
-        },
-        ProductCategory: {
-            replace: Array<ProductCategoryRow>
-            remove: Array<number>
-        },
-        Product: {
-            replace: Array<ProductRow>
-            remove: Array<number>
-        },
-        CompanyProduct: {
-            replace: Array<CompanyProductRow>
-            remove: Array<number>
-        },
-        ProductTagGroup: {
-            replace: Array<ProductTagGroupRow>
-            remove: Array<number>
-        },
-        ProductTag: {
-            replace: Array<ProductTagRow>
-            remove: Array<number>
-        },
-        MappingProductTag: {
-            replace: Array<MappingProductTagRow>
-            remove: Array<number>
-        },
-        UOM: {
-            replace: Array<UOMRow>
-            remove: Array<number>
-        },
-        Indent: {
-            replace: Array<IndentRow>
-            remove: Array<number>
-        },
-        IndentItem: {
-            replace: Array<IndentItemRow>
-            remove: Array<number>
-        },
-        Quotation: {
-            replace: Array<QuotationRow>
-            remove: Array<number>
-        },
-        QuotationItem: {
-            replace: Array<QuotationItemRow>
-            remove: Array<number>
-        },
-        PurchaseOrder: {
-            replace: Array<PurchaseOrderRow>
-            remove: Array<number>
-        },
-        PurchaseOrderItem: {
-            replace: Array<PurchaseOrderItemRow>
-            remove: Array<number>
-        },
-        PurchaseInvoice: {
-            replace: Array<PurchaseInvoiceRow>
-            remove: Array<number>
-        },
-        PurchaseInvoiceItem: {
-            replace: Array<PurchaseInvoiceItemRow>
-            remove: Array<number>
-        },
-        MaterialApprovalSlip: {
-            replace: Array<MaterialApprovalSlipRow>
-            remove: Array<number>
-        },
-        MaterialApprovalSlipItem: {
-            replace: Array<MaterialApprovalSlipItemRow>
-            remove: Array<number>
-        },
-        MaterialRejectionSlip: {
-            replace: Array<MaterialRejectionSlipRow>
-            remove: Array<number>
-        },
-        MaterialRejectionSlipItem: {
-            replace: Array<MaterialRejectionSlipItemRow>
-            remove: Array<number>
-        },
-        MaterialReturnSlip: {
-            replace: Array<MaterialReturnSlipRow>
-            remove: Array<number>
-        },
-        MaterialReturnSlipItem: {
-            replace: Array<MaterialReturnSlipItemRow>
-            remove: Array<number>
-        },
-        MaterialRequistionSlip: {
-            replace: Array<MaterialRequistionSlipRow>
-            remove: Array<number>
-        },
-        MaterialRequistionSlipItem: {
-            replace: Array<MaterialRequistionSlipItemRow>
-            remove: Array<number>
-        },
-        BOM: {
-            replace: Array<BOMRow>
-            remove: Array<number>
-        },
-        BOMItem: {
-            replace: Array<BOMItemRow>
-            remove: Array<number>
-        },
-        ProductionPreparationSlip: {
-            replace: Array<ProductionPreparationSlipRow>
-            remove: Array<number>
-        },
-        ProductionPreparationSlipItem: {
-            replace: Array<ProductionPreparationSlipItemRow>
-            remove: Array<number>
-        },
-        ScrapMaterialSlip: {
-            replace: Array<ScrapMaterialSlipRow>
-            remove: Array<number>
-        },
-        TransferMaterialSlip: {
-            replace: Array<TransferMaterialSlipRow>
-            remove: Array<number>
-        },
-        WarehouseAcceptanceSlip: {
-            replace: Array<WarehouseAcceptanceSlipRow>
-            remove: Array<number>
-        }
-    }) {
-        this.active = true
-        this.variables = variables
-    }
-
-    static toVariable(diff: Immutable<DiffRow>): DiffVariable {
-        return new DiffVariable(diff.id, diff.active, {
-            Region: {
-                replace: HashSet.of<RegionVariable>().addAll(diff.variables.Region.replace.map(x => RegionRow.toVariable(x))),
-                remove: HashSet.of<Region>().addAll(diff.variables.Region.remove.map(x => new Region(x)))
-            },
-            Country: {
-                replace: HashSet.of<CountryVariable>().addAll(diff.variables.Country.replace.map(x => CountryRow.toVariable(x))),
-                remove: HashSet.of<Country>().addAll(diff.variables.Country.remove.map(x => new Country(x)))
-            },
-            State: {
-                replace: HashSet.of<StateVariable>().addAll(diff.variables.State.replace.map(x => StateRow.toVariable(x))),
-                remove: HashSet.of<State>().addAll(diff.variables.State.remove.map(x => new State(x)))
-            },
-            District: {
-                replace: HashSet.of<DistrictVariable>().addAll(diff.variables.District.replace.map(x => DistrictRow.toVariable(x))),
-                remove: HashSet.of<District>().addAll(diff.variables.District.remove.map(x => new District(x)))
-            },
-            Subdistrict: {
-                replace: HashSet.of<SubdistrictVariable>().addAll(diff.variables.Subdistrict.replace.map(x => SubdistrictRow.toVariable(x))),
-                remove: HashSet.of<Subdistrict>().addAll(diff.variables.Subdistrict.remove.map(x => new Subdistrict(x)))
-            },
-            PostalCode: {
-                replace: HashSet.of<PostalCodeVariable>().addAll(diff.variables.PostalCode.replace.map(x => PostalCodeRow.toVariable(x))),
-                remove: HashSet.of<PostalCode>().addAll(diff.variables.PostalCode.remove.map(x => new PostalCode(x)))
-            },
-            Address: {
-                replace: HashSet.of<AddressVariable>().addAll(diff.variables.Address.replace.map(x => AddressRow.toVariable(x))),
-                remove: HashSet.of<Address>().addAll(diff.variables.Address.remove.map(x => new Address(x)))
-            },
-            Company: {
-                replace: HashSet.of<CompanyVariable>().addAll(diff.variables.Company.replace.map(x => CompanyRow.toVariable(x))),
-                remove: HashSet.of<Company>().addAll(diff.variables.Company.remove.map(x => new Company(x)))
-            },
-            CompanyAddress: {
-                replace: HashSet.of<CompanyAddressVariable>().addAll(diff.variables.CompanyAddress.replace.map(x => CompanyAddressRow.toVariable(x))),
-                remove: HashSet.of<CompanyAddress>().addAll(diff.variables.CompanyAddress.remove.map(x => new CompanyAddress(x)))
-            },
-            CompanyTagGroup: {
-                replace: HashSet.of<CompanyTagGroupVariable>().addAll(diff.variables.CompanyTagGroup.replace.map(x => CompanyTagGroupRow.toVariable(x))),
-                remove: HashSet.of<CompanyTagGroup>().addAll(diff.variables.CompanyTagGroup.remove.map(x => new CompanyTagGroup(x)))
-            },
-            CompanyTag: {
-                replace: HashSet.of<CompanyTagVariable>().addAll(diff.variables.CompanyTag.replace.map(x => CompanyTagRow.toVariable(x))),
-                remove: HashSet.of<CompanyTag>().addAll(diff.variables.CompanyTag.remove.map(x => new CompanyTag(x)))
-            },
-            MappingCompanyTag: {
-                replace: HashSet.of<MappingCompanyTagVariable>().addAll(diff.variables.MappingCompanyTag.replace.map(x => MappingCompanyTagRow.toVariable(x))),
-                remove: HashSet.of<MappingCompanyTag>().addAll(diff.variables.MappingCompanyTag.remove.map(x => new MappingCompanyTag(x)))
-            },
-            Contact: {
-                replace: HashSet.of<ContactVariable>().addAll(diff.variables.Contact.replace.map(x => ContactRow.toVariable(x))),
-                remove: HashSet.of<Contact>().addAll(diff.variables.Contact.remove.map(x => new Contact(x)))
-            },
-            ContactAddress: {
-                replace: HashSet.of<ContactAddressVariable>().addAll(diff.variables.ContactAddress.replace.map(x => ContactAddressRow.toVariable(x))),
-                remove: HashSet.of<ContactAddress>().addAll(diff.variables.ContactAddress.remove.map(x => new ContactAddress(x)))
-            },
-            CompanyContact: {
-                replace: HashSet.of<CompanyContactVariable>().addAll(diff.variables.CompanyContact.replace.map(x => CompanyContactRow.toVariable(x))),
-                remove: HashSet.of<CompanyContact>().addAll(diff.variables.CompanyContact.remove.map(x => new CompanyContact(x)))
-            },
-            Currency: {
-                replace: HashSet.of<CurrencyVariable>().addAll(diff.variables.Currency.replace.map(x => CurrencyRow.toVariable(x))),
-                remove: HashSet.of<Currency>().addAll(diff.variables.Currency.remove.map(x => new Currency(x)))
-            },
-            CurrencyRate: {
-                replace: HashSet.of<CurrencyRateVariable>().addAll(diff.variables.CurrencyRate.replace.map(x => CurrencyRateRow.toVariable(x))),
-                remove: HashSet.of<CurrencyRate>().addAll(diff.variables.CurrencyRate.remove.map(x => new CurrencyRate(x)))
-            },
-            Memo: {
-                replace: HashSet.of<MemoVariable>().addAll(diff.variables.Memo.replace.map(x => MemoRow.toVariable(x))),
-                remove: HashSet.of<Memo>().addAll(diff.variables.Memo.remove.map(x => new Memo(x)))
-            },
-            Bank: {
-                replace: HashSet.of<BankVariable>().addAll(diff.variables.Bank.replace.map(x => BankRow.toVariable(x))),
-                remove: HashSet.of<Bank>().addAll(diff.variables.Bank.remove.map(x => new Bank(x)))
-            },
-            BankBranch: {
-                replace: HashSet.of<BankBranchVariable>().addAll(diff.variables.BankBranch.replace.map(x => BankBranchRow.toVariable(x))),
-                remove: HashSet.of<BankBranch>().addAll(diff.variables.BankBranch.remove.map(x => new BankBranch(x)))
-            },
-            BankAccount: {
-                replace: HashSet.of<BankAccountVariable>().addAll(diff.variables.BankAccount.replace.map(x => BankAccountRow.toVariable(x))),
-                remove: HashSet.of<BankAccount>().addAll(diff.variables.BankAccount.remove.map(x => new BankAccount(x)))
-            },
-            BankTransaction: {
-                replace: HashSet.of<BankTransactionVariable>().addAll(diff.variables.BankTransaction.replace.map(x => BankTransactionRow.toVariable(x))),
-                remove: HashSet.of<BankTransaction>().addAll(diff.variables.BankTransaction.remove.map(x => new BankTransaction(x)))
-            },
-            CompanyBankAccount: {
-                replace: HashSet.of<CompanyBankAccountVariable>().addAll(diff.variables.CompanyBankAccount.replace.map(x => CompanyBankAccountRow.toVariable(x))),
-                remove: HashSet.of<CompanyBankAccount>().addAll(diff.variables.CompanyBankAccount.remove.map(x => new CompanyBankAccount(x)))
-            },
-            ProductCategoryGroup: {
-                replace: HashSet.of<ProductCategoryGroupVariable>().addAll(diff.variables.ProductCategoryGroup.replace.map(x => ProductCategoryGroupRow.toVariable(x))),
-                remove: HashSet.of<ProductCategoryGroup>().addAll(diff.variables.ProductCategoryGroup.remove.map(x => new ProductCategoryGroup(x)))
-            },
-            ProductCategory: {
-                replace: HashSet.of<ProductCategoryVariable>().addAll(diff.variables.ProductCategory.replace.map(x => ProductCategoryRow.toVariable(x))),
-                remove: HashSet.of<ProductCategory>().addAll(diff.variables.ProductCategory.remove.map(x => new ProductCategory(x)))
-            },
-            Product: {
-                replace: HashSet.of<ProductVariable>().addAll(diff.variables.Product.replace.map(x => ProductRow.toVariable(x))),
-                remove: HashSet.of<Product>().addAll(diff.variables.Product.remove.map(x => new Product(x)))
-            },
-            CompanyProduct: {
-                replace: HashSet.of<CompanyProductVariable>().addAll(diff.variables.CompanyProduct.replace.map(x => CompanyProductRow.toVariable(x))),
-                remove: HashSet.of<CompanyProduct>().addAll(diff.variables.CompanyProduct.remove.map(x => new CompanyProduct(x)))
-            },
-            ProductTagGroup: {
-                replace: HashSet.of<ProductTagGroupVariable>().addAll(diff.variables.ProductTagGroup.replace.map(x => ProductTagGroupRow.toVariable(x))),
-                remove: HashSet.of<ProductTagGroup>().addAll(diff.variables.ProductTagGroup.remove.map(x => new ProductTagGroup(x)))
-            },
-            ProductTag: {
-                replace: HashSet.of<ProductTagVariable>().addAll(diff.variables.ProductTag.replace.map(x => ProductTagRow.toVariable(x))),
-                remove: HashSet.of<ProductTag>().addAll(diff.variables.ProductTag.remove.map(x => new ProductTag(x)))
-            },
-            MappingProductTag: {
-                replace: HashSet.of<MappingProductTagVariable>().addAll(diff.variables.MappingProductTag.replace.map(x => MappingProductTagRow.toVariable(x))),
-                remove: HashSet.of<MappingProductTag>().addAll(diff.variables.MappingProductTag.remove.map(x => new MappingProductTag(x)))
-            },
-            UOM: {
-                replace: HashSet.of<UOMVariable>().addAll(diff.variables.UOM.replace.map(x => UOMRow.toVariable(x))),
-                remove: HashSet.of<UOM>().addAll(diff.variables.UOM.remove.map(x => new UOM(x)))
-            },
-            Indent: {
-                replace: HashSet.of<IndentVariable>().addAll(diff.variables.Indent.replace.map(x => IndentRow.toVariable(x))),
-                remove: HashSet.of<Indent>().addAll(diff.variables.Indent.remove.map(x => new Indent(x)))
-            },
-            IndentItem: {
-                replace: HashSet.of<IndentItemVariable>().addAll(diff.variables.IndentItem.replace.map(x => IndentItemRow.toVariable(x))),
-                remove: HashSet.of<IndentItem>().addAll(diff.variables.IndentItem.remove.map(x => new IndentItem(x)))
-            },
-            Quotation: {
-                replace: HashSet.of<QuotationVariable>().addAll(diff.variables.Quotation.replace.map(x => QuotationRow.toVariable(x))),
-                remove: HashSet.of<Quotation>().addAll(diff.variables.Quotation.remove.map(x => new Quotation(x)))
-            },
-            QuotationItem: {
-                replace: HashSet.of<QuotationItemVariable>().addAll(diff.variables.QuotationItem.replace.map(x => QuotationItemRow.toVariable(x))),
-                remove: HashSet.of<QuotationItem>().addAll(diff.variables.QuotationItem.remove.map(x => new QuotationItem(x)))
-            },
-            PurchaseOrder: {
-                replace: HashSet.of<PurchaseOrderVariable>().addAll(diff.variables.PurchaseOrder.replace.map(x => PurchaseOrderRow.toVariable(x))),
-                remove: HashSet.of<PurchaseOrder>().addAll(diff.variables.PurchaseOrder.remove.map(x => new PurchaseOrder(x)))
-            },
-            PurchaseOrderItem: {
-                replace: HashSet.of<PurchaseOrderItemVariable>().addAll(diff.variables.PurchaseOrderItem.replace.map(x => PurchaseOrderItemRow.toVariable(x))),
-                remove: HashSet.of<PurchaseOrderItem>().addAll(diff.variables.PurchaseOrderItem.remove.map(x => new PurchaseOrderItem(x)))
-            },
-            PurchaseInvoice: {
-                replace: HashSet.of<PurchaseInvoiceVariable>().addAll(diff.variables.PurchaseInvoice.replace.map(x => PurchaseInvoiceRow.toVariable(x))),
-                remove: HashSet.of<PurchaseInvoice>().addAll(diff.variables.PurchaseInvoice.remove.map(x => new PurchaseInvoice(x)))
-            },
-            PurchaseInvoiceItem: {
-                replace: HashSet.of<PurchaseInvoiceItemVariable>().addAll(diff.variables.PurchaseInvoiceItem.replace.map(x => PurchaseInvoiceItemRow.toVariable(x))),
-                remove: HashSet.of<PurchaseInvoiceItem>().addAll(diff.variables.PurchaseInvoiceItem.remove.map(x => new PurchaseInvoiceItem(x)))
-            },
-            MaterialApprovalSlip: {
-                replace: HashSet.of<MaterialApprovalSlipVariable>().addAll(diff.variables.MaterialApprovalSlip.replace.map(x => MaterialApprovalSlipRow.toVariable(x))),
-                remove: HashSet.of<MaterialApprovalSlip>().addAll(diff.variables.MaterialApprovalSlip.remove.map(x => new MaterialApprovalSlip(x)))
-            },
-            MaterialApprovalSlipItem: {
-                replace: HashSet.of<MaterialApprovalSlipItemVariable>().addAll(diff.variables.MaterialApprovalSlipItem.replace.map(x => MaterialApprovalSlipItemRow.toVariable(x))),
-                remove: HashSet.of<MaterialApprovalSlipItem>().addAll(diff.variables.MaterialApprovalSlipItem.remove.map(x => new MaterialApprovalSlipItem(x)))
-            },
-            MaterialRejectionSlip: {
-                replace: HashSet.of<MaterialRejectionSlipVariable>().addAll(diff.variables.MaterialRejectionSlip.replace.map(x => MaterialRejectionSlipRow.toVariable(x))),
-                remove: HashSet.of<MaterialRejectionSlip>().addAll(diff.variables.MaterialRejectionSlip.remove.map(x => new MaterialRejectionSlip(x)))
-            },
-            MaterialRejectionSlipItem: {
-                replace: HashSet.of<MaterialRejectionSlipItemVariable>().addAll(diff.variables.MaterialRejectionSlipItem.replace.map(x => MaterialRejectionSlipItemRow.toVariable(x))),
-                remove: HashSet.of<MaterialRejectionSlipItem>().addAll(diff.variables.MaterialRejectionSlipItem.remove.map(x => new MaterialRejectionSlipItem(x)))
-            },
-            MaterialReturnSlip: {
-                replace: HashSet.of<MaterialReturnSlipVariable>().addAll(diff.variables.MaterialReturnSlip.replace.map(x => MaterialReturnSlipRow.toVariable(x))),
-                remove: HashSet.of<MaterialReturnSlip>().addAll(diff.variables.MaterialReturnSlip.remove.map(x => new MaterialReturnSlip(x)))
-            },
-            MaterialReturnSlipItem: {
-                replace: HashSet.of<MaterialReturnSlipItemVariable>().addAll(diff.variables.MaterialReturnSlipItem.replace.map(x => MaterialReturnSlipItemRow.toVariable(x))),
-                remove: HashSet.of<MaterialReturnSlipItem>().addAll(diff.variables.MaterialReturnSlipItem.remove.map(x => new MaterialReturnSlipItem(x)))
-            },
-            MaterialRequistionSlip: {
-                replace: HashSet.of<MaterialRequistionSlipVariable>().addAll(diff.variables.MaterialRequistionSlip.replace.map(x => MaterialRequistionSlipRow.toVariable(x))),
-                remove: HashSet.of<MaterialRequistionSlip>().addAll(diff.variables.MaterialRequistionSlip.remove.map(x => new MaterialRequistionSlip(x)))
-            },
-            MaterialRequistionSlipItem: {
-                replace: HashSet.of<MaterialRequistionSlipItemVariable>().addAll(diff.variables.MaterialRequistionSlipItem.replace.map(x => MaterialRequistionSlipItemRow.toVariable(x))),
-                remove: HashSet.of<MaterialRequistionSlipItem>().addAll(diff.variables.MaterialRequistionSlipItem.remove.map(x => new MaterialRequistionSlipItem(x)))
-            },
-            BOM: {
-                replace: HashSet.of<BOMVariable>().addAll(diff.variables.BOM.replace.map(x => BOMRow.toVariable(x))),
-                remove: HashSet.of<BOM>().addAll(diff.variables.BOM.remove.map(x => new BOM(x)))
-            },
-            BOMItem: {
-                replace: HashSet.of<BOMItemVariable>().addAll(diff.variables.BOMItem.replace.map(x => BOMItemRow.toVariable(x))),
-                remove: HashSet.of<BOMItem>().addAll(diff.variables.BOMItem.remove.map(x => new BOMItem(x)))
-            },
-            ProductionPreparationSlip: {
-                replace: HashSet.of<ProductionPreparationSlipVariable>().addAll(diff.variables.ProductionPreparationSlip.replace.map(x => ProductionPreparationSlipRow.toVariable(x))),
-                remove: HashSet.of<ProductionPreparationSlip>().addAll(diff.variables.ProductionPreparationSlip.remove.map(x => new ProductionPreparationSlip(x)))
-            },
-            ProductionPreparationSlipItem: {
-                replace: HashSet.of<ProductionPreparationSlipItemVariable>().addAll(diff.variables.ProductionPreparationSlipItem.replace.map(x => ProductionPreparationSlipItemRow.toVariable(x))),
-                remove: HashSet.of<ProductionPreparationSlipItem>().addAll(diff.variables.ProductionPreparationSlipItem.remove.map(x => new ProductionPreparationSlipItem(x)))
-            },
-            ScrapMaterialSlip: {
-                replace: HashSet.of<ScrapMaterialSlipVariable>().addAll(diff.variables.ScrapMaterialSlip.replace.map(x => ScrapMaterialSlipRow.toVariable(x))),
-                remove: HashSet.of<ScrapMaterialSlip>().addAll(diff.variables.ScrapMaterialSlip.remove.map(x => new ScrapMaterialSlip(x)))
-            },
-            TransferMaterialSlip: {
-                replace: HashSet.of<TransferMaterialSlipVariable>().addAll(diff.variables.TransferMaterialSlip.replace.map(x => TransferMaterialSlipRow.toVariable(x))),
-                remove: HashSet.of<TransferMaterialSlip>().addAll(diff.variables.TransferMaterialSlip.remove.map(x => new TransferMaterialSlip(x)))
-            },
-            WarehouseAcceptanceSlip: {
-                replace: HashSet.of<WarehouseAcceptanceSlipVariable>().addAll(diff.variables.WarehouseAcceptanceSlip.replace.map(x => WarehouseAcceptanceSlipRow.toVariable(x))),
-                remove: HashSet.of<WarehouseAcceptanceSlip>().addAll(diff.variables.WarehouseAcceptanceSlip.remove.map(x => new WarehouseAcceptanceSlip(x)))
-            }
-        })
-    }
+  static toVariable(diff: Immutable<DiffRow>): DiffVariable {
+      return new DiffVariable(diff.id, diff.active, {
+          Region: {
+            replace: HashSet.of<RegionVariable>().addAll(diff.variables.Region.replace.map(x => RegionRow.toVariable(x))),
+            remove: HashSet.of<Region>().addAll(diff.variables.Region.remove.map(x => new Region(x)))
+          },
+          Country: {
+            replace: HashSet.of<CountryVariable>().addAll(diff.variables.Country.replace.map(x => CountryRow.toVariable(x))),
+            remove: HashSet.of<Country>().addAll(diff.variables.Country.remove.map(x => new Country(x)))
+          },
+          StateType: {
+            replace: HashSet.of<StateTypeVariable>().addAll(diff.variables.StateType.replace.map(x => StateTypeRow.toVariable(x))),
+            remove: HashSet.of<StateType>().addAll(diff.variables.StateType.remove.map(x => new StateType(x)))
+          },
+          District: {
+            replace: HashSet.of<DistrictVariable>().addAll(diff.variables.District.replace.map(x => DistrictRow.toVariable(x))),
+            remove: HashSet.of<District>().addAll(diff.variables.District.remove.map(x => new District(x)))
+          },
+          Subdistrict: {
+            replace: HashSet.of<SubdistrictVariable>().addAll(diff.variables.Subdistrict.replace.map(x => SubdistrictRow.toVariable(x))),
+            remove: HashSet.of<Subdistrict>().addAll(diff.variables.Subdistrict.remove.map(x => new Subdistrict(x)))
+          },
+          PostalCode: {
+            replace: HashSet.of<PostalCodeVariable>().addAll(diff.variables.PostalCode.replace.map(x => PostalCodeRow.toVariable(x))),
+            remove: HashSet.of<PostalCode>().addAll(diff.variables.PostalCode.remove.map(x => new PostalCode(x)))
+          },
+          Address: {
+            replace: HashSet.of<AddressVariable>().addAll(diff.variables.Address.replace.map(x => AddressRow.toVariable(x))),
+            remove: HashSet.of<Address>().addAll(diff.variables.Address.remove.map(x => new Address(x)))
+          },
+          Company: {
+            replace: HashSet.of<CompanyVariable>().addAll(diff.variables.Company.replace.map(x => CompanyRow.toVariable(x))),
+            remove: HashSet.of<Company>().addAll(diff.variables.Company.remove.map(x => new Company(x)))
+          },
+          CompanyAddress: {
+            replace: HashSet.of<CompanyAddressVariable>().addAll(diff.variables.CompanyAddress.replace.map(x => CompanyAddressRow.toVariable(x))),
+            remove: HashSet.of<CompanyAddress>().addAll(diff.variables.CompanyAddress.remove.map(x => new CompanyAddress(x)))
+          },
+          CompanyTagGroup: {
+            replace: HashSet.of<CompanyTagGroupVariable>().addAll(diff.variables.CompanyTagGroup.replace.map(x => CompanyTagGroupRow.toVariable(x))),
+            remove: HashSet.of<CompanyTagGroup>().addAll(diff.variables.CompanyTagGroup.remove.map(x => new CompanyTagGroup(x)))
+          },
+          CompanyTag: {
+            replace: HashSet.of<CompanyTagVariable>().addAll(diff.variables.CompanyTag.replace.map(x => CompanyTagRow.toVariable(x))),
+            remove: HashSet.of<CompanyTag>().addAll(diff.variables.CompanyTag.remove.map(x => new CompanyTag(x)))
+          },
+          MappingCompanyTag: {
+            replace: HashSet.of<MappingCompanyTagVariable>().addAll(diff.variables.MappingCompanyTag.replace.map(x => MappingCompanyTagRow.toVariable(x))),
+            remove: HashSet.of<MappingCompanyTag>().addAll(diff.variables.MappingCompanyTag.remove.map(x => new MappingCompanyTag(x)))
+          },
+          Contact: {
+            replace: HashSet.of<ContactVariable>().addAll(diff.variables.Contact.replace.map(x => ContactRow.toVariable(x))),
+            remove: HashSet.of<Contact>().addAll(diff.variables.Contact.remove.map(x => new Contact(x)))
+          },
+          ContactAddress: {
+            replace: HashSet.of<ContactAddressVariable>().addAll(diff.variables.ContactAddress.replace.map(x => ContactAddressRow.toVariable(x))),
+            remove: HashSet.of<ContactAddress>().addAll(diff.variables.ContactAddress.remove.map(x => new ContactAddress(x)))
+          },
+          CompanyContact: {
+            replace: HashSet.of<CompanyContactVariable>().addAll(diff.variables.CompanyContact.replace.map(x => CompanyContactRow.toVariable(x))),
+            remove: HashSet.of<CompanyContact>().addAll(diff.variables.CompanyContact.remove.map(x => new CompanyContact(x)))
+          },
+          Currency: {
+            replace: HashSet.of<CurrencyVariable>().addAll(diff.variables.Currency.replace.map(x => CurrencyRow.toVariable(x))),
+            remove: HashSet.of<Currency>().addAll(diff.variables.Currency.remove.map(x => new Currency(x)))
+          },
+          CurrencyRate: {
+            replace: HashSet.of<CurrencyRateVariable>().addAll(diff.variables.CurrencyRate.replace.map(x => CurrencyRateRow.toVariable(x))),
+            remove: HashSet.of<CurrencyRate>().addAll(diff.variables.CurrencyRate.remove.map(x => new CurrencyRate(x)))
+          },
+          Memo: {
+            replace: HashSet.of<MemoVariable>().addAll(diff.variables.Memo.replace.map(x => MemoRow.toVariable(x))),
+            remove: HashSet.of<Memo>().addAll(diff.variables.Memo.remove.map(x => new Memo(x)))
+          },
+          Bank: {
+            replace: HashSet.of<BankVariable>().addAll(diff.variables.Bank.replace.map(x => BankRow.toVariable(x))),
+            remove: HashSet.of<Bank>().addAll(diff.variables.Bank.remove.map(x => new Bank(x)))
+          },
+          BankBranch: {
+            replace: HashSet.of<BankBranchVariable>().addAll(diff.variables.BankBranch.replace.map(x => BankBranchRow.toVariable(x))),
+            remove: HashSet.of<BankBranch>().addAll(diff.variables.BankBranch.remove.map(x => new BankBranch(x)))
+          },
+          BankAccount: {
+            replace: HashSet.of<BankAccountVariable>().addAll(diff.variables.BankAccount.replace.map(x => BankAccountRow.toVariable(x))),
+            remove: HashSet.of<BankAccount>().addAll(diff.variables.BankAccount.remove.map(x => new BankAccount(x)))
+          },
+          BankTransaction: {
+            replace: HashSet.of<BankTransactionVariable>().addAll(diff.variables.BankTransaction.replace.map(x => BankTransactionRow.toVariable(x))),
+            remove: HashSet.of<BankTransaction>().addAll(diff.variables.BankTransaction.remove.map(x => new BankTransaction(x)))
+          },
+          CompanyBankAccount: {
+            replace: HashSet.of<CompanyBankAccountVariable>().addAll(diff.variables.CompanyBankAccount.replace.map(x => CompanyBankAccountRow.toVariable(x))),
+            remove: HashSet.of<CompanyBankAccount>().addAll(diff.variables.CompanyBankAccount.remove.map(x => new CompanyBankAccount(x)))
+          },
+          ProductCategoryGroup: {
+            replace: HashSet.of<ProductCategoryGroupVariable>().addAll(diff.variables.ProductCategoryGroup.replace.map(x => ProductCategoryGroupRow.toVariable(x))),
+            remove: HashSet.of<ProductCategoryGroup>().addAll(diff.variables.ProductCategoryGroup.remove.map(x => new ProductCategoryGroup(x)))
+          },
+          ProductCategory: {
+            replace: HashSet.of<ProductCategoryVariable>().addAll(diff.variables.ProductCategory.replace.map(x => ProductCategoryRow.toVariable(x))),
+            remove: HashSet.of<ProductCategory>().addAll(diff.variables.ProductCategory.remove.map(x => new ProductCategory(x)))
+          },
+          Product: {
+            replace: HashSet.of<ProductVariable>().addAll(diff.variables.Product.replace.map(x => ProductRow.toVariable(x))),
+            remove: HashSet.of<Product>().addAll(diff.variables.Product.remove.map(x => new Product(x)))
+          },
+          CompanyProduct: {
+            replace: HashSet.of<CompanyProductVariable>().addAll(diff.variables.CompanyProduct.replace.map(x => CompanyProductRow.toVariable(x))),
+            remove: HashSet.of<CompanyProduct>().addAll(diff.variables.CompanyProduct.remove.map(x => new CompanyProduct(x)))
+          },
+          ProductTagGroup: {
+            replace: HashSet.of<ProductTagGroupVariable>().addAll(diff.variables.ProductTagGroup.replace.map(x => ProductTagGroupRow.toVariable(x))),
+            remove: HashSet.of<ProductTagGroup>().addAll(diff.variables.ProductTagGroup.remove.map(x => new ProductTagGroup(x)))
+          },
+          ProductTag: {
+            replace: HashSet.of<ProductTagVariable>().addAll(diff.variables.ProductTag.replace.map(x => ProductTagRow.toVariable(x))),
+            remove: HashSet.of<ProductTag>().addAll(diff.variables.ProductTag.remove.map(x => new ProductTag(x)))
+          },
+          MappingProductTag: {
+            replace: HashSet.of<MappingProductTagVariable>().addAll(diff.variables.MappingProductTag.replace.map(x => MappingProductTagRow.toVariable(x))),
+            remove: HashSet.of<MappingProductTag>().addAll(diff.variables.MappingProductTag.remove.map(x => new MappingProductTag(x)))
+          },
+          UOM: {
+            replace: HashSet.of<UOMVariable>().addAll(diff.variables.UOM.replace.map(x => UOMRow.toVariable(x))),
+            remove: HashSet.of<UOM>().addAll(diff.variables.UOM.remove.map(x => new UOM(x)))
+          },
+          Indent: {
+            replace: HashSet.of<IndentVariable>().addAll(diff.variables.Indent.replace.map(x => IndentRow.toVariable(x))),
+            remove: HashSet.of<Indent>().addAll(diff.variables.Indent.remove.map(x => new Indent(x)))
+          },
+          IndentItem: {
+            replace: HashSet.of<IndentItemVariable>().addAll(diff.variables.IndentItem.replace.map(x => IndentItemRow.toVariable(x))),
+            remove: HashSet.of<IndentItem>().addAll(diff.variables.IndentItem.remove.map(x => new IndentItem(x)))
+          },
+          Quotation: {
+            replace: HashSet.of<QuotationVariable>().addAll(diff.variables.Quotation.replace.map(x => QuotationRow.toVariable(x))),
+            remove: HashSet.of<Quotation>().addAll(diff.variables.Quotation.remove.map(x => new Quotation(x)))
+          },
+          QuotationItem: {
+            replace: HashSet.of<QuotationItemVariable>().addAll(diff.variables.QuotationItem.replace.map(x => QuotationItemRow.toVariable(x))),
+            remove: HashSet.of<QuotationItem>().addAll(diff.variables.QuotationItem.remove.map(x => new QuotationItem(x)))
+          },
+          PurchaseOrder: {
+            replace: HashSet.of<PurchaseOrderVariable>().addAll(diff.variables.PurchaseOrder.replace.map(x => PurchaseOrderRow.toVariable(x))),
+            remove: HashSet.of<PurchaseOrder>().addAll(diff.variables.PurchaseOrder.remove.map(x => new PurchaseOrder(x)))
+          },
+          PurchaseOrderItem: {
+            replace: HashSet.of<PurchaseOrderItemVariable>().addAll(diff.variables.PurchaseOrderItem.replace.map(x => PurchaseOrderItemRow.toVariable(x))),
+            remove: HashSet.of<PurchaseOrderItem>().addAll(diff.variables.PurchaseOrderItem.remove.map(x => new PurchaseOrderItem(x)))
+          },
+          PurchaseInvoice: {
+            replace: HashSet.of<PurchaseInvoiceVariable>().addAll(diff.variables.PurchaseInvoice.replace.map(x => PurchaseInvoiceRow.toVariable(x))),
+            remove: HashSet.of<PurchaseInvoice>().addAll(diff.variables.PurchaseInvoice.remove.map(x => new PurchaseInvoice(x)))
+          },
+          PurchaseInvoiceItem: {
+            replace: HashSet.of<PurchaseInvoiceItemVariable>().addAll(diff.variables.PurchaseInvoiceItem.replace.map(x => PurchaseInvoiceItemRow.toVariable(x))),
+            remove: HashSet.of<PurchaseInvoiceItem>().addAll(diff.variables.PurchaseInvoiceItem.remove.map(x => new PurchaseInvoiceItem(x)))
+          },
+          MaterialApprovalSlip: {
+            replace: HashSet.of<MaterialApprovalSlipVariable>().addAll(diff.variables.MaterialApprovalSlip.replace.map(x => MaterialApprovalSlipRow.toVariable(x))),
+            remove: HashSet.of<MaterialApprovalSlip>().addAll(diff.variables.MaterialApprovalSlip.remove.map(x => new MaterialApprovalSlip(x)))
+          },
+          MaterialApprovalSlipItem: {
+            replace: HashSet.of<MaterialApprovalSlipItemVariable>().addAll(diff.variables.MaterialApprovalSlipItem.replace.map(x => MaterialApprovalSlipItemRow.toVariable(x))),
+            remove: HashSet.of<MaterialApprovalSlipItem>().addAll(diff.variables.MaterialApprovalSlipItem.remove.map(x => new MaterialApprovalSlipItem(x)))
+          },
+          MaterialRejectionSlip: {
+            replace: HashSet.of<MaterialRejectionSlipVariable>().addAll(diff.variables.MaterialRejectionSlip.replace.map(x => MaterialRejectionSlipRow.toVariable(x))),
+            remove: HashSet.of<MaterialRejectionSlip>().addAll(diff.variables.MaterialRejectionSlip.remove.map(x => new MaterialRejectionSlip(x)))
+          },
+          MaterialRejectionSlipItem: {
+            replace: HashSet.of<MaterialRejectionSlipItemVariable>().addAll(diff.variables.MaterialRejectionSlipItem.replace.map(x => MaterialRejectionSlipItemRow.toVariable(x))),
+            remove: HashSet.of<MaterialRejectionSlipItem>().addAll(diff.variables.MaterialRejectionSlipItem.remove.map(x => new MaterialRejectionSlipItem(x)))
+          },
+          MaterialReturnSlip: {
+            replace: HashSet.of<MaterialReturnSlipVariable>().addAll(diff.variables.MaterialReturnSlip.replace.map(x => MaterialReturnSlipRow.toVariable(x))),
+            remove: HashSet.of<MaterialReturnSlip>().addAll(diff.variables.MaterialReturnSlip.remove.map(x => new MaterialReturnSlip(x)))
+          },
+          MaterialReturnSlipItem: {
+            replace: HashSet.of<MaterialReturnSlipItemVariable>().addAll(diff.variables.MaterialReturnSlipItem.replace.map(x => MaterialReturnSlipItemRow.toVariable(x))),
+            remove: HashSet.of<MaterialReturnSlipItem>().addAll(diff.variables.MaterialReturnSlipItem.remove.map(x => new MaterialReturnSlipItem(x)))
+          },
+          MaterialRequistionSlip: {
+            replace: HashSet.of<MaterialRequistionSlipVariable>().addAll(diff.variables.MaterialRequistionSlip.replace.map(x => MaterialRequistionSlipRow.toVariable(x))),
+            remove: HashSet.of<MaterialRequistionSlip>().addAll(diff.variables.MaterialRequistionSlip.remove.map(x => new MaterialRequistionSlip(x)))
+          },
+          MaterialRequistionSlipItem: {
+            replace: HashSet.of<MaterialRequistionSlipItemVariable>().addAll(diff.variables.MaterialRequistionSlipItem.replace.map(x => MaterialRequistionSlipItemRow.toVariable(x))),
+            remove: HashSet.of<MaterialRequistionSlipItem>().addAll(diff.variables.MaterialRequistionSlipItem.remove.map(x => new MaterialRequistionSlipItem(x)))
+          },
+          BOM: {
+            replace: HashSet.of<BOMVariable>().addAll(diff.variables.BOM.replace.map(x => BOMRow.toVariable(x))),
+            remove: HashSet.of<BOM>().addAll(diff.variables.BOM.remove.map(x => new BOM(x)))
+          },
+          BOMItem: {
+            replace: HashSet.of<BOMItemVariable>().addAll(diff.variables.BOMItem.replace.map(x => BOMItemRow.toVariable(x))),
+            remove: HashSet.of<BOMItem>().addAll(diff.variables.BOMItem.remove.map(x => new BOMItem(x)))
+          },
+          ProductionPreparationSlip: {
+            replace: HashSet.of<ProductionPreparationSlipVariable>().addAll(diff.variables.ProductionPreparationSlip.replace.map(x => ProductionPreparationSlipRow.toVariable(x))),
+            remove: HashSet.of<ProductionPreparationSlip>().addAll(diff.variables.ProductionPreparationSlip.remove.map(x => new ProductionPreparationSlip(x)))
+          },
+          ProductionPreparationSlipItem: {
+            replace: HashSet.of<ProductionPreparationSlipItemVariable>().addAll(diff.variables.ProductionPreparationSlipItem.replace.map(x => ProductionPreparationSlipItemRow.toVariable(x))),
+            remove: HashSet.of<ProductionPreparationSlipItem>().addAll(diff.variables.ProductionPreparationSlipItem.remove.map(x => new ProductionPreparationSlipItem(x)))
+          },
+          ScrapMaterialSlip: {
+            replace: HashSet.of<ScrapMaterialSlipVariable>().addAll(diff.variables.ScrapMaterialSlip.replace.map(x => ScrapMaterialSlipRow.toVariable(x))),
+            remove: HashSet.of<ScrapMaterialSlip>().addAll(diff.variables.ScrapMaterialSlip.remove.map(x => new ScrapMaterialSlip(x)))
+          },
+          TransferMaterialSlip: {
+            replace: HashSet.of<TransferMaterialSlipVariable>().addAll(diff.variables.TransferMaterialSlip.replace.map(x => TransferMaterialSlipRow.toVariable(x))),
+            remove: HashSet.of<TransferMaterialSlip>().addAll(diff.variables.TransferMaterialSlip.remove.map(x => new TransferMaterialSlip(x)))
+          },
+          WarehouseAcceptanceSlip: {
+            replace: HashSet.of<WarehouseAcceptanceSlipVariable>().addAll(diff.variables.WarehouseAcceptanceSlip.replace.map(x => WarehouseAcceptanceSlipRow.toVariable(x))),
+            remove: HashSet.of<WarehouseAcceptanceSlip>().addAll(diff.variables.WarehouseAcceptanceSlip.remove.map(x => new WarehouseAcceptanceSlip(x)))
+          }
+      })
+  }
 }

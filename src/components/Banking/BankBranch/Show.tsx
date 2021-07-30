@@ -9,22 +9,22 @@ import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { Address, AddressVariable, Bank, BankAccountVariable, BankBranch, BankBranchVariable, BankVariable, Currency } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
 import { withRouter, Link } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
 import { iff, when } from '../../../main/utils'
 import { db } from '../../../main/dexie'
-import { DiffRow, BankRow, BankBranchRow, AddressRow, BankAccountRow } from '../../../main/rows'
 import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { DiffRow, AddressRow, BankRow, BankAccountRow, BankBranchRow, CurrencyRow } from '../../../main/rows'
+import { Address, AddressVariable, Bank, BankVariable, BankAccount, BankAccountVariable, BankBranch, BankBranchVariable, Currency, CurrencyVariable } from '../../../main/variables'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: BankBranchVariable
-    items: {
+    bankAccountList: {
         typeName: 'BankAccount'
         query: Query
         limit: number
@@ -39,39 +39,42 @@ type State = Immutable<{
 export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
-
+ 
     | ['variable', 'bank', Bank]
     | ['variable', 'name', string]
     | ['variable', 'ifsc', string]
     | ['variable', 'address', Address]
 
-    | ['items', 'limit', number]
-    | ['items', 'offset', number]
-    | ['items', 'page', number]
-    | ['items', 'query', Args]
-    | ['items', 'variable', 'accountNumber', string]
-    | ['items', 'addVariable']
-
+    | ['bankAccountList', 'limit', number]
+    | ['bankAccountList', 'offset', number]
+    | ['bankAccountList', 'page', number]
+    | ['bankAccountList', 'query', Args]
+    | ['bankAccountList', 'variable', 'bank', Bank]
+    | ['bankAccountList', 'variable', 'bankBranch', BankBranch]
+    | ['bankAccountList', 'variable', 'accountNumber', string]
+    | ['bankAccountList', 'variable', 'accountName', string]
+    | ['bankAccountList', 'variable', 'currency', Currency]
+    | ['bankAccountList', 'addVariable']
     | ['replace', 'variable', BankBranchVariable]
-    | ['replace', 'items', HashSet<BankAccountVariable>]
+    | ['replace', 'bankAccountList', HashSet<BankAccountVariable>]
 
 function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
         variable: new BankBranchVariable(-1, { bank: new Bank(-1), name: '', ifsc: '', address: new Address(-1) }),
-        items: {
+        bankAccountList: {
             typeName: 'BankAccount',
             query: getQuery('BankAccount'),
             limit: 5,
             offset: 0,
             page: 1,
-            columns: Vector.of(['values', 'accountNumber']),
+            columns: Vector.of(['values', 'bank'], ['values', 'bankBranch'], ['values', 'accountNumber'], ['values', 'accountName'], ['values', 'currency']),
             variable: new BankAccountVariable(-1, { bank: new Bank(-1), bankBranch: new BankBranch(-1), accountNumber: '', accountName: '', currency: new Currency(-1) }),
             variables: HashSet.of<BankAccountVariable>()
         }
     }
-
+    
     function reducer(state: Draft<State>, action: Action) {
         switch (action[0]) {
             case 'toggleMode': {
@@ -110,10 +113,11 @@ function Component(props) {
                 }
                 break
             }
-            case 'items': {
+            
+            case 'bankAccountList': {
                 switch (action[1]) {
                     case 'limit': {
-                        state[action[0]].limit = Math.max(initialState.items.limit, action[2])
+                        state[action[0]].limit = Math.max(initialState.bankAccountList.limit, action[2])
                         break
                     }
                     case 'offset': {
@@ -131,16 +135,36 @@ function Component(props) {
                     }
                     case 'variable': {
                         switch (action[2]) {
-                            case 'accountNumber': {
-                                state[action[0]][action[1]][action[2]] = action[3]
+                            case 'bank': {
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
                                 break
+                            }
+                            case 'bankBranch': {
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
+                                break
+                            }
+                            case 'accountNumber': {
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
+                                break
+                            }
+                            case 'accountName': {
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
+                                break
+                            }
+                            case 'currency': {
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
+                                break
+                            }
+                            default: {
+                                const _exhaustiveCheck: never = action;
+                                return _exhaustiveCheck;
                             }
                         }
                         break
                     }
                     case 'addVariable': {
-                        state.items.variables = state.items.variables.add(new BankAccountVariable(-1, { bank: new Bank(state.items.variable.values.bank.hashCode()), bankBranch: new BankBranch(state.items.variable.values.bankBranch.hashCode()), accountNumber: state.items.variable.values.accountNumber, accountName: state.items.variable.values.accountName, currency: new Currency(state.items.variable.values.currency.hashCode()) }))
-                        state.items.variable = initialState.items.variable
+                        state.bankAccountList.variables = state.bankAccountList.variables.add(new BankAccountVariable(-1, {bank: new Bank(state.bankAccountList.variable.values.bank.hashCode()), bankBranch: new BankBranch(state.bankAccountList.variable.values.bankBranch.hashCode()), accountNumber: state.bankAccountList.variable.values.accountNumber, accountName: state.bankAccountList.variable.values.accountName, currency: new Currency(state.bankAccountList.variable.values.currency.hashCode())}))
+                        state.bankAccountList.variable = initialState.bankAccountList.variable
                         break
                     }
                     default: {
@@ -156,8 +180,8 @@ function Component(props) {
                         state.variable = action[2]
                         break
                     }
-                    case 'items': {
-                        state.items.variables = action[2]
+                    case 'bankAccountList': {
+                        state.bankAccountList.variables = action[2]
                         break
                     }
                     default: {
@@ -176,12 +200,12 @@ function Component(props) {
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const bankBranch = types['BankBranch']
-    const item = types['BankAccount']
-
-    const [addItemDrawer, toggleAddItemDrawer] = useState(false)
-    const [itemFilter, toggleItemFilter] = useState(false)
-
+    const bankBranchType = types['BankBranch']
+    const bankAccountType = types['BankAccount']
+    
+    const [addBankAccountDrawer, toggleAddBankAccountDrawer] = useState(false)
+    const [bankAccountFilter, toggleBankAccountFilter] = useState(false)
+    
     const setVariable = useCallback(async () => {
         if (props.match.params[0]) {
             const rows = await db.BankBranch.toArray()
@@ -194,77 +218,111 @@ function Component(props) {
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as BankBranchVariable])
-                const itemRows = await db.BankAccount.toArray()
-                var composedItemVariables = HashSet.of<Immutable<BankAccountVariable>>().addAll(itemRows ? itemRows.map(x => BankAccountRow.toVariable(x)) : [])
+
+                const bankAccountRows = await db.BankAccount.toArray()
+                var composedBankAccountVariables = HashSet.of<Immutable<BankAccountVariable>>().addAll(bankAccountRows ? bankAccountRows.map(x => BankAccountRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    composedBankAccountVariables = composedBankAccountVariables.filter(x => !diff.variables[state.bankAccountList.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.bankAccountList.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.bankAccountList.variable.typeName].replace)
                 })
-                const items = composedItemVariables.filter(variable => variable.values.bankBranch.hashCode() === props.match.params[0])
-                dispatch(['replace', 'items', items as HashSet<BankAccountVariable>])
+                dispatch(['replace', 'bankAccountList', composedBankAccountVariables.filter(variable => variable.values.bankBranch.hashCode() === props.match.params[0]) as HashSet<BankAccountVariable>])
             }
         }
-    }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
+    }, [state.variable.typeName, state.bankAccountList.variable.typeName, props.match.params, dispatch])
 
     useEffect(() => { setVariable() }, [setVariable])
 
-    const rows = useLiveQuery(() => db.Bank.orderBy('name').toArray())?.map(x => BankRow.toVariable(x))
-    var banks = HashSet.of<Immutable<BankVariable>>().addAll(rows ? rows : [])
+    const addressRows = useLiveQuery(() => db.Address.toArray())?.map(x => AddressRow.toVariable(x))
+    var addressList = HashSet.of<Immutable<AddressVariable>>().addAll(addressRows ? addressRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        banks = banks.filter(x => !diff.variables.Bank.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Bank.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Bank.replace)
+        addressList = addressList.filter(x => !diff.variables.Address.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Address.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Address.replace)
     })
 
-    const addressRows = useLiveQuery(() => db.Address.toArray())?.map(x => AddressRow.toVariable(x))
-    var addresses = HashSet.of<Immutable<AddressVariable>>().addAll(addressRows ? addressRows : [])
+    const bankRows = useLiveQuery(() => db.Bank.toArray())?.map(x => BankRow.toVariable(x))
+    var bankList = HashSet.of<Immutable<BankVariable>>().addAll(bankRows ? bankRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        addresses = addresses.filter(x => !diff.variables.Address.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Address.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Address.replace)
+        bankList = bankList.filter(x => !diff.variables.Bank.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Bank.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Bank.replace)
+    })
+
+    const bankAccountRows = useLiveQuery(() => db.BankAccount.toArray())?.map(x => BankAccountRow.toVariable(x))
+    var bankAccountList = HashSet.of<Immutable<BankAccountVariable>>().addAll(bankAccountRows ? bankAccountRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        bankAccountList = bankAccountList.filter(x => !diff.variables.BankAccount.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.BankAccount.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.BankAccount.replace)
+    })
+
+    const bankBranchRows = useLiveQuery(() => db.BankBranch.toArray())?.map(x => BankBranchRow.toVariable(x))
+    var bankBranchList = HashSet.of<Immutable<BankBranchVariable>>().addAll(bankBranchRows ? bankBranchRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        bankBranchList = bankBranchList.filter(x => !diff.variables.BankBranch.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.BankBranch.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.BankBranch.replace)
+    })
+
+    const currencyRows = useLiveQuery(() => db.Currency.toArray())?.map(x => CurrencyRow.toVariable(x))
+    var currencyList = HashSet.of<Immutable<CurrencyVariable>>().addAll(currencyRows ? currencyRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        currencyList = currencyList.filter(x => !diff.variables.Currency.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Currency.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Currency.replace)
     })
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
-            default: {
-                switch (event.target.name) {
-                    case 'bank': {
-                        dispatch(['variable', event.target.name, new Bank(parseInt(event.target.value))])
-                        break
-                    }
-                    case 'name': {
-                        dispatch(['variable', event.target.name, event.target.value])
-                        break
-                    }
-                    case 'ifsc': {
-                        dispatch(['variable', event.target.name, event.target.value])
-                        break
-                    }
-                    case 'address': {
-                        dispatch(['variable', event.target.name, new Address(parseInt(event.target.value))])
-                        break
-                    }
-                }
+            case 'bank': {
+                dispatch(['variable', event.target.name, new Bank(parseInt(String(event.target.value)))])
+                break
+            }
+            case 'name': {
+                dispatch(['variable', event.target.name, String(event.target.value)])
+                break
+            }
+            case 'ifsc': {
+                dispatch(['variable', event.target.name, String(event.target.value)])
+                break
+            }
+            case 'address': {
+                dispatch(['variable', event.target.name, new Address(parseInt(String(event.target.value)))])
+                break
             }
         }
     }
-
-    const onItemInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const onBankAccountInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
-            default: {
-                switch (event.target.name) {
-                    case 'accountNumber': {
-                        dispatch(['items', 'variable', event.target.name, event.target.value])
-                        break
-                    }
-                }
+            case 'bank': {
+                dispatch(['bankAccountList', 'variable', event.target.name, new Bank(parseInt(String(event.target.value)))])
+                break
+            }
+            case 'bankBranch': {
+                dispatch(['bankAccountList', 'variable', event.target.name, new BankBranch(parseInt(String(event.target.value)))])
+                break
+            }
+            case 'accountNumber': {
+                dispatch(['bankAccountList', 'variable', event.target.name, String(event.target.value)])
+                break
+            }
+            case 'accountName': {
+                dispatch(['bankAccountList', 'variable', event.target.name, String(event.target.value)])
+                break
+            }
+            case 'currency': {
+                dispatch(['bankAccountList', 'variable', event.target.name, new Currency(parseInt(String(event.target.value)))])
+                break
             }
         }
     }
 
-    const updateItemsQuery = (list: 'items') => {
+    const updateItemsQuery = (list: 'bankAccountList') => {
         const fx = (args: Args) => {
-            dispatch([list, 'query', args])
+            switch (list) {
+                case 'bankAccountList': {
+                    dispatch([list, 'query', args])
+                    break
+                }
+                default: {
+                    const _exhaustiveCheck: never = list
+                    return _exhaustiveCheck
+                }
+            }
         }
         return fx
     }
 
-    const updatePage = (list: 'items') => {
+    const updatePage = (list: 'bankAccountList') => {
         const fx = (args: ['limit', number] | ['offset', number] | ['page', number]) => {
             dispatch([list, args[0], args[1]])
         }
@@ -277,8 +335,14 @@ function Component(props) {
             name: state.variable.values.name,
             ifsc: state.variable.values.ifsc,
             address: state.variable.values.address.hashCode(),
-            items: state.items.variables.toArray().map(state => {
-                return { accountNumber: state.values.accountNumber }
+            bankAccountList: state.bankAccountList.variables.toArray().map(variable => {
+                return {
+                    bank: variable.values.bank.hashCode(),
+                    bankBranch: variable.values.bankBranch.hashCode(),
+                    accountNumber: variable.values.accountNumber,
+                    accountName: variable.values.accountName,
+                    currency: variable.values.currency.hashCode()
+                }
             })
         })
         console.log(result, symbolFlag, diff)
@@ -319,7 +383,7 @@ function Component(props) {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
                                 await createVariable()
-                                props.history.push('/bank-branches')
+                                props.history.push('/bank-branch-list')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
                                 <>
@@ -329,13 +393,13 @@ function Component(props) {
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
                                         await modifyVariable()
-                                        props.history.push('/bank-branches')
+                                        props.history.push('/bank-branch-list')
                                     }}>Update</Button>
                                 </>,
                                 <>
                                     <Button onClick={async () => {
                                         await deleteVariable()
-                                        props.history.push('/bank-branches')
+                                        props.history.push('/bank-branch-list')
                                     }}>Delete</Button>
                                     <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>
                                 </>))
@@ -343,25 +407,25 @@ function Component(props) {
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>
                     <Item>
-                        <Label>{bankBranch.keys.bank.name}</Label>
+                        <Label>{bankBranchType.keys.bank}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.bank.hashCode()} name='bank'>
                                     <option value='' selected disabled hidden>Select Bank</option>
-                                    {banks.toArray().map(x => <option value={x.id.hashCode()}>{x.values.name}</option>)}
+                                    {bankList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{
-                                    iff(banks.filter(x => x.id.hashCode() === state.variable.values.bank.hashCode()).length() !== 0,
+                                    iff(bankList.filter(x => x.id.hashCode() === state.variable.values.bank.hashCode()).length() !== 0,
                                         () => {
-                                            const referencedVariable = banks.filter(x => x.id.hashCode() === state.variable.values.bank.hashCode()).toArray()[0] as BankVariable
-                                            return <Link to={`/bank/${referencedVariable.id.hashCode()}`}>{referencedVariable.values.name}</Link>
+                                            const referencedVariable = bankList.filter(x => x.id.hashCode() === state.variable.values.bank.hashCode()).toArray()[0] as BankVariable
+                                            return <Link to={`/bank/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
                                         }, <Link to={`/bank/${state.variable.values.bank.hashCode()}`}>{state.variable.values.bank.hashCode()}</Link>)
                                 }</div>
                             )
                         }
                     </Item>
                     <Item>
-                        <Label>{bankBranch.keys.name.name}</Label>
+                        <Label>{bankBranchType.keys.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Input type='text' onChange={onVariableInputChange} value={state.variable.values.name} name='name' />,
@@ -370,7 +434,7 @@ function Component(props) {
                         }
                     </Item>
                     <Item>
-                        <Label>{bankBranch.keys.ifsc.name}</Label>
+                        <Label>{bankBranchType.keys.ifsc}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Input type='text' onChange={onVariableInputChange} value={state.variable.values.ifsc} name='ifsc' />,
@@ -379,52 +443,124 @@ function Component(props) {
                         }
                     </Item>
                     <Item>
-                        <Label>{bankBranch.keys.address.name}</Label>
+                        <Label>{bankBranchType.keys.address}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.address.hashCode()} name='address'>
                                     <option value='' selected disabled hidden>Select Address</option>
-                                    {addresses.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
+                                    {addressList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{
-                                    <Link to={`/address/${state.variable.values.address.hashCode()}`}>{state.variable.values.address.hashCode()}</Link>
+                                    iff(addressList.filter(x => x.id.hashCode() === state.variable.values.address.hashCode()).length() !== 0,
+                                        () => {
+                                            const referencedVariable = addressList.filter(x => x.id.hashCode() === state.variable.values.address.hashCode()).toArray()[0] as AddressVariable
+                                            return <Link to={`/address/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
+                                        }, <Link to={`/address/${state.variable.values.address.hashCode()}`}>{state.variable.values.address.hashCode()}</Link>)
                                 }</div>
                             )
                         }
                     </Item>
                 </Container>
-                <Container area={Grid.uom} layout={Grid2.layouts.main}>
+                <Container area={Grid.bankAccountArea} layout={Grid2.layouts.main}>
                     <Item area={Grid2.header} className='flex items-center'>
-                        <Title>{item.name}s</Title>
+                        <Title> Bank Account List</Title>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>,
+                                <button onClick={() => toggleAddBankAccountDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>,
                                 undefined
                             )
                         }
                     </Item>
                     <Item area={Grid2.filter} justify='end' align='center' className='flex'>
-                        <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
-                        <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
-                            <Filter typeName='BankBranch' query={state['items'].query} updateQuery={updateItemsQuery('items')} />
+                        <Button onClick={() => toggleBankAccountFilter(true)}>Filter</Button>
+                        <Drawer open={bankAccountFilter} onClose={() => toggleBankAccountFilter(false)} anchor={'right'}>
+                            <Filter typeName='BankAccount' query={state['bankAccountList'].query} updateQuery={updateItemsQuery('bankAccountList')} />
                         </Drawer>
-                        <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
+                        <Drawer open={addBankAccountDrawer} onClose={() => toggleAddBankAccountDrawer(false)} anchor={'right'}>
                             <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
-                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add {item.name}</div>
+                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add {bankAccountType.name}</div>
                                 <Container area={none} layout={Grid.layouts.uom} className=''>
                                     <Item>
-                                        <Label>{item.keys.accountNumber.name}</Label>
-                                        <Input type='text' onChange={onItemInputChange} name='accountNumber' />
+                                        <Label>{bankAccountType.keys.bank}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Select onChange={onBankAccountInputChange} value={state.bankAccountList.variable.values.bank.hashCode()} name='bank'>
+                                                    <option value='' selected disabled hidden>Select Bank</option>
+                                                    {bankList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
+                                                </Select>,
+                                                <div className='font-bold text-xl'>{
+                                                    iff(bankList.filter(x => x.id.hashCode() === state.bankAccountList.variable.values.bank.hashCode()).length() !== 0,
+                                                        () => {
+                                                            const referencedVariable = bankList.filter(x => x.id.hashCode() === state.bankAccountList.variable.values.bank.hashCode()).toArray()[0] as BankVariable
+                                                            return <Link to={`/bank/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
+                                                        }, <Link to={`/bank/${state.bankAccountList.variable.values.bank.hashCode()}`}>{state.bankAccountList.variable.values.bank.hashCode()}</Link>)
+                                                }</div>
+                                            )
+                                        }
+                                    </Item>
+                                    <Item>
+                                        <Label>{bankAccountType.keys.bankBranch}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Select onChange={onBankAccountInputChange} value={state.bankAccountList.variable.values.bankBranch.hashCode()} name='bankBranch'>
+                                                    <option value='' selected disabled hidden>Select Bank Branch</option>
+                                                    {bankBranchList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
+                                                </Select>,
+                                                <div className='font-bold text-xl'>{
+                                                    iff(bankBranchList.filter(x => x.id.hashCode() === state.bankAccountList.variable.values.bankBranch.hashCode()).length() !== 0,
+                                                        () => {
+                                                            const referencedVariable = bankBranchList.filter(x => x.id.hashCode() === state.bankAccountList.variable.values.bankBranch.hashCode()).toArray()[0] as BankBranchVariable
+                                                            return <Link to={`/bank-branch/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
+                                                        }, <Link to={`/bank-branch/${state.bankAccountList.variable.values.bankBranch.hashCode()}`}>{state.bankAccountList.variable.values.bankBranch.hashCode()}</Link>)
+                                                }</div>
+                                            )
+                                        }
+                                    </Item>
+                                    <Item>
+                                        <Label>{bankAccountType.keys.accountNumber}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Input type='text' onChange={onBankAccountInputChange} value={state.bankAccountList.variable.values.accountNumber} name='accountNumber' />,
+                                                <div className='font-bold text-xl'>{state.bankAccountList.variable.values.accountNumber}</div>
+                                            )
+                                        }
+                                    </Item>
+                                    <Item>
+                                        <Label>{bankAccountType.keys.accountName}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Input type='text' onChange={onBankAccountInputChange} value={state.bankAccountList.variable.values.accountName} name='accountName' />,
+                                                <div className='font-bold text-xl'>{state.bankAccountList.variable.values.accountName}</div>
+                                            )
+                                        }
+                                    </Item>
+                                    <Item>
+                                        <Label>{bankAccountType.keys.currency}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Select onChange={onBankAccountInputChange} value={state.bankAccountList.variable.values.currency.hashCode()} name='currency'>
+                                                    <option value='' selected disabled hidden>Select Currency</option>
+                                                    {currencyList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
+                                                </Select>,
+                                                <div className='font-bold text-xl'>{
+                                                    iff(currencyList.filter(x => x.id.hashCode() === state.bankAccountList.variable.values.currency.hashCode()).length() !== 0,
+                                                        () => {
+                                                            const referencedVariable = currencyList.filter(x => x.id.hashCode() === state.bankAccountList.variable.values.currency.hashCode()).toArray()[0] as CurrencyVariable
+                                                            return <Link to={`/currency/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
+                                                        }, <Link to={`/currency/${state.bankAccountList.variable.values.currency.hashCode()}`}>{state.bankAccountList.variable.values.currency.hashCode()}</Link>)
+                                                }</div>
+                                            )
+                                        }
                                     </Item>
                                     <Item justify='center' align='center'>
-                                        <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>
+                                        <Button onClick={() => dispatch(['bankAccountList', 'addVariable'])}>Add</Button>
                                     </Item>
                                 </Container>
                             </div>
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable)).toArray()} columns={state['items'].columns.toArray()} />
-                </Container >
+                    <Table area={Grid2.table} state={state['bankAccountList']} updatePage={updatePage('bankAccountList')} variables={state.bankAccountList.variables.filter(variable => applyFilter(state['bankAccountList'].query, variable)).toArray()} columns={state['bankAccountList'].columns.toArray()} />
+                </Container > 
             </Container>
         }, <div>Variable not found</div>)
 }

@@ -1,29 +1,30 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
 import { HashSet, Vector } from 'prelude-ts'
 import { Drawer } from '@material-ui/core'
+import { executeCircuit } from '../../../main/circuit'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
 import { Table } from '../../../main/Table'
 import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
-import { BOM, BOMItemVariable, BOMVariable, Product, ProductVariable, UOM, UOMVariable } from '../../../main/variables'
 import * as Grid from './grids/Show'
 import * as Grid2 from './grids/List'
-import { withRouter } from 'react-router-dom'
-import { executeCircuit } from '../../../main/circuit'
+import { withRouter, Link } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
 import { iff, when } from '../../../main/utils'
 import { db } from '../../../main/dexie'
-import { useLiveQuery } from 'dexie-react-hooks'
-import { BOMItemRow, BOMRow, DiffRow, ProductRow, UOMRow } from '../../../main/rows'
+import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
+import { useLiveQuery } from 'dexie-react-hooks'
+import { DiffRow, BOMRow, BOMItemRow, ProductRow, UOMRow } from '../../../main/rows'
+import { BOM, BOMVariable, BOMItem, BOMItemVariable, Product, ProductVariable, UOM, UOMVariable } from '../../../main/variables'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
     variable: BOMVariable
-    items: {
+    bOMItemList: {
         typeName: 'BOMItem'
         query: Query
         limit: number
@@ -38,38 +39,38 @@ type State = Immutable<{
 export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
-
+ 
     | ['variable', 'name', string]
 
-    | ['items', 'limit', number]
-    | ['items', 'offset', number]
-    | ['items', 'page', number]
-    | ['items', 'query', Args]
-    | ['items', 'variable', 'product', Product]
-    | ['items', 'variable', 'quantity', number]
-    | ['items', 'variable', 'uom', UOM]
-    | ['items', 'addVariable']
-
+    | ['bOMItemList', 'limit', number]
+    | ['bOMItemList', 'offset', number]
+    | ['bOMItemList', 'page', number]
+    | ['bOMItemList', 'query', Args]
+    | ['bOMItemList', 'variable', 'bom', BOM]
+    | ['bOMItemList', 'variable', 'product', Product]
+    | ['bOMItemList', 'variable', 'quantity', number]
+    | ['bOMItemList', 'variable', 'uom', UOM]
+    | ['bOMItemList', 'addVariable']
     | ['replace', 'variable', BOMVariable]
-    | ['replace', 'items', HashSet<BOMItemVariable>]
+    | ['replace', 'bOMItemList', HashSet<BOMItemVariable>]
 
 function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
         variable: new BOMVariable(-1, { name: '' }),
-        items: {
+        bOMItemList: {
             typeName: 'BOMItem',
             query: getQuery('BOMItem'),
             limit: 5,
             offset: 0,
             page: 1,
-            columns: Vector.of(['values', 'product'], ['values', 'quantity'], ['values', 'uom'], ['values', 'ordered'], ['values', 'received'], ['values', 'approved'], ['values', 'rejected'], ['values', 'returned'], ['values', 'requisted'], ['values', 'consumed']),
+            columns: Vector.of(['values', 'bom'], ['values', 'product'], ['values', 'quantity'], ['values', 'uom']),
             variable: new BOMItemVariable(-1, { bom: new BOM(-1), product: new Product(-1), quantity: 0, uom: new UOM(-1) }),
             variables: HashSet.of<BOMItemVariable>()
         }
     }
-
+    
     function reducer(state: Draft<State>, action: Action) {
         switch (action[0]) {
             case 'toggleMode': {
@@ -96,10 +97,11 @@ function Component(props) {
                 }
                 break
             }
-            case 'items': {
+            
+            case 'bOMItemList': {
                 switch (action[1]) {
                     case 'limit': {
-                        state[action[0]].limit = Math.max(initialState.items.limit, action[2])
+                        state[action[0]].limit = Math.max(initialState.bOMItemList.limit, action[2])
                         break
                     }
                     case 'offset': {
@@ -117,16 +119,20 @@ function Component(props) {
                     }
                     case 'variable': {
                         switch (action[2]) {
+                            case 'bom': {
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
+                                break
+                            }
                             case 'product': {
-                                state[action[0]][action[1]][action[2]] = action[3]
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
                                 break
                             }
                             case 'quantity': {
-                                state[action[0]][action[1]][action[2]] = action[3]
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
                                 break
                             }
                             case 'uom': {
-                                state[action[0]][action[1]][action[2]] = action[3]
+                                state[action[0]][action[1]]['values'][action[2]] = action[3]
                                 break
                             }
                             default: {
@@ -137,9 +143,13 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.items.variables = state.items.variables.add(new BOMItemVariable(-1, { bom: new BOM(state.items.variable.values.bom.hashCode()), product: new Product(state.items.variable.values.product.hashCode()), quantity: state.items.variable.values.quantity, uom: new UOM(state.items.variable.values.uom.hashCode()) }))
-                        state.items.variable = initialState.items.variable
+                        state.bOMItemList.variables = state.bOMItemList.variables.add(new BOMItemVariable(-1, {bom: new BOM(state.bOMItemList.variable.values.bom.hashCode()), product: new Product(state.bOMItemList.variable.values.product.hashCode()), quantity: state.bOMItemList.variable.values.quantity, uom: new UOM(state.bOMItemList.variable.values.uom.hashCode())}))
+                        state.bOMItemList.variable = initialState.bOMItemList.variable
                         break
+                    }
+                    default: {
+                        const _exhaustiveCheck: never = action
+                        return _exhaustiveCheck
                     }
                 }
                 break
@@ -150,26 +160,32 @@ function Component(props) {
                         state.variable = action[2]
                         break
                     }
-                    case 'items': {
-                        state.items.variables = action[2]
+                    case 'bOMItemList': {
+                        state.bOMItemList.variables = action[2]
                         break
                     }
                     default: {
-                        const _exhaustiveCheck: never = action;
-                        return _exhaustiveCheck;
+                        const _exhaustiveCheck: never = action
+                        return _exhaustiveCheck
                     }
                 }
                 break
             }
             default: {
-                const _exhaustiveCheck: never = action;
-                return _exhaustiveCheck;
+                const _exhaustiveCheck: never = action
+                return _exhaustiveCheck
             }
         }
     }
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
+    const bOMType = types['BOM']
+    const bOMItemType = types['BOMItem']
+    
+    const [addBOMItemDrawer, toggleAddBOMItemDrawer] = useState(false)
+    const [bOMItemFilter, toggleBOMItemFilter] = useState(false)
+    
     const setVariable = useCallback(async () => {
         if (props.match.params[0]) {
             const rows = await db.BOM.toArray()
@@ -182,80 +198,89 @@ function Component(props) {
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
                 dispatch(['replace', 'variable', variable as BOMVariable])
-                const itemRows = await db.BOMItem.toArray()
-                var composedItemVariables = HashSet.of<Immutable<BOMItemVariable>>().addAll(itemRows ? itemRows.map(x => BOMItemRow.toVariable(x)) : [])
+
+                const bOMItemRows = await db.BOMItem.toArray()
+                var composedBOMItemVariables = HashSet.of<Immutable<BOMItemVariable>>().addAll(bOMItemRows ? bOMItemRows.map(x => BOMItemRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedItemVariables = composedItemVariables.filter(x => !diff.variables[state.items.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.items.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.items.variable.typeName].replace)
+                    composedBOMItemVariables = composedBOMItemVariables.filter(x => !diff.variables[state.bOMItemList.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.bOMItemList.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.bOMItemList.variable.typeName].replace)
                 })
-                const items = composedItemVariables.filter(variable => variable.values.bom.hashCode() === props.match.params[0])
-                dispatch(['replace', 'items', items as HashSet<BOMItemVariable>])
+                dispatch(['replace', 'bOMItemList', composedBOMItemVariables.filter(variable => variable.values.bom.hashCode() === props.match.params[0]) as HashSet<BOMItemVariable>])
             }
         }
-    }, [state.variable.typeName, state.items.variable.typeName, props.match.params, dispatch])
+    }, [state.variable.typeName, state.bOMItemList.variable.typeName, props.match.params, dispatch])
 
     useEffect(() => { setVariable() }, [setVariable])
 
-    const rows = useLiveQuery(() => db.Product.toArray())?.map(x => ProductRow.toVariable(x))
-    var products = HashSet.of<Immutable<ProductVariable>>().addAll(rows ? rows : [])
+    const bOMRows = useLiveQuery(() => db.BOM.toArray())?.map(x => BOMRow.toVariable(x))
+    var bOMList = HashSet.of<Immutable<BOMVariable>>().addAll(bOMRows ? bOMRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        products = products.filter(x => !diff.variables.Product.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Product.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Product.replace)
+        bOMList = bOMList.filter(x => !diff.variables.BOM.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.BOM.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.BOM.replace)
     })
 
-    const itemRows = useLiveQuery(() => db.UOM.where({ product: state.items.variable.values.product.hashCode() }).toArray())?.map(x => UOMRow.toVariable(x))
-    var uoms = HashSet.of<Immutable<UOMVariable>>().addAll(itemRows ? itemRows : [])
+    const bOMItemRows = useLiveQuery(() => db.BOMItem.toArray())?.map(x => BOMItemRow.toVariable(x))
+    var bOMItemList = HashSet.of<Immutable<BOMItemVariable>>().addAll(bOMItemRows ? bOMItemRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        uoms = uoms.filter(x => !diff.variables.UOM.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.UOM.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.UOM.replace)
-        uoms = uoms.filter(x => x.values.product.hashCode() === state.items.variable.values.product.hashCode())
+        bOMItemList = bOMItemList.filter(x => !diff.variables.BOMItem.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.BOMItem.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.BOMItem.replace)
     })
 
-    const bom = types['BOM']
-    const item = types['BOMItem']
+    const productRows = useLiveQuery(() => db.Product.toArray())?.map(x => ProductRow.toVariable(x))
+    var productList = HashSet.of<Immutable<ProductVariable>>().addAll(productRows ? productRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        productList = productList.filter(x => !diff.variables.Product.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Product.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Product.replace)
+    })
 
-    const [addItemDrawer, toggleAddItemDrawer] = useState(false)
-    const [itemFilter, toggleItemFilter] = useState(false)
+    const uOMRows = useLiveQuery(() => db.UOM.toArray())?.map(x => UOMRow.toVariable(x))
+    var uOMList = HashSet.of<Immutable<UOMVariable>>().addAll(uOMRows ? uOMRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        uOMList = uOMList.filter(x => !diff.variables.UOM.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.UOM.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.UOM.replace)
+    })
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
-            default: {
-                switch (event.target.name) {
-                    case 'name': {
-                        dispatch(['variable', event.target.name, event.target.value])
-                        break
-                    }
-                }
+            case 'name': {
+                dispatch(['variable', event.target.name, String(event.target.value)])
+                break
             }
         }
     }
-
-    const onItemInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const onBOMItemInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
-            default: {
-                switch (event.target.name) {
-                    case 'product': {
-                        dispatch(['items', 'variable', event.target.name, new Product(parseInt(event.target.value))])
-                        break
-                    }
-                    case 'quantity': {
-                        dispatch(['items', 'variable', event.target.name, parseInt(event.target.value)])
-                        break
-                    }
-                    case 'uom': {
-                        dispatch(['items', 'variable', event.target.name, new UOM(parseInt(event.target.value))])
-                        break
-                    }
-                }
+            case 'bom': {
+                dispatch(['bOMItemList', 'variable', event.target.name, new BOM(parseInt(String(event.target.value)))])
+                break
+            }
+            case 'product': {
+                dispatch(['bOMItemList', 'variable', event.target.name, new Product(parseInt(String(event.target.value)))])
+                break
+            }
+            case 'quantity': {
+                dispatch(['bOMItemList', 'variable', event.target.name, parseInt(String(event.target.value))])
+                break
+            }
+            case 'uom': {
+                dispatch(['bOMItemList', 'variable', event.target.name, new UOM(parseInt(String(event.target.value)))])
+                break
             }
         }
     }
 
-    const updateItemsQuery = (list: 'items') => {
+    const updateItemsQuery = (list: 'bOMItemList') => {
         const fx = (args: Args) => {
-            dispatch([list, 'query', args])
+            switch (list) {
+                case 'bOMItemList': {
+                    dispatch([list, 'query', args])
+                    break
+                }
+                default: {
+                    const _exhaustiveCheck: never = list
+                    return _exhaustiveCheck
+                }
+            }
         }
         return fx
     }
 
-    const updatePage = (list: 'items') => {
+    const updatePage = (list: 'bOMItemList') => {
         const fx = (args: ['limit', number] | ['offset', number] | ['page', number]) => {
             dispatch([list, args[0], args[1]])
         }
@@ -264,16 +289,17 @@ function Component(props) {
 
     const createVariable = async () => {
         const [result, symbolFlag, diff] = await executeCircuit(circuits.createBOM, {
-            id: state.variable.id.hashCode(),
-            items: state.items.variables.toArray().map(item => {
+            name: state.variable.values.name,
+            bOMItemList: state.bOMItemList.variables.toArray().map(variable => {
                 return {
-                    product: item.values.product.hashCode(),
-                    quantity: item.values.quantity,
-                    uom: item.values.uom.hashCode()
+                    bom: variable.values.bom.hashCode(),
+                    product: variable.values.product.hashCode(),
+                    quantity: variable.values.quantity,
+                    uom: variable.values.uom.hashCode()
                 }
             })
         })
-        console.log(result, symbolFlag)
+        console.log(result, symbolFlag, diff)
         if (symbolFlag) {
             db.diffs.put(diff.toRow())
         }
@@ -301,9 +327,9 @@ function Component(props) {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
                     <Title>{when(state.mode, {
-                        'create': `Create ${bom.name}`,
-                        'update': `Update ${bom.name}`,
-                        'show': `${bom.name}`
+                        'create': `Create B O M`,
+                        'update': `Update B O M`,
+                        'show': `B O M`
                     })}</Title>
                 </Item>
                 <Item area={Grid.button} justify='end' align='center' className='flex'>
@@ -311,7 +337,7 @@ function Component(props) {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
                                 await createVariable()
-                                props.history.push('/boms')
+                                props.history.push('/b-o-m-list')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
                                 <>
@@ -321,13 +347,13 @@ function Component(props) {
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
                                         await modifyVariable()
-                                        props.history.push('/boms')
-                                    }}>Save</Button>
+                                        props.history.push('/b-o-m-list')
+                                    }}>Update</Button>
                                 </>,
                                 <>
                                     <Button onClick={async () => {
                                         await deleteVariable()
-                                        props.history.push('/boms')
+                                        props.history.push('/b-o-m-list')
                                     }}>Delete</Button>
                                     <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>
                                 </>))
@@ -335,7 +361,7 @@ function Component(props) {
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>
                     <Item>
-                        <Label>{bom.keys.name.name}</Label>
+                        <Label>{bOMType.keys.name}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Input type='text' onChange={onVariableInputChange} value={state.variable.values.name} name='name' />,
@@ -344,52 +370,97 @@ function Component(props) {
                         }
                     </Item>
                 </Container>
-                <Container area={Grid.uom} layout={Grid2.layouts.main}>
+                <Container area={Grid.bOMItemArea} layout={Grid2.layouts.main}>
                     <Item area={Grid2.header} className='flex items-center'>
-                        <Title>Items</Title>
+                        <Title> B O M Item List</Title>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <button onClick={() => toggleAddItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>,
+                                <button onClick={() => toggleAddBOMItemDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>,
                                 undefined
                             )
                         }
                     </Item>
                     <Item area={Grid2.filter} justify='end' align='center' className='flex'>
-                        <Button onClick={() => toggleItemFilter(true)}>Filter</Button>
-                        <Drawer open={itemFilter} onClose={() => toggleItemFilter(false)} anchor={'right'}>
-                            <Filter typeName='BOMItem' query={state['items'].query} updateQuery={updateItemsQuery('items')} />
+                        <Button onClick={() => toggleBOMItemFilter(true)}>Filter</Button>
+                        <Drawer open={bOMItemFilter} onClose={() => toggleBOMItemFilter(false)} anchor={'right'}>
+                            <Filter typeName='BOMItem' query={state['bOMItemList'].query} updateQuery={updateItemsQuery('bOMItemList')} />
                         </Drawer>
-                        <Drawer open={addItemDrawer} onClose={() => toggleAddItemDrawer(false)} anchor={'right'}>
+                        <Drawer open={addBOMItemDrawer} onClose={() => toggleAddBOMItemDrawer(false)} anchor={'right'}>
                             <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
-                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add Item</div>
-                                <Container area={none} layout={Grid.layouts.uom}>
+                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add {bOMItemType.name}</div>
+                                <Container area={none} layout={Grid.layouts.uom} className=''>
                                     <Item>
-                                        <Label>{item.keys.product.name}</Label>
-                                        <Select onChange={onItemInputChange} value={state.items.variable.values.product.hashCode()} name='product'>
-                                            <option value='' selected disabled hidden>Select Product</option>
-                                            {products.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
-                                        </Select>
+                                        <Label>{bOMItemType.keys.bom}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Select onChange={onBOMItemInputChange} value={state.bOMItemList.variable.values.bom.hashCode()} name='bom'>
+                                                    <option value='' selected disabled hidden>Select BOM</option>
+                                                    {bOMList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
+                                                </Select>,
+                                                <div className='font-bold text-xl'>{
+                                                    iff(bOMList.filter(x => x.id.hashCode() === state.bOMItemList.variable.values.bom.hashCode()).length() !== 0,
+                                                        () => {
+                                                            const referencedVariable = bOMList.filter(x => x.id.hashCode() === state.bOMItemList.variable.values.bom.hashCode()).toArray()[0] as BOMVariable
+                                                            return <Link to={`/b-o-m/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
+                                                        }, <Link to={`/b-o-m/${state.bOMItemList.variable.values.bom.hashCode()}`}>{state.bOMItemList.variable.values.bom.hashCode()}</Link>)
+                                                }</div>
+                                            )
+                                        }
                                     </Item>
                                     <Item>
-                                        <Label>{item.keys.quantity.name}</Label>
-                                        <Input type='number' onChange={onItemInputChange} value={state.items.variable.values.quantity} name='quantity' />
+                                        <Label>{bOMItemType.keys.product}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Select onChange={onBOMItemInputChange} value={state.bOMItemList.variable.values.product.hashCode()} name='product'>
+                                                    <option value='' selected disabled hidden>Select Product</option>
+                                                    {productList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
+                                                </Select>,
+                                                <div className='font-bold text-xl'>{
+                                                    iff(productList.filter(x => x.id.hashCode() === state.bOMItemList.variable.values.product.hashCode()).length() !== 0,
+                                                        () => {
+                                                            const referencedVariable = productList.filter(x => x.id.hashCode() === state.bOMItemList.variable.values.product.hashCode()).toArray()[0] as ProductVariable
+                                                            return <Link to={`/product/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
+                                                        }, <Link to={`/product/${state.bOMItemList.variable.values.product.hashCode()}`}>{state.bOMItemList.variable.values.product.hashCode()}</Link>)
+                                                }</div>
+                                            )
+                                        }
                                     </Item>
                                     <Item>
-                                        <Label>{item.keys.uom.name}</Label>
-                                        <Select onChange={onItemInputChange} value={state.items.variable.values.uom.hashCode()} name='uom'>
-                                            <option value='' selected disabled hidden>Select Item</option>
-                                            {uoms.toArray().map(x => <option value={x.id.hashCode()}>{x.values.name}</option>)}
-                                        </Select>
+                                        <Label>{bOMItemType.keys.quantity}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Input type='number' onChange={onBOMItemInputChange} value={state.bOMItemList.variable.values.quantity} name='quantity' />,
+                                                <div className='font-bold text-xl'>{state.bOMItemList.variable.values.quantity}</div>
+                                            )
+                                        }
+                                    </Item>
+                                    <Item>
+                                        <Label>{bOMItemType.keys.uom}</Label>
+                                        {
+                                            iff(state.mode === 'create' || state.mode === 'update',
+                                                <Select onChange={onBOMItemInputChange} value={state.bOMItemList.variable.values.uom.hashCode()} name='uom'>
+                                                    <option value='' selected disabled hidden>Select UOM</option>
+                                                    {uOMList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
+                                                </Select>,
+                                                <div className='font-bold text-xl'>{
+                                                    iff(uOMList.filter(x => x.id.hashCode() === state.bOMItemList.variable.values.uom.hashCode()).length() !== 0,
+                                                        () => {
+                                                            const referencedVariable = uOMList.filter(x => x.id.hashCode() === state.bOMItemList.variable.values.uom.hashCode()).toArray()[0] as UOMVariable
+                                                            return <Link to={`/u-o-m/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
+                                                        }, <Link to={`/u-o-m/${state.bOMItemList.variable.values.uom.hashCode()}`}>{state.bOMItemList.variable.values.uom.hashCode()}</Link>)
+                                                }</div>
+                                            )
+                                        }
                                     </Item>
                                     <Item justify='center' align='center'>
-                                        <Button onClick={() => dispatch(['items', 'addVariable'])}>Add</Button>
+                                        <Button onClick={() => dispatch(['bOMItemList', 'addVariable'])}>Add</Button>
                                     </Item>
                                 </Container>
                             </div>
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={state['items']} updatePage={updatePage('items')} variables={state.items.variables.filter(variable => applyFilter(state['items'].query, variable)).toArray()} columns={state['items'].columns.toArray()} />
-                </Container >
+                    <Table area={Grid2.table} state={state['bOMItemList']} updatePage={updatePage('bOMItemList')} variables={state.bOMItemList.variables.filter(variable => applyFilter(state['bOMItemList'].query, variable)).toArray()} columns={state['bOMItemList'].columns.toArray()} />
+                </Container > 
             </Container>
         }, <div>Variable not found</div>)
 }
@@ -400,8 +471,10 @@ const Title = tw.div`py-8 text-4xl text-gray-800 font-bold mx-1 whitespace-nowra
 
 const Label = tw.label`w-1/2 whitespace-nowrap`
 
-const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full rounded-sm`
+// const InlineLabel = tw.label`inline-block w-1/2`
 
 const Select = tw.select`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full rounded-sm`
+
+const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full rounded-sm`
 
 const Button = tw.button`bg-gray-900 text-white text-center font-bold p-2 mx-1 uppercase w-40 h-full max-w-sm rounded-lg focus:outline-none inline-block`

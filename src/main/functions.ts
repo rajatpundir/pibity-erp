@@ -2,116 +2,115 @@ import { Function } from './function'
 
 export type FunctionName =
     | 'createRegion'
-    | 'deleteRegion'
+    | 'deleteRegion' 
     | 'createCountry'
-    | 'deleteCountry'
-    | 'createState'
-    | 'deleteState'
+    | 'deleteCountry' 
+    | 'createStateType'
+    | 'deleteStateType' 
     | 'createDistrict'
-    | 'deleteDistrict'
+    | 'deleteDistrict' 
     | 'createSubdistrict'
-    | 'deleteSubdistrict'
+    | 'deleteSubdistrict' 
     | 'createPostalCode'
-    | 'deletePostalCode'
+    | 'deletePostalCode' 
     | 'createAddress'
-    | 'deleteAddress'
+    | 'deleteAddress' 
     | 'createCompany'
-    | 'deleteCompany'
+    | 'deleteCompany' 
     | 'createCompanyAddress'
-    | 'deleteCompanyAddress'
+    | 'deleteCompanyAddress' 
     | 'createCompanyTagGroup'
-    | 'deleteCompanyTagGroup'
+    | 'deleteCompanyTagGroup' 
     | 'createCompanyTag'
-    | 'deleteCompanyTag'
+    | 'deleteCompanyTag' 
     | 'createMappingCompanyTag'
-    | 'deleteMappingCompanyTag'
+    | 'deleteMappingCompanyTag' 
     | 'createContact'
-    | 'deleteContact'
+    | 'deleteContact' 
     | 'createContactAddress'
-    | 'deleteContactAddress'
+    | 'deleteContactAddress' 
     | 'createCompanyContact'
-    | 'deleteCompanyContact'
+    | 'deleteCompanyContact' 
     | 'createCurrency'
-    | 'deleteCurrency'
+    | 'deleteCurrency' 
     | 'createCurrencyRate'
-    | 'deleteCurrencyRate'
+    | 'deleteCurrencyRate' 
     | 'createMemo'
-    | 'deleteMemo'
+    | 'deleteMemo' 
     | 'createBank'
-    | 'deleteBank'
+    | 'deleteBank' 
     | 'createBankBranch'
-    | 'deleteBankBranch'
+    | 'deleteBankBranch' 
     | 'createBankAccount'
-    | 'deleteBankAccount'
+    | 'deleteBankAccount' 
     | 'createBankTransaction'
-    | 'deleteBankTransaction'
+    | 'deleteBankTransaction' 
     | 'createCompanyBankAccount'
-    | 'deleteCompanyBankAccount'
+    | 'deleteCompanyBankAccount' 
     | 'createProductCategoryGroup'
-    | 'deleteProductCategoryGroup'
+    | 'deleteProductCategoryGroup' 
     | 'createProductCategory'
-    | 'deleteProductCategory'
+    | 'deleteProductCategory' 
     | 'createProduct'
-    | 'deleteProduct'
+    | 'deleteProduct' 
     | 'createCompanyProduct'
-    | 'deleteCompanyProduct'
+    | 'deleteCompanyProduct' 
     | 'createProductTagGroup'
-    | 'deleteProductTagGroup'
+    | 'deleteProductTagGroup' 
     | 'createProductTag'
-    | 'deleteProductTag'
+    | 'deleteProductTag' 
     | 'createMappingProductTag'
-    | 'deleteMappingProductTag'
+    | 'deleteMappingProductTag' 
     | 'createUOM'
-    | 'deleteUOM'
+    | 'deleteUOM' 
     | 'createIndent'
-    | 'deleteIndent'
+    | 'deleteIndent' 
     | 'createIndentItem'
-    | 'deleteIndentItem'
+    | 'deleteIndentItem' 
     | 'createQuotation'
-    | 'deleteQuotation'
+    | 'deleteQuotation' 
     | 'createQuotationItem'
-    | 'deleteQuotationItem'
+    | 'deleteQuotationItem' 
     | 'createPurchaseOrder'
-    | 'deletePurchaseOrder'
+    | 'deletePurchaseOrder' 
     | 'createPurchaseOrderItem'
-    | 'deletePurchaseOrderItem'
+    | 'deletePurchaseOrderItem' 
     | 'createPurchaseInvoice'
-    | 'deletePurchaseInvoice'
+    | 'deletePurchaseInvoice' 
     | 'createPurchaseInvoiceItem'
-    | 'deletePurchaseInvoiceItem'
+    | 'deletePurchaseInvoiceItem' 
     | 'createMaterialApprovalSlip'
-    | 'deleteMaterialApprovalSlip'
+    | 'deleteMaterialApprovalSlip' 
     | 'createMaterialApprovalSlipItem'
-    | 'deleteMaterialApprovalSlipItem'
+    | 'deleteMaterialApprovalSlipItem' 
     | 'createMaterialRejectionSlip'
-    | 'deleteMaterialRejectionSlip'
+    | 'deleteMaterialRejectionSlip' 
     | 'createMaterialRejectionSlipItem'
-    | 'deleteMaterialRejectionSlipItem'
+    | 'deleteMaterialRejectionSlipItem' 
     | 'createMaterialReturnSlip'
-    | 'deleteMaterialReturnSlip'
+    | 'deleteMaterialReturnSlip' 
     | 'createMaterialReturnSlipItem'
-    | 'deleteMaterialReturnSlipItem'
+    | 'deleteMaterialReturnSlipItem' 
     | 'createMaterialRequistionSlip'
-    | 'deleteMaterialRequistionSlip'
+    | 'deleteMaterialRequistionSlip' 
     | 'createMaterialRequistionSlipItem'
-    | 'deleteMaterialRequistionSlipItem'
+    | 'deleteMaterialRequistionSlipItem' 
     | 'createBOM'
-    | 'deleteBOM'
+    | 'deleteBOM' 
     | 'createBOMItem'
-    | 'deleteBOMItem'
+    | 'deleteBOMItem' 
     | 'createProductionPreparationSlip'
-    | 'deleteProductionPreparationSlip'
+    | 'deleteProductionPreparationSlip' 
     | 'createProductionPreparationSlipItem'
-    | 'deleteProductionPreparationSlipItem'
+    | 'deleteProductionPreparationSlipItem' 
     | 'createScrapMaterialSlip'
-    | 'deleteScrapMaterialSlip'
+    | 'deleteScrapMaterialSlip' 
     | 'createTransferMaterialSlip'
-    | 'deleteTransferMaterialSlip'
+    | 'deleteTransferMaterialSlip' 
     | 'createWarehouseAcceptanceSlip'
-    | 'deleteWarehouseAcceptanceSlip'
+    | 'deleteWarehouseAcceptanceSlip' 
 
-export const functions: Record<FunctionName, Function> = {
-    createRegion: {
+export const functions: Record<FunctionName, Function> = {    createRegion: {
         inputs: {
             name: {
                 type: 'Text'
@@ -200,7 +199,7 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
-    createState: {
+    createStateType: {
         inputs: {
             country: {
                 type: 'Country'
@@ -211,7 +210,7 @@ export const functions: Record<FunctionName, Function> = {
         },
         outputs: {
             variable: {
-                type: 'State',
+                type: 'StateType',
                 op: 'create',
                 values: {
                     country: {
@@ -230,15 +229,15 @@ export const functions: Record<FunctionName, Function> = {
             }
         }
     },
-    deleteState: {
+    deleteStateType: {
         inputs: {
             id: {
-                type: 'State'
+                type: 'StateType'
             }
         },
         outputs: {
             variable: {
-                type: 'State',
+                type: 'StateType',
                 op: 'delete',
                 id: {
                     expectedReturnType: 'Number',
@@ -252,7 +251,7 @@ export const functions: Record<FunctionName, Function> = {
     createDistrict: {
         inputs: {
             state: {
-                type: 'State'
+                type: 'StateType'
             },
             name: {
                 type: 'Text'
@@ -408,10 +407,10 @@ export const functions: Record<FunctionName, Function> = {
                 type: 'Text'
             },
             latitude: {
-                type: 'Decimal'
+                type: 'Number'
             },
             longitude: {
-                type: 'Decimal'
+                type: 'Number'
             }
         },
         outputs: {
@@ -438,13 +437,13 @@ export const functions: Record<FunctionName, Function> = {
                         args: ['line2']
                     },
                     latitude: {
-                        expectedReturnType: 'Decimal',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['latitude']
                     },
                     longitude: {
-                        expectedReturnType: 'Decimal',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['longitude']
@@ -1580,9 +1579,6 @@ export const functions: Record<FunctionName, Function> = {
             code: {
                 type: 'Text'
             },
-            derivedCode: {
-                type: 'Text'
-            },
             childCount: {
                 type: 'Number'
             }
@@ -1615,12 +1611,6 @@ export const functions: Record<FunctionName, Function> = {
                         op: '.',
                         types: [],
                         args: ['code']
-                    },
-                    derivedCode: {
-                        expectedReturnType: 'Text',
-                        op: '.',
-                        types: [],
-                        args: ['derivedCode']
                     },
                     childCount: {
                         expectedReturnType: 'Number',
@@ -1661,9 +1651,6 @@ export const functions: Record<FunctionName, Function> = {
             },
             code: {
                 type: 'Text'
-            },
-            sku: {
-                type: 'Text'
             }
         },
         outputs: {
@@ -1688,12 +1675,6 @@ export const functions: Record<FunctionName, Function> = {
                         op: '.',
                         types: [],
                         args: ['code']
-                    },
-                    sku: {
-                        expectedReturnType: 'Text',
-                        op: '.',
-                        types: [],
-                        args: ['sku']
                     }
                 }
             }
@@ -1964,12 +1945,16 @@ export const functions: Record<FunctionName, Function> = {
         }
     },
     createIndent: {
-        inputs: {},
+        inputs: {
+
+        },
         outputs: {
             variable: {
                 type: 'Indent',
                 op: 'create',
-                values: {}
+                values: {
+
+                }
             }
         }
     },
@@ -2001,10 +1986,31 @@ export const functions: Record<FunctionName, Function> = {
                 type: 'Product'
             },
             quantity: {
-                type: 'Decimal'
+                type: 'Number'
             },
             uom: {
                 type: 'UOM'
+            },
+            ordered: {
+                type: 'Number'
+            },
+            received: {
+                type: 'Number'
+            },
+            approved: {
+                type: 'Number'
+            },
+            rejected: {
+                type: 'Number'
+            },
+            returned: {
+                type: 'Number'
+            },
+            requisted: {
+                type: 'Number'
+            },
+            consumed: {
+                type: 'Number'
             }
         },
         outputs: {
@@ -2025,7 +2031,7 @@ export const functions: Record<FunctionName, Function> = {
                         args: ['product']
                     },
                     quantity: {
-                        expectedReturnType: 'Decimal',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['quantity']
@@ -2038,45 +2044,45 @@ export const functions: Record<FunctionName, Function> = {
                     },
                     ordered: {
                         expectedReturnType: 'Number',
-                        op: 'id',
-                        types: ['Number'],
-                        args: [0]
+                        op: '.',
+                        types: [],
+                        args: ['ordered']
                     },
                     received: {
                         expectedReturnType: 'Number',
-                        op: 'id',
-                        types: ['Number'],
-                        args: [0]
+                        op: '.',
+                        types: [],
+                        args: ['received']
                     },
                     approved: {
                         expectedReturnType: 'Number',
-                        op: 'id',
-                        types: ['Number'],
-                        args: [0]
+                        op: '.',
+                        types: [],
+                        args: ['approved']
                     },
                     rejected: {
                         expectedReturnType: 'Number',
-                        op: 'id',
-                        types: ['Number'],
-                        args: [0]
+                        op: '.',
+                        types: [],
+                        args: ['rejected']
                     },
                     returned: {
                         expectedReturnType: 'Number',
-                        op: 'id',
-                        types: ['Number'],
-                        args: [0]
+                        op: '.',
+                        types: [],
+                        args: ['returned']
                     },
                     requisted: {
                         expectedReturnType: 'Number',
-                        op: 'id',
-                        types: ['Number'],
-                        args: [0]
+                        op: '.',
+                        types: [],
+                        args: ['requisted']
                     },
                     consumed: {
                         expectedReturnType: 'Number',
-                        op: 'id',
-                        types: ['Number'],
-                        args: [0]
+                        op: '.',
+                        types: [],
+                        args: ['consumed']
                     }
                 }
             }
@@ -2159,7 +2165,7 @@ export const functions: Record<FunctionName, Function> = {
                 type: 'IndentItem'
             },
             quantity: {
-                type: 'Decimal'
+                type: 'Number'
             }
         },
         outputs: {
@@ -2180,7 +2186,7 @@ export const functions: Record<FunctionName, Function> = {
                         args: ['indentItem']
                     },
                     quantity: {
-                        expectedReturnType: 'Decimal',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['quantity']
@@ -2261,6 +2267,9 @@ export const functions: Record<FunctionName, Function> = {
             },
             price: {
                 type: 'Decimal'
+            },
+            received: {
+                type: 'Number'
             }
         },
         outputs: {
@@ -2294,9 +2303,9 @@ export const functions: Record<FunctionName, Function> = {
                     },
                     received: {
                         expectedReturnType: 'Number',
-                        op: 'id',
-                        types: ['Number'],
-                        args: [0]
+                        op: '.',
+                        types: [],
+                        args: ['received']
                     }
                 }
             }
@@ -2371,6 +2380,12 @@ export const functions: Record<FunctionName, Function> = {
             },
             quantity: {
                 type: 'Number'
+            },
+            approved: {
+                type: 'Number'
+            },
+            rejected: {
+                type: 'Number'
             }
         },
         outputs: {
@@ -2398,15 +2413,15 @@ export const functions: Record<FunctionName, Function> = {
                     },
                     approved: {
                         expectedReturnType: 'Number',
-                        op: 'id',
-                        types: ['Number'],
-                        args: [0]
+                        op: '.',
+                        types: [],
+                        args: ['approved']
                     },
                     rejected: {
                         expectedReturnType: 'Number',
-                        op: 'id',
-                        types: ['Number'],
-                        args: [0]
+                        op: '.',
+                        types: [],
+                        args: ['rejected']
                     }
                 }
             }
@@ -2481,6 +2496,9 @@ export const functions: Record<FunctionName, Function> = {
             },
             quantity: {
                 type: 'Number'
+            },
+            requisted: {
+                type: 'Number'
             }
         },
         outputs: {
@@ -2508,9 +2526,9 @@ export const functions: Record<FunctionName, Function> = {
                     },
                     requisted: {
                         expectedReturnType: 'Number',
-                        op: 'id',
-                        types: ['Number'],
-                        args: [0]
+                        op: '.',
+                        types: [],
+                        args: ['requisted']
                     }
                 }
             }
@@ -2585,6 +2603,9 @@ export const functions: Record<FunctionName, Function> = {
             },
             quantity: {
                 type: 'Number'
+            },
+            returned: {
+                type: 'Number'
             }
         },
         outputs: {
@@ -2612,9 +2633,9 @@ export const functions: Record<FunctionName, Function> = {
                     },
                     returned: {
                         expectedReturnType: 'Number',
-                        op: 'id',
-                        types: ['Number'],
-                        args: [0]
+                        op: '.',
+                        types: [],
+                        args: ['returned']
                     }
                 }
             }
@@ -2787,6 +2808,9 @@ export const functions: Record<FunctionName, Function> = {
             },
             quantity: {
                 type: 'Number'
+            },
+            consumed: {
+                type: 'Number'
             }
         },
         outputs: {
@@ -2814,9 +2838,9 @@ export const functions: Record<FunctionName, Function> = {
                     },
                     consumed: {
                         expectedReturnType: 'Number',
-                        op: 'id',
-                        types: ['Number'],
-                        args: [0]
+                        op: '.',
+                        types: [],
+                        args: ['consumed']
                     }
                 }
             }
@@ -2890,7 +2914,7 @@ export const functions: Record<FunctionName, Function> = {
                 type: 'Product'
             },
             quantity: {
-                type: 'Decimal'
+                type: 'Number'
             },
             uom: {
                 type: 'UOM'
@@ -2914,7 +2938,7 @@ export const functions: Record<FunctionName, Function> = {
                         args: ['product']
                     },
                     quantity: {
-                        expectedReturnType: 'Decimal',
+                        expectedReturnType: 'Number',
                         op: '.',
                         types: [],
                         args: ['quantity']
@@ -2952,6 +2976,12 @@ export const functions: Record<FunctionName, Function> = {
         inputs: {
             bom: {
                 type: 'BOM'
+            },
+            approved: {
+                type: 'Number'
+            },
+            scrapped: {
+                type: 'Number'
             }
         },
         outputs: {
@@ -2967,15 +2997,15 @@ export const functions: Record<FunctionName, Function> = {
                     },
                     approved: {
                         expectedReturnType: 'Number',
-                        op: 'id',
-                        types: ['Number'],
-                        args: [0]
+                        op: '.',
+                        types: [],
+                        args: ['approved']
                     },
                     scrapped: {
                         expectedReturnType: 'Number',
-                        op: 'id',
-                        types: ['Number'],
-                        args: [0]
+                        op: '.',
+                        types: [],
+                        args: ['scrapped']
                     }
                 }
             }
@@ -3114,6 +3144,9 @@ export const functions: Record<FunctionName, Function> = {
             },
             quantity: {
                 type: 'Number'
+            },
+            transferred: {
+                type: 'Number'
             }
         },
         outputs: {
@@ -3135,9 +3168,9 @@ export const functions: Record<FunctionName, Function> = {
                     },
                     transferred: {
                         expectedReturnType: 'Number',
-                        op: 'id',
-                        types: ['Number'],
-                        args: [0]
+                        op: '.',
+                        types: [],
+                        args: ['transferred']
                     }
                 }
             }
