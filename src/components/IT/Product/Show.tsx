@@ -18,8 +18,8 @@ import { db } from '../../../main/dexie'
 import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { DiffRow, CompanyRow, CompanyProductRow, MappingProductTagRow, ProductRow, ProductCategoryRow, ProductTagRow, UOMRow } from '../../../main/rows'
-import { Company, CompanyVariable, CompanyProduct, CompanyProductVariable, MappingProductTag, MappingProductTagVariable, Product, ProductVariable, ProductCategory, ProductCategoryVariable, ProductTag, ProductTagVariable, UOM, UOMVariable } from '../../../main/variables'
+import { DiffRow, CompanyRow, CompanyProductRow, MappingProductTagRow, ProductRow, ProductCategoryRow, ProductTagRow, UomRow } from '../../../main/rows'
+import { Company, CompanyVariable, CompanyProductVariable, MappingProductTagVariable, Product, ProductVariable, ProductCategory, ProductCategoryVariable, ProductTag, ProductTagVariable, UomVariable } from '../../../main/variables'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -44,15 +44,15 @@ type State = Immutable<{
         variable: MappingProductTagVariable
         variables: HashSet<Immutable<MappingProductTagVariable>>
     }
-    uOMList: {
-        typeName: 'UOM'
+    uomList: {
+        typeName: 'Uom'
         query: Query
         limit: number
         offset: number
         page: number
         columns: Vector<Array<string>>
-        variable: UOMVariable
-        variables: HashSet<Immutable<UOMVariable>>
+        variable: UomVariable
+        variables: HashSet<Immutable<UomVariable>>
     }
 }>
 
@@ -81,18 +81,18 @@ export type Action =
     | ['mappingProductTagList', 'variable', 'tag', ProductTag]
     | ['mappingProductTagList', 'addVariable']
 
-    | ['uOMList', 'limit', number]
-    | ['uOMList', 'offset', number]
-    | ['uOMList', 'page', number]
-    | ['uOMList', 'query', Args]
-    | ['uOMList', 'variable', 'product', Product]
-    | ['uOMList', 'variable', 'name', string]
-    | ['uOMList', 'variable', 'conversionRate', number]
-    | ['uOMList', 'addVariable']
+    | ['uomList', 'limit', number]
+    | ['uomList', 'offset', number]
+    | ['uomList', 'page', number]
+    | ['uomList', 'query', Args]
+    | ['uomList', 'variable', 'product', Product]
+    | ['uomList', 'variable', 'name', string]
+    | ['uomList', 'variable', 'conversionRate', number]
+    | ['uomList', 'addVariable']
     | ['replace', 'variable', ProductVariable]
     | ['replace', 'companyProductList', HashSet<CompanyProductVariable>]
     | ['replace', 'mappingProductTagList', HashSet<MappingProductTagVariable>]
-    | ['replace', 'uOMList', HashSet<UOMVariable>]
+    | ['replace', 'uomList', HashSet<UomVariable>]
 
 function Component(props) {
 
@@ -119,15 +119,15 @@ function Component(props) {
             variable: new MappingProductTagVariable(-1, { product: new Product(-1), tag: new ProductTag(-1) }),
             variables: HashSet.of<MappingProductTagVariable>()
         },
-        uOMList: {
-            typeName: 'UOM',
-            query: getQuery('UOM'),
+        uomList: {
+            typeName: 'Uom',
+            query: getQuery('Uom'),
             limit: 5,
             offset: 0,
             page: 1,
             columns: Vector.of(['values', 'product'], ['values', 'name'], ['values', 'conversionRate']),
-            variable: new UOMVariable(-1, { product: new Product(-1), name: '', conversionRate: 0 }),
-            variables: HashSet.of<UOMVariable>()
+            variable: new UomVariable(-1, { product: new Product(-1), name: '', conversionRate: 0 }),
+            variables: HashSet.of<UomVariable>()
         }
     }
     
@@ -266,10 +266,10 @@ function Component(props) {
                 }
                 break
             }
-            case 'uOMList': {
+            case 'uomList': {
                 switch (action[1]) {
                     case 'limit': {
-                        state[action[0]].limit = Math.max(initialState.uOMList.limit, action[2])
+                        state[action[0]].limit = Math.max(initialState.uomList.limit, action[2])
                         break
                     }
                     case 'offset': {
@@ -307,8 +307,8 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.uOMList.variables = state.uOMList.variables.add(new UOMVariable(-1, {product: new Product(state.uOMList.variable.values.product.hashCode()), name: state.uOMList.variable.values.name, conversionRate: state.uOMList.variable.values.conversionRate}))
-                        state.uOMList.variable = initialState.uOMList.variable
+                        state.uomList.variables = state.uomList.variables.add(new UomVariable(-1, {product: new Product(state.uomList.variable.values.product.hashCode()), name: state.uomList.variable.values.name, conversionRate: state.uomList.variable.values.conversionRate}))
+                        state.uomList.variable = initialState.uomList.variable
                         break
                     }
                     default: {
@@ -332,8 +332,8 @@ function Component(props) {
                         state.mappingProductTagList.variables = action[2]
                         break
                     }
-                    case 'uOMList': {
-                        state.uOMList.variables = action[2]
+                    case 'uomList': {
+                        state.uomList.variables = action[2]
                         break
                     }
                     default: {
@@ -355,7 +355,7 @@ function Component(props) {
     const productType = types['Product']
     const companyProductType = types['CompanyProduct']
     const mappingProductTagType = types['MappingProductTag']
-    const uOMType = types['UOM']
+    const uomType = types['Uom']
     
     const [addCompanyProductDrawer, toggleAddCompanyProductDrawer] = useState(false)
     const [companyProductFilter, toggleCompanyProductFilter] = useState(false)
@@ -363,8 +363,8 @@ function Component(props) {
     const [addMappingProductTagDrawer, toggleAddMappingProductTagDrawer] = useState(false)
     const [mappingProductTagFilter, toggleMappingProductTagFilter] = useState(false)
 
-    const [addUOMDrawer, toggleAddUOMDrawer] = useState(false)
-    const [uOMFilter, toggleUOMFilter] = useState(false)
+    const [addUomDrawer, toggleAddUomDrawer] = useState(false)
+    const [uomFilter, toggleUomFilter] = useState(false)
     
     const setVariable = useCallback(async () => {
         if (props.match.params[0]) {
@@ -393,15 +393,15 @@ function Component(props) {
                 })
                 dispatch(['replace', 'mappingProductTagList', composedMappingProductTagVariables.filter(variable => variable.values.product.hashCode() === props.match.params[0]) as HashSet<MappingProductTagVariable>])
 
-                const uOMRows = await db.UOM.toArray()
-                var composedUOMVariables = HashSet.of<Immutable<UOMVariable>>().addAll(uOMRows ? uOMRows.map(x => UOMRow.toVariable(x)) : [])
+                const uomRows = await db.Uom.toArray()
+                var composedUomVariables = HashSet.of<Immutable<UomVariable>>().addAll(uomRows ? uomRows.map(x => UomRow.toVariable(x)) : [])
                 diffs?.forEach(diff => {
-                    composedUOMVariables = composedUOMVariables.filter(x => !diff.variables[state.uOMList.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.uOMList.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.uOMList.variable.typeName].replace)
+                    composedUomVariables = composedUomVariables.filter(x => !diff.variables[state.uomList.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.uomList.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.uomList.variable.typeName].replace)
                 })
-                dispatch(['replace', 'uOMList', composedUOMVariables.filter(variable => variable.values.product.hashCode() === props.match.params[0]) as HashSet<UOMVariable>])
+                dispatch(['replace', 'uomList', composedUomVariables.filter(variable => variable.values.product.hashCode() === props.match.params[0]) as HashSet<UomVariable>])
             }
         }
-    }, [state.variable.typeName, state.companyProductList.variable.typeName, state.mappingProductTagList.variable.typeName, state.uOMList.variable.typeName, props.match.params, dispatch])
+    }, [state.variable.typeName, state.companyProductList.variable.typeName, state.mappingProductTagList.variable.typeName, state.uomList.variable.typeName, props.match.params, dispatch])
 
     useEffect(() => { setVariable() }, [setVariable])
 
@@ -441,10 +441,10 @@ function Component(props) {
         productTagList = productTagList.filter(x => !diff.variables.ProductTag.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.ProductTag.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.ProductTag.replace)
     })
 
-    const uOMRows = useLiveQuery(() => db.UOM.toArray())?.map(x => UOMRow.toVariable(x))
-    var uOMList = HashSet.of<Immutable<UOMVariable>>().addAll(uOMRows ? uOMRows : [])
+    const uomRows = useLiveQuery(() => db.Uom.toArray())?.map(x => UomRow.toVariable(x))
+    var uomList = HashSet.of<Immutable<UomVariable>>().addAll(uomRows ? uomRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        uOMList = uOMList.filter(x => !diff.variables.UOM.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.UOM.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.UOM.replace)
+        uomList = uomList.filter(x => !diff.variables.Uom.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Uom.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Uom.replace)
     })
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -493,24 +493,24 @@ function Component(props) {
         }
     }
 
-    const onUOMInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const onUomInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
             case 'product': {
-                dispatch(['uOMList', 'variable', event.target.name, new Product(parseInt(String(event.target.value)))])
+                dispatch(['uomList', 'variable', event.target.name, new Product(parseInt(String(event.target.value)))])
                 break
             }
             case 'name': {
-                dispatch(['uOMList', 'variable', event.target.name, String(event.target.value)])
+                dispatch(['uomList', 'variable', event.target.name, String(event.target.value)])
                 break
             }
             case 'conversionRate': {
-                dispatch(['uOMList', 'variable', event.target.name, parseFloat(String(event.target.value))])
+                dispatch(['uomList', 'variable', event.target.name, parseFloat(String(event.target.value))])
                 break
             }
         }
     }
 
-    const updateItemsQuery = (list: 'companyProductList' | 'mappingProductTagList' | 'uOMList') => {
+    const updateItemsQuery = (list: 'companyProductList' | 'mappingProductTagList' | 'uomList') => {
         const fx = (args: Args) => {
             switch (list) {
                 case 'companyProductList': {
@@ -521,7 +521,7 @@ function Component(props) {
                     dispatch([list, 'query', args])
                     break
                 }
-                case 'uOMList': {
+                case 'uomList': {
                     dispatch([list, 'query', args])
                     break
                 }
@@ -534,7 +534,7 @@ function Component(props) {
         return fx
     }
 
-    const updatePage = (list: 'companyProductList' | 'mappingProductTagList' | 'uOMList') => {
+    const updatePage = (list: 'companyProductList' | 'mappingProductTagList' | 'uomList') => {
         const fx = (args: ['limit', number] | ['offset', number] | ['page', number]) => {
             dispatch([list, args[0], args[1]])
         }
@@ -559,7 +559,7 @@ function Component(props) {
                     tag: variable.values.tag.hashCode()
                 }
             }),
-            uOMList: state.uOMList.variables.toArray().map(variable => {
+            uomList: state.uomList.variables.toArray().map(variable => {
                 return {
                     product: variable.values.product.hashCode(),
                     name: variable.values.name,
@@ -804,69 +804,69 @@ function Component(props) {
                     <Table area={Grid2.table} state={state['mappingProductTagList']} updatePage={updatePage('mappingProductTagList')} variables={state.mappingProductTagList.variables.filter(variable => applyFilter(state['mappingProductTagList'].query, variable)).toArray()} columns={state['mappingProductTagList'].columns.toArray()} />
                 </Container > 
 
-                <Container area={Grid.uOMArea} layout={Grid2.layouts.main}>
+                <Container area={Grid.uomArea} layout={Grid2.layouts.main}>
                     <Item area={Grid2.header} className='flex items-center'>
-                        <Title> U O M List</Title>
+                        <Title> Uom List</Title>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <button onClick={() => toggleAddUOMDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>,
+                                <button onClick={() => toggleAddUomDrawer(true)} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2 h-10 focus:outline-none'>+</button>,
                                 undefined
                             )
                         }
                     </Item>
                     <Item area={Grid2.filter} justify='end' align='center' className='flex'>
-                        <Button onClick={() => toggleUOMFilter(true)}>Filter</Button>
-                        <Drawer open={uOMFilter} onClose={() => toggleUOMFilter(false)} anchor={'right'}>
-                            <Filter typeName='UOM' query={state['uOMList'].query} updateQuery={updateItemsQuery('uOMList')} />
+                        <Button onClick={() => toggleUomFilter(true)}>Filter</Button>
+                        <Drawer open={uomFilter} onClose={() => toggleUomFilter(false)} anchor={'right'}>
+                            <Filter typeName='Uom' query={state['uomList'].query} updateQuery={updateItemsQuery('uomList')} />
                         </Drawer>
-                        <Drawer open={addUOMDrawer} onClose={() => toggleAddUOMDrawer(false)} anchor={'right'}>
+                        <Drawer open={addUomDrawer} onClose={() => toggleAddUomDrawer(false)} anchor={'right'}>
                             <div className='bg-gray-300 font-nunito h-screen overflow-y-scroll' style={{ maxWidth: '90vw' }}>
-                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add {uOMType.name}</div>
+                                <div className='font-bold text-4xl text-gray-700 pt-8 px-6'>Add {uomType.name}</div>
                                 <Container area={none} layout={Grid.layouts.uom} className=''>
                                     <Item>
-                                        <Label>{uOMType.keys.product}</Label>
+                                        <Label>{uomType.keys.product}</Label>
                                         {
                                             iff(state.mode === 'create' || state.mode === 'update',
-                                                <Select onChange={onUOMInputChange} value={state.uOMList.variable.values.product.hashCode()} name='product'>
+                                                <Select onChange={onUomInputChange} value={state.uomList.variable.values.product.hashCode()} name='product'>
                                                     <option value='' selected disabled hidden>Select Product</option>
                                                     {productList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
                                                 </Select>,
                                                 <div className='font-bold text-xl'>{
-                                                    iff(productList.filter(x => x.id.hashCode() === state.uOMList.variable.values.product.hashCode()).length() !== 0,
+                                                    iff(productList.filter(x => x.id.hashCode() === state.uomList.variable.values.product.hashCode()).length() !== 0,
                                                         () => {
-                                                            const referencedVariable = productList.filter(x => x.id.hashCode() === state.uOMList.variable.values.product.hashCode()).toArray()[0] as ProductVariable
+                                                            const referencedVariable = productList.filter(x => x.id.hashCode() === state.uomList.variable.values.product.hashCode()).toArray()[0] as ProductVariable
                                                             return <Link to={`/product/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
-                                                        }, <Link to={`/product/${state.uOMList.variable.values.product.hashCode()}`}>{state.uOMList.variable.values.product.hashCode()}</Link>)
+                                                        }, <Link to={`/product/${state.uomList.variable.values.product.hashCode()}`}>{state.uomList.variable.values.product.hashCode()}</Link>)
                                                 }</div>
                                             )
                                         }
                                     </Item>
                                     <Item>
-                                        <Label>{uOMType.keys.name}</Label>
+                                        <Label>{uomType.keys.name}</Label>
                                         {
                                             iff(state.mode === 'create' || state.mode === 'update',
-                                                <Input type='text' onChange={onUOMInputChange} value={state.uOMList.variable.values.name} name='name' />,
-                                                <div className='font-bold text-xl'>{state.uOMList.variable.values.name}</div>
+                                                <Input type='text' onChange={onUomInputChange} value={state.uomList.variable.values.name} name='name' />,
+                                                <div className='font-bold text-xl'>{state.uomList.variable.values.name}</div>
                                             )
                                         }
                                     </Item>
                                     <Item>
-                                        <Label>{uOMType.keys.conversionRate}</Label>
+                                        <Label>{uomType.keys.conversionRate}</Label>
                                         {
                                             iff(state.mode === 'create' || state.mode === 'update',
-                                                <Input type='number' onChange={onUOMInputChange} value={state.uOMList.variable.values.conversionRate} name='conversionRate' />,
-                                                <div className='font-bold text-xl'>{state.uOMList.variable.values.conversionRate}</div>
+                                                <Input type='number' onChange={onUomInputChange} value={state.uomList.variable.values.conversionRate} name='conversionRate' />,
+                                                <div className='font-bold text-xl'>{state.uomList.variable.values.conversionRate}</div>
                                             )
                                         }
                                     </Item>
                                     <Item justify='center' align='center'>
-                                        <Button onClick={() => dispatch(['uOMList', 'addVariable'])}>Add</Button>
+                                        <Button onClick={() => dispatch(['uomList', 'addVariable'])}>Add</Button>
                                     </Item>
                                 </Container>
                             </div>
                         </Drawer>
                     </Item>
-                    <Table area={Grid2.table} state={state['uOMList']} updatePage={updatePage('uOMList')} variables={state.uOMList.variables.filter(variable => applyFilter(state['uOMList'].query, variable)).toArray()} columns={state['uOMList'].columns.toArray()} />
+                    <Table area={Grid2.table} state={state['uomList']} updatePage={updatePage('uomList')} variables={state.uomList.variables.filter(variable => applyFilter(state['uomList'].query, variable)).toArray()} columns={state['uomList'].columns.toArray()} />
                 </Container > 
             </Container>
         }, <div>Variable not found</div>)

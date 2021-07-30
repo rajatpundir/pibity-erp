@@ -1,16 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
-import { HashSet, Vector } from 'prelude-ts'
-import { Drawer } from '@material-ui/core'
+import { HashSet } from 'prelude-ts'
 import { executeCircuit } from '../../../main/circuit'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
-import { Table } from '../../../main/Table'
-import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
 import * as Grid from './grids/Show'
-import * as Grid2 from './grids/List'
 import { withRouter, Link } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
 import { iff, when } from '../../../main/utils'
@@ -18,8 +14,8 @@ import { db } from '../../../main/dexie'
 import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { DiffRow, IndentRow, IndentItemRow, ProductRow, UOMRow } from '../../../main/rows'
-import { Indent, IndentVariable, IndentItem, IndentItemVariable, Product, ProductVariable, UOM, UOMVariable } from '../../../main/variables'
+import { DiffRow, IndentRow, IndentItemRow, ProductRow, UomRow } from '../../../main/rows'
+import { Indent, IndentVariable, IndentItemVariable, Product, ProductVariable, Uom, UomVariable } from '../../../main/variables'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -33,7 +29,7 @@ export type Action =
     | ['variable', 'indent', Indent]
     | ['variable', 'product', Product]
     | ['variable', 'quantity', number]
-    | ['variable', 'uom', UOM]
+    | ['variable', 'uom', Uom]
     | ['variable', 'ordered', number]
     | ['variable', 'received', number]
     | ['variable', 'approved', number]
@@ -48,7 +44,7 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new IndentItemVariable(-1, { indent: new Indent(-1), product: new Product(-1), quantity: 0, uom: new UOM(-1), ordered: 0, received: 0, approved: 0, rejected: 0, returned: 0, requisted: 0, consumed: 0 })
+        variable: new IndentItemVariable(-1, { indent: new Indent(-1), product: new Product(-1), quantity: 0, uom: new Uom(-1), ordered: 0, received: 0, approved: 0, rejected: 0, returned: 0, requisted: 0, consumed: 0 })
     }
     
     function reducer(state: Draft<State>, action: Action) {
@@ -179,10 +175,10 @@ function Component(props) {
         productList = productList.filter(x => !diff.variables.Product.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Product.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Product.replace)
     })
 
-    const uOMRows = useLiveQuery(() => db.UOM.toArray())?.map(x => UOMRow.toVariable(x))
-    var uOMList = HashSet.of<Immutable<UOMVariable>>().addAll(uOMRows ? uOMRows : [])
+    const uomRows = useLiveQuery(() => db.Uom.toArray())?.map(x => UomRow.toVariable(x))
+    var uomList = HashSet.of<Immutable<UomVariable>>().addAll(uomRows ? uomRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        uOMList = uOMList.filter(x => !diff.variables.UOM.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.UOM.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.UOM.replace)
+        uomList = uomList.filter(x => !diff.variables.Uom.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Uom.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Uom.replace)
     })
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -200,7 +196,7 @@ function Component(props) {
                 break
             }
             case 'uom': {
-                dispatch(['variable', event.target.name, new UOM(parseInt(String(event.target.value)))])
+                dispatch(['variable', event.target.name, new Uom(parseInt(String(event.target.value)))])
                 break
             }
             case 'ordered': {
@@ -361,15 +357,15 @@ function Component(props) {
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.uom.hashCode()} name='uom'>
-                                    <option value='' selected disabled hidden>Select UOM</option>
-                                    {uOMList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
+                                    <option value='' selected disabled hidden>Select Uom</option>
+                                    {uomList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{
-                                    iff(uOMList.filter(x => x.id.hashCode() === state.variable.values.uom.hashCode()).length() !== 0,
+                                    iff(uomList.filter(x => x.id.hashCode() === state.variable.values.uom.hashCode()).length() !== 0,
                                         () => {
-                                            const referencedVariable = uOMList.filter(x => x.id.hashCode() === state.variable.values.uom.hashCode()).toArray()[0] as UOMVariable
-                                            return <Link to={`/u-o-m/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
-                                        }, <Link to={`/u-o-m/${state.variable.values.uom.hashCode()}`}>{state.variable.values.uom.hashCode()}</Link>)
+                                            const referencedVariable = uomList.filter(x => x.id.hashCode() === state.variable.values.uom.hashCode()).toArray()[0] as UomVariable
+                                            return <Link to={`/uom/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
+                                        }, <Link to={`/uom/${state.variable.values.uom.hashCode()}`}>{state.variable.values.uom.hashCode()}</Link>)
                                 }</div>
                             )
                         }

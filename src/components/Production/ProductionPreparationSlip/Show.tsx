@@ -18,8 +18,8 @@ import { db } from '../../../main/dexie'
 import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { DiffRow, BOMRow, MaterialRequistionSlipItemRow, ProductionPreparationSlipRow, ProductionPreparationSlipItemRow } from '../../../main/rows'
-import { BOM, BOMVariable, MaterialRequistionSlipItem, MaterialRequistionSlipItemVariable, ProductionPreparationSlip, ProductionPreparationSlipVariable, ProductionPreparationSlipItem, ProductionPreparationSlipItemVariable } from '../../../main/variables'
+import { DiffRow, BomRow, MaterialRequistionSlipItemRow, ProductionPreparationSlipRow, ProductionPreparationSlipItemRow } from '../../../main/rows'
+import { Bom, BomVariable, MaterialRequistionSlipItem, MaterialRequistionSlipItemVariable, ProductionPreparationSlip, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable } from '../../../main/variables'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -40,7 +40,7 @@ export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
  
-    | ['variable', 'bom', BOM]
+    | ['variable', 'bom', Bom]
     | ['variable', 'approved', number]
     | ['variable', 'scrapped', number]
 
@@ -59,7 +59,7 @@ function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new ProductionPreparationSlipVariable(-1, { bom: new BOM(-1), approved: 0, scrapped: 0 }),
+        variable: new ProductionPreparationSlipVariable(-1, { bom: new Bom(-1), approved: 0, scrapped: 0 }),
         productionPreparationSlipItemList: {
             typeName: 'ProductionPreparationSlipItem',
             query: getQuery('ProductionPreparationSlipItem'),
@@ -216,10 +216,10 @@ function Component(props) {
 
     useEffect(() => { setVariable() }, [setVariable])
 
-    const bOMRows = useLiveQuery(() => db.BOM.toArray())?.map(x => BOMRow.toVariable(x))
-    var bOMList = HashSet.of<Immutable<BOMVariable>>().addAll(bOMRows ? bOMRows : [])
+    const bomRows = useLiveQuery(() => db.Bom.toArray())?.map(x => BomRow.toVariable(x))
+    var bomList = HashSet.of<Immutable<BomVariable>>().addAll(bomRows ? bomRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        bOMList = bOMList.filter(x => !diff.variables.BOM.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.BOM.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.BOM.replace)
+        bomList = bomList.filter(x => !diff.variables.Bom.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Bom.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Bom.replace)
     })
 
     const materialRequistionSlipItemRows = useLiveQuery(() => db.MaterialRequistionSlipItem.toArray())?.map(x => MaterialRequistionSlipItemRow.toVariable(x))
@@ -243,7 +243,7 @@ function Component(props) {
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
             case 'bom': {
-                dispatch(['variable', event.target.name, new BOM(parseInt(String(event.target.value)))])
+                dispatch(['variable', event.target.name, new Bom(parseInt(String(event.target.value)))])
                 break
             }
             case 'approved': {
@@ -376,14 +376,14 @@ function Component(props) {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.bom.hashCode()} name='bom'>
                                     <option value='' selected disabled hidden>Select BOM</option>
-                                    {bOMList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
+                                    {bomList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
                                 </Select>,
                                 <div className='font-bold text-xl'>{
-                                    iff(bOMList.filter(x => x.id.hashCode() === state.variable.values.bom.hashCode()).length() !== 0,
+                                    iff(bomList.filter(x => x.id.hashCode() === state.variable.values.bom.hashCode()).length() !== 0,
                                         () => {
-                                            const referencedVariable = bOMList.filter(x => x.id.hashCode() === state.variable.values.bom.hashCode()).toArray()[0] as BOMVariable
-                                            return <Link to={`/b-o-m/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
-                                        }, <Link to={`/b-o-m/${state.variable.values.bom.hashCode()}`}>{state.variable.values.bom.hashCode()}</Link>)
+                                            const referencedVariable = bomList.filter(x => x.id.hashCode() === state.variable.values.bom.hashCode()).toArray()[0] as BomVariable
+                                            return <Link to={`/bom/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
+                                        }, <Link to={`/bom/${state.variable.values.bom.hashCode()}`}>{state.variable.values.bom.hashCode()}</Link>)
                                 }</div>
                             )
                         }

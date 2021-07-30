@@ -12,11 +12,11 @@ import { types } from '../../../main/types'
 import { withRouter } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { DiffRow, BOMItemRow } from '../../../main/rows'
-import { BOMItemVariable } from '../../../main/variables'
+import { DiffRow, BomRow } from '../../../main/rows'
+import { BomVariable } from '../../../main/variables'
 
 type State = Immutable<{
-    typeName: 'BOMItem'
+    typeName: 'Bom'
     query: Query
     limit: number
     offset: number
@@ -31,12 +31,12 @@ export type Action =
     | ['query', Args]
 
 const initialState: State = {
-    typeName: 'BOMItem',
-    query: getQuery('BOMItem'),
+    typeName: 'Bom',
+    query: getQuery('Bom'),
     limit: 5,
     offset: 0,
     page: 1,
-    columns: Vector.of(['values', 'bom'], ['values', 'product'], ['values', 'quantity'], ['values', 'uom'])
+    columns: Vector.of(['values', 'name'])
 }
 
 function reducer(state: Draft<State>, action: Action) {
@@ -67,8 +67,8 @@ function reducer(state: Draft<State>, action: Action) {
 
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const rows = useLiveQuery(() => db.BOMItem.orderBy('id').toArray())
-    var composedVariables = Vector.of<Immutable<BOMItemVariable>>().appendAll(rows ? rows.map(x => BOMItemRow.toVariable(x)) : [])
+    const rows = useLiveQuery(() => db.Bom.orderBy('id').toArray())
+    var composedVariables = Vector.of<Immutable<BomVariable>>().appendAll(rows ? rows.map(x => BomRow.toVariable(x)) : [])
     const diffs = useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
     diffs?.forEach(diff => {
         composedVariables = composedVariables.filter(x => !diff.variables[state.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).appendAll(diff.variables[state.typeName].replace)
@@ -89,7 +89,7 @@ function Component(props) {
         <Container area={none} layout={Grid.layouts.main} className='p-10'>
             <Item area={Grid.header} align='center' className='flex'>
                 <Title>{type.name}s</Title>
-                <button onClick={() => { props.history.push('/b-o-m-item') }} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2'>+</button>
+                <button onClick={() => { props.history.push('/bom') }} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2'>+</button>
             </Item>
             <Item area={Grid.filter} justify='end' align='center'>
                 <Button onClick={() => setOpen(true)}>Filter</Button>

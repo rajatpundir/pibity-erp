@@ -18,8 +18,8 @@ import { db } from '../../../main/dexie'
 import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { DiffRow, IndentRow, IndentItemRow, ProductRow, UOMRow } from '../../../main/rows'
-import { Indent, IndentVariable, IndentItem, IndentItemVariable, Product, ProductVariable, UOM, UOMVariable } from '../../../main/variables'
+import { DiffRow, IndentRow, IndentItemRow, ProductRow, UomRow } from '../../../main/rows'
+import { Indent, IndentVariable, IndentItemVariable, Product, ProductVariable, Uom, UomVariable } from '../../../main/variables'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -48,7 +48,7 @@ export type Action =
     | ['indentItemList', 'variable', 'indent', Indent]
     | ['indentItemList', 'variable', 'product', Product]
     | ['indentItemList', 'variable', 'quantity', number]
-    | ['indentItemList', 'variable', 'uom', UOM]
+    | ['indentItemList', 'variable', 'uom', Uom]
     | ['indentItemList', 'variable', 'ordered', number]
     | ['indentItemList', 'variable', 'received', number]
     | ['indentItemList', 'variable', 'approved', number]
@@ -72,7 +72,7 @@ function Component(props) {
             offset: 0,
             page: 1,
             columns: Vector.of(['values', 'indent'], ['values', 'product'], ['values', 'quantity'], ['values', 'uom'], ['values', 'ordered'], ['values', 'received'], ['values', 'approved'], ['values', 'rejected'], ['values', 'returned'], ['values', 'requisted'], ['values', 'consumed']),
-            variable: new IndentItemVariable(-1, { indent: new Indent(-1), product: new Product(-1), quantity: 0, uom: new UOM(-1), ordered: 0, received: 0, approved: 0, rejected: 0, returned: 0, requisted: 0, consumed: 0 }),
+            variable: new IndentItemVariable(-1, { indent: new Indent(-1), product: new Product(-1), quantity: 0, uom: new Uom(-1), ordered: 0, received: 0, approved: 0, rejected: 0, returned: 0, requisted: 0, consumed: 0 }),
             variables: HashSet.of<IndentItemVariable>()
         }
     }
@@ -165,7 +165,7 @@ function Component(props) {
                         break
                     }
                     case 'addVariable': {
-                        state.indentItemList.variables = state.indentItemList.variables.add(new IndentItemVariable(-1, {indent: new Indent(state.indentItemList.variable.values.indent.hashCode()), product: new Product(state.indentItemList.variable.values.product.hashCode()), quantity: state.indentItemList.variable.values.quantity, uom: new UOM(state.indentItemList.variable.values.uom.hashCode()), ordered: state.indentItemList.variable.values.ordered, received: state.indentItemList.variable.values.received, approved: state.indentItemList.variable.values.approved, rejected: state.indentItemList.variable.values.rejected, returned: state.indentItemList.variable.values.returned, requisted: state.indentItemList.variable.values.requisted, consumed: state.indentItemList.variable.values.consumed}))
+                        state.indentItemList.variables = state.indentItemList.variables.add(new IndentItemVariable(-1, {indent: new Indent(state.indentItemList.variable.values.indent.hashCode()), product: new Product(state.indentItemList.variable.values.product.hashCode()), quantity: state.indentItemList.variable.values.quantity, uom: new Uom(state.indentItemList.variable.values.uom.hashCode()), ordered: state.indentItemList.variable.values.ordered, received: state.indentItemList.variable.values.received, approved: state.indentItemList.variable.values.approved, rejected: state.indentItemList.variable.values.rejected, returned: state.indentItemList.variable.values.returned, requisted: state.indentItemList.variable.values.requisted, consumed: state.indentItemList.variable.values.consumed}))
                         state.indentItemList.variable = initialState.indentItemList.variable
                         break
                     }
@@ -202,7 +202,7 @@ function Component(props) {
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const indentType = types['Indent']
+    
     const indentItemType = types['IndentItem']
     
     const [addIndentItemDrawer, toggleAddIndentItemDrawer] = useState(false)
@@ -251,10 +251,10 @@ function Component(props) {
         productList = productList.filter(x => !diff.variables.Product.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Product.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Product.replace)
     })
 
-    const uOMRows = useLiveQuery(() => db.UOM.toArray())?.map(x => UOMRow.toVariable(x))
-    var uOMList = HashSet.of<Immutable<UOMVariable>>().addAll(uOMRows ? uOMRows : [])
+    const uomRows = useLiveQuery(() => db.Uom.toArray())?.map(x => UomRow.toVariable(x))
+    var uomList = HashSet.of<Immutable<UomVariable>>().addAll(uomRows ? uomRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        uOMList = uOMList.filter(x => !diff.variables.UOM.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.UOM.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.UOM.replace)
+        uomList = uomList.filter(x => !diff.variables.Uom.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Uom.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Uom.replace)
     })
 
 
@@ -273,7 +273,7 @@ function Component(props) {
                 break
             }
             case 'uom': {
-                dispatch(['indentItemList', 'variable', event.target.name, new UOM(parseInt(String(event.target.value)))])
+                dispatch(['indentItemList', 'variable', event.target.name, new Uom(parseInt(String(event.target.value)))])
                 break
             }
             case 'ordered': {
@@ -479,15 +479,15 @@ function Component(props) {
                                         {
                                             iff(state.mode === 'create' || state.mode === 'update',
                                                 <Select onChange={onIndentItemInputChange} value={state.indentItemList.variable.values.uom.hashCode()} name='uom'>
-                                                    <option value='' selected disabled hidden>Select UOM</option>
-                                                    {uOMList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
+                                                    <option value='' selected disabled hidden>Select Uom</option>
+                                                    {uomList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
                                                 </Select>,
                                                 <div className='font-bold text-xl'>{
-                                                    iff(uOMList.filter(x => x.id.hashCode() === state.indentItemList.variable.values.uom.hashCode()).length() !== 0,
+                                                    iff(uomList.filter(x => x.id.hashCode() === state.indentItemList.variable.values.uom.hashCode()).length() !== 0,
                                                         () => {
-                                                            const referencedVariable = uOMList.filter(x => x.id.hashCode() === state.indentItemList.variable.values.uom.hashCode()).toArray()[0] as UOMVariable
-                                                            return <Link to={`/u-o-m/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
-                                                        }, <Link to={`/u-o-m/${state.indentItemList.variable.values.uom.hashCode()}`}>{state.indentItemList.variable.values.uom.hashCode()}</Link>)
+                                                            const referencedVariable = uomList.filter(x => x.id.hashCode() === state.indentItemList.variable.values.uom.hashCode()).toArray()[0] as UomVariable
+                                                            return <Link to={`/uom/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
+                                                        }, <Link to={`/uom/${state.indentItemList.variable.values.uom.hashCode()}`}>{state.indentItemList.variable.values.uom.hashCode()}</Link>)
                                                 }</div>
                                             )
                                         }

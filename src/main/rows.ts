@@ -1,7 +1,7 @@
-import { immerable, Immutable } from 'immer'
+import { Immutable } from 'immer'
 import { HashSet } from 'prelude-ts'
 import { DiffVariable } from './layers'
-import { Region, RegionVariable, Country, CountryVariable, StateType, StateTypeVariable, District, DistrictVariable, Subdistrict, SubdistrictVariable, PostalCode, PostalCodeVariable, Address, AddressVariable, Company, CompanyVariable, CompanyAddress, CompanyAddressVariable, CompanyTagGroup, CompanyTagGroupVariable, CompanyTag, CompanyTagVariable, MappingCompanyTag, MappingCompanyTagVariable, Contact, ContactVariable, ContactAddress, ContactAddressVariable, CompanyContact, CompanyContactVariable, Currency, CurrencyVariable, CurrencyRate, CurrencyRateVariable, Memo, MemoVariable, Bank, BankVariable, BankBranch, BankBranchVariable, BankAccount, BankAccountVariable, BankTransaction, BankTransactionVariable, CompanyBankAccount, CompanyBankAccountVariable, ProductCategoryGroup, ProductCategoryGroupVariable, ProductCategory, ProductCategoryVariable, Product, ProductVariable, CompanyProduct, CompanyProductVariable, ProductTagGroup, ProductTagGroupVariable, ProductTag, ProductTagVariable, MappingProductTag, MappingProductTagVariable, UOM, UOMVariable, Indent, IndentVariable, IndentItem, IndentItemVariable, Quotation, QuotationVariable, QuotationItem, QuotationItemVariable, PurchaseOrder, PurchaseOrderVariable, PurchaseOrderItem, PurchaseOrderItemVariable, PurchaseInvoice, PurchaseInvoiceVariable, PurchaseInvoiceItem, PurchaseInvoiceItemVariable, MaterialApprovalSlip, MaterialApprovalSlipVariable, MaterialApprovalSlipItem, MaterialApprovalSlipItemVariable, MaterialRejectionSlip, MaterialRejectionSlipVariable, MaterialRejectionSlipItem, MaterialRejectionSlipItemVariable, MaterialReturnSlip, MaterialReturnSlipVariable, MaterialReturnSlipItem, MaterialReturnSlipItemVariable, MaterialRequistionSlip, MaterialRequistionSlipVariable, MaterialRequistionSlipItem, MaterialRequistionSlipItemVariable, BOM, BOMVariable, BOMItem, BOMItemVariable, ProductionPreparationSlip, ProductionPreparationSlipVariable, ProductionPreparationSlipItem, ProductionPreparationSlipItemVariable, ScrapMaterialSlip, ScrapMaterialSlipVariable, TransferMaterialSlip, TransferMaterialSlipVariable, WarehouseAcceptanceSlip, WarehouseAcceptanceSlipVariable} from './variables'
+import { Region, RegionVariable, Country, CountryVariable, StateType, StateTypeVariable, District, DistrictVariable, Subdistrict, SubdistrictVariable, PostalCode, PostalCodeVariable, Address, AddressVariable, Company, CompanyVariable, CompanyAddress, CompanyAddressVariable, CompanyTagGroup, CompanyTagGroupVariable, CompanyTag, CompanyTagVariable, MappingCompanyTag, MappingCompanyTagVariable, Contact, ContactVariable, ContactAddress, ContactAddressVariable, CompanyContact, CompanyContactVariable, Currency, CurrencyVariable, CurrencyRate, CurrencyRateVariable, Memo, MemoVariable, Bank, BankVariable, BankBranch, BankBranchVariable, BankAccount, BankAccountVariable, BankTransaction, BankTransactionVariable, CompanyBankAccount, CompanyBankAccountVariable, ProductCategoryGroup, ProductCategoryGroupVariable, ProductCategory, ProductCategoryVariable, Product, ProductVariable, CompanyProduct, CompanyProductVariable, ProductTagGroup, ProductTagGroupVariable, ProductTag, ProductTagVariable, MappingProductTag, MappingProductTagVariable, Uom, UomVariable, Indent, IndentVariable, IndentItem, IndentItemVariable, Quotation, QuotationVariable, QuotationItem, QuotationItemVariable, PurchaseOrder, PurchaseOrderVariable, PurchaseOrderItem, PurchaseOrderItemVariable, PurchaseInvoice, PurchaseInvoiceVariable, PurchaseInvoiceItem, PurchaseInvoiceItemVariable, MaterialApprovalSlip, MaterialApprovalSlipVariable, MaterialApprovalSlipItem, MaterialApprovalSlipItemVariable, MaterialRejectionSlip, MaterialRejectionSlipVariable, MaterialRejectionSlipItem, MaterialRejectionSlipItemVariable, MaterialReturnSlip, MaterialReturnSlipVariable, MaterialReturnSlipItem, MaterialReturnSlipItemVariable, MaterialRequistionSlip, MaterialRequistionSlipVariable, MaterialRequistionSlipItem, MaterialRequistionSlipItemVariable, Bom, BomVariable, BomItem, BomItemVariable, ProductionPreparationSlip, ProductionPreparationSlipVariable, ProductionPreparationSlipItem, ProductionPreparationSlipItemVariable, ScrapMaterialSlip, ScrapMaterialSlipVariable, TransferMaterialSlip, TransferMaterialSlipVariable, WarehouseAcceptanceSlip, WarehouseAcceptanceSlipVariable} from './variables'
 
 export type Row =
     | RegionRow
@@ -34,7 +34,7 @@ export type Row =
     | ProductTagGroupRow
     | ProductTagRow
     | MappingProductTagRow
-    | UOMRow
+    | UomRow
     | IndentRow
     | IndentItemRow
     | QuotationRow
@@ -51,8 +51,8 @@ export type Row =
     | MaterialReturnSlipItemRow
     | MaterialRequistionSlipRow
     | MaterialRequistionSlipItemRow
-    | BOMRow
-    | BOMItemRow
+    | BomRow
+    | BomItemRow
     | ProductionPreparationSlipRow
     | ProductionPreparationSlipItemRow
     | ScrapMaterialSlipRow
@@ -862,8 +862,8 @@ export class MappingProductTagRow {
     }
 }
 
-export class UOMRow {
-    readonly typeName = 'UOM'
+export class UomRow {
+    readonly typeName = 'Uom'
     readonly id: number
     readonly product: number
     readonly name: string
@@ -880,8 +880,8 @@ export class UOMRow {
         this.name = values.name
     }
 
-    static toVariable(row: UOMRow): UOMVariable {
-        return new UOMVariable(row.id, {
+    static toVariable(row: UomRow): UomVariable {
+        return new UomVariable(row.id, {
             product: new Product(row.values.product),
             name: row.values.name,
             conversionRate: row.values.conversionRate
@@ -935,7 +935,7 @@ export class IndentItemRow {
             indent: new Indent(row.values.indent),
             product: new Product(row.values.product),
             quantity: row.values.quantity,
-            uom: new UOM(row.values.uom),
+            uom: new Uom(row.values.uom),
             ordered: row.values.ordered,
             received: row.values.received,
             approved: row.values.approved,
@@ -1285,8 +1285,8 @@ export class MaterialRequistionSlipItemRow {
     }
 }
 
-export class BOMRow {
-    readonly typeName = 'BOM'
+export class BomRow {
+    readonly typeName = 'Bom'
     readonly id: number
     readonly name: string
     values: {
@@ -1299,15 +1299,15 @@ export class BOMRow {
         this.name = values.name
     }
 
-    static toVariable(row: BOMRow): BOMVariable {
-        return new BOMVariable(row.id, {
+    static toVariable(row: BomRow): BomVariable {
+        return new BomVariable(row.id, {
             name: row.values.name
         })
     }
 }
 
-export class BOMItemRow {
-    readonly typeName = 'BOMItem'
+export class BomItemRow {
+    readonly typeName = 'BomItem'
     readonly id: number
     readonly bom: number
     readonly product: number
@@ -1325,12 +1325,12 @@ export class BOMItemRow {
         this.product = values.product
     }
 
-    static toVariable(row: BOMItemRow): BOMItemVariable {
-        return new BOMItemVariable(row.id, {
-            bom: new BOM(row.values.bom),
+    static toVariable(row: BomItemRow): BomItemVariable {
+        return new BomItemVariable(row.id, {
+            bom: new Bom(row.values.bom),
             product: new Product(row.values.product),
             quantity: row.values.quantity,
-            uom: new UOM(row.values.uom)
+            uom: new Uom(row.values.uom)
         })
     }
 }
@@ -1351,7 +1351,7 @@ export class ProductionPreparationSlipRow {
 
     static toVariable(row: ProductionPreparationSlipRow): ProductionPreparationSlipVariable {
         return new ProductionPreparationSlipVariable(row.id, {
-            bom: new BOM(row.values.bom),
+            bom: new Bom(row.values.bom),
             approved: row.values.approved,
             scrapped: row.values.scrapped
         })
@@ -1572,8 +1572,8 @@ export class WarehouseAcceptanceSlipRow {
           replace: Array<MappingProductTagRow>
           remove: Array<number>
       },
-      UOM: {
-          replace: Array<UOMRow>
+      Uom: {
+          replace: Array<UomRow>
           remove: Array<number>
       },
       Indent: {
@@ -1640,12 +1640,12 @@ export class WarehouseAcceptanceSlipRow {
           replace: Array<MaterialRequistionSlipItemRow>
           remove: Array<number>
       },
-      BOM: {
-          replace: Array<BOMRow>
+      Bom: {
+          replace: Array<BomRow>
           remove: Array<number>
       },
-      BOMItem: {
-          replace: Array<BOMItemRow>
+      BomItem: {
+          replace: Array<BomItemRow>
           remove: Array<number>
       },
       ProductionPreparationSlip: {
@@ -1791,8 +1791,8 @@ export class WarehouseAcceptanceSlipRow {
           replace: Array<MappingProductTagRow>
           remove: Array<number>
       },
-      UOM: {
-          replace: Array<UOMRow>
+      Uom: {
+          replace: Array<UomRow>
           remove: Array<number>
       },
       Indent: {
@@ -1859,12 +1859,12 @@ export class WarehouseAcceptanceSlipRow {
           replace: Array<MaterialRequistionSlipItemRow>
           remove: Array<number>
       },
-      BOM: {
-          replace: Array<BOMRow>
+      Bom: {
+          replace: Array<BomRow>
           remove: Array<number>
       },
-      BOMItem: {
-          replace: Array<BOMItemRow>
+      BomItem: {
+          replace: Array<BomItemRow>
           remove: Array<number>
       },
       ProductionPreparationSlip: {
@@ -2014,9 +2014,9 @@ export class WarehouseAcceptanceSlipRow {
             replace: HashSet.of<MappingProductTagVariable>().addAll(diff.variables.MappingProductTag.replace.map(x => MappingProductTagRow.toVariable(x))),
             remove: HashSet.of<MappingProductTag>().addAll(diff.variables.MappingProductTag.remove.map(x => new MappingProductTag(x)))
           },
-          UOM: {
-            replace: HashSet.of<UOMVariable>().addAll(diff.variables.UOM.replace.map(x => UOMRow.toVariable(x))),
-            remove: HashSet.of<UOM>().addAll(diff.variables.UOM.remove.map(x => new UOM(x)))
+          Uom: {
+            replace: HashSet.of<UomVariable>().addAll(diff.variables.Uom.replace.map(x => UomRow.toVariable(x))),
+            remove: HashSet.of<Uom>().addAll(diff.variables.Uom.remove.map(x => new Uom(x)))
           },
           Indent: {
             replace: HashSet.of<IndentVariable>().addAll(diff.variables.Indent.replace.map(x => IndentRow.toVariable(x))),
@@ -2082,13 +2082,13 @@ export class WarehouseAcceptanceSlipRow {
             replace: HashSet.of<MaterialRequistionSlipItemVariable>().addAll(diff.variables.MaterialRequistionSlipItem.replace.map(x => MaterialRequistionSlipItemRow.toVariable(x))),
             remove: HashSet.of<MaterialRequistionSlipItem>().addAll(diff.variables.MaterialRequistionSlipItem.remove.map(x => new MaterialRequistionSlipItem(x)))
           },
-          BOM: {
-            replace: HashSet.of<BOMVariable>().addAll(diff.variables.BOM.replace.map(x => BOMRow.toVariable(x))),
-            remove: HashSet.of<BOM>().addAll(diff.variables.BOM.remove.map(x => new BOM(x)))
+          Bom: {
+            replace: HashSet.of<BomVariable>().addAll(diff.variables.Bom.replace.map(x => BomRow.toVariable(x))),
+            remove: HashSet.of<Bom>().addAll(diff.variables.Bom.remove.map(x => new Bom(x)))
           },
-          BOMItem: {
-            replace: HashSet.of<BOMItemVariable>().addAll(diff.variables.BOMItem.replace.map(x => BOMItemRow.toVariable(x))),
-            remove: HashSet.of<BOMItem>().addAll(diff.variables.BOMItem.remove.map(x => new BOMItem(x)))
+          BomItem: {
+            replace: HashSet.of<BomItemVariable>().addAll(diff.variables.BomItem.replace.map(x => BomItemRow.toVariable(x))),
+            remove: HashSet.of<BomItem>().addAll(diff.variables.BomItem.remove.map(x => new BomItem(x)))
           },
           ProductionPreparationSlip: {
             replace: HashSet.of<ProductionPreparationSlipVariable>().addAll(diff.variables.ProductionPreparationSlip.replace.map(x => ProductionPreparationSlipRow.toVariable(x))),

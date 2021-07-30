@@ -19,7 +19,7 @@ import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { DiffRow, CompanyRow, IndentRow, IndentItemRow, QuotationRow, QuotationItemRow } from '../../../main/rows'
-import { Company, CompanyVariable, Indent, IndentVariable, IndentItem, IndentItemVariable, Quotation, QuotationVariable, QuotationItem, QuotationItemVariable } from '../../../main/variables'
+import { Company, CompanyVariable, Indent, IndentVariable, IndentItem, IndentItemVariable, Quotation, QuotationVariable, QuotationItemVariable } from '../../../main/variables'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'

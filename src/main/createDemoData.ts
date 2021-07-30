@@ -1,8 +1,8 @@
-import { Vector } from "prelude-ts"
-import { executeCircuit } from "./circuit"
-import { DiffVariable, mergeDiffs } from "./layers"
-import { circuits } from "./circuits"
-import { db } from "./dexie"
+// import { Vector } from "prelude-ts"
+// import { executeCircuit } from "./circuit"
+// import { DiffVariable, mergeDiffs } from "./layers"
+// import { circuits } from "./circuits"
+// import { db } from "./dexie"
 
 export default async function createDemoData() {
     // db.diffs.clear()

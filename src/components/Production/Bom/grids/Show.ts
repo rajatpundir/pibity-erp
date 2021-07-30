@@ -4,7 +4,7 @@ import { GridLayout, GridArea, none, validateLayout } from '../../../../main/com
 export const header: GridArea = new GridArea('header')
 export const button: GridArea = new GridArea('button')
 export const details: GridArea = new GridArea('details')
-export const bOMItemArea: GridArea = new GridArea('bOMItemArea')
+export const bomItemArea: GridArea = new GridArea('bomItemArea')
 
 export const layouts: { [index: string]: GridLayout } = {
     main: validateLayout({
@@ -18,7 +18,7 @@ export const layouts: { [index: string]: GridLayout } = {
                 Vector.of(header),
                 Vector.of(details),
                 Vector.of(button),
-Vector.of(bOMItemArea)
+Vector.of(bomItemArea)
 
             )
         },
@@ -28,7 +28,7 @@ Vector.of(bOMItemArea)
             areas: Vector.of(
                 Vector.of(header, button),
                 Vector.of(details, details),
-Vector.of(bOMItemArea, bOMItemArea)
+Vector.of(bomItemArea, bomItemArea)
 
             )
         },
@@ -38,7 +38,7 @@ Vector.of(bOMItemArea, bOMItemArea)
             areas: Vector.of(
                 Vector.of(header, header, button),
                 Vector.of(details, details, details),
-Vector.of(bOMItemArea, bOMItemArea, bOMItemArea)
+Vector.of(bomItemArea, bomItemArea, bomItemArea)
 
             )
         },
@@ -48,7 +48,7 @@ Vector.of(bOMItemArea, bOMItemArea, bOMItemArea)
             areas: Vector.of(
                 Vector.of(none, header, header, none, button, none),
                 Vector.of(none, details, details, details, details, none),
-Vector.of(none, bOMItemArea, bOMItemArea, bOMItemArea, bOMItemArea, none)
+Vector.of(none, bomItemArea, bomItemArea, bomItemArea, bomItemArea, none)
 
             )
         },
@@ -58,7 +58,7 @@ Vector.of(none, bOMItemArea, bOMItemArea, bOMItemArea, bOMItemArea, none)
             areas: Vector.of(
                 Vector.of(none, header, header, none, button, none),
                 Vector.of(none, details, details, details, details, none),
-Vector.of(none, bOMItemArea, bOMItemArea, bOMItemArea, bOMItemArea, none)
+Vector.of(none, bomItemArea, bomItemArea, bomItemArea, bomItemArea, none)
 
             )
         }

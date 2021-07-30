@@ -2,8 +2,8 @@ import { HashSet, Vector } from 'prelude-ts'
 import { immerable, Immutable } from 'immer'
 import { NonPrimitiveType } from './types'
 import { db } from './dexie'
-import { Variable, VariableId, Region, RegionVariable, Country, CountryVariable, StateType, StateTypeVariable, District, DistrictVariable, Subdistrict, SubdistrictVariable, PostalCode, PostalCodeVariable, Address, AddressVariable, Company, CompanyVariable, CompanyAddress, CompanyAddressVariable, CompanyTagGroup, CompanyTagGroupVariable, CompanyTag, CompanyTagVariable, MappingCompanyTag, MappingCompanyTagVariable, Contact, ContactVariable, ContactAddress, ContactAddressVariable, CompanyContact, CompanyContactVariable, Currency, CurrencyVariable, CurrencyRate, CurrencyRateVariable, Memo, MemoVariable, Bank, BankVariable, BankBranch, BankBranchVariable, BankAccount, BankAccountVariable, BankTransaction, BankTransactionVariable, CompanyBankAccount, CompanyBankAccountVariable, ProductCategoryGroup, ProductCategoryGroupVariable, ProductCategory, ProductCategoryVariable, Product, ProductVariable, CompanyProduct, CompanyProductVariable, ProductTagGroup, ProductTagGroupVariable, ProductTag, ProductTagVariable, MappingProductTag, MappingProductTagVariable, UOM, UOMVariable, Indent, IndentVariable, IndentItem, IndentItemVariable, Quotation, QuotationVariable, QuotationItem, QuotationItemVariable, PurchaseOrder, PurchaseOrderVariable, PurchaseOrderItem, PurchaseOrderItemVariable, PurchaseInvoice, PurchaseInvoiceVariable, PurchaseInvoiceItem, PurchaseInvoiceItemVariable, MaterialApprovalSlip, MaterialApprovalSlipVariable, MaterialApprovalSlipItem, MaterialApprovalSlipItemVariable, MaterialRejectionSlip, MaterialRejectionSlipVariable, MaterialRejectionSlipItem, MaterialRejectionSlipItemVariable, MaterialReturnSlip, MaterialReturnSlipVariable, MaterialReturnSlipItem, MaterialReturnSlipItemVariable, MaterialRequistionSlip, MaterialRequistionSlipVariable, MaterialRequistionSlipItem, MaterialRequistionSlipItemVariable, BOM, BOMVariable, BOMItem, BOMItemVariable, ProductionPreparationSlip, ProductionPreparationSlipVariable, ProductionPreparationSlipItem, ProductionPreparationSlipItemVariable, ScrapMaterialSlip, ScrapMaterialSlipVariable, TransferMaterialSlip, TransferMaterialSlipVariable, WarehouseAcceptanceSlip, WarehouseAcceptanceSlipVariable } from './variables'
-import { DiffRow, RegionRow, CountryRow, StateTypeRow, DistrictRow, SubdistrictRow, PostalCodeRow, AddressRow, CompanyRow, CompanyAddressRow, CompanyTagGroupRow, CompanyTagRow, MappingCompanyTagRow, ContactRow, ContactAddressRow, CompanyContactRow, CurrencyRow, CurrencyRateRow, MemoRow, BankRow, BankBranchRow, BankAccountRow, BankTransactionRow, CompanyBankAccountRow, ProductCategoryGroupRow, ProductCategoryRow, ProductRow, CompanyProductRow, ProductTagGroupRow, ProductTagRow, MappingProductTagRow, UOMRow, IndentRow, IndentItemRow, QuotationRow, QuotationItemRow, PurchaseOrderRow, PurchaseOrderItemRow, PurchaseInvoiceRow, PurchaseInvoiceItemRow, MaterialApprovalSlipRow, MaterialApprovalSlipItemRow, MaterialRejectionSlipRow, MaterialRejectionSlipItemRow, MaterialReturnSlipRow, MaterialReturnSlipItemRow, MaterialRequistionSlipRow, MaterialRequistionSlipItemRow, BOMRow, BOMItemRow, ProductionPreparationSlipRow, ProductionPreparationSlipItemRow, ScrapMaterialSlipRow, TransferMaterialSlipRow, WarehouseAcceptanceSlipRow } from './rows'
+import { Variable, VariableId, Region, RegionVariable, Country, CountryVariable, StateType, StateTypeVariable, District, DistrictVariable, Subdistrict, SubdistrictVariable, PostalCode, PostalCodeVariable, Address, AddressVariable, Company, CompanyVariable, CompanyAddress, CompanyAddressVariable, CompanyTagGroup, CompanyTagGroupVariable, CompanyTag, CompanyTagVariable, MappingCompanyTag, MappingCompanyTagVariable, Contact, ContactVariable, ContactAddress, ContactAddressVariable, CompanyContact, CompanyContactVariable, Currency, CurrencyVariable, CurrencyRate, CurrencyRateVariable, Memo, MemoVariable, Bank, BankVariable, BankBranch, BankBranchVariable, BankAccount, BankAccountVariable, BankTransaction, BankTransactionVariable, CompanyBankAccount, CompanyBankAccountVariable, ProductCategoryGroup, ProductCategoryGroupVariable, ProductCategory, ProductCategoryVariable, Product, ProductVariable, CompanyProduct, CompanyProductVariable, ProductTagGroup, ProductTagGroupVariable, ProductTag, ProductTagVariable, MappingProductTag, MappingProductTagVariable, Uom, UomVariable, Indent, IndentVariable, IndentItem, IndentItemVariable, Quotation, QuotationVariable, QuotationItem, QuotationItemVariable, PurchaseOrder, PurchaseOrderVariable, PurchaseOrderItem, PurchaseOrderItemVariable, PurchaseInvoice, PurchaseInvoiceVariable, PurchaseInvoiceItem, PurchaseInvoiceItemVariable, MaterialApprovalSlip, MaterialApprovalSlipVariable, MaterialApprovalSlipItem, MaterialApprovalSlipItemVariable, MaterialRejectionSlip, MaterialRejectionSlipVariable, MaterialRejectionSlipItem, MaterialRejectionSlipItemVariable, MaterialReturnSlip, MaterialReturnSlipVariable, MaterialReturnSlipItem, MaterialReturnSlipItemVariable, MaterialRequistionSlip, MaterialRequistionSlipVariable, MaterialRequistionSlipItem, MaterialRequistionSlipItemVariable, Bom, BomVariable, BomItem, BomItemVariable, ProductionPreparationSlip, ProductionPreparationSlipVariable, ProductionPreparationSlipItem, ProductionPreparationSlipItemVariable, ScrapMaterialSlip, ScrapMaterialSlipVariable, TransferMaterialSlip, TransferMaterialSlipVariable, WarehouseAcceptanceSlip, WarehouseAcceptanceSlipVariable } from './variables'
+import { DiffRow, RegionRow, CountryRow, StateTypeRow, DistrictRow, SubdistrictRow, PostalCodeRow, AddressRow, CompanyRow, CompanyAddressRow, CompanyTagGroupRow, CompanyTagRow, MappingCompanyTagRow, ContactRow, ContactAddressRow, CompanyContactRow, CurrencyRow, CurrencyRateRow, MemoRow, BankRow, BankBranchRow, BankAccountRow, BankTransactionRow, CompanyBankAccountRow, ProductCategoryGroupRow, ProductCategoryRow, ProductRow, CompanyProductRow, ProductTagGroupRow, ProductTagRow, MappingProductTagRow, UomRow, IndentRow, IndentItemRow, QuotationRow, QuotationItemRow, PurchaseOrderRow, PurchaseOrderItemRow, PurchaseInvoiceRow, PurchaseInvoiceItemRow, MaterialApprovalSlipRow, MaterialApprovalSlipItemRow, MaterialRejectionSlipRow, MaterialRejectionSlipItemRow, MaterialReturnSlipRow, MaterialReturnSlipItemRow, MaterialRequistionSlipRow, MaterialRequistionSlipItemRow, BomRow, BomItemRow, ProductionPreparationSlipRow, ProductionPreparationSlipItemRow, ScrapMaterialSlipRow, TransferMaterialSlipRow, WarehouseAcceptanceSlipRow } from './rows'
 
 export function mergeDiffs(diffs: ReadonlyArray<DiffVariable>): DiffVariable {
     const result = diffs.reduce((acc, diff) => {
@@ -137,9 +137,9 @@ type DiffVariables = {
         replace: HashSet<Immutable<MappingProductTagVariable>>,
         remove: HashSet<Immutable<MappingProductTag>>
     },
-    UOM: {
-        replace: HashSet<Immutable<UOMVariable>>,
-        remove: HashSet<Immutable<UOM>>
+    Uom: {
+        replace: HashSet<Immutable<UomVariable>>,
+        remove: HashSet<Immutable<Uom>>
     },
     Indent: {
         replace: HashSet<Immutable<IndentVariable>>,
@@ -205,13 +205,13 @@ type DiffVariables = {
         replace: HashSet<Immutable<MaterialRequistionSlipItemVariable>>,
         remove: HashSet<Immutable<MaterialRequistionSlipItem>>
     },
-    BOM: {
-        replace: HashSet<Immutable<BOMVariable>>,
-        remove: HashSet<Immutable<BOM>>
+    Bom: {
+        replace: HashSet<Immutable<BomVariable>>,
+        remove: HashSet<Immutable<Bom>>
     },
-    BOMItem: {
-        replace: HashSet<Immutable<BOMItemVariable>>,
-        remove: HashSet<Immutable<BOMItem>>
+    BomItem: {
+        replace: HashSet<Immutable<BomItemVariable>>,
+        remove: HashSet<Immutable<BomItem>>
     },
     ProductionPreparationSlip: {
         replace: HashSet<Immutable<ProductionPreparationSlipVariable>>,
@@ -362,7 +362,7 @@ export class DiffVariable {
             replace: HashSet.of(),
             remove: HashSet.of()
         },
-        UOM: {
+        Uom: {
             replace: HashSet.of(),
             remove: HashSet.of()
         },
@@ -430,11 +430,11 @@ export class DiffVariable {
             replace: HashSet.of(),
             remove: HashSet.of()
         },
-        BOM: {
+        Bom: {
             replace: HashSet.of(),
             remove: HashSet.of()
         },
-        BOMItem: {
+        BomItem: {
             replace: HashSet.of(),
             remove: HashSet.of()
         },
@@ -602,9 +602,9 @@ export class DiffVariable {
                 replace: this.variables.MappingProductTag.replace.toArray().map(x => x.toRow()),
                 remove: this.variables.MappingProductTag.remove.toArray().map(x => x.hashCode())
             },
-            UOM: {
-                replace: this.variables.UOM.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.UOM.remove.toArray().map(x => x.hashCode())
+            Uom: {
+                replace: this.variables.Uom.replace.toArray().map(x => x.toRow()),
+                remove: this.variables.Uom.remove.toArray().map(x => x.hashCode())
             },
             Indent: {
                 replace: this.variables.Indent.replace.toArray().map(x => x.toRow()),
@@ -670,13 +670,13 @@ export class DiffVariable {
                 replace: this.variables.MaterialRequistionSlipItem.replace.toArray().map(x => x.toRow()),
                 remove: this.variables.MaterialRequistionSlipItem.remove.toArray().map(x => x.hashCode())
             },
-            BOM: {
-                replace: this.variables.BOM.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.BOM.remove.toArray().map(x => x.hashCode())
+            Bom: {
+                replace: this.variables.Bom.replace.toArray().map(x => x.toRow()),
+                remove: this.variables.Bom.remove.toArray().map(x => x.hashCode())
             },
-            BOMItem: {
-                replace: this.variables.BOMItem.replace.toArray().map(x => x.toRow()),
-                remove: this.variables.BOMItem.remove.toArray().map(x => x.hashCode())
+            BomItem: {
+                replace: this.variables.BomItem.replace.toArray().map(x => x.toRow()),
+                remove: this.variables.BomItem.remove.toArray().map(x => x.hashCode())
             },
             ProductionPreparationSlip: {
                 replace: this.variables.ProductionPreparationSlip.replace.toArray().map(x => x.toRow()),
@@ -825,7 +825,7 @@ export function getReplaceVariableDiff(variable: Immutable<Variable>): DiffVaria
             diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
-        case 'UOM': {
+        case 'Uom': {
             diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
@@ -893,11 +893,11 @@ export function getReplaceVariableDiff(variable: Immutable<Variable>): DiffVaria
             diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
-        case 'BOM': {
+        case 'Bom': {
             diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
-        case 'BOMItem': {
+        case 'BomItem': {
             diff.variables[variable.typeName].replace = diff.variables[variable.typeName].replace.add(variable)
             break
         }
@@ -1052,8 +1052,8 @@ export function getRemoveVariableDiff(typeName: NonPrimitiveType, id: number): D
             diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MappingProductTag(id))
             break
         }
-        case 'UOM': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new UOM(id))
+        case 'Uom': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Uom(id))
             break
         }
         case 'Indent': {
@@ -1120,12 +1120,12 @@ export function getRemoveVariableDiff(typeName: NonPrimitiveType, id: number): D
             diff.variables[typeName].remove = diff.variables[typeName].remove.add(new MaterialRequistionSlipItem(id))
             break
         }
-        case 'BOM': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new BOM(id))
+        case 'Bom': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new Bom(id))
             break
         }
-        case 'BOMItem': {
-            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new BOMItem(id))
+        case 'BomItem': {
+            diff.variables[typeName].remove = diff.variables[typeName].remove.add(new BomItem(id))
             break
         }
         case 'ProductionPreparationSlip': {
@@ -1969,7 +1969,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
             }
             return undefined
         }
-        case 'UOM': {
+        case 'Uom': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
                     if (variable.id.hashCode() === id) {
@@ -1992,7 +1992,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
             }
             const row = await db[typeName].get(id)
             if (row !== undefined) {
-                return UOMRow.toVariable(row) as Variable
+                return UomRow.toVariable(row) as Variable
             }
             return undefined
         }
@@ -2428,7 +2428,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
             }
             return undefined
         }
-        case 'BOM': {
+        case 'Bom': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
                     if (variable.id.hashCode() === id) {
@@ -2451,11 +2451,11 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
             }
             const row = await db[typeName].get(id)
             if (row !== undefined) {
-                return BOMRow.toVariable(row) as Variable
+                return BomRow.toVariable(row) as Variable
             }
             return undefined
         }
-        case 'BOMItem': {
+        case 'BomItem': {
             for (const diff of overlay.reverse().toArray()) {
                 for (const variable of diff.variables[typeName].replace.toArray()) {
                     if (variable.id.hashCode() === id) {
@@ -2478,7 +2478,7 @@ export async function getVariable(typeName: NonPrimitiveType, id: number, overla
             }
             const row = await db[typeName].get(id)
             if (row !== undefined) {
-                return BOMItemRow.toVariable(row) as Variable
+                return BomItemRow.toVariable(row) as Variable
             }
             return undefined
         }
@@ -2838,8 +2838,8 @@ export async function getVariables(typeName: NonPrimitiveType, overlay: Vector<D
             })
             return composedVariables
         }
-        case 'UOM': {
-            let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => UOMRow.toVariable(x)) : [])
+        case 'Uom': {
+            let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => UomRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
                 composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
@@ -2957,15 +2957,15 @@ export async function getVariables(typeName: NonPrimitiveType, overlay: Vector<D
             })
             return composedVariables
         }
-        case 'BOM': {
-            let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => BOMRow.toVariable(x)) : [])
+        case 'Bom': {
+            let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => BomRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
                 composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })
             return composedVariables
         }
-        case 'BOMItem': {
-            let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => BOMItemRow.toVariable(x)) : [])
+        case 'BomItem': {
+            let composedVariables = Vector.of<Immutable<Variable>>().appendAll(rows ? rows.map(x => BomItemRow.toVariable(x)) : [])
             diffs?.forEach(diff => {
                 composedVariables = composedVariables.filter(x => !diff.variables[typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).appendAll(diff.variables[typeName].replace)
             })

@@ -1,6 +1,6 @@
 import Dexie from 'dexie'
 import { Immutable } from 'immer'
-import { DiffRow, RegionRow, CountryRow, StateTypeRow, DistrictRow, SubdistrictRow, PostalCodeRow, AddressRow, CompanyRow, CompanyAddressRow, CompanyTagGroupRow, CompanyTagRow, MappingCompanyTagRow, ContactRow, ContactAddressRow, CompanyContactRow, CurrencyRow, CurrencyRateRow, MemoRow, BankRow, BankBranchRow, BankAccountRow, BankTransactionRow, CompanyBankAccountRow, ProductCategoryGroupRow, ProductCategoryRow, ProductRow, CompanyProductRow, ProductTagGroupRow, ProductTagRow, MappingProductTagRow, UOMRow, IndentRow, IndentItemRow, QuotationRow, QuotationItemRow, PurchaseOrderRow, PurchaseOrderItemRow, PurchaseInvoiceRow, PurchaseInvoiceItemRow, MaterialApprovalSlipRow, MaterialApprovalSlipItemRow, MaterialRejectionSlipRow, MaterialRejectionSlipItemRow, MaterialReturnSlipRow, MaterialReturnSlipItemRow, MaterialRequistionSlipRow, MaterialRequistionSlipItemRow, BOMRow, BOMItemRow, ProductionPreparationSlipRow, ProductionPreparationSlipItemRow, ScrapMaterialSlipRow, TransferMaterialSlipRow, WarehouseAcceptanceSlipRow } from './rows'
+import { DiffRow, RegionRow, CountryRow, StateTypeRow, DistrictRow, SubdistrictRow, PostalCodeRow, AddressRow, CompanyRow, CompanyAddressRow, CompanyTagGroupRow, CompanyTagRow, MappingCompanyTagRow, ContactRow, ContactAddressRow, CompanyContactRow, CurrencyRow, CurrencyRateRow, MemoRow, BankRow, BankBranchRow, BankAccountRow, BankTransactionRow, CompanyBankAccountRow, ProductCategoryGroupRow, ProductCategoryRow, ProductRow, CompanyProductRow, ProductTagGroupRow, ProductTagRow, MappingProductTagRow, UomRow, IndentRow, IndentItemRow, QuotationRow, QuotationItemRow, PurchaseOrderRow, PurchaseOrderItemRow, PurchaseInvoiceRow, PurchaseInvoiceItemRow, MaterialApprovalSlipRow, MaterialApprovalSlipItemRow, MaterialRejectionSlipRow, MaterialRejectionSlipItemRow, MaterialReturnSlipRow, MaterialReturnSlipItemRow, MaterialRequistionSlipRow, MaterialRequistionSlipItemRow, BomRow, BomItemRow, ProductionPreparationSlipRow, ProductionPreparationSlipItemRow, ScrapMaterialSlipRow, TransferMaterialSlipRow, WarehouseAcceptanceSlipRow } from './rows'
 
 class Database extends Dexie {
     diffs: Dexie.Table<Immutable<DiffRow>, number>
@@ -34,7 +34,7 @@ class Database extends Dexie {
     ProductTagGroup: Dexie.Table<Immutable<ProductTagGroupRow>, number>
     ProductTag: Dexie.Table<Immutable<ProductTagRow>, number>
     MappingProductTag: Dexie.Table<Immutable<MappingProductTagRow>, number>
-    UOM: Dexie.Table<Immutable<UOMRow>, number>
+    Uom: Dexie.Table<Immutable<UomRow>, number>
     Indent: Dexie.Table<Immutable<IndentRow>, number>
     IndentItem: Dexie.Table<Immutable<IndentItemRow>, number>
     Quotation: Dexie.Table<Immutable<QuotationRow>, number>
@@ -51,8 +51,8 @@ class Database extends Dexie {
     MaterialReturnSlipItem: Dexie.Table<Immutable<MaterialReturnSlipItemRow>, number>
     MaterialRequistionSlip: Dexie.Table<Immutable<MaterialRequistionSlipRow>, number>
     MaterialRequistionSlipItem: Dexie.Table<Immutable<MaterialRequistionSlipItemRow>, number>
-    BOM: Dexie.Table<Immutable<BOMRow>, number>
-    BOMItem: Dexie.Table<Immutable<BOMItemRow>, number>
+    Bom: Dexie.Table<Immutable<BomRow>, number>
+    BomItem: Dexie.Table<Immutable<BomItemRow>, number>
     ProductionPreparationSlip: Dexie.Table<Immutable<ProductionPreparationSlipRow>, number>
     ProductionPreparationSlipItem: Dexie.Table<Immutable<ProductionPreparationSlipItemRow>, number>
     ScrapMaterialSlip: Dexie.Table<Immutable<ScrapMaterialSlipRow>, number>
@@ -93,7 +93,7 @@ class Database extends Dexie {
             ProductTagGroup:'++id, [name]',
             ProductTag:'++id, [group+name]',
             MappingProductTag:'++id, [product+tag]',
-            UOM:'++id, [product+name]',
+            Uom:'++id, [product+name]',
             Indent:'++id',
             IndentItem:'++id, [indent+product]',
             Quotation:'++id',
@@ -110,8 +110,8 @@ class Database extends Dexie {
             MaterialReturnSlipItem:'++id, [materialReturnSlip+materialRejectionSlipItem]',
             MaterialRequistionSlip:'++id',
             MaterialRequistionSlipItem:'++id, [materialRequistionSlip+materialApprovalSlipItem]',
-            BOM:'++id, [name]',
-            BOMItem:'++id, [bom+product]',
+            Bom:'++id, [name]',
+            BomItem:'++id, [bom+product]',
             ProductionPreparationSlip:'++id',
             ProductionPreparationSlipItem:'++id, [productionPreparationSlip+bomItem]',
             ScrapMaterialSlip:'++id',
@@ -150,7 +150,7 @@ class Database extends Dexie {
         this.ProductTagGroup = this.table('ProductTagGroup')
         this.ProductTag = this.table('ProductTag')
         this.MappingProductTag = this.table('MappingProductTag')
-        this.UOM = this.table('UOM')
+        this.Uom = this.table('Uom')
         this.Indent = this.table('Indent')
         this.IndentItem = this.table('IndentItem')
         this.Quotation = this.table('Quotation')
@@ -167,8 +167,8 @@ class Database extends Dexie {
         this.MaterialReturnSlipItem = this.table('MaterialReturnSlipItem')
         this.MaterialRequistionSlip = this.table('MaterialRequistionSlip')
         this.MaterialRequistionSlipItem = this.table('MaterialRequistionSlipItem')
-        this.BOM = this.table('BOM')
-        this.BOMItem = this.table('BOMItem')
+        this.Bom = this.table('Bom')
+        this.BomItem = this.table('BomItem')
         this.ProductionPreparationSlip = this.table('ProductionPreparationSlip')
         this.ProductionPreparationSlipItem = this.table('ProductionPreparationSlipItem')
         this.ScrapMaterialSlip = this.table('ScrapMaterialSlip')
@@ -206,7 +206,7 @@ class Database extends Dexie {
         this.ProductTagGroup.mapToClass(ProductTagGroupRow)
         this.ProductTag.mapToClass(ProductTagRow)
         this.MappingProductTag.mapToClass(MappingProductTagRow)
-        this.UOM.mapToClass(UOMRow)
+        this.Uom.mapToClass(UomRow)
         this.Indent.mapToClass(IndentRow)
         this.IndentItem.mapToClass(IndentItemRow)
         this.Quotation.mapToClass(QuotationRow)
@@ -223,8 +223,8 @@ class Database extends Dexie {
         this.MaterialReturnSlipItem.mapToClass(MaterialReturnSlipItemRow)
         this.MaterialRequistionSlip.mapToClass(MaterialRequistionSlipRow)
         this.MaterialRequistionSlipItem.mapToClass(MaterialRequistionSlipItemRow)
-        this.BOM.mapToClass(BOMRow)
-        this.BOMItem.mapToClass(BOMItemRow)
+        this.Bom.mapToClass(BomRow)
+        this.BomItem.mapToClass(BomItemRow)
         this.ProductionPreparationSlip.mapToClass(ProductionPreparationSlipRow)
         this.ProductionPreparationSlipItem.mapToClass(ProductionPreparationSlipItemRow)
         this.ScrapMaterialSlip.mapToClass(ScrapMaterialSlipRow)

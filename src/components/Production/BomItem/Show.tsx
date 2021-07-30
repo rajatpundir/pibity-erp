@@ -1,16 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
-import { HashSet, Vector } from 'prelude-ts'
-import { Drawer } from '@material-ui/core'
+import { HashSet } from 'prelude-ts'
 import { executeCircuit } from '../../../main/circuit'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
-import { Table } from '../../../main/Table'
-import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
 import * as Grid from './grids/Show'
-import * as Grid2 from './grids/List'
 import { withRouter, Link } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
 import { iff, when } from '../../../main/utils'
@@ -18,29 +14,30 @@ import { db } from '../../../main/dexie'
 import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { DiffRow, ProductRow, UOMRow } from '../../../main/rows'
-import { Product, ProductVariable, UOM, UOMVariable } from '../../../main/variables'
+import { DiffRow, BomRow, BomItemRow, ProductRow, UomRow } from '../../../main/rows'
+import { Bom, BomVariable, BomItemVariable, Product, ProductVariable, Uom, UomVariable } from '../../../main/variables'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
-    variable: UOMVariable
+    variable: BomItemVariable
 }>
 
 export type Action =
     | ['toggleMode']
     | ['resetVariable', State]
  
+    | ['variable', 'bom', Bom]
     | ['variable', 'product', Product]
-    | ['variable', 'name', string]
-    | ['variable', 'conversionRate', number]
+    | ['variable', 'quantity', number]
+    | ['variable', 'uom', Uom]
 
-    | ['replace', 'variable', UOMVariable]
+    | ['replace', 'variable', BomItemVariable]
 
 function Component(props) {
 
     const initialState: State = {
         mode: props.match.params[0] ? 'show' : 'create',
-        variable: new UOMVariable(-1, { product: new Product(-1), name: '', conversionRate: 0 })
+        variable: new BomItemVariable(-1, { bom: new Bom(-1), product: new Product(-1), quantity: 0, uom: new Uom(-1) })
     }
     
     function reducer(state: Draft<State>, action: Action) {
@@ -58,15 +55,19 @@ function Component(props) {
             }
             case 'variable': {
                 switch (action[1]) {
+                    case 'bom': {
+                        state[action[0]][action[1]] = action[2]
+                        break
+                    }
                     case 'product': {
                         state[action[0]][action[1]] = action[2]
                         break
                     }
-                    case 'name': {
+                    case 'quantity': {
                         state[action[0]][action[1]] = action[2]
                         break
                     }
-                    case 'conversionRate': {
+                    case 'uom': {
                         state[action[0]][action[1]] = action[2]
                         break
                     }
@@ -100,13 +101,13 @@ function Component(props) {
 
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
 
-    const uOMType = types['UOM']
+    const bomItemType = types['BomItem']
     
     
     const setVariable = useCallback(async () => {
         if (props.match.params[0]) {
-            const rows = await db.UOM.toArray()
-            var composedVariables = HashSet.of<Immutable<UOMVariable>>().addAll(rows ? rows.map(x => UOMRow.toVariable(x)) : [])
+            const rows = await db.BomItem.toArray()
+            var composedVariables = HashSet.of<Immutable<BomItemVariable>>().addAll(rows ? rows.map(x => BomItemRow.toVariable(x)) : [])
             const diffs = (await db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
             diffs?.forEach(diff => {
                 composedVariables = composedVariables.filter(x => !diff.variables[state.variable.typeName].remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables[state.variable.typeName].replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables[state.variable.typeName].replace)
@@ -114,12 +115,24 @@ function Component(props) {
             const variables = composedVariables.filter(variable => variable.id.hashCode() === props.match.params[0])
             if (variables.length() === 1) {
                 const variable = variables.toArray()[0]
-                dispatch(['replace', 'variable', variable as UOMVariable])
+                dispatch(['replace', 'variable', variable as BomItemVariable])
             }
         }
     }, [state.variable.typeName, props.match.params, dispatch])
 
     useEffect(() => { setVariable() }, [setVariable])
+
+    const bomRows = useLiveQuery(() => db.Bom.toArray())?.map(x => BomRow.toVariable(x))
+    var bomList = HashSet.of<Immutable<BomVariable>>().addAll(bomRows ? bomRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        bomList = bomList.filter(x => !diff.variables.Bom.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Bom.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Bom.replace)
+    })
+
+    const bomItemRows = useLiveQuery(() => db.BomItem.toArray())?.map(x => BomItemRow.toVariable(x))
+    var bomItemList = HashSet.of<Immutable<BomItemVariable>>().addAll(bomItemRows ? bomItemRows : [])
+    useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
+        bomItemList = bomItemList.filter(x => !diff.variables.BomItem.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.BomItem.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.BomItem.replace)
+    })
 
     const productRows = useLiveQuery(() => db.Product.toArray())?.map(x => ProductRow.toVariable(x))
     var productList = HashSet.of<Immutable<ProductVariable>>().addAll(productRows ? productRows : [])
@@ -127,24 +140,28 @@ function Component(props) {
         productList = productList.filter(x => !diff.variables.Product.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Product.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Product.replace)
     })
 
-    const uOMRows = useLiveQuery(() => db.UOM.toArray())?.map(x => UOMRow.toVariable(x))
-    var uOMList = HashSet.of<Immutable<UOMVariable>>().addAll(uOMRows ? uOMRows : [])
+    const uomRows = useLiveQuery(() => db.Uom.toArray())?.map(x => UomRow.toVariable(x))
+    var uomList = HashSet.of<Immutable<UomVariable>>().addAll(uomRows ? uomRows : [])
     useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))?.forEach(diff => {
-        uOMList = uOMList.filter(x => !diff.variables.UOM.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.UOM.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.UOM.replace)
+        uomList = uomList.filter(x => !diff.variables.Uom.remove.anyMatch(y => x.id.hashCode() === y.hashCode())).filter(x => !diff.variables.Uom.replace.anyMatch(y => y.id.hashCode() === x.id.hashCode())).addAll(diff.variables.Uom.replace)
     })
 
     const onVariableInputChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (event.target.name) {
+            case 'bom': {
+                dispatch(['variable', event.target.name, new Bom(parseInt(String(event.target.value)))])
+                break
+            }
             case 'product': {
                 dispatch(['variable', event.target.name, new Product(parseInt(String(event.target.value)))])
                 break
             }
-            case 'name': {
-                dispatch(['variable', event.target.name, String(event.target.value)])
+            case 'quantity': {
+                dispatch(['variable', event.target.name, parseInt(String(event.target.value))])
                 break
             }
-            case 'conversionRate': {
-                dispatch(['variable', event.target.name, parseFloat(String(event.target.value))])
+            case 'uom': {
+                dispatch(['variable', event.target.name, new Uom(parseInt(String(event.target.value)))])
                 break
             }
         }
@@ -153,10 +170,11 @@ function Component(props) {
 
 
     const createVariable = async () => {
-        const [result, symbolFlag, diff] = await executeCircuit(circuits.createUOM, {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.createBomItem, {
+            bom: state.variable.values.bom.hashCode(),
             product: state.variable.values.product.hashCode(),
-            name: state.variable.values.name,
-            conversionRate: state.variable.values.conversionRate
+            quantity: state.variable.values.quantity,
+            uom: state.variable.values.uom.hashCode()
         })
         console.log(result, symbolFlag, diff)
         if (symbolFlag) {
@@ -171,7 +189,7 @@ function Component(props) {
     }
 
     const deleteVariable = async () => {
-        const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteUOM, {
+        const [result, symbolFlag, diff] = await executeCircuit(circuits.deleteBomItem, {
             id: state.variable.id.hashCode(),
             items: [{}]
         })
@@ -186,9 +204,9 @@ function Component(props) {
             return <Container area={none} layout={Grid.layouts.main}>
                 <Item area={Grid.header}>
                     <Title>{when(state.mode, {
-                        'create': `Create U O M`,
-                        'update': `Update U O M`,
-                        'show': `U O M`
+                        'create': `Create Bom Item`,
+                        'update': `Update Bom Item`,
+                        'show': `Bom Item`
                     })}</Title>
                 </Item>
                 <Item area={Grid.button} justify='end' align='center' className='flex'>
@@ -196,7 +214,7 @@ function Component(props) {
                         iff(state.mode === 'create',
                             <Button onClick={async () => {
                                 await createVariable()
-                                props.history.push('/u-o-m-list')
+                                props.history.push('/bom-item-list')
                             }}>Save</Button>,
                             iff(state.mode === 'update',
                                 <>
@@ -206,13 +224,13 @@ function Component(props) {
                                     }}>Cancel</Button>
                                     <Button onClick={async () => {
                                         await modifyVariable()
-                                        props.history.push('/u-o-m-list')
+                                        props.history.push('/bom-item-list')
                                     }}>Update</Button>
                                 </>,
                                 <>
                                     <Button onClick={async () => {
                                         await deleteVariable()
-                                        props.history.push('/u-o-m-list')
+                                        props.history.push('/bom-item-list')
                                     }}>Delete</Button>
                                     <Button onClick={async () => dispatch(['toggleMode'])}>Edit</Button>
                                 </>))
@@ -220,7 +238,25 @@ function Component(props) {
                 </Item>
                 <Container area={Grid.details} layout={Grid.layouts.details}>
                     <Item>
-                        <Label>{uOMType.keys.product}</Label>
+                        <Label>{bomItemType.keys.bom}</Label>
+                        {
+                            iff(state.mode === 'create' || state.mode === 'update',
+                                <Select onChange={onVariableInputChange} value={state.variable.values.bom.hashCode()} name='bom'>
+                                    <option value='' selected disabled hidden>Select BOM</option>
+                                    {bomList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
+                                </Select>,
+                                <div className='font-bold text-xl'>{
+                                    iff(bomList.filter(x => x.id.hashCode() === state.variable.values.bom.hashCode()).length() !== 0,
+                                        () => {
+                                            const referencedVariable = bomList.filter(x => x.id.hashCode() === state.variable.values.bom.hashCode()).toArray()[0] as BomVariable
+                                            return <Link to={`/bom/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
+                                        }, <Link to={`/bom/${state.variable.values.bom.hashCode()}`}>{state.variable.values.bom.hashCode()}</Link>)
+                                }</div>
+                            )
+                        }
+                    </Item>
+                    <Item>
+                        <Label>{bomItemType.keys.product}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
                                 <Select onChange={onVariableInputChange} value={state.variable.values.product.hashCode()} name='product'>
@@ -238,20 +274,29 @@ function Component(props) {
                         }
                     </Item>
                     <Item>
-                        <Label>{uOMType.keys.name}</Label>
+                        <Label>{bomItemType.keys.quantity}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Input type='text' onChange={onVariableInputChange} value={state.variable.values.name} name='name' />,
-                                <div className='font-bold text-xl'>{state.variable.values.name}</div>
+                                <Input type='number' onChange={onVariableInputChange} value={state.variable.values.quantity} name='quantity' />,
+                                <div className='font-bold text-xl'>{state.variable.values.quantity}</div>
                             )
                         }
                     </Item>
                     <Item>
-                        <Label>{uOMType.keys.conversionRate}</Label>
+                        <Label>{bomItemType.keys.uom}</Label>
                         {
                             iff(state.mode === 'create' || state.mode === 'update',
-                                <Input type='number' onChange={onVariableInputChange} value={state.variable.values.conversionRate} name='conversionRate' />,
-                                <div className='font-bold text-xl'>{state.variable.values.conversionRate}</div>
+                                <Select onChange={onVariableInputChange} value={state.variable.values.uom.hashCode()} name='uom'>
+                                    <option value='' selected disabled hidden>Select Uom</option>
+                                    {uomList.toArray().map(x => <option value={x.id.hashCode()}>{x.id.hashCode()}</option>)}
+                                </Select>,
+                                <div className='font-bold text-xl'>{
+                                    iff(uomList.filter(x => x.id.hashCode() === state.variable.values.uom.hashCode()).length() !== 0,
+                                        () => {
+                                            const referencedVariable = uomList.filter(x => x.id.hashCode() === state.variable.values.uom.hashCode()).toArray()[0] as UomVariable
+                                            return <Link to={`/uom/${referencedVariable.id.hashCode()}`}>{referencedVariable.id.hashCode()}</Link>
+                                        }, <Link to={`/uom/${state.variable.values.uom.hashCode()}`}>{state.variable.values.uom.hashCode()}</Link>)
+                                }</div>
                             )
                         }
                     </Item>

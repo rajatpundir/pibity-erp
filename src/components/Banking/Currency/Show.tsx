@@ -19,7 +19,7 @@ import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { DiffRow, CurrencyRow, CurrencyRateRow } from '../../../main/rows'
-import { Currency, CurrencyVariable, CurrencyRate, CurrencyRateVariable } from '../../../main/variables'
+import { Currency, CurrencyVariable, CurrencyRateVariable } from '../../../main/variables'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'

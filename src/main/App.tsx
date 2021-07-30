@@ -63,8 +63,8 @@ import ShowProductTag from '../components/IT/ProductTag/Show'
 import ListProductTag from '../components/IT/ProductTag/List'
 import ShowMappingProductTag from '../components/IT/MappingProductTag/Show'
 import ListMappingProductTag from '../components/IT/MappingProductTag/List'
-import ShowUOM from '../components/IT/UOM/Show'
-import ListUOM from '../components/IT/UOM/List'
+import ShowUom from '../components/IT/Uom/Show'
+import ListUom from '../components/IT/Uom/List'
 import ShowIndent from '../components/Production/Indent/Show'
 import ListIndent from '../components/Production/Indent/List'
 import ShowIndentItem from '../components/Production/IndentItem/Show'
@@ -97,10 +97,10 @@ import ShowMaterialRequistionSlip from '../components/Production/MaterialRequist
 import ListMaterialRequistionSlip from '../components/Production/MaterialRequistionSlip/List'
 import ShowMaterialRequistionSlipItem from '../components/Production/MaterialRequistionSlipItem/Show'
 import ListMaterialRequistionSlipItem from '../components/Production/MaterialRequistionSlipItem/List'
-import ShowBOM from '../components/Production/BOM/Show'
-import ListBOM from '../components/Production/BOM/List'
-import ShowBOMItem from '../components/Production/BOMItem/Show'
-import ListBOMItem from '../components/Production/BOMItem/List'
+import ShowBom from '../components/Production/Bom/Show'
+import ListBom from '../components/Production/Bom/List'
+import ShowBomItem from '../components/Production/BomItem/Show'
+import ListBomItem from '../components/Production/BomItem/List'
 import ShowProductionPreparationSlip from '../components/Production/ProductionPreparationSlip/Show'
 import ListProductionPreparationSlip from '../components/Production/ProductionPreparationSlip/List'
 import ShowProductionPreparationSlipItem from '../components/Production/ProductionPreparationSlipItem/Show'
@@ -213,9 +213,9 @@ function App() {
               <Route exact path='/mapping-product-tag-list'><ListMappingProductTag /></Route>
               <Route exact path='/mapping-product-tag/*'><ShowMappingProductTag /></Route>
               <Route exact path='/mapping-product-tag'><ShowMappingProductTag /></Route>
-              <Route exact path='/u-o-m-list'><ListUOM /></Route>
-              <Route exact path='/u-o-m/*'><ShowUOM /></Route>
-              <Route exact path='/u-o-m'><ShowUOM /></Route>
+              <Route exact path='/uom-list'><ListUom /></Route>
+              <Route exact path='/uom/*'><ShowUom /></Route>
+              <Route exact path='/uom'><ShowUom /></Route>
               <Route exact path='/indent-list'><ListIndent /></Route>
               <Route exact path='/indent/*'><ShowIndent /></Route>
               <Route exact path='/indent'><ShowIndent /></Route>
@@ -264,12 +264,12 @@ function App() {
               <Route exact path='/material-requistion-slip-item-list'><ListMaterialRequistionSlipItem /></Route>
               <Route exact path='/material-requistion-slip-item/*'><ShowMaterialRequistionSlipItem /></Route>
               <Route exact path='/material-requistion-slip-item'><ShowMaterialRequistionSlipItem /></Route>
-              <Route exact path='/b-o-m-list'><ListBOM /></Route>
-              <Route exact path='/b-o-m/*'><ShowBOM /></Route>
-              <Route exact path='/b-o-m'><ShowBOM /></Route>
-              <Route exact path='/b-o-m-item-list'><ListBOMItem /></Route>
-              <Route exact path='/b-o-m-item/*'><ShowBOMItem /></Route>
-              <Route exact path='/b-o-m-item'><ShowBOMItem /></Route>
+              <Route exact path='/bom-list'><ListBom /></Route>
+              <Route exact path='/bom/*'><ShowBom /></Route>
+              <Route exact path='/bom'><ShowBom /></Route>
+              <Route exact path='/bom-item-list'><ListBomItem /></Route>
+              <Route exact path='/bom-item/*'><ShowBomItem /></Route>
+              <Route exact path='/bom-item'><ShowBomItem /></Route>
               <Route exact path='/production-preparation-slip-list'><ListProductionPreparationSlip /></Route>
               <Route exact path='/production-preparation-slip/*'><ShowProductionPreparationSlip /></Route>
               <Route exact path='/production-preparation-slip'><ShowProductionPreparationSlip /></Route>
@@ -285,7 +285,7 @@ function App() {
               <Route exact path='/warehouse-acceptance-slip-list'><ListWarehouseAcceptanceSlip /></Route>
               <Route exact path='/warehouse-acceptance-slip/*'><ShowWarehouseAcceptanceSlip /></Route>
               <Route exact path='/warehouse-acceptance-slip'><ShowWarehouseAcceptanceSlip /></Route>
-              <Route path='/'><Redirect to='/regions' /></Route>
+              <Route path='/'><Redirect to='/region-list' /></Route>
             </Switch>
           </Item>
         </Container>

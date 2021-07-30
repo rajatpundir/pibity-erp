@@ -61,8 +61,8 @@ export type CircuitName =
     | 'deleteProductTag'
     | 'createMappingProductTag'
     | 'deleteMappingProductTag'
-    | 'createUOM'
-    | 'deleteUOM'
+    | 'createUom'
+    | 'deleteUom'
     | 'createIndent'
     | 'deleteIndent'
     | 'createIndentItem'
@@ -95,10 +95,10 @@ export type CircuitName =
     | 'deleteMaterialRequistionSlip'
     | 'createMaterialRequistionSlipItem'
     | 'deleteMaterialRequistionSlipItem'
-    | 'createBOM'
-    | 'deleteBOM'
-    | 'createBOMItem'
-    | 'deleteBOMItem'
+    | 'createBom'
+    | 'deleteBom'
+    | 'createBomItem'
+    | 'deleteBomItem'
     | 'createProductionPreparationSlip'
     | 'deleteProductionPreparationSlip'
     | 'createProductionPreparationSlipItem'
@@ -1883,7 +1883,7 @@ export const circuits: Record<CircuitName, Circuit> = {
             mappingProductTagList: {
                 type: []
             },
-            uOMList: {
+            uomList: {
                 type: []
             }
         },
@@ -1925,10 +1925,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c4: {
                 order: 4,
                 type: 'mapper',
-                exec: 'createUOMForProduct',
+                exec: 'createUomForProduct',
                 connect: {
                     queryParams: {},
-                    args: ['input', 'uOMList'],
+                    args: ['input', 'uomList'],
                     overrides: {
                         "product": ['computation', 'c1', 'variable']
                     }
@@ -1939,7 +1939,7 @@ export const circuits: Record<CircuitName, Circuit> = {
             product: ['c1', 'variable'],
             companyProductList: ['c2', ''],
             mappingProductTagList: ['c3', ''],
-            uOMList: ['c4', '']
+            uomList: ['c4', '']
         }
     },
     deleteProduct: {
@@ -1979,7 +1979,7 @@ export const circuits: Record<CircuitName, Circuit> = {
             c3: {
                 order: 3,
                 type: 'mapper',
-                exec: 'deleteUOMForProduct',
+                exec: 'deleteUomForProduct',
                 connect: {
                     queryParams: {
                         "product": ['input', 'id']
@@ -2189,7 +2189,7 @@ export const circuits: Record<CircuitName, Circuit> = {
             mappingProductTag: ['c1', 'variable']
         }
     },
-    createUOM: {
+    createUom: {
         inputs: {
             product: {
                 type: 'Product'
@@ -2205,7 +2205,7 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'function',
-                exec: 'createUOM',
+                exec: 'createUom',
                 connect: {
                     product: ['input', 'product'],
                     name: ['input', 'name'],
@@ -2214,13 +2214,13 @@ export const circuits: Record<CircuitName, Circuit> = {
             }
         },
         outputs: {
-            uOM: ['c1', 'variable']
+            uom: ['c1', 'variable']
         }
     },
-    deleteUOM: {
+    deleteUom: {
         inputs: {
             id: {
-                type: 'UOM'
+                type: 'Uom'
             },
             items: {
                 type: []
@@ -2229,7 +2229,7 @@ export const circuits: Record<CircuitName, Circuit> = {
         computations: {
         },
         outputs: {
-            uOM: ['c1', 'variable']
+            uom: ['c1', 'variable']
         }
     },
     createIndent: {
@@ -2310,7 +2310,7 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'Number'
             },
             uom: {
-                type: 'UOM'
+                type: 'Uom'
             },
             ordered: {
                 type: 'Number'
@@ -3203,12 +3203,12 @@ export const circuits: Record<CircuitName, Circuit> = {
             materialRequistionSlipItem: ['c1', 'variable']
         }
     },
-    createBOM: {
+    createBom: {
         inputs: {
             name: {
                 type: 'Text'
             },
-            bOMItemList: {
+            bomItemList: {
                 type: []
             }
         },
@@ -3216,7 +3216,7 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'function',
-                exec: 'createBOM',
+                exec: 'createBom',
                 connect: {
                     name: ['input', 'name']
                 }
@@ -3224,10 +3224,10 @@ export const circuits: Record<CircuitName, Circuit> = {
             c2: {
                 order: 2,
                 type: 'mapper',
-                exec: 'createBOMItemForBOM',
+                exec: 'createBomItemForBom',
                 connect: {
                     queryParams: {},
-                    args: ['input', 'bOMItemList'],
+                    args: ['input', 'bomItemList'],
                     overrides: {
                         "bom": ['computation', 'c1', 'variable']
                     }
@@ -3235,14 +3235,14 @@ export const circuits: Record<CircuitName, Circuit> = {
             }
         },
         outputs: {
-            bOM: ['c1', 'variable'],
-            bOMItemList: ['c2', '']
+            bom: ['c1', 'variable'],
+            bomItemList: ['c2', '']
         }
     },
-    deleteBOM: {
+    deleteBom: {
         inputs: {
             id: {
-                type: 'BOM'
+                type: 'Bom'
             },
             items: {
                 type: []
@@ -3252,7 +3252,7 @@ export const circuits: Record<CircuitName, Circuit> = {
             c1: {
                 order: 1,
                 type: 'mapper',
-                exec: 'deleteBOMItemForBOM',
+                exec: 'deleteBomItemForBom',
                 connect: {
                     queryParams: {
                         "bom": ['input', 'id']
@@ -3264,20 +3264,20 @@ export const circuits: Record<CircuitName, Circuit> = {
             c2: {
                 order: 2,
                 type: 'function',
-                exec: 'deleteBOM',
+                exec: 'deleteBom',
                 connect: {
                     id: ['input', 'id']
                 }
             }
         },
         outputs: {
-            bOM: ['c2', 'variable']
+            bom: ['c2', 'variable']
         }
     },
-    createBOMItem: {
+    createBomItem: {
         inputs: {
             bom: {
-                type: 'BOM'
+                type: 'Bom'
             },
             product: {
                 type: 'Product'
@@ -3286,14 +3286,14 @@ export const circuits: Record<CircuitName, Circuit> = {
                 type: 'Number'
             },
             uom: {
-                type: 'UOM'
+                type: 'Uom'
             }
         },
         computations: {
             c1: {
                 order: 1,
                 type: 'function',
-                exec: 'createBOMItem',
+                exec: 'createBomItem',
                 connect: {
                     bom: ['input', 'bom'],
                     product: ['input', 'product'],
@@ -3303,13 +3303,13 @@ export const circuits: Record<CircuitName, Circuit> = {
             }
         },
         outputs: {
-            bOMItem: ['c1', 'variable']
+            bomItem: ['c1', 'variable']
         }
     },
-    deleteBOMItem: {
+    deleteBomItem: {
         inputs: {
             id: {
-                type: 'BOMItem'
+                type: 'BomItem'
             },
             items: {
                 type: []
@@ -3318,13 +3318,13 @@ export const circuits: Record<CircuitName, Circuit> = {
         computations: {
         },
         outputs: {
-            bOMItem: ['c1', 'variable']
+            bomItem: ['c1', 'variable']
         }
     },
     createProductionPreparationSlip: {
         inputs: {
             bom: {
-                type: 'BOM'
+                type: 'Bom'
             },
             approved: {
                 type: 'Number'

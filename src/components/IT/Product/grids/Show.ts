@@ -6,7 +6,7 @@ export const button: GridArea = new GridArea('button')
 export const details: GridArea = new GridArea('details')
 export const companyProductArea: GridArea = new GridArea('companyProductArea')
 export const mappingProductTagArea: GridArea = new GridArea('mappingProductTagArea')
-export const uOMArea: GridArea = new GridArea('uOMArea')
+export const uomArea: GridArea = new GridArea('uomArea')
 
 export const layouts: { [index: string]: GridLayout } = {
     main: validateLayout({
@@ -22,7 +22,7 @@ export const layouts: { [index: string]: GridLayout } = {
                 Vector.of(button),
 Vector.of(companyProductArea),
 Vector.of(mappingProductTagArea),
-Vector.of(uOMArea)
+Vector.of(uomArea)
 
             )
         },
@@ -34,7 +34,7 @@ Vector.of(uOMArea)
                 Vector.of(details, details),
 Vector.of(companyProductArea, companyProductArea),
 Vector.of(mappingProductTagArea, mappingProductTagArea),
-Vector.of(uOMArea, uOMArea)
+Vector.of(uomArea, uomArea)
 
             )
         },
@@ -46,7 +46,7 @@ Vector.of(uOMArea, uOMArea)
                 Vector.of(details, details, details),
 Vector.of(companyProductArea, companyProductArea, companyProductArea),
 Vector.of(mappingProductTagArea, mappingProductTagArea, mappingProductTagArea),
-Vector.of(uOMArea, uOMArea, uOMArea)
+Vector.of(uomArea, uomArea, uomArea)
 
             )
         },
@@ -58,7 +58,7 @@ Vector.of(uOMArea, uOMArea, uOMArea)
                 Vector.of(none, details, details, details, details, none),
 Vector.of(none, companyProductArea, companyProductArea, companyProductArea, companyProductArea, none),
 Vector.of(none, mappingProductTagArea, mappingProductTagArea, mappingProductTagArea, mappingProductTagArea, none),
-Vector.of(none, uOMArea, uOMArea, uOMArea, uOMArea, none)
+Vector.of(none, uomArea, uomArea, uomArea, uomArea, none)
 
             )
         },
@@ -70,7 +70,7 @@ Vector.of(none, uOMArea, uOMArea, uOMArea, uOMArea, none)
                 Vector.of(none, details, details, details, details, none),
 Vector.of(none, companyProductArea, companyProductArea, companyProductArea, companyProductArea, none),
 Vector.of(none, mappingProductTagArea, mappingProductTagArea, mappingProductTagArea, mappingProductTagArea, none),
-Vector.of(none, uOMArea, uOMArea, uOMArea, uOMArea, none)
+Vector.of(none, uomArea, uomArea, uomArea, uomArea, none)
 
             )
         }

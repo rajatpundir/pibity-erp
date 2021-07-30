@@ -71,8 +71,8 @@ export type MapperName =
     | 'deleteCompanyProductForProduct'
     | 'createMappingProductTagForProduct'
     | 'deleteMappingProductTagForProduct'
-    | 'createUOMForProduct'
-    | 'deleteUOMForProduct'
+    | 'createUomForProduct'
+    | 'deleteUomForProduct'
 
     | 'createMappingProductTagForProductTag'
     | 'deleteMappingProductTagForProductTag'
@@ -101,8 +101,8 @@ export type MapperName =
     | 'createMaterialRequistionSlipItemForMaterialRequistionSlip'
     | 'deleteMaterialRequistionSlipItemForMaterialRequistionSlip'
 
-    | 'createBOMItemForBOM'
-    | 'deleteBOMItemForBOM'
+    | 'createBomItemForBom'
+    | 'deleteBomItemForBom'
 
     | 'createProductionPreparationSlipItemForProductionPreparationSlip'
     | 'deleteProductionPreparationSlipItemForProductionPreparationSlip'
@@ -374,16 +374,16 @@ export const mappers: Record<MapperName, Mapper> = {
         functionName: 'deleteMappingProductTag',
         functionInput: 'id'
     },
-    createUOMForProduct: {
+    createUomForProduct: {
         query: false,
         queryParams: [],
-        functionName: 'createUOM',
+        functionName: 'createUom',
         functionInput: 'product'
     },
-    deleteUOMForProduct: {
+    deleteUomForProduct: {
         query: true,
         queryParams: ['product'],
-        functionName: 'deleteUOM',
+        functionName: 'deleteUom',
         functionInput: 'id'
     },
 
@@ -504,16 +504,16 @@ export const mappers: Record<MapperName, Mapper> = {
         functionInput: 'id'
     },
 
-    createBOMItemForBOM: {
+    createBomItemForBom: {
         query: false,
         queryParams: [],
-        functionName: 'createBOMItem',
+        functionName: 'createBomItem',
         functionInput: 'bom'
     },
-    deleteBOMItemForBOM: {
+    deleteBomItemForBom: {
         query: true,
         queryParams: ['bom'],
-        functionName: 'deleteBOMItem',
+        functionName: 'deleteBomItem',
         functionInput: 'id'
     },
 

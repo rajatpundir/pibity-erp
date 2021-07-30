@@ -44,7 +44,7 @@ export type NonPrimitiveType =
     | 'ProductTagGroup'
     | 'ProductTag'
     | 'MappingProductTag'
-    | 'UOM'
+    | 'Uom'
     | 'Indent'
     | 'IndentItem'
     | 'Quotation'
@@ -61,8 +61,8 @@ export type NonPrimitiveType =
     | 'MaterialReturnSlipItem'
     | 'MaterialRequistionSlip'
     | 'MaterialRequistionSlipItem'
-    | 'BOM'
-    | 'BOMItem'
+    | 'Bom'
+    | 'BomItem'
     | 'ProductionPreparationSlip'
     | 'ProductionPreparationSlipItem'
     | 'ScrapMaterialSlip'
@@ -882,7 +882,7 @@ Product: {
     lists: {
        CompanyProduct: 'company',
        MappingProductTag: 'product',
-       UOM: 'product'
+       Uom: 'product'
     }
 },
 CompanyProduct: {
@@ -970,9 +970,9 @@ MappingProductTag: {
     assertions: {},
     lists: {}
 },
-UOM: {
-    name: 'UOM ID',
-    url: 'u-o-m',
+Uom: {
+    name: 'Uom ID',
+    url: 'uom',
     recursive: false,
     keys: {
          product: {
@@ -1032,8 +1032,8 @@ IndentItem: {
          },
          uom: {
             order: 3,
-            name: 'UOM',
-            type: 'UOM'
+            name: 'Uom',
+            type: 'Uom'
          },
          ordered: {
             order: 4,
@@ -1425,9 +1425,9 @@ MaterialRequistionSlipItem: {
     assertions: {},
     lists: {}
 },
-BOM: {
-    name: 'BOM ID',
-    url: 'b-o-m',
+Bom: {
+    name: 'Bom ID',
+    url: 'bom',
     recursive: false,
     keys: {
          name: {
@@ -1441,18 +1441,18 @@ BOM: {
     },
     assertions: {},
     lists: {
-       BOMItem: 'bom'
+       BomItem: 'bom'
     }
 },
-BOMItem: {
-    name: 'BOMItem ID',
-    url: 'b-o-m-item',
+BomItem: {
+    name: 'BomItem ID',
+    url: 'bom-item',
     recursive: false,
     keys: {
          bom: {
             order: 0,
             name: 'BOM',
-            type: 'BOM'
+            type: 'Bom'
          },
          product: {
             order: 1,
@@ -1466,8 +1466,8 @@ BOMItem: {
          },
          uom: {
             order: 3,
-            name: 'UOM',
-            type: 'UOM'
+            name: 'Uom',
+            type: 'Uom'
          }
     },
     uniqueConstraints: {
@@ -1484,7 +1484,7 @@ ProductionPreparationSlip: {
          bom: {
             order: 0,
             name: 'BOM',
-            type: 'BOM'
+            type: 'Bom'
          },
          approved: {
             order: 1,

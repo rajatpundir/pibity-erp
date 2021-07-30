@@ -19,7 +19,7 @@ import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { DiffRow, MappingProductTagRow, ProductRow, ProductTagRow, ProductTagGroupRow } from '../../../main/rows'
-import { MappingProductTag, MappingProductTagVariable, Product, ProductVariable, ProductTag, ProductTagVariable, ProductTagGroup, ProductTagGroupVariable } from '../../../main/variables'
+import { MappingProductTagVariable, Product, ProductVariable, ProductTag, ProductTagVariable, ProductTagGroup, ProductTagGroupVariable } from '../../../main/variables'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'

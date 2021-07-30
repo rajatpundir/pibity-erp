@@ -1,6 +1,6 @@
 import { immerable } from 'immer'
 import { NonPrimitiveType } from './types'
-import { RegionRow, CountryRow, StateTypeRow, DistrictRow, SubdistrictRow, PostalCodeRow, AddressRow, CompanyRow, CompanyAddressRow, CompanyTagGroupRow, CompanyTagRow, MappingCompanyTagRow, ContactRow, ContactAddressRow, CompanyContactRow, CurrencyRow, CurrencyRateRow, MemoRow, BankRow, BankBranchRow, BankAccountRow, BankTransactionRow, CompanyBankAccountRow, ProductCategoryGroupRow, ProductCategoryRow, ProductRow, CompanyProductRow, ProductTagGroupRow, ProductTagRow, MappingProductTagRow, UOMRow, IndentRow, IndentItemRow, QuotationRow, QuotationItemRow, PurchaseOrderRow, PurchaseOrderItemRow, PurchaseInvoiceRow, PurchaseInvoiceItemRow, MaterialApprovalSlipRow, MaterialApprovalSlipItemRow, MaterialRejectionSlipRow, MaterialRejectionSlipItemRow, MaterialReturnSlipRow, MaterialReturnSlipItemRow, MaterialRequistionSlipRow, MaterialRequistionSlipItemRow, BOMRow, BOMItemRow, ProductionPreparationSlipRow, ProductionPreparationSlipItemRow, ScrapMaterialSlipRow, TransferMaterialSlipRow, WarehouseAcceptanceSlipRow } from './rows'
+import { RegionRow, CountryRow, StateTypeRow, DistrictRow, SubdistrictRow, PostalCodeRow, AddressRow, CompanyRow, CompanyAddressRow, CompanyTagGroupRow, CompanyTagRow, MappingCompanyTagRow, ContactRow, ContactAddressRow, CompanyContactRow, CurrencyRow, CurrencyRateRow, MemoRow, BankRow, BankBranchRow, BankAccountRow, BankTransactionRow, CompanyBankAccountRow, ProductCategoryGroupRow, ProductCategoryRow, ProductRow, CompanyProductRow, ProductTagGroupRow, ProductTagRow, MappingProductTagRow, UomRow, IndentRow, IndentItemRow, QuotationRow, QuotationItemRow, PurchaseOrderRow, PurchaseOrderItemRow, PurchaseInvoiceRow, PurchaseInvoiceItemRow, MaterialApprovalSlipRow, MaterialApprovalSlipItemRow, MaterialRejectionSlipRow, MaterialRejectionSlipItemRow, MaterialReturnSlipRow, MaterialReturnSlipItemRow, MaterialRequistionSlipRow, MaterialRequistionSlipItemRow, BomRow, BomItemRow, ProductionPreparationSlipRow, ProductionPreparationSlipItemRow, ScrapMaterialSlipRow, TransferMaterialSlipRow, WarehouseAcceptanceSlipRow } from './rows'
 export type Text = string
 export type Number = number
 export type Decimal = number
@@ -40,7 +40,7 @@ export type Variable =
     | ProductTagGroupVariable
     | ProductTagVariable
     | MappingProductTagVariable
-    | UOMVariable
+    | UomVariable
     | IndentVariable
     | IndentItemVariable
     | QuotationVariable
@@ -57,8 +57,8 @@ export type Variable =
     | MaterialReturnSlipItemVariable
     | MaterialRequistionSlipVariable
     | MaterialRequistionSlipItemVariable
-    | BOMVariable
-    | BOMItemVariable
+    | BomVariable
+    | BomItemVariable
     | ProductionPreparationSlipVariable
     | ProductionPreparationSlipItemVariable
     | ScrapMaterialSlipVariable
@@ -96,7 +96,7 @@ export type VariableId =
     | ProductTagGroup
     | ProductTag
     | MappingProductTag
-    | UOM
+    | Uom
     | Indent
     | IndentItem
     | Quotation
@@ -113,8 +113,8 @@ export type VariableId =
     | MaterialReturnSlipItem
     | MaterialRequistionSlip
     | MaterialRequistionSlipItem
-    | BOM
-    | BOMItem
+    | Bom
+    | BomItem
     | ProductionPreparationSlip
     | ProductionPreparationSlipItem
     | ScrapMaterialSlip
@@ -1873,10 +1873,10 @@ export class MappingProductTagVariable {
     }
 }
 
-export class UOM {
+export class Uom {
     constructor(private id: number) { }
 
-    equals(other: UOM): boolean {
+    equals(other: Uom): boolean {
         if (!other) {
             return false;
         }
@@ -1892,10 +1892,10 @@ export class UOM {
     }
 }
 
-export class UOMVariable {
+export class UomVariable {
     [immerable] = true
-    readonly typeName = 'UOM'
-    readonly id: UOM
+    readonly typeName = 'Uom'
+    readonly id: Uom
     values: {
         product: Product
         name: Text
@@ -1903,11 +1903,11 @@ export class UOMVariable {
     }
 
     constructor(id: number, values: { product: Product, name: Text, conversionRate: Decimal }) {
-        this.id = new UOM(id)
+        this.id = new Uom(id)
         this.values = values
     }
 
-    equals(other: UOMVariable): boolean {
+    equals(other: UomVariable): boolean {
         if (!other) {
             return false;
         }
@@ -1922,8 +1922,8 @@ export class UOMVariable {
         return JSON.stringify(this, null, 2)
     }
 
-    toRow(): UOMRow {
-        return new UOMRow(this.id.hashCode(), {
+    toRow(): UomRow {
+        return new UomRow(this.id.hashCode(), {
           product: this.values.product.hashCode(),
           name: this.values.name,
           conversionRate: this.values.conversionRate 
@@ -2008,7 +2008,7 @@ export class IndentItemVariable {
         indent: Indent
         product: Product
         quantity: Number
-        uom: UOM
+        uom: Uom
         ordered: Number
         received: Number
         approved: Number
@@ -2018,7 +2018,7 @@ export class IndentItemVariable {
         consumed: Number 
     }
 
-    constructor(id: number, values: { indent: Indent, product: Product, quantity: Number, uom: UOM, ordered: Number, received: Number, approved: Number, rejected: Number, returned: Number, requisted: Number, consumed: Number }) {
+    constructor(id: number, values: { indent: Indent, product: Product, quantity: Number, uom: Uom, ordered: Number, received: Number, approved: Number, rejected: Number, returned: Number, requisted: Number, consumed: Number }) {
         this.id = new IndentItem(id)
         this.values = values
     }
@@ -2855,10 +2855,10 @@ export class MaterialRequistionSlipItemVariable {
     }
 }
 
-export class BOM {
+export class Bom {
     constructor(private id: number) { }
 
-    equals(other: BOM): boolean {
+    equals(other: Bom): boolean {
         if (!other) {
             return false;
         }
@@ -2874,20 +2874,20 @@ export class BOM {
     }
 }
 
-export class BOMVariable {
+export class BomVariable {
     [immerable] = true
-    readonly typeName = 'BOM'
-    readonly id: BOM
+    readonly typeName = 'Bom'
+    readonly id: Bom
     values: {
         name: Text 
     }
 
     constructor(id: number, values: { name: Text }) {
-        this.id = new BOM(id)
+        this.id = new Bom(id)
         this.values = values
     }
 
-    equals(other: BOMVariable): boolean {
+    equals(other: BomVariable): boolean {
         if (!other) {
             return false;
         }
@@ -2902,17 +2902,17 @@ export class BOMVariable {
         return JSON.stringify(this, null, 2)
     }
 
-    toRow(): BOMRow {
-        return new BOMRow(this.id.hashCode(), {
+    toRow(): BomRow {
+        return new BomRow(this.id.hashCode(), {
           name: this.values.name 
         })
     }
 }
 
-export class BOMItem {
+export class BomItem {
     constructor(private id: number) { }
 
-    equals(other: BOMItem): boolean {
+    equals(other: BomItem): boolean {
         if (!other) {
             return false;
         }
@@ -2928,23 +2928,23 @@ export class BOMItem {
     }
 }
 
-export class BOMItemVariable {
+export class BomItemVariable {
     [immerable] = true
-    readonly typeName = 'BOMItem'
-    readonly id: BOMItem
+    readonly typeName = 'BomItem'
+    readonly id: BomItem
     values: {
-        bom: BOM
+        bom: Bom
         product: Product
         quantity: Number
-        uom: UOM 
+        uom: Uom 
     }
 
-    constructor(id: number, values: { bom: BOM, product: Product, quantity: Number, uom: UOM }) {
-        this.id = new BOMItem(id)
+    constructor(id: number, values: { bom: Bom, product: Product, quantity: Number, uom: Uom }) {
+        this.id = new BomItem(id)
         this.values = values
     }
 
-    equals(other: BOMItemVariable): boolean {
+    equals(other: BomItemVariable): boolean {
         if (!other) {
             return false;
         }
@@ -2959,8 +2959,8 @@ export class BOMItemVariable {
         return JSON.stringify(this, null, 2)
     }
 
-    toRow(): BOMItemRow {
-        return new BOMItemRow(this.id.hashCode(), {
+    toRow(): BomItemRow {
+        return new BomItemRow(this.id.hashCode(), {
           bom: this.values.bom.hashCode(),
           product: this.values.product.hashCode(),
           quantity: this.values.quantity,
@@ -2993,12 +2993,12 @@ export class ProductionPreparationSlipVariable {
     readonly typeName = 'ProductionPreparationSlip'
     readonly id: ProductionPreparationSlip
     values: {
-        bom: BOM
+        bom: Bom
         approved: Number
         scrapped: Number 
     }
 
-    constructor(id: number, values: { bom: BOM, approved: Number, scrapped: Number }) {
+    constructor(id: number, values: { bom: Bom, approved: Number, scrapped: Number }) {
         this.id = new ProductionPreparationSlip(id)
         this.values = values
     }
@@ -3254,386 +3254,388 @@ export class WarehouseAcceptanceSlipVariable {
         })
     }
 }
-        export function replaceVariable(typeName: NonPrimitiveType, id: number, values: object) {
-            switch (typeName) {
-                case 'Region': {
-    return new RegionVariable(id, {
-          name:  String(values['name'])
-    })
-}
-case 'Country': {
-    return new CountryVariable(id, {
-          region: new Region(parseInt(String(values['region']))),
-          name:  String(values['name'])
-    })
-}
-case 'StateType': {
-    return new StateTypeVariable(id, {
-          country: new Country(parseInt(String(values['country']))),
-          name:  String(values['name'])
-    })
-}
-case 'District': {
-    return new DistrictVariable(id, {
-          state: new StateType(parseInt(String(values['state']))),
-          name:  String(values['name'])
-    })
-}
-case 'Subdistrict': {
-    return new SubdistrictVariable(id, {
-          district: new District(parseInt(String(values['district']))),
-          name:  String(values['name'])
-    })
-}
-case 'PostalCode': {
-    return new PostalCodeVariable(id, {
-          subdistrict: new Subdistrict(parseInt(String(values['subdistrict']))),
-          name:  String(values['name'])
-    })
-}
-case 'Address': {
-    return new AddressVariable(id, {
-          postalCode: new PostalCode(parseInt(String(values['postalCode']))),
-          line1:  String(values['line1']),
-          line2:  String(values['line2']),
-          latitude:  parseInt(String(values['latitude'])),
-          longitude:  parseInt(String(values['longitude']))
-    })
-}
-case 'Company': {
-    return new CompanyVariable(id, {
-          name:  String(values['name']),
-          email:  String(values['email']),
-          telephone:  String(values['telephone']),
-          mobile:  String(values['mobile']),
-          website:  String(values['website']),
-          gstin:  String(values['gstin']),
-          pan:  String(values['pan']),
-          iec:  String(values['iec'])
-    })
-}
-case 'CompanyAddress': {
-    return new CompanyAddressVariable(id, {
-          company: new Company(parseInt(String(values['company']))),
-          name:  String(values['name']),
-          address: new Address(parseInt(String(values['address'])))
-    })
-}
-case 'CompanyTagGroup': {
-    return new CompanyTagGroupVariable(id, {
-          name:  String(values['name'])
-    })
-}
-case 'CompanyTag': {
-    return new CompanyTagVariable(id, {
-          group: new CompanyTagGroup(parseInt(String(values['group']))),
-          name:  String(values['name'])
-    })
-}
-case 'MappingCompanyTag': {
-    return new MappingCompanyTagVariable(id, {
-          company: new Company(parseInt(String(values['company']))),
-          tag: new CompanyTag(parseInt(String(values['tag'])))
-    })
-}
-case 'Contact': {
-    return new ContactVariable(id, {
-          name:  String(values['name']),
-          email:  String(values['email']),
-          telephone:  String(values['telephone']),
-          mobile:  String(values['mobile']),
-          website:  String(values['website'])
-    })
-}
-case 'ContactAddress': {
-    return new ContactAddressVariable(id, {
-          contact: new Contact(parseInt(String(values['contact']))),
-          name:  String(values['name']),
-          address: new Address(parseInt(String(values['address'])))
-    })
-}
-case 'CompanyContact': {
-    return new CompanyContactVariable(id, {
-          company: new Company(parseInt(String(values['company']))),
-          contact: new Contact(parseInt(String(values['contact']))),
-          role:  String(values['role']),
-          email:  String(values['email']),
-          telephone:  String(values['telephone']),
-          mobile:  String(values['mobile'])
-    })
-}
-case 'Currency': {
-    return new CurrencyVariable(id, {
-          name:  String(values['name'])
-    })
-}
-case 'CurrencyRate': {
-    return new CurrencyRateVariable(id, {
-          currency: new Currency(parseInt(String(values['currency']))),
-          conversionRate:  parseFloat(String(values['conversionRate'])),
-          startTime:  parseInt(String(values['startTime'])),
-          endTime:  parseInt(String(values['endTime']))
-    })
-}
-case 'Memo': {
-    return new MemoVariable(id, {
-          company: new Company(parseInt(String(values['company']))),
-          currency: new Currency(parseInt(String(values['currency']))),
-          amount:  parseFloat(String(values['amount'])),
-          unsettled:  parseFloat(String(values['unsettled']))
-    })
-}
-case 'Bank': {
-    return new BankVariable(id, {
-          country: new Country(parseInt(String(values['country']))),
-          name:  String(values['name']),
-          website:  String(values['website'])
-    })
-}
-case 'BankBranch': {
-    return new BankBranchVariable(id, {
-          bank: new Bank(parseInt(String(values['bank']))),
-          name:  String(values['name']),
-          ifsc:  String(values['ifsc']),
-          address: new Address(parseInt(String(values['address'])))
-    })
-}
-case 'BankAccount': {
-    return new BankAccountVariable(id, {
-          bank: new Bank(parseInt(String(values['bank']))),
-          bankBranch: new BankBranch(parseInt(String(values['bankBranch']))),
-          accountNumber:  String(values['accountNumber']),
-          accountName:  String(values['accountName']),
-          currency: new Currency(parseInt(String(values['currency'])))
-    })
-}
-case 'BankTransaction': {
-    return new BankTransactionVariable(id, {
-          timestamp:  parseInt(String(values['timestamp'])),
-          memo: new Memo(parseInt(String(values['memo']))),
-          currencyRate: new CurrencyRate(parseInt(String(values['currencyRate']))),
-          bankAccount: new BankAccount(parseInt(String(values['bankAccount']))),
-          fromToAccount: new BankAccount(parseInt(String(values['fromToAccount']))),
-          credit:  parseFloat(String(values['credit'])),
-          debit:  parseFloat(String(values['debit']))
-    })
-}
-case 'CompanyBankAccount': {
-    return new CompanyBankAccountVariable(id, {
-          company: new Company(parseInt(String(values['company']))),
-          bankAccount: new BankAccount(parseInt(String(values['bankAccount'])))
-    })
-}
-case 'ProductCategoryGroup': {
-    return new ProductCategoryGroupVariable(id, {
-          parent: new ProductCategoryGroup(parseInt(String(values['parent']))),
-          name:  String(values['name']),
-          length:  parseInt(String(values['length']))
-    })
-}
-case 'ProductCategory': {
-    return new ProductCategoryVariable(id, {
-          parent: new ProductCategory(parseInt(String(values['parent']))),
-          group: new ProductCategoryGroup(parseInt(String(values['group']))),
-          name:  String(values['name']),
-          code:  String(values['code']),
-          derivedCode:  String(values['derivedCode']),
-          childCount:  parseInt(String(values['childCount']))
-    })
-}
-case 'Product': {
-    return new ProductVariable(id, {
-          name:  String(values['name']),
-          category: new ProductCategory(parseInt(String(values['category']))),
-          code:  String(values['code']),
-          sku:  String(values['sku'])
-    })
-}
-case 'CompanyProduct': {
-    return new CompanyProductVariable(id, {
-          company: new Company(parseInt(String(values['company']))),
-          product: new Product(parseInt(String(values['product'])))
-    })
-}
-case 'ProductTagGroup': {
-    return new ProductTagGroupVariable(id, {
-          name:  String(values['name'])
-    })
-}
-case 'ProductTag': {
-    return new ProductTagVariable(id, {
-          group: new ProductTagGroup(parseInt(String(values['group']))),
-          name:  String(values['name'])
-    })
-}
-case 'MappingProductTag': {
-    return new MappingProductTagVariable(id, {
-          product: new Product(parseInt(String(values['product']))),
-          tag: new ProductTag(parseInt(String(values['tag'])))
-    })
-}
-case 'UOM': {
-    return new UOMVariable(id, {
-          product: new Product(parseInt(String(values['product']))),
-          name:  String(values['name']),
-          conversionRate:  parseFloat(String(values['conversionRate']))
-    })
-}
-case 'Indent': {
-    return new IndentVariable(id, {})
-}
-case 'IndentItem': {
-    return new IndentItemVariable(id, {
-          indent: new Indent(parseInt(String(values['indent']))),
-          product: new Product(parseInt(String(values['product']))),
-          quantity:  parseInt(String(values['quantity'])),
-          uom: new UOM(parseInt(String(values['uom']))),
-          ordered:  parseInt(String(values['ordered'])),
-          received:  parseInt(String(values['received'])),
-          approved:  parseInt(String(values['approved'])),
-          rejected:  parseInt(String(values['rejected'])),
-          returned:  parseInt(String(values['returned'])),
-          requisted:  parseInt(String(values['requisted'])),
-          consumed:  parseInt(String(values['consumed']))
-    })
-}
-case 'Quotation': {
-    return new QuotationVariable(id, {
-          indent: new Indent(parseInt(String(values['indent']))),
-          company: new Company(parseInt(String(values['company'])))
-    })
-}
-case 'QuotationItem': {
-    return new QuotationItemVariable(id, {
-          quotation: new Quotation(parseInt(String(values['quotation']))),
-          indentItem: new IndentItem(parseInt(String(values['indentItem']))),
-          quantity:  parseInt(String(values['quantity']))
-    })
-}
-case 'PurchaseOrder': {
-    return new PurchaseOrderVariable(id, {
-          quotation: new Quotation(parseInt(String(values['quotation'])))
-    })
-}
-case 'PurchaseOrderItem': {
-    return new PurchaseOrderItemVariable(id, {
-          purchaseOrder: new PurchaseOrder(parseInt(String(values['purchaseOrder']))),
-          quotationItem: new QuotationItem(parseInt(String(values['quotationItem']))),
-          quantity:  parseInt(String(values['quantity'])),
-          price:  parseFloat(String(values['price'])),
-          received:  parseInt(String(values['received']))
-    })
-}
-case 'PurchaseInvoice': {
-    return new PurchaseInvoiceVariable(id, {
-          purchaseOrder: new PurchaseOrder(parseInt(String(values['purchaseOrder'])))
-    })
-}
-case 'PurchaseInvoiceItem': {
-    return new PurchaseInvoiceItemVariable(id, {
-          purchaseInvoice: new PurchaseInvoice(parseInt(String(values['purchaseInvoice']))),
-          purchaseOrderItem: new PurchaseOrderItem(parseInt(String(values['purchaseOrderItem']))),
-          quantity:  parseInt(String(values['quantity'])),
-          approved:  parseInt(String(values['approved'])),
-          rejected:  parseInt(String(values['rejected']))
-    })
-}
-case 'MaterialApprovalSlip': {
-    return new MaterialApprovalSlipVariable(id, {
-          purchaseInvoice: new PurchaseInvoice(parseInt(String(values['purchaseInvoice'])))
-    })
-}
-case 'MaterialApprovalSlipItem': {
-    return new MaterialApprovalSlipItemVariable(id, {
-          materialApprovalSlip: new MaterialApprovalSlip(parseInt(String(values['materialApprovalSlip']))),
-          purchaseInvoiceItem: new PurchaseInvoiceItem(parseInt(String(values['purchaseInvoiceItem']))),
-          quantity:  parseInt(String(values['quantity'])),
-          requisted:  parseInt(String(values['requisted']))
-    })
-}
-case 'MaterialRejectionSlip': {
-    return new MaterialRejectionSlipVariable(id, {
-          purchaseInvoice: new PurchaseInvoice(parseInt(String(values['purchaseInvoice'])))
-    })
-}
-case 'MaterialRejectionSlipItem': {
-    return new MaterialRejectionSlipItemVariable(id, {
-          materialRejectionSlip: new MaterialRejectionSlip(parseInt(String(values['materialRejectionSlip']))),
-          purchaseInvoiceItem: new PurchaseInvoiceItem(parseInt(String(values['purchaseInvoiceItem']))),
-          quantity:  parseInt(String(values['quantity'])),
-          returned:  parseInt(String(values['returned']))
-    })
-}
-case 'MaterialReturnSlip': {
-    return new MaterialReturnSlipVariable(id, {
-          materialRejectionSlip: new MaterialRejectionSlip(parseInt(String(values['materialRejectionSlip'])))
-    })
-}
-case 'MaterialReturnSlipItem': {
-    return new MaterialReturnSlipItemVariable(id, {
-          materialReturnSlip: new MaterialReturnSlip(parseInt(String(values['materialReturnSlip']))),
-          materialRejectionSlipItem: new MaterialRejectionSlipItem(parseInt(String(values['materialRejectionSlipItem']))),
-          quantity:  parseInt(String(values['quantity']))
-    })
-}
-case 'MaterialRequistionSlip': {
-    return new MaterialRequistionSlipVariable(id, {
-          materialApprovalSlip: new MaterialApprovalSlip(parseInt(String(values['materialApprovalSlip'])))
-    })
-}
-case 'MaterialRequistionSlipItem': {
-    return new MaterialRequistionSlipItemVariable(id, {
-          materialRequistionSlip: new MaterialRequistionSlip(parseInt(String(values['materialRequistionSlip']))),
-          materialApprovalSlipItem: new MaterialApprovalSlipItem(parseInt(String(values['materialApprovalSlipItem']))),
-          quantity:  parseInt(String(values['quantity'])),
-          consumed:  parseInt(String(values['consumed']))
-    })
-}
-case 'BOM': {
-    return new BOMVariable(id, {
-          name:  String(values['name'])
-    })
-}
-case 'BOMItem': {
-    return new BOMItemVariable(id, {
-          bom: new BOM(parseInt(String(values['bom']))),
-          product: new Product(parseInt(String(values['product']))),
-          quantity:  parseInt(String(values['quantity'])),
-          uom: new UOM(parseInt(String(values['uom'])))
-    })
-}
-case 'ProductionPreparationSlip': {
-    return new ProductionPreparationSlipVariable(id, {
-          bom: new BOM(parseInt(String(values['bom']))),
-          approved:  parseInt(String(values['approved'])),
-          scrapped:  parseInt(String(values['scrapped']))
-    })
-}
-case 'ProductionPreparationSlipItem': {
-    return new ProductionPreparationSlipItemVariable(id, {
-          productionPreparationSlip: new ProductionPreparationSlip(parseInt(String(values['productionPreparationSlip']))),
-          bomItem:  String(values['bomItem']),
-          materialRequistionSlipItem: new MaterialRequistionSlipItem(parseInt(String(values['materialRequistionSlipItem'])))
-    })
-}
-case 'ScrapMaterialSlip': {
-    return new ScrapMaterialSlipVariable(id, {
-          productionPreparationSlip: new ProductionPreparationSlip(parseInt(String(values['productionPreparationSlip']))),
-          quantity:  parseInt(String(values['quantity']))
-    })
-}
-case 'TransferMaterialSlip': {
-    return new TransferMaterialSlipVariable(id, {
-          productionPreparationSlip: new ProductionPreparationSlip(parseInt(String(values['productionPreparationSlip']))),
-          quantity:  parseInt(String(values['quantity'])),
-          transferred:  parseInt(String(values['transferred']))
-    })
-}
-case 'WarehouseAcceptanceSlip': {
-    return new WarehouseAcceptanceSlipVariable(id, {
-          transferMaterialSlip: new TransferMaterialSlip(parseInt(String(values['transferMaterialSlip']))),
-          quantity:  parseInt(String(values['quantity']))
-    })
-}
-            }
+
+export function replaceVariable(typeName: NonPrimitiveType, id: number, values: object) {
+    switch (typeName) {
+        case 'Region': {
+            return new RegionVariable(id, {
+                name:  String(values['name'])
+            })
         }
+        case 'Country': {
+            return new CountryVariable(id, {
+                region: new Region(parseInt(String(values['region']))),
+                name:  String(values['name'])
+            })
+        }
+        case 'StateType': {
+            return new StateTypeVariable(id, {
+                country: new Country(parseInt(String(values['country']))),
+                name:  String(values['name'])
+            })
+        }
+        case 'District': {
+            return new DistrictVariable(id, {
+                state: new StateType(parseInt(String(values['state']))),
+                name:  String(values['name'])
+            })
+        }
+        case 'Subdistrict': {
+            return new SubdistrictVariable(id, {
+                district: new District(parseInt(String(values['district']))),
+                name:  String(values['name'])
+            })
+        }
+        case 'PostalCode': {
+            return new PostalCodeVariable(id, {
+                subdistrict: new Subdistrict(parseInt(String(values['subdistrict']))),
+                name:  String(values['name'])
+            })
+        }
+        case 'Address': {
+            return new AddressVariable(id, {
+                postalCode: new PostalCode(parseInt(String(values['postalCode']))),
+                line1:  String(values['line1']),
+                line2:  String(values['line2']),
+                latitude:  parseInt(String(values['latitude'])),
+                longitude:  parseInt(String(values['longitude']))
+            })
+        }
+        case 'Company': {
+            return new CompanyVariable(id, {
+                name:  String(values['name']),
+                email:  String(values['email']),
+                telephone:  String(values['telephone']),
+                mobile:  String(values['mobile']),
+                website:  String(values['website']),
+                gstin:  String(values['gstin']),
+                pan:  String(values['pan']),
+                iec:  String(values['iec'])
+            })
+        }
+        case 'CompanyAddress': {
+            return new CompanyAddressVariable(id, {
+                company: new Company(parseInt(String(values['company']))),
+                name:  String(values['name']),
+                address: new Address(parseInt(String(values['address'])))
+            })
+        }
+        case 'CompanyTagGroup': {
+            return new CompanyTagGroupVariable(id, {
+                name:  String(values['name'])
+            })
+        }
+        case 'CompanyTag': {
+            return new CompanyTagVariable(id, {
+                group: new CompanyTagGroup(parseInt(String(values['group']))),
+                name:  String(values['name'])
+            })
+        }
+        case 'MappingCompanyTag': {
+            return new MappingCompanyTagVariable(id, {
+                company: new Company(parseInt(String(values['company']))),
+                tag: new CompanyTag(parseInt(String(values['tag'])))
+            })
+        }
+        case 'Contact': {
+            return new ContactVariable(id, {
+                name:  String(values['name']),
+                email:  String(values['email']),
+                telephone:  String(values['telephone']),
+                mobile:  String(values['mobile']),
+                website:  String(values['website'])
+            })
+        }
+        case 'ContactAddress': {
+            return new ContactAddressVariable(id, {
+                contact: new Contact(parseInt(String(values['contact']))),
+                name:  String(values['name']),
+                address: new Address(parseInt(String(values['address'])))
+            })
+        }
+        case 'CompanyContact': {
+            return new CompanyContactVariable(id, {
+                company: new Company(parseInt(String(values['company']))),
+                contact: new Contact(parseInt(String(values['contact']))),
+                role:  String(values['role']),
+                email:  String(values['email']),
+                telephone:  String(values['telephone']),
+                mobile:  String(values['mobile'])
+            })
+        }
+        case 'Currency': {
+            return new CurrencyVariable(id, {
+                name:  String(values['name'])
+            })
+        }
+        case 'CurrencyRate': {
+            return new CurrencyRateVariable(id, {
+                currency: new Currency(parseInt(String(values['currency']))),
+                conversionRate:  parseFloat(String(values['conversionRate'])),
+                startTime:  parseInt(String(values['startTime'])),
+                endTime:  parseInt(String(values['endTime']))
+            })
+        }
+        case 'Memo': {
+            return new MemoVariable(id, {
+                company: new Company(parseInt(String(values['company']))),
+                currency: new Currency(parseInt(String(values['currency']))),
+                amount:  parseFloat(String(values['amount'])),
+                unsettled:  parseFloat(String(values['unsettled']))
+            })
+        }
+        case 'Bank': {
+            return new BankVariable(id, {
+                country: new Country(parseInt(String(values['country']))),
+                name:  String(values['name']),
+                website:  String(values['website'])
+            })
+        }
+        case 'BankBranch': {
+            return new BankBranchVariable(id, {
+                bank: new Bank(parseInt(String(values['bank']))),
+                name:  String(values['name']),
+                ifsc:  String(values['ifsc']),
+                address: new Address(parseInt(String(values['address'])))
+            })
+        }
+        case 'BankAccount': {
+            return new BankAccountVariable(id, {
+                bank: new Bank(parseInt(String(values['bank']))),
+                bankBranch: new BankBranch(parseInt(String(values['bankBranch']))),
+                accountNumber:  String(values['accountNumber']),
+                accountName:  String(values['accountName']),
+                currency: new Currency(parseInt(String(values['currency'])))
+            })
+        }
+        case 'BankTransaction': {
+            return new BankTransactionVariable(id, {
+                timestamp:  parseInt(String(values['timestamp'])),
+                memo: new Memo(parseInt(String(values['memo']))),
+                currencyRate: new CurrencyRate(parseInt(String(values['currencyRate']))),
+                bankAccount: new BankAccount(parseInt(String(values['bankAccount']))),
+                fromToAccount: new BankAccount(parseInt(String(values['fromToAccount']))),
+                credit:  parseFloat(String(values['credit'])),
+                debit:  parseFloat(String(values['debit']))
+            })
+        }
+        case 'CompanyBankAccount': {
+            return new CompanyBankAccountVariable(id, {
+                company: new Company(parseInt(String(values['company']))),
+                bankAccount: new BankAccount(parseInt(String(values['bankAccount'])))
+            })
+        }
+        case 'ProductCategoryGroup': {
+            return new ProductCategoryGroupVariable(id, {
+                parent: new ProductCategoryGroup(parseInt(String(values['parent']))),
+                name:  String(values['name']),
+                length:  parseInt(String(values['length']))
+            })
+        }
+        case 'ProductCategory': {
+            return new ProductCategoryVariable(id, {
+                parent: new ProductCategory(parseInt(String(values['parent']))),
+                group: new ProductCategoryGroup(parseInt(String(values['group']))),
+                name:  String(values['name']),
+                code:  String(values['code']),
+                derivedCode:  String(values['derivedCode']),
+                childCount:  parseInt(String(values['childCount']))
+            })
+        }
+        case 'Product': {
+            return new ProductVariable(id, {
+                name:  String(values['name']),
+                category: new ProductCategory(parseInt(String(values['category']))),
+                code:  String(values['code']),
+                sku:  String(values['sku'])
+            })
+        }
+        case 'CompanyProduct': {
+            return new CompanyProductVariable(id, {
+                company: new Company(parseInt(String(values['company']))),
+                product: new Product(parseInt(String(values['product'])))
+            })
+        }
+        case 'ProductTagGroup': {
+            return new ProductTagGroupVariable(id, {
+                name:  String(values['name'])
+            })
+        }
+        case 'ProductTag': {
+            return new ProductTagVariable(id, {
+                group: new ProductTagGroup(parseInt(String(values['group']))),
+                name:  String(values['name'])
+            })
+        }
+        case 'MappingProductTag': {
+            return new MappingProductTagVariable(id, {
+                product: new Product(parseInt(String(values['product']))),
+                tag: new ProductTag(parseInt(String(values['tag'])))
+            })
+        }
+        case 'Uom': {
+            return new UomVariable(id, {
+                product: new Product(parseInt(String(values['product']))),
+                name:  String(values['name']),
+                conversionRate:  parseFloat(String(values['conversionRate']))
+            })
+        }
+        case 'Indent': {
+            return new IndentVariable(id, {
+            })
+        }
+        case 'IndentItem': {
+            return new IndentItemVariable(id, {
+                indent: new Indent(parseInt(String(values['indent']))),
+                product: new Product(parseInt(String(values['product']))),
+                quantity:  parseInt(String(values['quantity'])),
+                uom: new Uom(parseInt(String(values['uom']))),
+                ordered:  parseInt(String(values['ordered'])),
+                received:  parseInt(String(values['received'])),
+                approved:  parseInt(String(values['approved'])),
+                rejected:  parseInt(String(values['rejected'])),
+                returned:  parseInt(String(values['returned'])),
+                requisted:  parseInt(String(values['requisted'])),
+                consumed:  parseInt(String(values['consumed']))
+            })
+        }
+        case 'Quotation': {
+            return new QuotationVariable(id, {
+                indent: new Indent(parseInt(String(values['indent']))),
+                company: new Company(parseInt(String(values['company'])))
+            })
+        }
+        case 'QuotationItem': {
+            return new QuotationItemVariable(id, {
+                quotation: new Quotation(parseInt(String(values['quotation']))),
+                indentItem: new IndentItem(parseInt(String(values['indentItem']))),
+                quantity:  parseInt(String(values['quantity']))
+            })
+        }
+        case 'PurchaseOrder': {
+            return new PurchaseOrderVariable(id, {
+                quotation: new Quotation(parseInt(String(values['quotation'])))
+            })
+        }
+        case 'PurchaseOrderItem': {
+            return new PurchaseOrderItemVariable(id, {
+                purchaseOrder: new PurchaseOrder(parseInt(String(values['purchaseOrder']))),
+                quotationItem: new QuotationItem(parseInt(String(values['quotationItem']))),
+                quantity:  parseInt(String(values['quantity'])),
+                price:  parseFloat(String(values['price'])),
+                received:  parseInt(String(values['received']))
+            })
+        }
+        case 'PurchaseInvoice': {
+            return new PurchaseInvoiceVariable(id, {
+                purchaseOrder: new PurchaseOrder(parseInt(String(values['purchaseOrder'])))
+            })
+        }
+        case 'PurchaseInvoiceItem': {
+            return new PurchaseInvoiceItemVariable(id, {
+                purchaseInvoice: new PurchaseInvoice(parseInt(String(values['purchaseInvoice']))),
+                purchaseOrderItem: new PurchaseOrderItem(parseInt(String(values['purchaseOrderItem']))),
+                quantity:  parseInt(String(values['quantity'])),
+                approved:  parseInt(String(values['approved'])),
+                rejected:  parseInt(String(values['rejected']))
+            })
+        }
+        case 'MaterialApprovalSlip': {
+            return new MaterialApprovalSlipVariable(id, {
+                purchaseInvoice: new PurchaseInvoice(parseInt(String(values['purchaseInvoice'])))
+            })
+        }
+        case 'MaterialApprovalSlipItem': {
+            return new MaterialApprovalSlipItemVariable(id, {
+                materialApprovalSlip: new MaterialApprovalSlip(parseInt(String(values['materialApprovalSlip']))),
+                purchaseInvoiceItem: new PurchaseInvoiceItem(parseInt(String(values['purchaseInvoiceItem']))),
+                quantity:  parseInt(String(values['quantity'])),
+                requisted:  parseInt(String(values['requisted']))
+            })
+        }
+        case 'MaterialRejectionSlip': {
+            return new MaterialRejectionSlipVariable(id, {
+                purchaseInvoice: new PurchaseInvoice(parseInt(String(values['purchaseInvoice'])))
+            })
+        }
+        case 'MaterialRejectionSlipItem': {
+            return new MaterialRejectionSlipItemVariable(id, {
+                materialRejectionSlip: new MaterialRejectionSlip(parseInt(String(values['materialRejectionSlip']))),
+                purchaseInvoiceItem: new PurchaseInvoiceItem(parseInt(String(values['purchaseInvoiceItem']))),
+                quantity:  parseInt(String(values['quantity'])),
+                returned:  parseInt(String(values['returned']))
+            })
+        }
+        case 'MaterialReturnSlip': {
+            return new MaterialReturnSlipVariable(id, {
+                materialRejectionSlip: new MaterialRejectionSlip(parseInt(String(values['materialRejectionSlip'])))
+            })
+        }
+        case 'MaterialReturnSlipItem': {
+            return new MaterialReturnSlipItemVariable(id, {
+                materialReturnSlip: new MaterialReturnSlip(parseInt(String(values['materialReturnSlip']))),
+                materialRejectionSlipItem: new MaterialRejectionSlipItem(parseInt(String(values['materialRejectionSlipItem']))),
+                quantity:  parseInt(String(values['quantity']))
+            })
+        }
+        case 'MaterialRequistionSlip': {
+            return new MaterialRequistionSlipVariable(id, {
+                materialApprovalSlip: new MaterialApprovalSlip(parseInt(String(values['materialApprovalSlip'])))
+            })
+        }
+        case 'MaterialRequistionSlipItem': {
+            return new MaterialRequistionSlipItemVariable(id, {
+                materialRequistionSlip: new MaterialRequistionSlip(parseInt(String(values['materialRequistionSlip']))),
+                materialApprovalSlipItem: new MaterialApprovalSlipItem(parseInt(String(values['materialApprovalSlipItem']))),
+                quantity:  parseInt(String(values['quantity'])),
+                consumed:  parseInt(String(values['consumed']))
+            })
+        }
+        case 'Bom': {
+            return new BomVariable(id, {
+                name:  String(values['name'])
+            })
+        }
+        case 'BomItem': {
+            return new BomItemVariable(id, {
+                bom: new Bom(parseInt(String(values['bom']))),
+                product: new Product(parseInt(String(values['product']))),
+                quantity:  parseInt(String(values['quantity'])),
+                uom: new Uom(parseInt(String(values['uom'])))
+            })
+        }
+        case 'ProductionPreparationSlip': {
+            return new ProductionPreparationSlipVariable(id, {
+                bom: new Bom(parseInt(String(values['bom']))),
+                approved:  parseInt(String(values['approved'])),
+                scrapped:  parseInt(String(values['scrapped']))
+            })
+        }
+        case 'ProductionPreparationSlipItem': {
+            return new ProductionPreparationSlipItemVariable(id, {
+                productionPreparationSlip: new ProductionPreparationSlip(parseInt(String(values['productionPreparationSlip']))),
+                bomItem:  String(values['bomItem']),
+                materialRequistionSlipItem: new MaterialRequistionSlipItem(parseInt(String(values['materialRequistionSlipItem'])))
+            })
+        }
+        case 'ScrapMaterialSlip': {
+            return new ScrapMaterialSlipVariable(id, {
+                productionPreparationSlip: new ProductionPreparationSlip(parseInt(String(values['productionPreparationSlip']))),
+                quantity:  parseInt(String(values['quantity']))
+            })
+        }
+        case 'TransferMaterialSlip': {
+            return new TransferMaterialSlipVariable(id, {
+                productionPreparationSlip: new ProductionPreparationSlip(parseInt(String(values['productionPreparationSlip']))),
+                quantity:  parseInt(String(values['quantity'])),
+                transferred:  parseInt(String(values['transferred']))
+            })
+        }
+        case 'WarehouseAcceptanceSlip': {
+            return new WarehouseAcceptanceSlipVariable(id, {
+                transferMaterialSlip: new TransferMaterialSlip(parseInt(String(values['transferMaterialSlip']))),
+                quantity:  parseInt(String(values['quantity']))
+            })
+        }
+    }
+}

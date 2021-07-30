@@ -19,7 +19,7 @@ import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { DiffRow, AddressRow, BankRow, BankBranchRow, CountryRow } from '../../../main/rows'
-import { Address, AddressVariable, Bank, BankVariable, BankBranch, BankBranchVariable, Country, CountryVariable } from '../../../main/variables'
+import { Address, AddressVariable, Bank, BankVariable, BankBranchVariable, Country, CountryVariable } from '../../../main/variables'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'

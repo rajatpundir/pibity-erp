@@ -12,11 +12,11 @@ import { types } from '../../../main/types'
 import { withRouter } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../../main/dexie'
-import { DiffRow, UOMRow } from '../../../main/rows'
-import { UOMVariable } from '../../../main/variables'
+import { DiffRow, UomRow } from '../../../main/rows'
+import { UomVariable } from '../../../main/variables'
 
 type State = Immutable<{
-    typeName: 'UOM'
+    typeName: 'Uom'
     query: Query
     limit: number
     offset: number
@@ -31,8 +31,8 @@ export type Action =
     | ['query', Args]
 
 const initialState: State = {
-    typeName: 'UOM',
-    query: getQuery('UOM'),
+    typeName: 'Uom',
+    query: getQuery('Uom'),
     limit: 5,
     offset: 0,
     page: 1,
@@ -67,8 +67,8 @@ function reducer(state: Draft<State>, action: Action) {
 
 function Component(props) {
     const [state, dispatch] = useImmerReducer<State, Action>(reducer, initialState)
-    const rows = useLiveQuery(() => db.UOM.orderBy('id').toArray())
-    var composedVariables = Vector.of<Immutable<UOMVariable>>().appendAll(rows ? rows.map(x => UOMRow.toVariable(x)) : [])
+    const rows = useLiveQuery(() => db.Uom.orderBy('id').toArray())
+    var composedVariables = Vector.of<Immutable<UomVariable>>().appendAll(rows ? rows.map(x => UomRow.toVariable(x)) : [])
     const diffs = useLiveQuery(() => db.diffs.toArray())?.map(x => DiffRow.toVariable(x))
     diffs?.forEach(diff => {
         composedVariables = composedVariables.filter(x => !diff.variables[state.typeName].remove.anyMatch(y => x.id.toString() === y.toString())).filter(x => !diff.variables[state.typeName].replace.anyMatch(y => y.id.toString() === x.id.toString())).appendAll(diff.variables[state.typeName].replace)
@@ -89,7 +89,7 @@ function Component(props) {
         <Container area={none} layout={Grid.layouts.main} className='p-10'>
             <Item area={Grid.header} align='center' className='flex'>
                 <Title>{type.name}s</Title>
-                <button onClick={() => { props.history.push('/u-o-m') }} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2'>+</button>
+                <button onClick={() => { props.history.push('/uom') }} className='text-3xl font-bold text-white bg-gray-800 rounded-md px-2'>+</button>
             </Item>
             <Item area={Grid.filter} justify='end' align='center'>
                 <Button onClick={() => setOpen(true)}>Filter</Button>

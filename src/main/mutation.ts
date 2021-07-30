@@ -2,8 +2,8 @@ import { Immutable } from 'immer';
 import { NonPrimitiveType } from './types';
 import { when } from './utils';
 import { DiffVariable, getRemoveVariableDiff, getReplaceVariableDiff, getVariable, mergeDiffs } from './layers'
-import { Variable, Region, RegionVariable, Country, CountryVariable, StateType, StateTypeVariable, District, DistrictVariable, Subdistrict, SubdistrictVariable, PostalCode, PostalCodeVariable, Address, AddressVariable, Company, CompanyVariable, CompanyAddress, CompanyAddressVariable, CompanyTagGroup, CompanyTagGroupVariable, CompanyTag, CompanyTagVariable, MappingCompanyTag, MappingCompanyTagVariable, Contact, ContactVariable, ContactAddress, ContactAddressVariable, CompanyContact, CompanyContactVariable, Currency, CurrencyVariable, CurrencyRate, CurrencyRateVariable, Memo, MemoVariable, Bank, BankVariable, BankBranch, BankBranchVariable, BankAccount, BankAccountVariable, BankTransaction, BankTransactionVariable, CompanyBankAccount, CompanyBankAccountVariable, ProductCategoryGroup, ProductCategoryGroupVariable, ProductCategory, ProductCategoryVariable, Product, ProductVariable, CompanyProduct, CompanyProductVariable, ProductTagGroup, ProductTagGroupVariable, ProductTag, ProductTagVariable, MappingProductTag, MappingProductTagVariable, UOM, UOMVariable, Indent, IndentVariable, IndentItem, IndentItemVariable, Quotation, QuotationVariable, QuotationItem, QuotationItemVariable, PurchaseOrder, PurchaseOrderVariable, PurchaseOrderItem, PurchaseOrderItemVariable, PurchaseInvoice, PurchaseInvoiceVariable, PurchaseInvoiceItem, PurchaseInvoiceItemVariable, MaterialApprovalSlip, MaterialApprovalSlipVariable, MaterialApprovalSlipItem, MaterialApprovalSlipItemVariable, MaterialRejectionSlip, MaterialRejectionSlipVariable, MaterialRejectionSlipItem, MaterialRejectionSlipItemVariable, MaterialReturnSlip, MaterialReturnSlipVariable, MaterialReturnSlipItem, MaterialReturnSlipItemVariable, MaterialRequistionSlip, MaterialRequistionSlipVariable, MaterialRequistionSlipItem, MaterialRequistionSlipItemVariable, BOM, BOMVariable, BOMItem, BOMItemVariable, ProductionPreparationSlip, ProductionPreparationSlipVariable, ProductionPreparationSlipItem, ProductionPreparationSlipItemVariable, ScrapMaterialSlip, ScrapMaterialSlipVariable, TransferMaterialSlip, TransferMaterialSlipVariable, WarehouseAcceptanceSlip, WarehouseAcceptanceSlipVariable } from './variables'
-        
+import { Variable, Region, RegionVariable, Country, CountryVariable, StateType, StateTypeVariable, District, DistrictVariable, Subdistrict, SubdistrictVariable, PostalCode, PostalCodeVariable, Address, AddressVariable, Company, CompanyVariable, CompanyAddressVariable, CompanyTagGroup, CompanyTagGroupVariable, CompanyTag, CompanyTagVariable, MappingCompanyTagVariable, Contact, ContactVariable, ContactAddressVariable, CompanyContactVariable, Currency, CurrencyVariable, CurrencyRate, CurrencyRateVariable, Memo, MemoVariable, Bank, BankVariable, BankBranch, BankBranchVariable, BankAccount, BankAccountVariable, BankTransactionVariable, CompanyBankAccountVariable, ProductCategoryGroup, ProductCategoryGroupVariable, ProductCategory, ProductCategoryVariable, Product, ProductVariable, CompanyProductVariable, ProductTagGroup, ProductTagGroupVariable, ProductTag, ProductTagVariable, MappingProductTagVariable, Uom, UomVariable, Indent, IndentVariable, IndentItem, IndentItemVariable, Quotation, QuotationVariable, QuotationItem, QuotationItemVariable, PurchaseOrder, PurchaseOrderVariable, PurchaseOrderItem, PurchaseOrderItemVariable, PurchaseInvoice, PurchaseInvoiceVariable, PurchaseInvoiceItem, PurchaseInvoiceItemVariable, MaterialApprovalSlip, MaterialApprovalSlipVariable, MaterialApprovalSlipItem, MaterialApprovalSlipItemVariable, MaterialRejectionSlip, MaterialRejectionSlipVariable, MaterialRejectionSlipItem, MaterialRejectionSlipItemVariable, MaterialReturnSlip, MaterialReturnSlipVariable, MaterialReturnSlipItemVariable, MaterialRequistionSlip, MaterialRequistionSlipVariable, MaterialRequistionSlipItem, MaterialRequistionSlipItemVariable, Bom, BomVariable, BomItemVariable, ProductionPreparationSlip, ProductionPreparationSlipVariable, ProductionPreparationSlipItemVariable, ScrapMaterialSlipVariable, TransferMaterialSlip, TransferMaterialSlipVariable, WarehouseAcceptanceSlipVariable } from './variables'
+
 class Counter {
     private id: number = -1
 
@@ -173,7 +173,7 @@ export function createVariable(typeName: NonPrimitiveType, values: object): [Var
             product: new Product(parseInt(String(values['product']))),
             tag: new ProductTag(parseInt(String(values['tag'])))
         }) as Variable,
-        'UOM': () => new UOMVariable(id, {
+        'Uom': () => new UomVariable(id, {
             product: new Product(parseInt(String(values['product']))),
             name: String(values['name']),
             conversionRate: parseFloat(String(values['conversionRate']))
@@ -185,7 +185,7 @@ export function createVariable(typeName: NonPrimitiveType, values: object): [Var
             indent: new Indent(parseInt(String(values['indent']))),
             product: new Product(parseInt(String(values['product']))),
             quantity: parseInt(String(values['quantity'])),
-            uom: new UOM(parseInt(String(values['uom']))),
+            uom: new Uom(parseInt(String(values['uom']))),
             ordered: parseInt(String(values['ordered'])),
             received: parseInt(String(values['received'])),
             approved: parseInt(String(values['approved'])),
@@ -258,17 +258,17 @@ export function createVariable(typeName: NonPrimitiveType, values: object): [Var
             quantity: parseInt(String(values['quantity'])),
             consumed: parseInt(String(values['consumed']))
         }) as Variable,
-        'BOM': () => new BOMVariable(id, {
+        'Bom': () => new BomVariable(id, {
             name: String(values['name'])
         }) as Variable,
-        'BOMItem': () => new BOMItemVariable(id, {
-            bom: new BOM(parseInt(String(values['bom']))),
+        'BomItem': () => new BomItemVariable(id, {
+            bom: new Bom(parseInt(String(values['bom']))),
             product: new Product(parseInt(String(values['product']))),
             quantity: parseInt(String(values['quantity'])),
-            uom: new UOM(parseInt(String(values['uom'])))
+            uom: new Uom(parseInt(String(values['uom'])))
         }) as Variable,
         'ProductionPreparationSlip': () => new ProductionPreparationSlipVariable(id, {
-            bom: new BOM(parseInt(String(values['bom']))),
+            bom: new Bom(parseInt(String(values['bom']))),
             approved: parseInt(String(values['approved'])),
             scrapped: parseInt(String(values['scrapped']))
         }) as Variable,
@@ -543,8 +543,8 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
             })
             break
         }
-        case 'UOM': {
-            updatedVariable = new UOMVariable(variable.id.hashCode(), {
+        case 'Uom': {
+            updatedVariable = new UomVariable(variable.id.hashCode(), {
                 product: values['product'] !== undefined ? new Product(parseInt(String(values['product']))) : new Product(variable.values.product.hashCode()),
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name,
                 conversionRate: values['conversionRate'] !== undefined ? parseFloat(String(values['conversionRate'])) : variable.values.conversionRate
@@ -562,7 +562,7 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
                 indent: values['indent'] !== undefined ? new Indent(parseInt(String(values['indent']))) : new Indent(variable.values.indent.hashCode()),
                 product: values['product'] !== undefined ? new Product(parseInt(String(values['product']))) : new Product(variable.values.product.hashCode()),
                 quantity: values['quantity'] !== undefined ? parseInt(String(values['quantity'])) : variable.values.quantity,
-                uom: values['uom'] !== undefined ? new UOM(parseInt(String(values['uom']))) : new UOM(variable.values.uom.hashCode()),
+                uom: values['uom'] !== undefined ? new Uom(parseInt(String(values['uom']))) : new Uom(variable.values.uom.hashCode()),
                 ordered: values['ordered'] !== undefined ? parseInt(String(values['ordered'])) : variable.values.ordered,
                 received: values['received'] !== undefined ? parseInt(String(values['received'])) : variable.values.received,
                 approved: values['approved'] !== undefined ? parseInt(String(values['approved'])) : variable.values.approved,
@@ -679,24 +679,24 @@ export async function updateVariable(variable: Immutable<Variable>, values: obje
             })
             break
         }
-        case 'BOM': {
-            updatedVariable = new BOMVariable(variable.id.hashCode(), {
+        case 'Bom': {
+            updatedVariable = new BomVariable(variable.id.hashCode(), {
                 name: values['name'] !== undefined ? String(values['name']) : variable.values.name
             })
             break
         }
-        case 'BOMItem': {
-            updatedVariable = new BOMItemVariable(variable.id.hashCode(), {
-                bom: values['bom'] !== undefined ? new BOM(parseInt(String(values['bom']))) : new BOM(variable.values.bom.hashCode()),
+        case 'BomItem': {
+            updatedVariable = new BomItemVariable(variable.id.hashCode(), {
+                bom: values['bom'] !== undefined ? new Bom(parseInt(String(values['bom']))) : new Bom(variable.values.bom.hashCode()),
                 product: values['product'] !== undefined ? new Product(parseInt(String(values['product']))) : new Product(variable.values.product.hashCode()),
                 quantity: values['quantity'] !== undefined ? parseInt(String(values['quantity'])) : variable.values.quantity,
-                uom: values['uom'] !== undefined ? new UOM(parseInt(String(values['uom']))) : new UOM(variable.values.uom.hashCode())
+                uom: values['uom'] !== undefined ? new Uom(parseInt(String(values['uom']))) : new Uom(variable.values.uom.hashCode())
             })
             break
         }
         case 'ProductionPreparationSlip': {
             updatedVariable = new ProductionPreparationSlipVariable(variable.id.hashCode(), {
-                bom: values['bom'] !== undefined ? new BOM(parseInt(String(values['bom']))) : new BOM(variable.values.bom.hashCode()),
+                bom: values['bom'] !== undefined ? new Bom(parseInt(String(values['bom']))) : new Bom(variable.values.bom.hashCode()),
                 approved: values['approved'] !== undefined ? parseInt(String(values['approved'])) : variable.values.approved,
                 scrapped: values['scrapped'] !== undefined ? parseInt(String(values['scrapped'])) : variable.values.scrapped
             })

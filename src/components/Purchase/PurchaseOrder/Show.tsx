@@ -19,7 +19,7 @@ import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { DiffRow, PurchaseOrderRow, PurchaseOrderItemRow, QuotationRow, QuotationItemRow } from '../../../main/rows'
-import { PurchaseOrder, PurchaseOrderVariable, PurchaseOrderItem, PurchaseOrderItemVariable, Quotation, QuotationVariable, QuotationItem, QuotationItemVariable } from '../../../main/variables'
+import { PurchaseOrder, PurchaseOrderVariable, PurchaseOrderItemVariable, Quotation, QuotationVariable, QuotationItem, QuotationItemVariable } from '../../../main/variables'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'

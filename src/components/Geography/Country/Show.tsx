@@ -19,7 +19,7 @@ import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { DiffRow, CountryRow, RegionRow, StateTypeRow } from '../../../main/rows'
-import { Country, CountryVariable, Region, RegionVariable, StateType, StateTypeVariable } from '../../../main/variables'
+import { Country, CountryVariable, Region, RegionVariable, StateTypeVariable } from '../../../main/variables'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'

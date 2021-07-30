@@ -61,8 +61,8 @@ export type FunctionName =
     | 'deleteProductTag' 
     | 'createMappingProductTag'
     | 'deleteMappingProductTag' 
-    | 'createUOM'
-    | 'deleteUOM' 
+    | 'createUom'
+    | 'deleteUom' 
     | 'createIndent'
     | 'deleteIndent' 
     | 'createIndentItem'
@@ -95,10 +95,10 @@ export type FunctionName =
     | 'deleteMaterialRequistionSlip' 
     | 'createMaterialRequistionSlipItem'
     | 'deleteMaterialRequistionSlipItem' 
-    | 'createBOM'
-    | 'deleteBOM' 
-    | 'createBOMItem'
-    | 'deleteBOMItem' 
+    | 'createBom'
+    | 'deleteBom' 
+    | 'createBomItem'
+    | 'deleteBomItem' 
     | 'createProductionPreparationSlip'
     | 'deleteProductionPreparationSlip' 
     | 'createProductionPreparationSlipItem'
@@ -1886,7 +1886,7 @@ export const functions: Record<FunctionName, Function> = {    createRegion: {
             }
         }
     },
-    createUOM: {
+    createUom: {
         inputs: {
             product: {
                 type: 'Product'
@@ -1900,7 +1900,7 @@ export const functions: Record<FunctionName, Function> = {    createRegion: {
         },
         outputs: {
             variable: {
-                type: 'UOM',
+                type: 'Uom',
                 op: 'create',
                 values: {
                     product: {
@@ -1925,15 +1925,15 @@ export const functions: Record<FunctionName, Function> = {    createRegion: {
             }
         }
     },
-    deleteUOM: {
+    deleteUom: {
         inputs: {
             id: {
-                type: 'UOM'
+                type: 'Uom'
             }
         },
         outputs: {
             variable: {
-                type: 'UOM',
+                type: 'Uom',
                 op: 'delete',
                 id: {
                     expectedReturnType: 'Number',
@@ -1989,7 +1989,7 @@ export const functions: Record<FunctionName, Function> = {    createRegion: {
                 type: 'Number'
             },
             uom: {
-                type: 'UOM'
+                type: 'Uom'
             },
             ordered: {
                 type: 'Number'
@@ -2865,7 +2865,7 @@ export const functions: Record<FunctionName, Function> = {    createRegion: {
             }
         }
     },
-    createBOM: {
+    createBom: {
         inputs: {
             name: {
                 type: 'Text'
@@ -2873,7 +2873,7 @@ export const functions: Record<FunctionName, Function> = {    createRegion: {
         },
         outputs: {
             variable: {
-                type: 'BOM',
+                type: 'Bom',
                 op: 'create',
                 values: {
                     name: {
@@ -2886,15 +2886,15 @@ export const functions: Record<FunctionName, Function> = {    createRegion: {
             }
         }
     },
-    deleteBOM: {
+    deleteBom: {
         inputs: {
             id: {
-                type: 'BOM'
+                type: 'Bom'
             }
         },
         outputs: {
             variable: {
-                type: 'BOM',
+                type: 'Bom',
                 op: 'delete',
                 id: {
                     expectedReturnType: 'Number',
@@ -2905,10 +2905,10 @@ export const functions: Record<FunctionName, Function> = {    createRegion: {
             }
         }
     },
-    createBOMItem: {
+    createBomItem: {
         inputs: {
             bom: {
-                type: 'BOM'
+                type: 'Bom'
             },
             product: {
                 type: 'Product'
@@ -2917,12 +2917,12 @@ export const functions: Record<FunctionName, Function> = {    createRegion: {
                 type: 'Number'
             },
             uom: {
-                type: 'UOM'
+                type: 'Uom'
             }
         },
         outputs: {
             variable: {
-                type: 'BOMItem',
+                type: 'BomItem',
                 op: 'create',
                 values: {
                     bom: {
@@ -2953,15 +2953,15 @@ export const functions: Record<FunctionName, Function> = {    createRegion: {
             }
         }
     },
-    deleteBOMItem: {
+    deleteBomItem: {
         inputs: {
             id: {
-                type: 'BOMItem'
+                type: 'BomItem'
             }
         },
         outputs: {
             variable: {
-                type: 'BOMItem',
+                type: 'BomItem',
                 op: 'delete',
                 id: {
                     expectedReturnType: 'Number',
@@ -2975,7 +2975,7 @@ export const functions: Record<FunctionName, Function> = {    createRegion: {
     createProductionPreparationSlip: {
         inputs: {
             bom: {
-                type: 'BOM'
+                type: 'Bom'
             },
             approved: {
                 type: 'Number'

@@ -1,16 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Immutable, Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import tw from 'twin.macro'
-import { HashSet, Vector } from 'prelude-ts'
-import { Drawer } from '@material-ui/core'
+import { HashSet } from 'prelude-ts'
 import { executeCircuit } from '../../../main/circuit'
 import { types } from '../../../main/types'
 import { Container, Item, none } from '../../../main/commons'
-import { Table } from '../../../main/Table'
-import { Query, Filter, Args, getQuery, updateQuery, applyFilter } from '../../../main/Filter'
 import * as Grid from './grids/Show'
-import * as Grid2 from './grids/List'
 import { withRouter, Link } from 'react-router-dom'
 import { circuits } from '../../../main/circuits'
 import { iff, when } from '../../../main/utils'
@@ -19,7 +15,7 @@ import { useCallback } from 'react'
 import { updateVariable } from '../../../main/mutation'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { DiffRow, CompanyRow, CompanyProductRow, ProductRow } from '../../../main/rows'
-import { Company, CompanyVariable, CompanyProduct, CompanyProductVariable, Product, ProductVariable } from '../../../main/variables'
+import { Company, CompanyVariable, CompanyProductVariable, Product, ProductVariable } from '../../../main/variables'
 
 type State = Immutable<{
     mode: 'create' | 'update' | 'show'
@@ -267,6 +263,6 @@ const Label = tw.label`w-1/2 whitespace-nowrap`
 
 const Select = tw.select`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full rounded-sm`
 
-const Input = tw.input`p-1.5 text-gray-500 leading-tight border border-gray-400 shadow-inner hover:border-gray-600 w-full rounded-sm`
+
 
 const Button = tw.button`bg-gray-900 text-white text-center font-bold p-2 mx-1 uppercase w-40 h-full max-w-sm rounded-lg focus:outline-none inline-block`
